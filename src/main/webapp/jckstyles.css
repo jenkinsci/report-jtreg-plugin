@@ -1,0 +1,32 @@
+.jck table {
+    border: 1px solid black;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+.jck th {
+    font-family: "Consolas", "DejaVu Sans Mono", monospace;
+    border: 1px solid black;
+    padding-left: 6pt;
+    padding-right: 6pt;
+    vertical-align: top;
+}
+
+.jck td {
+    font-family: "Consolas", "DejaVu Sans Mono", monospace;
+    border: 1px solid black;
+    padding-left: 6pt;
+    padding-right: 6pt;
+    padding-top: 2pt;
+    padding-bottom: 2pt;
+    vertical-align: top;
+}
+
+.jck li {
+    font-family: "Consolas", "DejaVu Sans Mono", monospace;
+}
+
+.detailsTableBorder td {
+    border: 1px solid gray;
+    text-align: left;
+}
