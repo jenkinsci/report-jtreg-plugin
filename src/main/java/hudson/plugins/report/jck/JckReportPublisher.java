@@ -29,6 +29,7 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.Result;
 import hudson.plugins.report.jck.model.Suite;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
@@ -55,19 +56,23 @@ public class JckReportPublisher extends Recorder {
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
 
-        parseAndStoreSummary(build);
+        List<Suite> report = parseAndStoreSummary(build);
+        if (report.stream().anyMatch(s -> s.getReport() != null && (s.getReport().getTestsError() != 0 || s.getReport().getTestsFailed() != 0))) {
+            build.setResult(Result.UNSTABLE);
+        }
 
         JckReportAction action = new JckReportAction(build);
         build.addAction(action);
         return true;
     }
 
-    private void parseAndStoreSummary(AbstractBuild<?, ?> build) throws IOException, InterruptedException {
+    private List<Suite> parseAndStoreSummary(AbstractBuild<?, ?> build) throws IOException, InterruptedException {
         List<Suite> report = build.getWorkspace().act(new JckReportParserCallable());
         File jsonFile = new File(build.getRootDir(), REPORT_JSON);
         try (Writer out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(jsonFile)), StandardCharsets.UTF_8)) {
             new GsonBuilder().setPrettyPrinting().create().toJson(report, out);
         }
+        return report;
     }
 
     @Override

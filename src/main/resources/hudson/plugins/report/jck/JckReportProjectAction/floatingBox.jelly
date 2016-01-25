@@ -1,7 +1,7 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:local="local">
     <div id="jckErrorsFailuresChartContainer" style="margin-right: 10pt"><canvas id='jckErrorsFailuresChart' width='600' height='150'></canvas></div>
-    <div id="jckTotalChartContainer" style="margin-right: 10pt"><canvas id='jckTotalChart' width='600' height='150'></canvas></div>
+    <div id="jckPassedChartContainer" style="margin-right: 10pt"><canvas id='jckPassedChart' width='600' height='150'></canvas></div>
             <j:set var="jckReports" value="${action.chartData}" />
     <script type="text/javascript">
         // &lt;![CDATA[
@@ -14,12 +14,12 @@
                 datasets: [
                 {
                 label: "Error",
-                        fillColor: "rgba(255,128,255,0.2)",
-                        strokeColor: "rgba(255,128,255,1)",
-                        pointColor: "rgba(255,128,255,1)",
+                        fillColor: "rgba(255,0,255,0.2)",
+                        strokeColor: "rgba(255,0,255,1)",
+                        pointColor: "rgba(255,0,255,1)",
                         pointStrokeColor: "#fff",
                         pointHighlightFill: "#fff",
-                        pointHighlightStroke: "rgba(255,128,255,1)",
+                        pointHighlightStroke: "rgba(255,0,255,1)",
                         data: [
         <j:forEach var="build" items="${jckReports}" varStatus="status">
             ${build.error}<j:if test="${!status.last}">,</j:if>
@@ -28,12 +28,12 @@
                 },
                 {
                 label: "Failed",
-                        fillColor: "rgba(255,128,128,0.2)",
-                        strokeColor: "rgba(255,128,128,1)",
-                        pointColor: "rgba(255,128,128,1)",
+                        fillColor: "rgba(255,0,0,0.2)",
+                        strokeColor: "rgba(255,0,0,1)",
+                        pointColor: "rgba(255,0,0,1)",
                         pointStrokeColor: "#fff",
                         pointHighlightFill: "#fff",
-                        pointHighlightStroke: "rgba(255,128,128,1)",
+                        pointHighlightStroke: "rgba(255,0,0,1)",
                         data: [
         <j:forEach var="build" items="${jckReports}" varStatus="status">
             ${build.failed}<j:if test="${!status.last}">,</j:if>
@@ -43,7 +43,8 @@
                 ]
         };
         var options = {
-        bezierCurve: false
+        bezierCurve: false,
+                multiTooltipTemplate: "&lt;%= datasetLabel + \": \" + value %&gt;"
         };
         var ctx = document.getElementById("jckErrorsFailuresChart").getContext("2d");
         var rpmsChart = new Chart(ctx).Line(data, options);
@@ -63,7 +64,7 @@
         ],
                 datasets: [
                 {
-                label: "Total tests",
+                label: "Passed tests",
                         fillColor: "rgba(180,180,180,0.2)",
                         strokeColor: "rgba(180,180,180,1)",
                         pointColor: "rgba(180,180,180,1)",
@@ -72,7 +73,7 @@
                         pointHighlightStroke: "rgba(180,180,180,1)",
                         data: [
         <j:forEach var="build" items="${jckReports}" varStatus="status">
-            ${build.total}<j:if test="${!status.last}">,</j:if>
+            ${build.passed}<j:if test="${!status.last}">,</j:if>
         </j:forEach>
                         ]
                 }
@@ -81,9 +82,9 @@
         var options = {
         bezierCurve: false
         };
-        var ctx = document.getElementById("jckTotalChart").getContext("2d");
+        var ctx = document.getElementById("jckPassedChart").getContext("2d");
         var rpmsChart = new Chart(ctx).Line(data, options);
-        document.getElementById("jckTotalChartContainer").onclick = function (evt) {
+        document.getElementById("jckPassedChartContainer").onclick = function (evt) {
         var activePoints = rpmsChart.getPointsAtEvent(evt);
         window.open(activePoints[0].label + "/jck", "_blank");
         };

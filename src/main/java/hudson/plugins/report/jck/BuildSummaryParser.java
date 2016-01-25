@@ -41,17 +41,17 @@ public class BuildSummaryParser {
 
     public JckReport parseReport(Run<?, ?> build) throws Exception {
         List<Suite> suites = parseBuildSummary(build);
-        int total = 0;
+        int passed = 0;
         int failed = 0;
         int error = 0;
 
         for (Suite suite : suites) {
-            total += suite.getReport().getTestsTotal();
+            passed += suite.getReport().getTestsPassed();
             failed += suite.getReport().getTestsFailed();
             error += suite.getReport().getTestsError();
         }
 
-        return new JckReport(Integer.toString(build.getNumber()), total, failed, error, suites);
+        return new JckReport(Integer.toString(build.getNumber()), passed, failed, error, suites);
     }
 
     private List<Suite> parseBuildSummary(Run<?, ?> build) throws Exception {

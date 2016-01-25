@@ -31,7 +31,7 @@ import lombok.Value;
 public class JckReport {
 
     String buildNum;
-    int total;
+    int passed;
     int failed;
     int error;
     List<Suite> suites;
