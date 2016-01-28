@@ -28,7 +28,10 @@ import hudson.model.Job;
 import hudson.model.Run;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class JckReportProjectAction implements Action {
 
@@ -53,7 +56,7 @@ public class JckReportProjectAction implements Action {
         return "jck";
     }
 
-    public List<JckReport> getChartData() {
+    public JckProjectReport getChartData() {
         List<JckReport> list = new ArrayList<>();
         BuildSummaryParser summaryParser = new BuildSummaryParser();
         for (Run run : job.getBuilds()) {
@@ -67,7 +70,67 @@ public class JckReportProjectAction implements Action {
             }
         }
         Collections.reverse(list);
-        return list;
+
+        return new JckProjectReport(list, collectImprovements(list), collectRegressions(list));
+    }
+
+    private List<Integer> collectImprovements(List<JckReport> reports) {
+        List<Integer> result = new ArrayList<>();
+
+        Set<String> prev = null;
+        for (JckReport report : reports) {
+            if (prev == null) {
+                prev = collectTestNames(report);
+                result.add(0);
+                continue;
+            }
+            Set<String> current = collectTestNames(report);
+
+            long count = prev.stream()
+                    .sequential()
+                    .filter(s -> !current.contains(s))
+                    .count();
+            result.add((int) count);
+
+            prev = current;
+        }
+
+        return result;
+    }
+
+    private List<Integer> collectRegressions(List<JckReport> reports) {
+        List<Integer> result = new ArrayList<>();
+        Set<String> prev = null;
+        for (JckReport report : reports) {
+            if (prev == null) {
+                prev = collectTestNames(report);
+                result.add(0);
+                continue;
+            }
+            Set<String> current = collectTestNames(report);
+            Set<String> finalPrev = new HashSet<>(prev);
+
+            long count = current.stream()
+                    .sequential()
+                    .filter(s -> !finalPrev.contains(s))
+                    .count();
+            result.add((int) count);
+
+            prev = current;
+        }
+
+        return result;
+    }
+
+    private Set<String> collectTestNames(JckReport report) {
+        return report.getSuites().stream()
+                .sequential()
+                .filter(s -> s.getReport().getTestProblems() != null)
+                .filter(s -> s.getReport().getTestProblems().size() > 0)
+                .flatMap(s -> s.getReport().getTestProblems().stream()
+                        .sequential()
+                        .map(t -> s.getName() + " / " + t.getName()))
+                .collect(Collectors.toSet());
     }
 
 }

@@ -2,12 +2,13 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:local="local">
     <div id="jckErrorsFailuresChartContainer" style="margin-right: 10pt"><canvas id='jckErrorsFailuresChart' width='600' height='150'></canvas></div>
     <div id="jckPassedChartContainer" style="margin-right: 10pt"><canvas id='jckPassedChart' width='600' height='150'></canvas></div>
+    <div id="jckRegressionsChartContainer" style="margin-right: 10pt"><canvas id='jckRegressionsChart' width='600' height='150'></canvas></div>
             <j:set var="jckReports" value="${action.chartData}" />
     <script type="text/javascript">
         // &lt;![CDATA[
         var data = {
         labels: [
-        <j:forEach var="build" items="${jckReports}" varStatus="status">
+        <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
         "${build.buildNum}"<j:if test="${!status.last}">,</j:if>
         </j:forEach>
         ],
@@ -21,7 +22,7 @@
                         pointHighlightFill: "#fff",
                         pointHighlightStroke: "rgba(255,0,255,1)",
                         data: [
-        <j:forEach var="build" items="${jckReports}" varStatus="status">
+        <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
             ${build.error}<j:if test="${!status.last}">,</j:if>
         </j:forEach>
                         ]
@@ -35,7 +36,7 @@
                         pointHighlightFill: "#fff",
                         pointHighlightStroke: "rgba(255,0,0,1)",
                         data: [
-        <j:forEach var="build" items="${jckReports}" varStatus="status">
+        <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
             ${build.failed}<j:if test="${!status.last}">,</j:if>
         </j:forEach>
                         ]
@@ -47,9 +48,9 @@
                 multiTooltipTemplate: "&lt;%= datasetLabel + \": \" + value %&gt;"
         };
         var ctx = document.getElementById("jckErrorsFailuresChart").getContext("2d");
-        var rpmsChart = new Chart(ctx).Line(data, options);
+        var jckErrorsChart = new Chart(ctx).Line(data, options);
         document.getElementById("jckErrorsFailuresChartContainer").onclick = function (evt) {
-        var activePoints = rpmsChart.getPointsAtEvent(evt);
+        var activePoints = jckErrorsChart.getPointsAtEvent(evt);
         window.open(activePoints[0].label + "/jck", "_blank");
         };
         // ]]&gt;
@@ -58,7 +59,7 @@
         // &lt;![CDATA[
         var data = {
         labels: [
-        <j:forEach var="build" items="${jckReports}" varStatus="status">
+        <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
         "${build.buildNum}"<j:if test="${!status.last}">,</j:if>
         </j:forEach>
         ],
@@ -72,7 +73,7 @@
                         pointHighlightFill: "#fff",
                         pointHighlightStroke: "rgba(180,180,180,1)",
                         data: [
-        <j:forEach var="build" items="${jckReports}" varStatus="status">
+        <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
             ${build.passed}<j:if test="${!status.last}">,</j:if>
         </j:forEach>
                         ]
@@ -80,12 +81,60 @@
                 ]
         };
         var options = {
-        bezierCurve: false
+        bezierCurve: false,
+                multiTooltipTemplate: "&lt;%= datasetLabel + \": \" + value %&gt;"
         };
         var ctx = document.getElementById("jckPassedChart").getContext("2d");
-        var rpmsChart = new Chart(ctx).Line(data, options);
+        var jckPassedChart = new Chart(ctx).Line(data, options);
         document.getElementById("jckPassedChartContainer").onclick = function (evt) {
-        var activePoints = rpmsChart.getPointsAtEvent(evt);
+        var activePoints = jckPassedChart.getPointsAtEvent(evt);
+        window.open(activePoints[0].label + "/jck", "_blank");
+        };
+        // ]]&gt;
+    </script>
+    <script type="text/javascript">
+        // &lt;![CDATA[
+        var data = {
+        labels: [
+        <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
+        "${build.buildNum}"<j:if test="${!status.last}">,</j:if>
+        </j:forEach>
+        ],
+                datasets: [
+                {
+                label: "Improvements",
+                        fillColor: "rgba(0,220,0,0.5)",
+                        strokeColor: "rgba(0,220,0,0.8)",
+                        highlightFill: "rgba(0,220,0,0.75)",
+                        highlightStroke: "rgba(0,220,0,1)",
+                        data: [
+        <j:forEach var="build" items="${jckReports.improvements}" varStatus="status">
+            ${build}<j:if test="${!status.last}">,</j:if>
+        </j:forEach>
+                        ]
+                },
+                {
+                label: "Regressions",
+                        fillColor: "rgba(220,0,0,0.5)",
+                        strokeColor: "rgba(220,0,0,0.8)",
+                        highlightFill: "rgba(220,0,0,0.75)",
+                        highlightStroke: "rgba(220,0,0,1)",
+                        data: [
+        <j:forEach var="build" items="${jckReports.regressions}" varStatus="status">
+            ${build}<j:if test="${!status.last}">,</j:if>
+        </j:forEach>
+                        ]
+                }
+                ]
+        };
+        var options = {
+        bezierCurve: false,
+                multiTooltipTemplate: "&lt;%= datasetLabel + \": \" + value %&gt;"
+        };
+        var ctx = document.getElementById("jckRegressionsChart").getContext("2d");
+        var jckRegressions = new Chart(ctx).Bar(data, options);
+        document.getElementById("jckRegressionsChartContainer").onclick = function (evt) {
+        var activePoints = jckRegressions.getBarsAtEvent(evt);
         window.open(activePoints[0].label + "/jck", "_blank");
         };
         // ]]&gt;
