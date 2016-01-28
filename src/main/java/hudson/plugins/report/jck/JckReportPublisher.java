@@ -44,13 +44,17 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
 import static hudson.plugins.report.jck.Constants.REPORT_JSON;
 
 public class JckReportPublisher extends Recorder {
 
+    private String reportFileGlob;
+
     @DataBoundConstructor
-    public JckReportPublisher() {
+    public JckReportPublisher(String reportFileGlob) {
+        this.reportFileGlob = reportFileGlob;
     }
 
     @Override
@@ -67,7 +71,7 @@ public class JckReportPublisher extends Recorder {
     }
 
     private List<Suite> parseAndStoreSummary(AbstractBuild<?, ?> build) throws IOException, InterruptedException {
-        List<Suite> report = build.getWorkspace().act(new JckReportParserCallable());
+        List<Suite> report = build.getWorkspace().act(new JckReportParserCallable(reportFileGlob));
         File jsonFile = new File(build.getRootDir(), REPORT_JSON);
         try (Writer out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(jsonFile)), StandardCharsets.UTF_8)) {
             new GsonBuilder().setPrettyPrinting().create().toJson(report, out);
@@ -83,6 +87,11 @@ public class JckReportPublisher extends Recorder {
     @Override
     public BuildStepMonitor getRequiredMonitorService() {
         return BuildStepMonitor.NONE;
+    }
+
+    @DataBoundSetter
+    public void setReportFileGlob(String reportFileGlob) {
+        this.reportFileGlob = reportFileGlob;
     }
 
     @Extension

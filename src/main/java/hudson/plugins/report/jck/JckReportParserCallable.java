@@ -42,9 +42,22 @@ import org.jenkinsci.remoting.RoleChecker;
 
 public class JckReportParserCallable implements FilePath.FileCallable<List<Suite>> {
 
+    private final String reportMatcherGlob;
+
+    public JckReportParserCallable(String reportMatcherGlob) {
+        if (reportMatcherGlob == null || reportMatcherGlob.isEmpty()) {
+            this.reportMatcherGlob = "glob:*.{xml,xml.gz}";
+        } else {
+            if (!reportMatcherGlob.startsWith("glob:")) {
+                reportMatcherGlob = "glob:" + reportMatcherGlob;
+            }
+            this.reportMatcherGlob = reportMatcherGlob;
+        }
+    }
+
     @Override
     public List<Suite> invoke(File f, VirtualChannel channel) throws IOException, InterruptedException {
-        PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:*.{xml,xml.gz}");
+        PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher(reportMatcherGlob);
         List<Suite> result = Files.walk(f.toPath())
                 .sequential()
                 .filter(p -> pathMatcher.matches(p.getFileName()))
