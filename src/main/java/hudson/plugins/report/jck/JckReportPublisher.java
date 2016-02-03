@@ -94,6 +94,10 @@ public class JckReportPublisher extends Recorder {
         this.reportFileGlob = reportFileGlob;
     }
 
+    public String getReportFileGlob() {
+        return reportFileGlob;
+    }
+
     @Extension
     public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
 
