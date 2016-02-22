@@ -30,7 +30,8 @@ import lombok.Value;
 @Value
 public class JckReport {
 
-    String buildNum;
+    int buildNumber;
+    String buildName;
     int passed;
     int failed;
     int error;

@@ -51,7 +51,7 @@ public class BuildSummaryParser {
             error += suite.getReport().getTestsError();
         }
 
-        return new JckReport(Integer.toString(build.getNumber()), passed, failed, error, suites);
+        return new JckReport(build.getNumber(), build.getDisplayName(), passed, failed, error, suites);
     }
 
     private List<Suite> parseBuildSummary(Run<?, ?> build) throws Exception {
