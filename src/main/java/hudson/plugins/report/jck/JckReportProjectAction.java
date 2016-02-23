@@ -25,9 +25,7 @@ package hudson.plugins.report.jck;
 
 import hudson.model.Action;
 import hudson.model.Job;
-import hudson.model.Run;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,21 +55,11 @@ public class JckReportProjectAction implements Action {
     }
 
     public JckProjectReport getChartData() {
-        List<JckReport> list = new ArrayList<>();
-        BuildSummaryParser summaryParser = new BuildSummaryParser();
-        for (Run run : job.getBuilds()) {
-            try {
-                JckReport report = summaryParser.parseReport(run);
-                list.add(report);
-            } catch (Exception ignore) {
-            }
-            if (list.size() == 10) {
-                break;
-            }
-        }
-        Collections.reverse(list);
-
-        return new JckProjectReport(list, collectImprovements(list), collectRegressions(list));
+        List<JckReport> reports = new BuildSummaryParser().parseJobReports(job);
+        return new JckProjectReport(
+                reports,
+                collectImprovements(reports),
+                collectRegressions(reports));
     }
 
     private List<Integer> collectImprovements(List<JckReport> reports) {

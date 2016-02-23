@@ -25,6 +25,7 @@ package hudson.plugins.report.jck;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import hudson.model.Job;
 import hudson.model.Run;
 import hudson.plugins.report.jck.model.Suite;
 import java.io.BufferedInputStream;
@@ -33,11 +34,34 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static hudson.plugins.report.jck.Constants.REPORT_JSON;
 
 public class BuildSummaryParser {
+
+    public List<JckReport> parseJobReports(Job<?, ?> job) {
+        return parseJobReports(job, 10);
+    }
+
+    public List<JckReport> parseJobReports(Job<?, ?> job, int limit) {
+        List<JckReport> list = new ArrayList<>();
+        BuildSummaryParser summaryParser = new BuildSummaryParser();
+        for (Run run : job.getBuilds()) {
+            try {
+                JckReport report = summaryParser.parseReport(run);
+                list.add(report);
+            } catch (Exception ignore) {
+            }
+            if (list.size() == limit) {
+                break;
+            }
+        }
+        Collections.reverse(list);
+        return list;
+    }
 
     public JckReport parseReport(Run<?, ?> build) throws Exception {
         List<Suite> suites = parseBuildSummary(build);
@@ -57,7 +81,8 @@ public class BuildSummaryParser {
     private List<Suite> parseBuildSummary(Run<?, ?> build) throws Exception {
         File reportFile = new File(build.getRootDir(), REPORT_JSON);
         if (reportFile.exists() && reportFile.isFile() && reportFile.canRead()) {
-            try (Reader in = new InputStreamReader(new BufferedInputStream(new FileInputStream(reportFile)), StandardCharsets.UTF_8)) {
+            try (Reader in = new InputStreamReader(new BufferedInputStream(new FileInputStream(reportFile)),
+                    StandardCharsets.UTF_8)) {
                 List<Suite> list = new Gson().fromJson(in, new TypeToken<List<Suite>>() {
                 }.getType());
                 return list;
