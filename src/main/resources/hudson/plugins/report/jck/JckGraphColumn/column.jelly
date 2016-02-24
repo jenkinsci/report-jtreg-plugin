@@ -2,60 +2,65 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
     <td>
         <div>
-            <div id="jckChartContainer-${job.name}" style="width: 320px; height: 80px">
-                <canvas id='jckChart-${job.name}' width='320' height='80' style="display: block"></canvas>
-            </div>
-                    <j:set var="jckReports" value="${it.getJckReport(job)}" />
-            <script type="text/javascript">
-                // &lt;![CDATA[
-                var data = {
-                labels: [
-                <j:forEach var="build" items="${jckReports}" varStatus="status">
-                "${build.buildNumber}"<j:if test="${!status.last}">,</j:if>
-                </j:forEach>
-                ],
-                        datasets: [
-                        {
-                        label: "Error",
-                                fillColor: "rgba(255,0,255,0.2)",
-                                strokeColor: "rgba(255,0,255,1)",
-                                pointColor: "rgba(255,0,255,1)",
-                                pointStrokeColor: "#fff",
-                                pointHighlightFill: "#fff",
-                                pointHighlightStroke: "rgba(255,0,255,1)",
-                                data: [
-                <j:forEach var="build" items="${jckReports}" varStatus="status">
-                    ${build.error}<j:if test="${!status.last}">,</j:if>
-                </j:forEach>
-                                ]
-                        },
-                        {
-                        label: "Failed",
-                                fillColor: "rgba(255,0,0,0.2)",
-                                strokeColor: "rgba(255,0,0,1)",
-                                pointColor: "rgba(255,0,0,1)",
-                                pointStrokeColor: "#fff",
-                                pointHighlightFill: "#fff",
-                                pointHighlightStroke: "rgba(255,0,0,1)",
-                                data: [
-                <j:forEach var="build" items="${jckReports}" varStatus="status">
-                    ${build.failed}<j:if test="${!status.last}">,</j:if>
-                </j:forEach>
-                                ]
-                        }
-                        ]
-                };
-                var options = {
-                bezierCurve: false,
-                        multiTooltipTemplate: "&lt;%= datasetLabel + \": \" + value %&gt;"
-                };
-                var ctx = document.getElementById("jckChart-${job.name}").getContext("2d");
-                var jckErrorsChart = new Chart(ctx).Line(data, options);
-                document.getElementById("jckChartContainer-${job.name}").onclick = function (evt) {
-                window.open("/${job.url}", "_blank");
-                };
-                // ]]&gt;
-            </script>
+            <j:set var="jckReports" value="${it.getJckReport(job)}" />
+            <j:if test="${jckReports.isEmpty()}">
+                No JCK results yet
+            </j:if>
+            <j:if test="${!jckReports.isEmpty()}">
+                <div id="jckChartContainer-${job.name}" style="width: 320px; height: 80px">
+                    <canvas id='jckChart-${job.name}' width='320' height='80' style="display: block"></canvas>
+                </div>
+                <script type="text/javascript">
+                    // &lt;![CDATA[
+                    var data = {
+                    labels: [
+                    <j:forEach var="build" items="${jckReports}" varStatus="status">
+                    "${build.buildNumber}"<j:if test="${!status.last}">,</j:if>
+                    </j:forEach>
+                    ],
+                            datasets: [
+                            {
+                            label: "Error",
+                                    fillColor: "rgba(255,0,255,0.2)",
+                                    strokeColor: "rgba(255,0,255,1)",
+                                    pointColor: "rgba(255,0,255,1)",
+                                    pointStrokeColor: "#fff",
+                                    pointHighlightFill: "#fff",
+                                    pointHighlightStroke: "rgba(255,0,255,1)",
+                                    data: [
+                    <j:forEach var="build" items="${jckReports}" varStatus="status">
+                        ${build.error}<j:if test="${!status.last}">,</j:if>
+                    </j:forEach>
+                                    ]
+                            },
+                            {
+                            label: "Failed",
+                                    fillColor: "rgba(255,0,0,0.2)",
+                                    strokeColor: "rgba(255,0,0,1)",
+                                    pointColor: "rgba(255,0,0,1)",
+                                    pointStrokeColor: "#fff",
+                                    pointHighlightFill: "#fff",
+                                    pointHighlightStroke: "rgba(255,0,0,1)",
+                                    data: [
+                    <j:forEach var="build" items="${jckReports}" varStatus="status">
+                        ${build.failed}<j:if test="${!status.last}">,</j:if>
+                    </j:forEach>
+                                    ]
+                            }
+                            ]
+                    };
+                    var options = {
+                    bezierCurve: false,
+                            multiTooltipTemplate: "&lt;%= datasetLabel + \": \" + value %&gt;"
+                    };
+                    var ctx = document.getElementById("jckChart-${job.name}").getContext("2d");
+                    var jckErrorsChart = new Chart(ctx).Line(data, options);
+                    document.getElementById("jckChartContainer-${job.name}").onclick = function (evt) {
+                    window.open("/${job.url}", "_blank");
+                    };
+                    // ]]&gt;
+                </script>
+            </j:if>
         </div>
     </td>
 </j:jelly>

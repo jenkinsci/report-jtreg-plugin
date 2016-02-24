@@ -26,6 +26,7 @@ package hudson.plugins.report.jck;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import hudson.model.Job;
+import hudson.model.Result;
 import hudson.model.Run;
 import hudson.plugins.report.jck.model.Suite;
 import java.io.BufferedInputStream;
@@ -50,6 +51,9 @@ public class BuildSummaryParser {
         List<JckReport> list = new ArrayList<>();
         BuildSummaryParser summaryParser = new BuildSummaryParser();
         for (Run run : job.getBuilds()) {
+            if (run.getResult() == null || run.getResult().isWorseThan(Result.UNSTABLE)) {
+                continue;
+            }
             try {
                 JckReport report = summaryParser.parseReport(run);
                 list.add(report);
