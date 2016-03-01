@@ -49,13 +49,12 @@ public class BuildSummaryParser {
 
     public List<JckReport> parseJobReports(Job<?, ?> job, int limit) {
         List<JckReport> list = new ArrayList<>();
-        BuildSummaryParser summaryParser = new BuildSummaryParser();
         for (Run run : job.getBuilds()) {
             if (run.getResult() == null || run.getResult().isWorseThan(Result.UNSTABLE)) {
                 continue;
             }
             try {
-                JckReport report = summaryParser.parseReport(run);
+                JckReport report = parseReport(run);
                 list.add(report);
             } catch (Exception ignore) {
             }
