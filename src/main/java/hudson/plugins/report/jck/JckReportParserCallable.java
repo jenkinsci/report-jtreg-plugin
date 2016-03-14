@@ -37,6 +37,7 @@ import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 import org.jenkinsci.remoting.RoleChecker;
 
@@ -58,14 +59,15 @@ public class JckReportParserCallable implements FilePath.FileCallable<List<Suite
     @Override
     public List<Suite> invoke(File f, VirtualChannel channel) throws IOException, InterruptedException {
         PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher(reportMatcherGlob);
-        List<Suite> result = Files.walk(f.toPath())
-                .sequential()
-                .filter(p -> pathMatcher.matches(p.getFileName()))
-                .map(this::parsePath)
-                .filter(e -> e != null)
-                .sorted()
-                .collect(Collectors.toList());
-        return result;
+        try (Stream<Path> filesStream = Files.walk(f.toPath()).sequential()) {
+            List<Suite> result = filesStream
+                    .filter(p -> pathMatcher.matches(p.getFileName()))
+                    .map(this::parsePath)
+                    .filter(e -> e != null)
+                    .sorted()
+                    .collect(Collectors.toList());
+            return result;
+        }
     }
 
     private Suite parsePath(Path path) {
