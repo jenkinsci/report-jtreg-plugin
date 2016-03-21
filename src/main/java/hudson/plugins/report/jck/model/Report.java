@@ -12,5 +12,6 @@ public class Report {
     int testsError;
     int testsTotal;
     List<Test> testProblems;
+    List<String> passedTests;
 
 }

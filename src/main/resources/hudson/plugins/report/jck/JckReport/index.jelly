@@ -28,6 +28,7 @@
                             </j:forEach>
                         </tbody>
                     </table>
+                    <h2>Failures and Errors</h2>
                     <j:forEach var="suite" items="${it.suites}" varStatus="suitesStatus">
                         <j:if test="${suite.report != null and suite.report.testProblems != null and suite.report.testProblems.size() > 0}">
                             <div style="font-weight: bold; font-size: large;">${suite.name}</div>
@@ -36,15 +37,15 @@
                                     <li>
                                         ${t.name}&amp;nbsp;
                                         <a href="#" id="button_expand_${suitesStatus.count}_${testStatus.count}" style="font-size: smaller; display: inline" onclick="
-                                            document.getElementById('button_expand_${suitesStatus.count}_${testStatus.count}').style.display = 'none';
-                                            document.getElementById('button_collapse_${suitesStatus.count}_${testStatus.count}').style.display = 'inline';
-                                            document.getElementById('details_${suitesStatus.count}_${testStatus.count}').style.display = 'block';
-                                            return false;">(expand)</a>
+                                                document.getElementById('button_expand_${suitesStatus.count}_${testStatus.count}').style.display = 'none';
+                                                document.getElementById('button_collapse_${suitesStatus.count}_${testStatus.count}').style.display = 'inline';
+                                                document.getElementById('details_${suitesStatus.count}_${testStatus.count}').style.display = 'block';
+                                                return false;">(expand)</a>
                                         <a href="#" id="button_collapse_${suitesStatus.count}_${testStatus.count}" style="font-size: smaller; display: none" onclick="
-                                            document.getElementById('button_collapse_${suitesStatus.count}_${testStatus.count}').style.display = 'none';
-                                            document.getElementById('details_${suitesStatus.count}_${testStatus.count}').style.display = 'none';
-                                            document.getElementById('button_expand_${suitesStatus.count}_${testStatus.count}').style.display = 'inline';
-                                            return false;">(collapse)</a>
+                                                document.getElementById('button_collapse_${suitesStatus.count}_${testStatus.count}').style.display = 'none';
+                                                document.getElementById('details_${suitesStatus.count}_${testStatus.count}').style.display = 'none';
+                                                document.getElementById('button_expand_${suitesStatus.count}_${testStatus.count}').style.display = 'inline';
+                                                return false;">(collapse)</a>
                                         <div id="details_${suitesStatus.count}_${testStatus.count}" style="display: none">
                                             <ul>
                                                 <li><span style="font-weight: bold">Status:&amp;nbsp;</span>${t.status}</li>
@@ -67,6 +68,32 @@
                                     </li>
                                 </j:forEach>
                             </ul>
+                        </j:if>
+                    </j:forEach>
+                    <h2>List of passed tests</h2>
+                    <j:forEach var="suite" items="${it.suites}" varStatus="suitesStatus">
+                        <j:if test="${suite.report != null and suite.report.passedTests != null and suite.report.passedTests.size() > 0}">
+                            <div style="font-weight: bold; font-size: large;">${suite.name}</div>
+                            &amp;nbsp;
+                            <a href="#" id="button_expand_passed_${suitesStatus.count}" style="font-size: smaller; display: inline" onclick="
+                                                document.getElementById('button_expand_passed_${suitesStatus.count}').style.display = 'none';
+                                                document.getElementById('button_collapse_passed_${suitesStatus.count}').style.display = 'inline';
+                                                document.getElementById('passed_tests_${suitesStatus.count}').style.display = 'block';
+                                                return false;">(expand)</a>
+                            <a href="#" id="button_collapse_passed_${suitesStatus.count}" style="font-size: smaller; display: none" onclick="
+                                                document.getElementById('button_collapse_passed_${suitesStatus.count}').style.display = 'none';
+                                                document.getElementById('passed_tests_${suitesStatus.count}').style.display = 'none';
+                                                document.getElementById('button_expand_passed_${suitesStatus.count}').style.display = 'inline';
+                                                return false;">(collapse)</a>
+                            <div id="passed_tests_${suitesStatus.count}" style="display: none">
+                                <ul>
+                                    <j:forEach items="${suite.report.passedTests}" var="t" varStatus="testStatus">
+                                        <li>
+                                            ${t.name}
+                                        </li>
+                                    </j:forEach>
+                                </ul>
+                            </div>
                         </j:if>
                     </j:forEach>
                 </div>
