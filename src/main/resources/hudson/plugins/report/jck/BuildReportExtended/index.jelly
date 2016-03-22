@@ -94,7 +94,7 @@
                     <j:forEach var="suite" items="${it.testChanges}" varStatus="suitesStatus">
                         <div style="font-weight: bold; font-size: large;">${suite.name}</div>
                         <j:if test="${suite.fixes.size() > 0}">
-                            <div style="font-weight: bold">Fixed:</div>
+                            <div style="font-weight: bold">New Fixes:</div>
                             <ul>
                                 <j:forEach items="${suite.fixes}" var="t" varStatus="testStatus">
                                     <li>
@@ -104,7 +104,7 @@
                             </ul>
                         </j:if>
                         <j:if test="${suite.failures.size() > 0}">
-                            <div style="font-weight: bold">Failures:</div>
+                            <div style="font-weight: bold">New Failures:</div>
                             <ul>
                                 <j:forEach items="${suite.failures}" var="t" varStatus="testStatus">
                                     <li>
@@ -114,7 +114,7 @@
                             </ul>
                         </j:if>
                         <j:if test="${suite.errors.size() > 0}">
-                            <div style="font-weight: bold">Errors:</div>
+                            <div style="font-weight: bold">New Errors:</div>
                             <ul>
                                 <j:forEach items="${suite.errors}" var="t" varStatus="testStatus">
                                     <li>
