@@ -23,48 +23,31 @@
  */
 package hudson.plugins.report.jck.model;
 
+import hudson.plugins.report.jck.model.BuildReport;
 import java.util.List;
 
-public class Report {
+public class ProjectReport {
 
-    private final int testsPassed;
-    private final int testsNotRun;
-    private final int testsFailed;
-    private final int testsError;
-    private final int testsTotal;
-    private final List<Test> testProblems;
+    private final List<BuildReport> reports;
+    private final List<Integer> improvements;
+    private final List<Integer> regressions;
 
-    public Report(int testsPassed, int testsNotRun, int testsFailed, int testsError, int testsTotal, List<Test> testProblems) {
-        this.testsPassed = testsPassed;
-        this.testsNotRun = testsNotRun;
-        this.testsFailed = testsFailed;
-        this.testsError = testsError;
-        this.testsTotal = testsTotal;
-        this.testProblems = testProblems;
+    public ProjectReport(List<BuildReport> reports, List<Integer> improvements, List<Integer> regressions) {
+        this.reports = reports;
+        this.improvements = improvements;
+        this.regressions = regressions;
     }
 
-    public int getTestsPassed() {
-        return testsPassed;
+    public List<BuildReport> getReports() {
+        return reports;
     }
 
-    public int getTestsNotRun() {
-        return testsNotRun;
+    public List<Integer> getImprovements() {
+        return improvements;
     }
 
-    public int getTestsFailed() {
-        return testsFailed;
-    }
-
-    public int getTestsError() {
-        return testsError;
-    }
-
-    public int getTestsTotal() {
-        return testsTotal;
-    }
-
-    public List<Test> getTestProblems() {
-        return testProblems;
+    public List<Integer> getRegressions() {
+        return regressions;
     }
 
 }

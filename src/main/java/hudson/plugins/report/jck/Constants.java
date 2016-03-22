@@ -25,6 +25,7 @@ package hudson.plugins.report.jck;
 
 final public class Constants {
 
-    public static final String REPORT_JSON = "jck-report.json";
+    public static final String REPORT_JCK_JSON = "jck-report.json";
+    public static final String REPORT_JCK_TESTS_LIST_JSON = "jck-tests-list.json";
 
 }

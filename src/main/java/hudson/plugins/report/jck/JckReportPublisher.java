@@ -30,7 +30,10 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.model.Result;
+import hudson.plugins.report.jck.model.Report;
+import hudson.plugins.report.jck.model.ReportFull;
 import hudson.plugins.report.jck.model.Suite;
+import hudson.plugins.report.jck.model.SuiteTests;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
@@ -43,10 +46,12 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-import static hudson.plugins.report.jck.Constants.REPORT_JSON;
+import static hudson.plugins.report.jck.Constants.REPORT_JCK_JSON;
+import static hudson.plugins.report.jck.Constants.REPORT_JCK_TESTS_LIST_JSON;
 
 public class JckReportPublisher extends Recorder {
 
@@ -60,8 +65,9 @@ public class JckReportPublisher extends Recorder {
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
 
-        List<Suite> report = parseAndStoreSummary(build);
-        if (report.stream().anyMatch(s -> s.getReport() != null && (s.getReport().getTestsError() != 0 || s.getReport().getTestsFailed() != 0))) {
+        List<Suite> report = parseAndStoreResults(build);
+        if (report.stream().anyMatch(
+                s -> s.getReport() != null && (s.getReport().getTestsError() != 0 || s.getReport().getTestsFailed() != 0))) {
             build.setResult(Result.UNSTABLE);
         }
 
@@ -70,13 +76,45 @@ public class JckReportPublisher extends Recorder {
         return true;
     }
 
-    private List<Suite> parseAndStoreSummary(AbstractBuild<?, ?> build) throws IOException, InterruptedException {
-        List<Suite> report = build.getWorkspace().act(new JckReportParserCallable(reportFileGlob));
-        File jsonFile = new File(build.getRootDir(), REPORT_JSON);
-        try (Writer out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(jsonFile)), StandardCharsets.UTF_8)) {
-            new GsonBuilder().setPrettyPrinting().create().toJson(report, out);
+    private List<Suite> parseAndStoreResults(AbstractBuild<?, ?> build) throws IOException, InterruptedException {
+        List<Suite> reportFull = build.getWorkspace().act(new JckReportParserCallable(reportFileGlob));
+        storeFailuresSummary(reportFull, new File(build.getRootDir(), REPORT_JCK_JSON));
+        storeFullTestsList(reportFull, new File(build.getRootDir(), REPORT_JCK_TESTS_LIST_JSON));
+        return reportFull;
+    }
+
+    private void storeFailuresSummary(List<Suite> reportFull, File jsonFile) throws IOException {
+        List<Suite> reportShort = reportFull.stream()
+                .sequential()
+                .map(s -> new Suite(
+                        s.getName(),
+                        new Report(
+                                s.getReport().getTestsPassed(),
+                                s.getReport().getTestsNotRun(),
+                                s.getReport().getTestsError(),
+                                s.getReport().getTestsError(),
+                                s.getReport().getTestsTotal(),
+                                s.getReport().getTestProblems())))
+                .sorted()
+                .collect(Collectors.toList());
+        try (Writer out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(jsonFile)),
+                StandardCharsets.UTF_8)) {
+            new GsonBuilder().setPrettyPrinting().create().toJson(reportShort, out);
         }
-        return report;
+    }
+
+    private void storeFullTestsList(List<Suite> reportFull, File jsonFile) throws IOException {
+        List<SuiteTests> suites = reportFull.stream()
+                .sequential()
+                .map(s -> new SuiteTests(
+                        s.getName(),
+                        s.getReport() instanceof ReportFull ? ((ReportFull) s.getReport()).getTestsList() : null))
+                .sorted()
+                .collect(Collectors.toList());
+        try (Writer out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(jsonFile)),
+                StandardCharsets.UTF_8)) {
+            new GsonBuilder().create().toJson(suites, out);
+        }
     }
 
     @Override

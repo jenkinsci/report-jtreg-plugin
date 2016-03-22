@@ -23,48 +23,49 @@
  */
 package hudson.plugins.report.jck.model;
 
+import hudson.plugins.report.jck.model.Suite;
 import java.util.List;
 
-public class Report {
+public class BuildReport {
 
-    private final int testsPassed;
-    private final int testsNotRun;
-    private final int testsFailed;
-    private final int testsError;
-    private final int testsTotal;
-    private final List<Test> testProblems;
+    private final int buildNumber;
+    private final String buildName;
+    private final int passed;
+    private final int failed;
+    private final int error;
+    private final List<Suite> suites;
 
-    public Report(int testsPassed, int testsNotRun, int testsFailed, int testsError, int testsTotal, List<Test> testProblems) {
-        this.testsPassed = testsPassed;
-        this.testsNotRun = testsNotRun;
-        this.testsFailed = testsFailed;
-        this.testsError = testsError;
-        this.testsTotal = testsTotal;
-        this.testProblems = testProblems;
+    public BuildReport(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites) {
+        this.buildNumber = buildNumber;
+        this.buildName = buildName;
+        this.passed = passed;
+        this.failed = failed;
+        this.error = error;
+        this.suites = suites;
     }
 
-    public int getTestsPassed() {
-        return testsPassed;
+    public int getBuildNumber() {
+        return buildNumber;
     }
 
-    public int getTestsNotRun() {
-        return testsNotRun;
+    public String getBuildName() {
+        return buildName;
     }
 
-    public int getTestsFailed() {
-        return testsFailed;
+    public int getPassed() {
+        return passed;
     }
 
-    public int getTestsError() {
-        return testsError;
+    public int getFailed() {
+        return failed;
     }
 
-    public int getTestsTotal() {
-        return testsTotal;
+    public int getError() {
+        return error;
     }
 
-    public List<Test> getTestProblems() {
-        return testProblems;
+    public List<Suite> getSuites() {
+        return suites;
     }
 
 }

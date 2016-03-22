@@ -23,6 +23,7 @@
  */
 package hudson.plugins.report.jck;
 
+import hudson.plugins.report.jck.model.BuildReport;
 import hudson.Extension;
 import hudson.model.Job;
 import hudson.views.ListViewColumn;
@@ -36,7 +37,7 @@ public class JckGraphColumn extends ListViewColumn {
     public JckGraphColumn() {
     }
 
-    public List<JckReport> getJckReport(Job<?, ?> job) {
+    public List<BuildReport> getJckReport(Job<?, ?> job) {
         return new BuildSummaryParser().parseJobReports(job);
     }
 

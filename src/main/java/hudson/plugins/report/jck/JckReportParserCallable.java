@@ -24,13 +24,10 @@
 package hudson.plugins.report.jck;
 
 import hudson.FilePath;
-import hudson.plugins.report.jck.model.Report;
 import hudson.plugins.report.jck.model.Suite;
 import hudson.remoting.VirtualChannel;
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,7 +35,6 @@ import java.nio.file.PathMatcher;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.zip.GZIPInputStream;
 import org.jenkinsci.remoting.RoleChecker;
 
 public class JckReportParserCallable implements FilePath.FileCallable<List<Suite>> {
@@ -58,47 +54,17 @@ public class JckReportParserCallable implements FilePath.FileCallable<List<Suite
 
     @Override
     public List<Suite> invoke(File f, VirtualChannel channel) throws IOException, InterruptedException {
+        JckReportParser reportParser = new JckReportParser();
         PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher(reportMatcherGlob);
         try (Stream<Path> filesStream = Files.walk(f.toPath()).sequential()) {
             List<Suite> result = filesStream
                     .filter(p -> pathMatcher.matches(p.getFileName()))
-                    .map(this::parsePath)
+                    .map(reportParser::parsePath)
                     .filter(e -> e != null)
                     .sorted()
                     .collect(Collectors.toList());
             return result;
         }
-    }
-
-    private Suite parsePath(Path path) {
-        try {
-            try (InputStream in = streamPath(path)) {
-                Report report = new JckReportParser().parseReport(in);
-                return new Suite(suiteName(path), report);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
-
-    private InputStream streamPath(Path path) throws IOException {
-        InputStream stream = new BufferedInputStream(Files.newInputStream(path));
-        if (path.toString().endsWith(".gz")) {
-            return new GZIPInputStream(stream);
-        }
-        return stream;
-    }
-
-    private String suiteName(Path path) {
-        String fullName = path.getFileName().toString();
-        if (fullName.endsWith(".xml.gz")) {
-            return fullName.substring(0, fullName.length() - 7);
-        }
-        if (fullName.endsWith(".xml")) {
-            return fullName.substring(0, fullName.length() - 4);
-        }
-        throw new IllegalArgumentException("file name does not end with either .xml or .xml.gz extension: " + fullName);
     }
 
     @Override

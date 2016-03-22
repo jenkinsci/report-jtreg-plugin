@@ -1,0 +1,151 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:test="/lib/test">
+    <l:layout title="${it.run} ${it.displayName}">
+        <l:main-panel>
+            <j:if test="${it.suites != null}">
+                <div class="jck">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Suite name</th>
+                                <th>Total</th>
+                                <th>Passed</th>
+                                <th>Failed</th>
+                                <th>Error</th>
+                                <th>Skipped</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <j:forEach var="suite" items="${it.suites}">
+                                <tr>
+                                    <td>${suite.name}</td>
+                                    <td>${suite.report.testsTotal}</td>
+                                    <td>${suite.report.testsPassed}</td>
+                                    <td>${suite.report.testsFailed}</td>
+                                    <td>${suite.report.testsError}</td>
+                                    <td>${suite.report.testsNotRun}</td>
+                                </tr>
+                            </j:forEach>
+                        </tbody>
+                    </table>
+                    <h2>Failures and Errors</h2>
+                    <j:forEach var="suite" items="${it.suites}" varStatus="suitesStatus">
+                        <j:if test="${suite.report != null and suite.report.testProblems != null and suite.report.testProblems.size() > 0}">
+                            <div style="font-weight: bold; font-size: large;">${suite.name}</div>
+                            <ul>
+                                <j:forEach items="${suite.report.testProblems}" var="t" varStatus="testStatus">
+                                    <li>
+                                        ${t.name}&amp;nbsp;
+                                        <a href="#" id="button_expand_${suitesStatus.count}_${testStatus.count}" style="font-size: smaller; display: inline" onclick="
+                                                document.getElementById('button_expand_${suitesStatus.count}_${testStatus.count}').style.display = 'none';
+                                                document.getElementById('button_collapse_${suitesStatus.count}_${testStatus.count}').style.display = 'inline';
+                                                document.getElementById('details_${suitesStatus.count}_${testStatus.count}').style.display = 'block';
+                                                return false;">(expand)</a>
+                                        <a href="#" id="button_collapse_${suitesStatus.count}_${testStatus.count}" style="font-size: smaller; display: none" onclick="
+                                                document.getElementById('button_collapse_${suitesStatus.count}_${testStatus.count}').style.display = 'none';
+                                                document.getElementById('details_${suitesStatus.count}_${testStatus.count}').style.display = 'none';
+                                                document.getElementById('button_expand_${suitesStatus.count}_${testStatus.count}').style.display = 'inline';
+                                                return false;">(collapse)</a>
+                                        <div id="details_${suitesStatus.count}_${testStatus.count}" style="display: none">
+                                            <ul>
+                                                <li><span style="font-weight: bold">Status:&amp;nbsp;</span>${t.status}</li>
+                                                <li><span style="font-weight: bold">Status line:&amp;nbsp;</span>${t.statusLine}</li>
+                                                    <j:forEach items="${t.outputs}" var="o">
+                                                    <li>
+                                                        <span style="font-weight: bold">Output: ${o.name}:&amp;nbsp;</span>
+                                                        <j:choose>
+                                                            <j:when test="${o.value == null or o.value.isEmpty()}">
+                                                                <span>""</span>
+                                                            </j:when>
+                                                            <j:otherwise>
+                                                                <pre style="white-space: pre-wrap; margin-left: 12pt">${o.value}</pre>
+                                                            </j:otherwise>
+                                                        </j:choose>
+                                                    </li>
+                                                </j:forEach>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </j:forEach>
+                            </ul>
+                        </j:if>
+                    </j:forEach>
+                    <j:if test="${it.addedSuites.size() > 0}">
+                        <h2>Added test suites:</h2>
+                        <ul>
+                            <j:forEach var="suite" items="${it.addedSuites}" varStatus="suitesStatus">
+                                <li>
+                                    ${suite}
+                                </li>
+                            </j:forEach>
+                        </ul>
+                    </j:if>
+                    <j:if test="${it.removedSuites.size() > 0}">
+                        <h2>Removed test suites:</h2>
+                        <ul>
+                            <j:forEach var="suite" items="${it.removedSuites}" varStatus="suitesStatus">
+                                <li>
+                                    ${suite}
+                                </li>
+                            </j:forEach>
+                        </ul>
+                    </j:if>
+                    <h2>Test status changes:</h2>
+                    <j:forEach var="suite" items="${it.testChanges}" varStatus="suitesStatus">
+                        <div style="font-weight: bold; font-size: large;">${suite.name}</div>
+                        <j:if test="${suite.fixes.size() > 0}">
+                            <div style="font-weight: bold">New Fixes:</div>
+                            <ul>
+                                <j:forEach items="${suite.fixes}" var="t" varStatus="testStatus">
+                                    <li>
+                                        ${t}
+                                    </li>
+                                </j:forEach>
+                            </ul>
+                        </j:if>
+                        <j:if test="${suite.failures.size() > 0}">
+                            <div style="font-weight: bold">New Failures:</div>
+                            <ul>
+                                <j:forEach items="${suite.failures}" var="t" varStatus="testStatus">
+                                    <li>
+                                        ${t}
+                                    </li>
+                                </j:forEach>
+                            </ul>
+                        </j:if>
+                        <j:if test="${suite.errors.size() > 0}">
+                            <div style="font-weight: bold">New Errors:</div>
+                            <ul>
+                                <j:forEach items="${suite.errors}" var="t" varStatus="testStatus">
+                                    <li>
+                                        ${t}
+                                    </li>
+                                </j:forEach>
+                            </ul>
+                        </j:if>
+                        <j:if test="${suite.added.size() > 0}">
+                            <div style="font-weight: bold">Added:</div>
+                            <ul>
+                                <j:forEach items="${suite.added}" var="t" varStatus="testStatus">
+                                    <li>
+                                        ${t}
+                                    </li>
+                                </j:forEach>
+                            </ul>
+                        </j:if>
+                        <j:if test="${suite.removed.size() > 0}">
+                            <div style="font-weight: bold">Removed:</div>
+                            <ul>
+                                <j:forEach items="${suite.removed}" var="t" varStatus="testStatus">
+                                    <li>
+                                        ${t}
+                                    </li>
+                                </j:forEach>
+                            </ul>
+                        </j:if>
+                    </j:forEach>
+                </div>
+            </j:if>
+        </l:main-panel>
+    </l:layout>
+</j:jelly>
