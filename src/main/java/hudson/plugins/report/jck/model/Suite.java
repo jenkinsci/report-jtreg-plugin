@@ -23,15 +23,25 @@
  */
 package hudson.plugins.report.jck.model;
 
-import lombok.Value;
-
 import static hudson.plugins.report.jck.utils.MoreStrings.compareStrings;
 
-@Value
 public class Suite implements Comparable<Suite> {
 
-    String name;
-    Report report;
+    private final String name;
+    private final Report report;
+
+    public Suite(String name, Report report) {
+        this.name = name;
+        this.report = report;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Report getReport() {
+        return report;
+    }
 
     @Override
     public int compareTo(Suite o) {

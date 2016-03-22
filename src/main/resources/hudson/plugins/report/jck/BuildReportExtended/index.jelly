@@ -70,30 +70,78 @@
                             </ul>
                         </j:if>
                     </j:forEach>
-                    <h2>List of passed tests</h2>
-                    <j:forEach var="suite" items="${it.suites}" varStatus="suitesStatus">
-                        <j:if test="${suite.report != null and suite.report.passedTests != null and suite.report.passedTests.size() > 0}">
-                            <div style="font-weight: bold; font-size: large;">${suite.name}</div>
-                            &amp;nbsp;
-                            <a href="#" id="button_expand_passed_${suitesStatus.count}" style="font-size: smaller; display: inline" onclick="
-                                                document.getElementById('button_expand_passed_${suitesStatus.count}').style.display = 'none';
-                                                document.getElementById('button_collapse_passed_${suitesStatus.count}').style.display = 'inline';
-                                                document.getElementById('passed_tests_${suitesStatus.count}').style.display = 'block';
-                                                return false;">(expand)</a>
-                            <a href="#" id="button_collapse_passed_${suitesStatus.count}" style="font-size: smaller; display: none" onclick="
-                                                document.getElementById('button_collapse_passed_${suitesStatus.count}').style.display = 'none';
-                                                document.getElementById('passed_tests_${suitesStatus.count}').style.display = 'none';
-                                                document.getElementById('button_expand_passed_${suitesStatus.count}').style.display = 'inline';
-                                                return false;">(collapse)</a>
-                            <div id="passed_tests_${suitesStatus.count}" style="display: none">
-                                <ul>
-                                    <j:forEach items="${suite.report.passedTests}" var="t" varStatus="testStatus">
-                                        <li>
-                                            ${t.name}
-                                        </li>
-                                    </j:forEach>
-                                </ul>
-                            </div>
+                    <j:if test="${it.addedSuites.size() > 0}">
+                        <h2>Added test suites:</h2>
+                        <ul>
+                            <j:forEach var="suite" items="${it.addedSuites}" varStatus="suitesStatus">
+                                <li>
+                                    ${suite}
+                                </li>
+                            </j:forEach>
+                        </ul>
+                    </j:if>
+                    <j:if test="${it.removedSuites.size() > 0}">
+                        <h2>Removed test suites:</h2>
+                        <ul>
+                            <j:forEach var="suite" items="${it.removedSuites}" varStatus="suitesStatus">
+                                <li>
+                                    ${suite}
+                                </li>
+                            </j:forEach>
+                        </ul>
+                    </j:if>
+                    <h2>Test status changes:</h2>
+                    <j:forEach var="suite" items="${it.testChanges}" varStatus="suitesStatus">
+                        <div style="font-weight: bold; font-size: large;">${suite.name}</div>
+                        <j:if test="${suite.fixes.size() > 0}">
+                            <div style="font-weight: bold">Fixed:</div>
+                            <ul>
+                                <j:forEach items="${suite.fixes}" var="t" varStatus="testStatus">
+                                    <li>
+                                        ${t}
+                                    </li>
+                                </j:forEach>
+                            </ul>
+                        </j:if>
+                        <j:if test="${suite.failures.size() > 0}">
+                            <div style="font-weight: bold">Failures:</div>
+                            <ul>
+                                <j:forEach items="${suite.failures}" var="t" varStatus="testStatus">
+                                    <li>
+                                        ${t}
+                                    </li>
+                                </j:forEach>
+                            </ul>
+                        </j:if>
+                        <j:if test="${suite.errors.size() > 0}">
+                            <div style="font-weight: bold">Errors:</div>
+                            <ul>
+                                <j:forEach items="${suite.errors}" var="t" varStatus="testStatus">
+                                    <li>
+                                        ${t}
+                                    </li>
+                                </j:forEach>
+                            </ul>
+                        </j:if>
+                        <j:if test="${suite.added.size() > 0}">
+                            <div style="font-weight: bold">Added:</div>
+                            <ul>
+                                <j:forEach items="${suite.added}" var="t" varStatus="testStatus">
+                                    <li>
+                                        ${t}
+                                    </li>
+                                </j:forEach>
+                            </ul>
+                        </j:if>
+                        <j:if test="${suite.removed.size() > 0}">
+                            <div style="font-weight: bold">Removed:</div>
+                            <ul>
+                                <j:forEach items="${suite.removed}" var="t" varStatus="testStatus">
+                                    <li>
+                                        ${t}
+                                    </li>
+                                </j:forEach>
+                            </ul>
                         </j:if>
                     </j:forEach>
                 </div>

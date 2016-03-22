@@ -56,9 +56,9 @@ public class JckReportAction implements Action, StaplerProxy, SimpleBuildStep.La
     }
 
     @Override
-    public JckReport getTarget() {
+    public BuildReportExtended getTarget() {
         try {
-            JckReport report = new BuildSummaryParser().parseReport(build);
+            BuildReportExtended report = new BuildSummaryParser().parseBuildReportExtended(build);
             return report;
         } catch (Exception ex) {
             ex.printStackTrace();

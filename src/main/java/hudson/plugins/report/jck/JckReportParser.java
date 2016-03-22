@@ -1,9 +1,10 @@
 package hudson.plugins.report.jck;
 
-import hudson.plugins.report.jck.model.Report;
+import hudson.plugins.report.jck.model.ReportFull;
 import hudson.plugins.report.jck.model.Suite;
 import hudson.plugins.report.jck.model.Test;
 import hudson.plugins.report.jck.model.TestOutput;
+import hudson.plugins.report.jck.model.TestStatus;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +34,7 @@ public class JckReportParser {
     public Suite parsePath(Path path) {
         try {
             try (InputStream in = streamPath(path)) {
-                Report report = parseReport(in);
+                ReportFull report = parseReport(in);
                 return new Suite(suiteName(path), report);
             }
         } catch (Exception ex) {
@@ -61,14 +62,14 @@ public class JckReportParser {
         throw new IllegalArgumentException("file name does not end with either .xml or .xml.gz extension: " + fullName);
     }
 
-    private Report parseReport(InputStream reportStream) throws Exception {
+    private ReportFull parseReport(InputStream reportStream) throws Exception {
         try (Reader reader = new InputStreamReader(reportStream, "UTF-8")) {
-            Report report = parseReport(reader);
+            ReportFull report = parseReport(reader);
             return report;
         }
     }
 
-    private Report parseReport(Reader reader) throws Exception {
+    private ReportFull parseReport(Reader reader) throws Exception {
         XMLStreamReader in = inputFactory.createXMLStreamReader(reader);
         if (!fastForwardToElement(in, "TestResults")) {
             throw new Exception("TestResults element was not found in provided XML stream");
@@ -93,10 +94,10 @@ public class JckReportParser {
         return factory;
     }
 
-    private Report processTestResults(XMLStreamReader in) throws Exception {
+    private ReportFull processTestResults(XMLStreamReader in) throws Exception {
         Map<String, AtomicInteger> countersMap = createCountersMap();
         List<Test> testProblemsList = new ArrayList<>();
-        List<String> passedTestsList = new ArrayList<>();
+        List<String> fullTestsList = new ArrayList<>();
         while (in.hasNext()) {
             int event = in.next();
             if (event == END_ELEMENT && "TestResults".equals(in.getLocalName())) {
@@ -106,22 +107,22 @@ public class JckReportParser {
                 String testStatus = findAttributeValue(in, "status");
                 incrementCounters(testStatus, countersMap);
                 Test test = parseTest(in);
+                fullTestsList.add(test.getName());
                 if (isProblematic(testStatus)) {
                     testProblemsList.add(test);
-                } else {
-                    passedTestsList.add(test.getName());
                 }
             }
         }
         Collections.sort(testProblemsList);
-        return new Report(
+        Collections.sort(fullTestsList);
+        return new ReportFull(
                 countersMap.get("PASSED").get(),
                 countersMap.get("NOT_RUN").get(),
                 countersMap.get("FAILED").get(),
                 countersMap.get("ERROR").get(),
                 countersMap.get("TOTAL").get(),
                 testProblemsList,
-                passedTestsList);
+                fullTestsList);
     }
 
     private Test parseTest(XMLStreamReader in) throws Exception {
@@ -144,7 +145,7 @@ public class JckReportParser {
                 testOutputs = processTestOutputs(in);
             }
         }
-        return new Test(url, status, statusLine, testOutputs);
+        return new Test(url, TestStatus.valueOf(status.toUpperCase()), statusLine, testOutputs);
     }
 
     private String processStatusLine(XMLStreamReader in) throws Exception {

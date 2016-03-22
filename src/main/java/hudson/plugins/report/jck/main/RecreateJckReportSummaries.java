@@ -25,7 +25,10 @@ package hudson.plugins.report.jck.main;
 
 import com.google.gson.GsonBuilder;
 import hudson.plugins.report.jck.JckReportParser;
+import hudson.plugins.report.jck.model.Report;
+import hudson.plugins.report.jck.model.ReportFull;
 import hudson.plugins.report.jck.model.Suite;
+import hudson.plugins.report.jck.model.SuiteTests;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -35,7 +38,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static hudson.plugins.report.jck.Constants.REPORT_JSON;
+import static hudson.plugins.report.jck.Constants.REPORT_JCK_JSON;
+import static hudson.plugins.report.jck.Constants.REPORT_JCK_TESTS_LIST_JSON;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
@@ -67,13 +71,44 @@ public class RecreateJckReportSummaries {
                     .filter(s -> s != null)
                     .collect(Collectors.toList());
 
-            Path summaryPath = buildPath.resolve(REPORT_JSON);
-            if (Files.exists(summaryPath)) {
-                Files.move(summaryPath, buildPath.resolve("backup_" + REPORT_JSON), REPLACE_EXISTING);
+            {
+                Path summaryPath = buildPath.resolve(REPORT_JCK_JSON);
+                if (Files.exists(summaryPath)) {
+                    Files.move(summaryPath, buildPath.resolve("backup_" + REPORT_JCK_JSON), REPLACE_EXISTING);
+                }
+                List<Suite> reportShort = suitesList.stream()
+                        .sequential()
+                        .map(s -> new Suite(
+                                s.getName(),
+                                new Report(
+                                        s.getReport().getTestsPassed(),
+                                        s.getReport().getTestsNotRun(),
+                                        s.getReport().getTestsFailed(),
+                                        s.getReport().getTestsError(),
+                                        s.getReport().getTestsTotal(),
+                                        s.getReport().getTestProblems())))
+                        .sorted()
+                        .collect(Collectors.toList());
+                try (Writer out = Files.newBufferedWriter(summaryPath, StandardCharsets.UTF_8, TRUNCATE_EXISTING, CREATE)) {
+                    new GsonBuilder().setPrettyPrinting().create().toJson(reportShort, out);
+                }
             }
-
-            try (Writer out = Files.newBufferedWriter(summaryPath, StandardCharsets.UTF_8, TRUNCATE_EXISTING, CREATE)) {
-                new GsonBuilder().setPrettyPrinting().create().toJson(suitesList, out);
+            {
+                Path testsListPath = buildPath.resolve(REPORT_JCK_TESTS_LIST_JSON);
+                if (Files.exists(testsListPath)) {
+                    Files.move(testsListPath, buildPath.resolve("backup_" + REPORT_JCK_TESTS_LIST_JSON), REPLACE_EXISTING);
+                }
+                List<SuiteTests> suites = suitesList.stream()
+                        .sequential()
+                        .map(s -> new SuiteTests(
+                                s.getName(),
+                                s.getReport() instanceof ReportFull ? ((ReportFull) s.getReport()).getTestsList() : null))
+                        .sorted()
+                        .collect(Collectors.toList());
+                try (Writer out = Files.newBufferedWriter(testsListPath, StandardCharsets.UTF_8, TRUNCATE_EXISTING,
+                        CREATE)) {
+                    new GsonBuilder().create().toJson(suites, out);
+                }
             }
 
         } catch (Exception ex) {

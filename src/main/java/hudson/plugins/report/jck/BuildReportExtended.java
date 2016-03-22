@@ -23,14 +23,35 @@
  */
 package hudson.plugins.report.jck;
 
+import hudson.plugins.report.jck.model.BuildReport;
+import hudson.plugins.report.jck.model.Suite;
+import hudson.plugins.report.jck.model.SuiteTestChanges;
 import java.util.List;
-import lombok.Value;
 
-@Value
-public class JckProjectReport {
+public class BuildReportExtended extends BuildReport {
 
-    List<JckReport> reports;
-    List<Integer> improvements;
-    List<Integer> regressions;
+    private final List<String> addedSuites;
+    private final List<String> removedSuites;
+    private final List<SuiteTestChanges> testChanges;
+
+    public BuildReportExtended(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites,
+            List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges) {
+        super(buildNumber, buildName, passed, failed, error, suites);
+        this.addedSuites = addedSuites;
+        this.removedSuites = removedSuites;
+        this.testChanges = testChanges;
+    }
+
+    public List<String> getAddedSuites() {
+        return addedSuites;
+    }
+
+    public List<String> getRemovedSuites() {
+        return removedSuites;
+    }
+
+    public List<SuiteTestChanges> getTestChanges() {
+        return testChanges;
+    }
 
 }

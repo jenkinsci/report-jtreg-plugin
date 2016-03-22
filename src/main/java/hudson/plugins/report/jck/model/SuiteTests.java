@@ -25,46 +25,28 @@ package hudson.plugins.report.jck.model;
 
 import java.util.List;
 
-public class Report {
+import static hudson.plugins.report.jck.utils.MoreStrings.compareStrings;
 
-    private final int testsPassed;
-    private final int testsNotRun;
-    private final int testsFailed;
-    private final int testsError;
-    private final int testsTotal;
-    private final List<Test> testProblems;
+public class SuiteTests implements Comparable<SuiteTests> {
 
-    public Report(int testsPassed, int testsNotRun, int testsFailed, int testsError, int testsTotal, List<Test> testProblems) {
-        this.testsPassed = testsPassed;
-        this.testsNotRun = testsNotRun;
-        this.testsFailed = testsFailed;
-        this.testsError = testsError;
-        this.testsTotal = testsTotal;
-        this.testProblems = testProblems;
+    private final String name;
+    private final List<String> tests;
+
+    public SuiteTests(String name, List<String> tests) {
+        this.name = name;
+        this.tests = tests;
     }
 
-    public int getTestsPassed() {
-        return testsPassed;
+    public String getName() {
+        return name;
     }
 
-    public int getTestsNotRun() {
-        return testsNotRun;
+    public List<String> getTests() {
+        return tests;
     }
 
-    public int getTestsFailed() {
-        return testsFailed;
+    @Override
+    public int compareTo(SuiteTests o) {
+        return compareStrings(name, o.getName());
     }
-
-    public int getTestsError() {
-        return testsError;
-    }
-
-    public int getTestsTotal() {
-        return testsTotal;
-    }
-
-    public List<Test> getTestProblems() {
-        return testProblems;
-    }
-
 }

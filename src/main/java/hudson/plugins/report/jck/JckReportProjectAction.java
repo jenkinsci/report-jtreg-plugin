@@ -23,6 +23,8 @@
  */
 package hudson.plugins.report.jck;
 
+import hudson.plugins.report.jck.model.ProjectReport;
+import hudson.plugins.report.jck.model.BuildReport;
 import hudson.model.Action;
 import hudson.model.Job;
 import java.util.ArrayList;
@@ -54,19 +56,19 @@ public class JckReportProjectAction implements Action {
         return "jck";
     }
 
-    public JckProjectReport getChartData() {
-        List<JckReport> reports = new BuildSummaryParser().parseJobReports(job);
-        return new JckProjectReport(
+    public ProjectReport getChartData() {
+        List<BuildReport> reports = new BuildSummaryParser().parseJobReports(job);
+        return new ProjectReport(
                 reports,
                 collectImprovements(reports),
                 collectRegressions(reports));
     }
 
-    private List<Integer> collectImprovements(List<JckReport> reports) {
+    private List<Integer> collectImprovements(List<BuildReport> reports) {
         List<Integer> result = new ArrayList<>();
 
         Set<String> prev = null;
-        for (JckReport report : reports) {
+        for (BuildReport report : reports) {
             if (prev == null) {
                 prev = collectTestNames(report);
                 result.add(0);
@@ -86,10 +88,10 @@ public class JckReportProjectAction implements Action {
         return result;
     }
 
-    private List<Integer> collectRegressions(List<JckReport> reports) {
+    private List<Integer> collectRegressions(List<BuildReport> reports) {
         List<Integer> result = new ArrayList<>();
         Set<String> prev = null;
-        for (JckReport report : reports) {
+        for (BuildReport report : reports) {
             if (prev == null) {
                 prev = collectTestNames(report);
                 result.add(0);
@@ -110,7 +112,7 @@ public class JckReportProjectAction implements Action {
         return result;
     }
 
-    private Set<String> collectTestNames(JckReport report) {
+    private Set<String> collectTestNames(BuildReport report) {
         return report.getSuites().stream()
                 .sequential()
                 .filter(s -> s.getReport().getTestProblems() != null)

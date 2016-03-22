@@ -21,19 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.report.jck;
+package hudson.plugins.report.jck.model;
 
-import hudson.plugins.report.jck.model.Suite;
-import java.util.List;
-import lombok.Value;
+public enum TestStatus {
+    ERROR, FAILED, PASSED, NOT_RUN;
 
-@Value
-public class JckReport {
-
-    int buildNumber;
-    String buildName;
-    int passed;
-    int failed;
-    int error;
-    List<Suite> suites;
 }

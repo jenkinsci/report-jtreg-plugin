@@ -25,46 +25,46 @@ package hudson.plugins.report.jck.model;
 
 import java.util.List;
 
-public class Report {
+public class SuiteTestChanges {
 
-    private final int testsPassed;
-    private final int testsNotRun;
-    private final int testsFailed;
-    private final int testsError;
-    private final int testsTotal;
-    private final List<Test> testProblems;
+    private final String name;
+    private final List<String> failures;
+    private final List<String> errors;
+    private final List<String> fixes;
+    private final List<String> added;
+    private final List<String> removed;
 
-    public Report(int testsPassed, int testsNotRun, int testsFailed, int testsError, int testsTotal, List<Test> testProblems) {
-        this.testsPassed = testsPassed;
-        this.testsNotRun = testsNotRun;
-        this.testsFailed = testsFailed;
-        this.testsError = testsError;
-        this.testsTotal = testsTotal;
-        this.testProblems = testProblems;
+    public SuiteTestChanges(String name, List<String> failures, List<String> errors, List<String> fixes, List<String> added, List<String> removed) {
+        this.name = name;
+        this.failures = failures;
+        this.errors = errors;
+        this.fixes = fixes;
+        this.added = added;
+        this.removed = removed;
     }
 
-    public int getTestsPassed() {
-        return testsPassed;
+    public String getName() {
+        return name;
     }
 
-    public int getTestsNotRun() {
-        return testsNotRun;
+    public List<String> getAdded() {
+        return added;
     }
 
-    public int getTestsFailed() {
-        return testsFailed;
+    public List<String> getRemoved() {
+        return removed;
     }
 
-    public int getTestsError() {
-        return testsError;
+    public List<String> getFailures() {
+        return failures;
     }
 
-    public int getTestsTotal() {
-        return testsTotal;
+    public List<String> getErrors() {
+        return errors;
     }
 
-    public List<Test> getTestProblems() {
-        return testProblems;
+    public List<String> getFixes() {
+        return fixes;
     }
 
 }
