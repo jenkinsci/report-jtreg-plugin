@@ -1,4 +1,4 @@
-package hudson.plugins.report.jck;
+package hudson.plugins.report.jck.parsers;
 
 import hudson.plugins.report.jck.model.ReportFull;
 import hudson.plugins.report.jck.model.Suite;
@@ -27,16 +27,13 @@ import static javax.xml.stream.XMLStreamConstants.CHARACTERS;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-public class JckReportParser {
+public class JckReportParser implements ReportParser {
 
-    private final XMLInputFactory inputFactory = createInputFactory();
-
+    @Override
     public Suite parsePath(Path path) {
-        try {
-            try (InputStream in = streamPath(path)) {
-                ReportFull report = parseReport(in);
-                return new Suite(suiteName(path), report);
-            }
+        try (InputStream in = streamPath(path)) {
+            ReportFull report = parseReport(in);
+            return new Suite(suiteName(path), report);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -70,7 +67,10 @@ public class JckReportParser {
     }
 
     private ReportFull parseReport(Reader reader) throws Exception {
-        XMLStreamReader in = inputFactory.createXMLStreamReader(reader);
+        XMLInputFactory factory = XMLInputFactory.newInstance();
+        factory.setProperty("http://java.sun.com/xml/stream/properties/report-cdata-event", Boolean.TRUE);
+        factory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
+        XMLStreamReader in = factory.createXMLStreamReader(reader);
         if (!fastForwardToElement(in, "TestResults")) {
             throw new Exception("TestResults element was not found in provided XML stream");
         }
@@ -85,13 +85,6 @@ public class JckReportParser {
             }
         }
         return false;
-    }
-
-    private XMLInputFactory createInputFactory() {
-        XMLInputFactory factory = XMLInputFactory.newInstance();
-        factory.setProperty("http://java.sun.com/xml/stream/properties/report-cdata-event", Boolean.TRUE);
-        factory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
-        return factory;
     }
 
     private ReportFull processTestResults(XMLStreamReader in) throws Exception {

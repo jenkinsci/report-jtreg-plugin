@@ -23,22 +23,34 @@
  */
 package hudson.plugins.report.jck;
 
-import hudson.plugins.report.jck.model.ProjectReport;
-import hudson.plugins.report.jck.model.BuildReport;
 import hudson.model.Action;
 import hudson.model.Job;
+import hudson.plugins.report.jck.model.BuildReport;
+import hudson.plugins.report.jck.model.ProjectReport;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class JckReportProjectAction implements Action {
+public class ReportProjectAction implements Action {
 
     private final Job<?, ?> job;
+    private final Set<String> prefixes = new HashSet<>();
 
-    public JckReportProjectAction(Job<?, ?> job) {
+    public ReportProjectAction(Job<?, ?> job, Set<String> prefixes) {
+        if (job == null) {
+            throw new IllegalArgumentException("Job cannot be null");
+        }
+        if (prefixes == null || prefixes.isEmpty()) {
+            throw new IllegalArgumentException("Prefixes cannot be null or empty");
+        }
         this.job = job;
+        this.prefixes.addAll(prefixes);
+    }
+
+    public void addPrefix(String prefix) {
+        prefixes.add(prefix);
     }
 
     @Override
@@ -48,16 +60,19 @@ public class JckReportProjectAction implements Action {
 
     @Override
     public String getDisplayName() {
-        return "JCK";
+        return prefixes.stream()
+                .sequential()
+                .map(s -> s.toUpperCase())
+                .collect(Collectors.joining(", ", "", " Reports"));
     }
 
     @Override
     public String getUrlName() {
-        return "jck";
+        return "java-reports";
     }
 
     public ProjectReport getChartData() {
-        List<BuildReport> reports = new BuildSummaryParser().parseJobReports(job);
+        List<BuildReport> reports = new BuildSummaryParser(prefixes).parseJobReports(job);
         return new ProjectReport(
                 reports,
                 collectImprovements(reports),

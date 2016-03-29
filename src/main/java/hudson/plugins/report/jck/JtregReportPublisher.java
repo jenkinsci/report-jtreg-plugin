@@ -24,36 +24,53 @@
 package hudson.plugins.report.jck;
 
 import hudson.Extension;
-import hudson.model.Job;
-import hudson.plugins.report.jck.model.BuildReport;
-import hudson.views.ListViewColumn;
-import hudson.views.ListViewColumnDescriptor;
-import java.util.List;
+import hudson.model.AbstractProject;
+import hudson.plugins.report.jck.parsers.JtregReportParser;
+import hudson.plugins.report.jck.parsers.ReportParser;
+import hudson.tasks.BuildStepDescriptor;
+import hudson.tasks.Publisher;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-public class JckGraphColumn extends ListViewColumn {
+public class JtregReportPublisher extends AbstractReportPublisher {
 
     @DataBoundConstructor
-    public JckGraphColumn() {
+    public JtregReportPublisher(String reportFileGlob) {
+        super(reportFileGlob);
     }
 
-    public List<BuildReport> getJckReport(Job<?, ?> job) {
-        return new BuildSummaryParser("jck").parseJobReports(job);
+    @Override
+    protected String defaultReportFileGlob() {
+        return "glob:*.{zip,tar,tar.gz,tar.bz2,tar.xz}";
+    }
+
+    @Override
+    protected ReportParser createReportParser() {
+        return new JtregReportParser();
+    }
+
+    @Override
+    protected String prefix() {
+        return "jtreg";
+    }
+
+    @Override
+    public BuildStepDescriptor getDescriptor() {
+        return DESCRIPTOR;
     }
 
     @Extension
-    public static final JckGraphColumnDescriptor DESCRIPTOR = new JckGraphColumnDescriptor();
+    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
 
-    public static class JckGraphColumnDescriptor extends ListViewColumnDescriptor {
-
-        @Override
-        public boolean shownByDefault() {
-            return false;
-        }
+    public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
         @Override
         public String getDisplayName() {
-            return "JCK Results";
+            return "JTreg Report";
+        }
+
+        @Override
+        public boolean isApplicable(Class<? extends AbstractProject> jobType) {
+            return true;
         }
 
     }

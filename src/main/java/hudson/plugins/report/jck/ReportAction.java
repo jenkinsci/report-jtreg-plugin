@@ -23,21 +23,34 @@
  */
 package hudson.plugins.report.jck;
 
-import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.Action;
 import hudson.model.Job;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.StaplerProxy;
 
-public class JckReportAction implements Action, StaplerProxy, SimpleBuildStep.LastBuildAction {
+public class ReportAction implements Action, StaplerProxy, SimpleBuildStep.LastBuildAction {
 
     private final AbstractBuild<?, ?> build;
+    private final Set<String> prefixes = new HashSet<>();
 
-    public JckReportAction(AbstractBuild<?, ?> build) {
+    public ReportAction(AbstractBuild<?, ?> build) {
+        if (build == null) {
+            throw new IllegalArgumentException("Build cannot be null");
+        }
         this.build = build;
+    }
+
+    public void addPrefix(String prefix) {
+        if (prefix == null || prefix.trim().isEmpty()) {
+            throw new IllegalArgumentException("Prefix cannot be empty");
+        }
+        prefixes.add(prefix);
     }
 
     @Override
@@ -47,18 +60,21 @@ public class JckReportAction implements Action, StaplerProxy, SimpleBuildStep.La
 
     @Override
     public String getDisplayName() {
-        return "JCK Report";
+        return prefixes.stream()
+                .sequential()
+                .map(s -> s.toUpperCase())
+                .collect(Collectors.joining(", ", "", " Reports"));
     }
 
     @Override
     public String getUrlName() {
-        return "jck";
+        return "java-reports";
     }
 
     @Override
     public BuildReportExtended getTarget() {
         try {
-            BuildReportExtended report = new BuildSummaryParser().parseBuildReportExtended(build);
+            BuildReportExtended report = new BuildSummaryParser(prefixes).parseBuildReportExtended(build);
             return report;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -69,11 +85,7 @@ public class JckReportAction implements Action, StaplerProxy, SimpleBuildStep.La
     @Override
     public Collection<? extends Action> getProjectActions() {
         Job<?, ?> job = build.getParent();
-        if (/* getAction(Class) produces a StackOverflowError */!Util.filter(job.getActions(), JckReportProjectAction.class).isEmpty()) {
-            // JENKINS-26077: someone like XUnitPublisher already added one
-            return Collections.emptySet();
-        }
-        return Collections.singleton(new JckReportProjectAction(job));
+        return Collections.singleton(new ReportProjectAction(job, prefixes));
     }
 
 }
