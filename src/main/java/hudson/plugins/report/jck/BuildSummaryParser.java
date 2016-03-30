@@ -42,16 +42,33 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static hudson.plugins.report.jck.Constants.REPORT_JCK_JSON;
-import static hudson.plugins.report.jck.Constants.REPORT_JCK_TESTS_LIST_JSON;
+import static hudson.plugins.report.jck.Constants.REPORT_JSON;
+import static hudson.plugins.report.jck.Constants.REPORT_TESTS_LIST_JSON;
 
 public class BuildSummaryParser {
+
+    private final Set<String> prefixes = new HashSet<>();
+
+    public BuildSummaryParser(String prefix) {
+        if (prefix == null || prefix.trim().isEmpty()) {
+            throw new IllegalArgumentException("Prefix cannot be null or empty");
+        }
+        this.prefixes.addAll(prefixes);
+    }
+
+    public BuildSummaryParser(Set<String> prefixes) {
+        if (prefixes == null || prefixes.isEmpty()) {
+            throw new IllegalArgumentException("Prefixes cannot be null or empty");
+        }
+        this.prefixes.addAll(prefixes);
+    }
 
     public List<BuildReport> parseJobReports(Job<?, ?> job) {
         return parseJobReports(job, 10);
@@ -206,29 +223,35 @@ public class BuildSummaryParser {
     }
 
     private List<Suite> parseBuildSummary(Run<?, ?> build) throws Exception {
-        File reportFile = new File(build.getRootDir(), REPORT_JCK_JSON);
-        if (reportFile.exists() && reportFile.isFile() && reportFile.canRead()) {
-            try (Reader in = new InputStreamReader(new BufferedInputStream(new FileInputStream(reportFile)),
-                    StandardCharsets.UTF_8)) {
-                List<Suite> list = new Gson().fromJson(in, new TypeToken<List<Suite>>() {
-                }.getType());
-                return list;
+        List<Suite> result = new ArrayList<>();
+        for (String prefix : prefixes) {
+            File reportFile = new File(build.getRootDir(), prefix + "-" + REPORT_JSON);
+            if (reportFile.exists() && reportFile.isFile() && reportFile.canRead()) {
+                try (Reader in = new InputStreamReader(new BufferedInputStream(new FileInputStream(reportFile)),
+                        StandardCharsets.UTF_8)) {
+                    List<Suite> list = new Gson().fromJson(in, new TypeToken<List<Suite>>() {
+                    }.getType());
+                    result.addAll(list);
+                }
             }
         }
-        throw new IllegalStateException("Build does not contain JCK report summary");
+        return result;
     }
 
     private List<SuiteTests> parseSuiteTests(Run<?, ?> build) throws Exception {
-        File suiteTestsFile = new File(build.getRootDir(), REPORT_JCK_TESTS_LIST_JSON);
-        if (suiteTestsFile.exists() && suiteTestsFile.isFile() && suiteTestsFile.canRead()) {
-            try (Reader in = new InputStreamReader(new BufferedInputStream(new FileInputStream(suiteTestsFile)),
-                    StandardCharsets.UTF_8)) {
-                List<SuiteTests> list = new Gson().fromJson(in, new TypeToken<List<SuiteTests>>() {
-                }.getType());
-                return list;
+        List<SuiteTests> result = new ArrayList<>();
+        for (String prefix : prefixes) {
+            File suiteTestsFile = new File(build.getRootDir(), prefix + "-" + REPORT_TESTS_LIST_JSON);
+            if (suiteTestsFile.exists() && suiteTestsFile.isFile() && suiteTestsFile.canRead()) {
+                try (Reader in = new InputStreamReader(new BufferedInputStream(new FileInputStream(suiteTestsFile)),
+                        StandardCharsets.UTF_8)) {
+                    List<SuiteTests> list = new Gson().fromJson(in, new TypeToken<List<SuiteTests>>() {
+                    }.getType());
+                    result.addAll(list);
+                }
             }
         }
-        return new ArrayList<>();
+        return result;
     }
 
     private class TestDescriptor {

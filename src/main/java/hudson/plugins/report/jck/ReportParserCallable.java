@@ -25,6 +25,7 @@ package hudson.plugins.report.jck;
 
 import hudson.FilePath;
 import hudson.plugins.report.jck.model.Suite;
+import hudson.plugins.report.jck.parsers.ReportParser;
 import hudson.remoting.VirtualChannel;
 import java.io.File;
 import java.io.IOException;
@@ -37,11 +38,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jenkinsci.remoting.RoleChecker;
 
-public class JckReportParserCallable implements FilePath.FileCallable<List<Suite>> {
+public class ReportParserCallable implements FilePath.FileCallable<List<Suite>> {
 
     private final String reportMatcherGlob;
+    private final ReportParser reportParser;
 
-    public JckReportParserCallable(String reportMatcherGlob) {
+    public ReportParserCallable(String reportMatcherGlob, ReportParser reportParser) {
+        this.reportParser = reportParser;
         if (reportMatcherGlob == null || reportMatcherGlob.isEmpty()) {
             this.reportMatcherGlob = "glob:*.{xml,xml.gz}";
         } else {
@@ -54,7 +57,6 @@ public class JckReportParserCallable implements FilePath.FileCallable<List<Suite
 
     @Override
     public List<Suite> invoke(File f, VirtualChannel channel) throws IOException, InterruptedException {
-        JckReportParser reportParser = new JckReportParser();
         PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher(reportMatcherGlob);
         try (Stream<Path> filesStream = Files.walk(f.toPath()).sequential()) {
             List<Suite> result = filesStream

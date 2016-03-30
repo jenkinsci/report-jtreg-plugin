@@ -24,11 +24,11 @@
 package hudson.plugins.report.jck.main;
 
 import com.google.gson.GsonBuilder;
-import hudson.plugins.report.jck.JckReportParser;
 import hudson.plugins.report.jck.model.Report;
 import hudson.plugins.report.jck.model.ReportFull;
 import hudson.plugins.report.jck.model.Suite;
 import hudson.plugins.report.jck.model.SuiteTests;
+import hudson.plugins.report.jck.parsers.JckReportParser;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -38,8 +38,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static hudson.plugins.report.jck.Constants.REPORT_JCK_JSON;
-import static hudson.plugins.report.jck.Constants.REPORT_JCK_TESTS_LIST_JSON;
+import static hudson.plugins.report.jck.Constants.REPORT_JSON;
+import static hudson.plugins.report.jck.Constants.REPORT_TESTS_LIST_JSON;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
@@ -72,9 +72,9 @@ public class RecreateJckReportSummaries {
                     .collect(Collectors.toList());
 
             {
-                Path summaryPath = buildPath.resolve(REPORT_JCK_JSON);
+                Path summaryPath = buildPath.resolve("jck-" + REPORT_JSON);
                 if (Files.exists(summaryPath)) {
-                    Files.move(summaryPath, buildPath.resolve("backup_" + REPORT_JCK_JSON), REPLACE_EXISTING);
+                    Files.move(summaryPath, buildPath.resolve("backup_" + "jck-" + REPORT_JSON), REPLACE_EXISTING);
                 }
                 List<Suite> reportShort = suitesList.stream()
                         .sequential()
@@ -94,9 +94,10 @@ public class RecreateJckReportSummaries {
                 }
             }
             {
-                Path testsListPath = buildPath.resolve(REPORT_JCK_TESTS_LIST_JSON);
+                Path testsListPath = buildPath.resolve("jck-" + REPORT_TESTS_LIST_JSON);
                 if (Files.exists(testsListPath)) {
-                    Files.move(testsListPath, buildPath.resolve("backup_" + REPORT_JCK_TESTS_LIST_JSON), REPLACE_EXISTING);
+                    Files.move(testsListPath, buildPath.resolve("backup_" + "jck-" + REPORT_TESTS_LIST_JSON),
+                            REPLACE_EXISTING);
                 }
                 List<SuiteTests> suites = suitesList.stream()
                         .sequential()

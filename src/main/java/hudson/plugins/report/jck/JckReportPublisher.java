@@ -23,117 +23,39 @@
  */
 package hudson.plugins.report.jck;
 
-import com.google.gson.GsonBuilder;
 import hudson.Extension;
-import hudson.Launcher;
-import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.BuildListener;
-import hudson.model.Result;
-import hudson.plugins.report.jck.model.Report;
-import hudson.plugins.report.jck.model.ReportFull;
-import hudson.plugins.report.jck.model.Suite;
-import hudson.plugins.report.jck.model.SuiteTests;
+import hudson.plugins.report.jck.parsers.JckReportParser;
+import hudson.plugins.report.jck.parsers.ReportParser;
 import hudson.tasks.BuildStepDescriptor;
-import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
-import hudson.tasks.Recorder;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
 
-import static hudson.plugins.report.jck.Constants.REPORT_JCK_JSON;
-import static hudson.plugins.report.jck.Constants.REPORT_JCK_TESTS_LIST_JSON;
-
-public class JckReportPublisher extends Recorder {
-
-    private String reportFileGlob;
+public class JckReportPublisher extends AbstractReportPublisher {
 
     @DataBoundConstructor
     public JckReportPublisher(String reportFileGlob) {
-        this.reportFileGlob = reportFileGlob;
+        super(reportFileGlob);
     }
 
     @Override
-    public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-
-        List<Suite> report = parseAndStoreResults(build);
-        if (report.stream().anyMatch(
-                s -> s.getReport() != null && (s.getReport().getTestsError() != 0 || s.getReport().getTestsFailed() != 0))) {
-            build.setResult(Result.UNSTABLE);
-        }
-
-        JckReportAction action = new JckReportAction(build);
-        build.addAction(action);
-        return true;
+    protected String defaultReportFileGlob() {
+        return "glob:*.{xml,xml.gz}";
     }
 
-    private List<Suite> parseAndStoreResults(AbstractBuild<?, ?> build) throws IOException, InterruptedException {
-        List<Suite> reportFull = build.getWorkspace().act(new JckReportParserCallable(reportFileGlob));
-        storeFailuresSummary(reportFull, new File(build.getRootDir(), REPORT_JCK_JSON));
-        storeFullTestsList(reportFull, new File(build.getRootDir(), REPORT_JCK_TESTS_LIST_JSON));
-        return reportFull;
+    @Override
+    protected String prefix() {
+        return "jck";
     }
 
-    private void storeFailuresSummary(List<Suite> reportFull, File jsonFile) throws IOException {
-        List<Suite> reportShort = reportFull.stream()
-                .sequential()
-                .map(s -> new Suite(
-                        s.getName(),
-                        new Report(
-                                s.getReport().getTestsPassed(),
-                                s.getReport().getTestsNotRun(),
-                                s.getReport().getTestsError(),
-                                s.getReport().getTestsError(),
-                                s.getReport().getTestsTotal(),
-                                s.getReport().getTestProblems())))
-                .sorted()
-                .collect(Collectors.toList());
-        try (Writer out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(jsonFile)),
-                StandardCharsets.UTF_8)) {
-            new GsonBuilder().setPrettyPrinting().create().toJson(reportShort, out);
-        }
-    }
-
-    private void storeFullTestsList(List<Suite> reportFull, File jsonFile) throws IOException {
-        List<SuiteTests> suites = reportFull.stream()
-                .sequential()
-                .map(s -> new SuiteTests(
-                        s.getName(),
-                        s.getReport() instanceof ReportFull ? ((ReportFull) s.getReport()).getTestsList() : null))
-                .sorted()
-                .collect(Collectors.toList());
-        try (Writer out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(jsonFile)),
-                StandardCharsets.UTF_8)) {
-            new GsonBuilder().create().toJson(suites, out);
-        }
+    @Override
+    protected ReportParser createReportParser() {
+        return new JckReportParser();
     }
 
     @Override
     public BuildStepDescriptor getDescriptor() {
         return DESCRIPTOR;
-    }
-
-    @Override
-    public BuildStepMonitor getRequiredMonitorService() {
-        return BuildStepMonitor.NONE;
-    }
-
-    @DataBoundSetter
-    public void setReportFileGlob(String reportFileGlob) {
-        this.reportFileGlob = reportFileGlob;
-    }
-
-    public String getReportFileGlob() {
-        return reportFileGlob;
     }
 
     @Extension

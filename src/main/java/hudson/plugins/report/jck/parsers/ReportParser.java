@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.report.jck;
+package hudson.plugins.report.jck.parsers;
 
-final public class Constants {
+import hudson.plugins.report.jck.model.Suite;
+import java.nio.file.Path;
 
-    public static final String REPORT_JSON = "report.json";
-    public static final String REPORT_TESTS_LIST_JSON = "tests-list.json";
+public interface ReportParser {
 
+    Suite parsePath(Path path);
 }
