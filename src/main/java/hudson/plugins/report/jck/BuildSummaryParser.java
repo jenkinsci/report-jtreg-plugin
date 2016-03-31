@@ -154,11 +154,11 @@ public class BuildSummaryParser {
                         .sequential()
                         .map(t -> t.getName())
                         .collect(Collectors.toSet());
-                Set<TestDescriptor> currentTests = suite.getReport().getTestProblems().stream()
+                Set<TestDescriptor> currentTestsDescriptors = suite.getReport().getTestProblems().stream()
                         .sequential()
                         .map(t -> new TestDescriptor(t.getName(), t.getStatus()))
                         .collect(Collectors.toSet());
-                currentTests.addAll(currentBuildTestsList.stream()
+                currentTestsDescriptors.addAll(currentBuildTestsList.stream()
                         .sequential()
                         .filter(s -> suite.getName().equals(s.getName()))
                         .flatMap(s -> s.getTests().stream())
@@ -170,11 +170,11 @@ public class BuildSummaryParser {
                         .sequential()
                         .map(t -> t.getName())
                         .collect(Collectors.toSet());
-                Set<TestDescriptor> previousTests = prevReportsMap.get(suite.getName()).getTestProblems().stream()
+                Set<TestDescriptor> previousTestsDescriptors = prevReportsMap.get(suite.getName()).getTestProblems().stream()
                         .sequential()
                         .map(t -> new TestDescriptor(t.getName(), t.getStatus()))
                         .collect(Collectors.toSet());
-                previousTests.addAll(prevBuildTestsList.stream()
+                previousTestsDescriptors.addAll(prevBuildTestsList.stream()
                         .sequential()
                         .filter(s -> suite.getName().equals(s.getName()))
                         .flatMap(s -> s.getTests().stream())
@@ -182,30 +182,53 @@ public class BuildSummaryParser {
                         .map(s -> new TestDescriptor(s, TestStatus.PASSED))
                         .collect(Collectors.toList()));
 
-                List<TestDescriptor> testChanges = currentTests.stream()
+                List<TestDescriptor> testChanges = currentTestsDescriptors.stream()
                         .sequential()
-                        .filter(t -> !previousTests.contains(t))
+                        .filter(t -> !previousTestsDescriptors.contains(t))
                         .collect(Collectors.toList());
 
+                Set<String> previousTests = previousTestsDescriptors.stream()
+                        .sequential()
+                        .map(d -> d.name)
+                        .collect(Collectors.toSet());
+                Set<String> currentTests = currentTestsDescriptors.stream()
+                        .sequential()
+                        .map(d -> d.name)
+                        .collect(Collectors.toSet());
+
                 SuiteTestChanges changes = new SuiteTestChanges(
+                        // suite name:
                         suite.getName(),
+                        // new failures:
                         testChanges.stream()
                         .sequential()
                         .filter(t -> t.status == TestStatus.FAILED)
                         .map(t -> t.name)
                         .collect(Collectors.toList()),
+                        // new errors:
                         testChanges.stream()
                         .sequential()
                         .filter(t -> t.status == TestStatus.ERROR)
                         .map(t -> t.name)
                         .collect(Collectors.toList()),
+                        // new fixes:
                         testChanges.stream()
                         .sequential()
                         .filter(t -> t.status == TestStatus.PASSED)
                         .map(t -> t.name)
                         .collect(Collectors.toList()),
-                        addedSuites,
-                        removedSuites);
+                        // added tests:
+                        currentTests.stream()
+                        .sequential()
+                        .filter(s -> !previousTests.contains(s))
+                        .sorted()
+                        .collect(Collectors.toList()),
+                        // removed tests:
+                        previousTests.stream()
+                        .sequential()
+                        .filter(s -> !currentTests.contains(s))
+                        .sorted()
+                        .collect(Collectors.toList()));
                 result.add(changes);
             }
         }
