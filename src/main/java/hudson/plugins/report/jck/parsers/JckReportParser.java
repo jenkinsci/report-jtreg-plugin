@@ -100,7 +100,9 @@ public class JckReportParser implements ReportParser {
                 String testStatus = findAttributeValue(in, "status");
                 incrementCounters(testStatus, countersMap);
                 Test test = parseTest(in);
-                fullTestsList.add(test.getName());
+                if (test.getStatus() != TestStatus.NOT_RUN) {
+                    fullTestsList.add(test.getName());
+                }
                 if (isProblematic(testStatus)) {
                     testProblemsList.add(test);
                 }

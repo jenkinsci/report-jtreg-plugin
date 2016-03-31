@@ -58,7 +58,7 @@
         </j:forEach>
         document.getElementById("jckErrorsFailuresChartContainer").onclick = function (evt) {
         var activePoints = jckErrorsChart.getPointsAtEvent(evt);
-        window.open(buildsMap[activePoints[0].label] + "/jck", "_blank");
+        window.open(buildsMap[activePoints[0].label] + "/java-reports", "_blank");
         };
         // ]]&gt;
     </script>
@@ -99,7 +99,7 @@
         </j:forEach>
         document.getElementById("jckPassedChartContainer").onclick = function (evt) {
         var activePoints = jckPassedChart.getPointsAtEvent(evt);
-        window.open(buildsMap[activePoints[0].label] + "/jck", "_blank");
+        window.open(buildsMap[activePoints[0].label] + "/java-reports", "_blank");
         };
         // ]]&gt;
     </script>
@@ -150,7 +150,7 @@
         buildsMap["${build.buildName}"] = "${build.buildNumber}";
         </j:forEach>
         var activePoints = jckRegressions.getBarsAtEvent(evt);
-        window.open(buildsMap[activePoints[0].label] + "/jck", "_blank");
+        window.open(buildsMap[activePoints[0].label] + "/java-reports", "_blank");
         };
         // ]]&gt;
     </script>
