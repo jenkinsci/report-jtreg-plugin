@@ -28,23 +28,24 @@ import hudson.model.Job;
 import hudson.plugins.report.jck.model.BuildReport;
 import hudson.views.ListViewColumn;
 import hudson.views.ListViewColumnDescriptor;
+import java.util.Arrays;
 import java.util.List;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-public class JckGraphColumn extends ListViewColumn {
+public class ReportChartColumn extends ListViewColumn {
 
     @DataBoundConstructor
-    public JckGraphColumn() {
+    public ReportChartColumn() {
     }
 
     public List<BuildReport> getJckReport(Job<?, ?> job) {
-        return new BuildSummaryParser("jck").parseJobReports(job);
+        return new BuildSummaryParser(Arrays.asList("jck", "jtreg")).parseJobReports(job);
     }
 
     @Extension
-    public static final JckGraphColumnDescriptor DESCRIPTOR = new JckGraphColumnDescriptor();
+    public static final ReportChartColumnDescriptor DESCRIPTOR = new ReportChartColumnDescriptor();
 
-    public static class JckGraphColumnDescriptor extends ListViewColumnDescriptor {
+    public static class ReportChartColumnDescriptor extends ListViewColumnDescriptor {
 
         @Override
         public boolean shownByDefault() {
@@ -53,7 +54,7 @@ public class JckGraphColumn extends ListViewColumn {
 
         @Override
         public String getDisplayName() {
-            return "JCK Results";
+            return "JCK and/or JTreg Results";
         }
 
     }

@@ -41,6 +41,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -56,14 +57,7 @@ public class BuildSummaryParser {
 
     private final Set<String> prefixes = new HashSet<>();
 
-    public BuildSummaryParser(String prefix) {
-        if (prefix == null || prefix.trim().isEmpty()) {
-            throw new IllegalArgumentException("Prefix cannot be null or empty");
-        }
-        this.prefixes.addAll(prefixes);
-    }
-
-    public BuildSummaryParser(Set<String> prefixes) {
+    public BuildSummaryParser(Collection<String> prefixes) {
         if (prefixes == null || prefixes.isEmpty()) {
             throw new IllegalArgumentException("Prefixes cannot be null or empty");
         }
