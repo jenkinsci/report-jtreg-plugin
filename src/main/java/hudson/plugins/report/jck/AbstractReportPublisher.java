@@ -52,6 +52,8 @@ import static hudson.plugins.report.jck.Constants.REPORT_TESTS_LIST_JSON;
 abstract public class AbstractReportPublisher extends Recorder {
 
     private String reportFileGlob;
+    private String resultsBlackList;
+    private String maxBuilds;
 
     public AbstractReportPublisher(String reportFileGlob) {
         this.reportFileGlob = reportFileGlob;
@@ -141,6 +143,35 @@ abstract public class AbstractReportPublisher extends Recorder {
 
     public String getReportFileGlob() {
         return reportFileGlob;
+    }
+
+    @DataBoundSetter
+    public void setResultsBlackList(String resultsBlackList) {
+        this.resultsBlackList = resultsBlackList;
+    }
+
+    public String getResultsBlackList() {
+        return resultsBlackList;
+    }
+
+    @DataBoundSetter
+    public void setMaxBuilds(String maxBuilds) {
+        this.maxBuilds = maxBuilds;
+    }
+
+    public String getMaxBuilds() {
+        if (maxBuilds == null){
+            return "10";
+        }
+        return maxBuilds;
+    }
+
+    public int getIntMaxBuilds() {
+        try {
+            return Integer.parseInt(getMaxBuilds().trim());
+        } catch (NumberFormatException ex) {
+            return 10;
+        }
     }
 
 }

@@ -56,24 +56,59 @@ import static hudson.plugins.report.jck.Constants.REPORT_TESTS_LIST_JSON;
 public class BuildSummaryParser {
 
     private final Set<String> prefixes = new HashSet<>();
+    private final AbstractReportPublisher settings;
 
-    public BuildSummaryParser(Collection<String> prefixes) {
+    public BuildSummaryParser(Collection<String> prefixes, AbstractReportPublisher settings) {
         if (prefixes == null || prefixes.isEmpty()) {
             throw new IllegalArgumentException("Prefixes cannot be null or empty");
         }
         this.prefixes.addAll(prefixes);
+        this.settings = settings;
     }
 
-    public List<BuildReport> parseJobReports(Job<?, ?> job) {
-        return parseJobReports(job, 10);
-    }
-
-    public List<BuildReport> parseJobReports(Job<?, ?> job, int limit) {
+    List<String> getBlacklisted(Job<?, ?> job) {
+        int limit = 10;
+        if (settings != null) {
+            limit = settings.getIntMaxBuilds();
+        }
+        List<String> blacklisted = new ArrayList<>(limit);
+        int total = 0;
         List<BuildReport> list = new ArrayList<>();
         for (Run run : job.getBuilds()) {
             if (run.getResult() == null || run.getResult().isWorseThan(Result.UNSTABLE)) {
                 continue;
             }
+            total++;
+            if (settings.getResultsBlackList() != null && !settings.getResultsBlackList().trim().isEmpty()) {
+                String[] items = settings.getResultsBlackList().split("\\s+");
+                for (String item : items) {
+                    if (run.getDisplayName().matches(item)) {
+                        blacklisted.add(run.getDisplayName());
+                    }
+                }
+            }
+            if (list.size() == limit) {
+                break;
+            }
+        }
+        return blacklisted;
+    }
+    
+    public List<BuildReport> parseJobReports(Job<?, ?> job) {
+        int limit = 10;
+        if (settings != null) {
+            limit = settings.getIntMaxBuilds();
+        }
+        List<BuildReport> list = new ArrayList<>();
+        List<String> blacklisted = getBlacklisted(job);
+        for (Run run : job.getBuilds()) {
+            if (run.getResult() == null || run.getResult().isWorseThan(Result.UNSTABLE)) {
+                continue;
+            }
+            if (blacklisted.contains(run.getDisplayName())) {
+                continue;
+            }
+             
             try {
                 BuildReport report = parseBuildReport(run);
                 list.add(report);

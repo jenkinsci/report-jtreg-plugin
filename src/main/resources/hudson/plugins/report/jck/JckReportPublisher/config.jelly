@@ -3,4 +3,10 @@
     <f:entry field="reportFileGlob" title="Report files glob">
         <f:textbox />
     </f:entry>
+    <f:entry field="resultsBlackList" title="Packages blacklisted">
+        <f:textbox />
+    </f:entry>
+    <f:entry field="maxBuilds" title="Number of builds to show">
+        <f:textbox />
+    </f:entry>
 </j:jelly>

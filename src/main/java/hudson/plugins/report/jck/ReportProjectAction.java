@@ -25,6 +25,8 @@ package hudson.plugins.report.jck;
 
 import hudson.model.Action;
 import hudson.model.Job;
+import hudson.model.Project;
+import static hudson.plugins.report.jck.ReportAction.getAbstractReportPublisher;
 import hudson.plugins.report.jck.model.BuildReport;
 import hudson.plugins.report.jck.model.ProjectReport;
 import java.util.ArrayList;
@@ -60,10 +62,16 @@ public class ReportProjectAction implements Action {
 
     @Override
     public String getDisplayName() {
+        AbstractReportPublisher settings = getAbstractReportPublisher(((Project)job).getPublishersList());
+        List<String> blisted = new BuildSummaryParser(prefixes, settings).getBlacklisted(job);
+        String appendix = "";
+        if (blisted.size()>0){
+            appendix=" (blacklisted "+blisted.size()+")";
+        }
         return prefixes.stream()
                 .sequential()
                 .map(s -> s.toUpperCase())
-                .collect(Collectors.joining(", ", "", " Reports"));
+                .collect(Collectors.joining(", ", "", " Reports"+appendix));
     }
 
     @Override
@@ -72,7 +80,8 @@ public class ReportProjectAction implements Action {
     }
 
     public ProjectReport getChartData() {
-        List<BuildReport> reports = new BuildSummaryParser(prefixes).parseJobReports(job);
+        AbstractReportPublisher settings = getAbstractReportPublisher(((Project)job).getPublishersList());
+        List<BuildReport> reports = new BuildSummaryParser(prefixes, settings).parseJobReports(job);
         return new ProjectReport(
                 reports,
                 collectImprovements(reports),

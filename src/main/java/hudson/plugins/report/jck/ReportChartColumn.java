@@ -25,6 +25,7 @@ package hudson.plugins.report.jck;
 
 import hudson.Extension;
 import hudson.model.Job;
+import hudson.model.Project;
 import hudson.plugins.report.jck.model.BuildReport;
 import hudson.views.ListViewColumn;
 import hudson.views.ListViewColumnDescriptor;
@@ -39,7 +40,8 @@ public class ReportChartColumn extends ListViewColumn {
     }
 
     public List<BuildReport> getJckReport(Job<?, ?> job) {
-        return new BuildSummaryParser(Arrays.asList("jck", "jtreg")).parseJobReports(job);
+        AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(((Project)job).getPublishersList());
+        return new BuildSummaryParser(Arrays.asList("jck", "jtreg"), settings).parseJobReports(job);
     }
 
     @Extension

@@ -25,7 +25,10 @@ package hudson.plugins.report.jck;
 
 import hudson.model.AbstractBuild;
 import hudson.model.Action;
+import hudson.model.Descriptor;
 import hudson.model.Job;
+import hudson.tasks.Publisher;
+import hudson.util.DescribableList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -74,7 +77,8 @@ public class ReportAction implements Action, StaplerProxy, SimpleBuildStep.LastB
     @Override
     public BuildReportExtended getTarget() {
         try {
-            BuildReportExtended report = new BuildSummaryParser(prefixes).parseBuildReportExtended(build);
+            AbstractReportPublisher settings = getAbstractReportPublisher(build.getProject().getPublishersList());
+            BuildReportExtended report = new BuildSummaryParser(prefixes, settings).parseBuildReportExtended(build);
             return report;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -86,6 +90,15 @@ public class ReportAction implements Action, StaplerProxy, SimpleBuildStep.LastB
     public Collection<? extends Action> getProjectActions() {
         Job<?, ?> job = build.getParent();
         return Collections.singleton(new ReportProjectAction(job, prefixes));
+    }
+
+    public static  AbstractReportPublisher getAbstractReportPublisher(DescribableList<Publisher, Descriptor<Publisher>> publishersList) {
+        for (Publisher publisher : publishersList) {
+            if (publisher instanceof  AbstractReportPublisher){
+                return (AbstractReportPublisher)publisher;
+            }
+        }
+        return null;
     }
 
 }
