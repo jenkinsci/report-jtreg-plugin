@@ -67,18 +67,13 @@ public class BuildSummaryParser {
     }
 
     List<String> getBlacklisted(Job<?, ?> job) {
-        int limit = 10;
-        if (settings != null) {
-            limit = settings.getIntMaxBuilds();
-        }
+        int limit = getMaxItems();
         List<String> blacklisted = new ArrayList<>(limit);
-        int total = 0;
         List<BuildReport> list = new ArrayList<>();
         for (Run run : job.getBuilds()) {
             if (run.getResult() == null || run.getResult().isWorseThan(Result.UNSTABLE)) {
                 continue;
             }
-            total++;
             if (settings.getResultsBlackList() != null && !settings.getResultsBlackList().trim().isEmpty()) {
                 String[] items = settings.getResultsBlackList().split("\\s+");
                 for (String item : items) {
@@ -93,12 +88,17 @@ public class BuildSummaryParser {
         }
         return blacklisted;
     }
-    
-    public List<BuildReport> parseJobReports(Job<?, ?> job) {
+
+    private int getMaxItems() {
         int limit = 10;
         if (settings != null) {
             limit = settings.getIntMaxBuilds();
         }
+        return limit;
+    }
+
+    public List<BuildReport> parseJobReports(Job<?, ?> job) {
+        int limit = getMaxItems();
         List<BuildReport> list = new ArrayList<>();
         List<String> blacklisted = getBlacklisted(job);
         for (Run run : job.getBuilds()) {
