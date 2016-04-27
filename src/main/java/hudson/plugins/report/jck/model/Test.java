@@ -4,7 +4,7 @@ import java.util.List;
 
 import static hudson.plugins.report.jck.utils.MoreStrings.compareStrings;
 
-public class Test implements Comparable<Test> {
+public class Test implements Comparable<Test>, java.io.Serializable {
 
     private final String name;
     private final TestStatus status;

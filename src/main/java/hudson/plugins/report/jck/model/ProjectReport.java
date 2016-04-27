@@ -23,10 +23,9 @@
  */
 package hudson.plugins.report.jck.model;
 
-import hudson.plugins.report.jck.model.BuildReport;
 import java.util.List;
 
-public class ProjectReport {
+public class ProjectReport implements java.io.Serializable {
 
     private final List<BuildReport> reports;
     private final List<Integer> improvements;

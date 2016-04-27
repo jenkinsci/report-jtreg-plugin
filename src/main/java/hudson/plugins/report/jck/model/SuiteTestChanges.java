@@ -25,7 +25,7 @@ package hudson.plugins.report.jck.model;
 
 import java.util.List;
 
-public class SuiteTestChanges {
+public class SuiteTestChanges implements java.io.Serializable {
 
     private final String name;
     private final List<String> failures;

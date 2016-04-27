@@ -27,7 +27,7 @@ import java.util.List;
 
 import static hudson.plugins.report.jck.utils.MoreStrings.compareStrings;
 
-public class SuiteTests implements Comparable<SuiteTests> {
+public class SuiteTests implements Comparable<SuiteTests>, java.io.Serializable {
 
     private final String name;
     private final List<String> tests;

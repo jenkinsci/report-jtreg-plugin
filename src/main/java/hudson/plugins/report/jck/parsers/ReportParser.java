@@ -26,7 +26,7 @@ package hudson.plugins.report.jck.parsers;
 import hudson.plugins.report.jck.model.Suite;
 import java.nio.file.Path;
 
-public interface ReportParser {
+public interface ReportParser extends java.io.Serializable {
 
     Suite parsePath(Path path);
 }
