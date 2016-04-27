@@ -25,7 +25,7 @@ package hudson.plugins.report.jck.model;
 
 import java.util.List;
 
-public class Report {
+public class Report implements java.io.Serializable {
 
     private final int testsPassed;
     private final int testsNotRun;

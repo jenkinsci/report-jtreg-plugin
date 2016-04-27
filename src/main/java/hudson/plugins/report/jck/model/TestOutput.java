@@ -1,6 +1,6 @@
 package hudson.plugins.report.jck.model;
 
-public class TestOutput implements Comparable<TestOutput> {
+public class TestOutput implements Comparable<TestOutput>, java.io.Serializable {
 
     private final String name;
     private final String value;

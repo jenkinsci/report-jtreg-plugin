@@ -25,7 +25,7 @@ package hudson.plugins.report.jck.model;
 
 import static hudson.plugins.report.jck.utils.MoreStrings.compareStrings;
 
-public class Suite implements Comparable<Suite> {
+public class Suite implements Comparable<Suite>, java.io.Serializable {
 
     private final String name;
     private final Report report;

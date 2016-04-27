@@ -23,10 +23,9 @@
  */
 package hudson.plugins.report.jck.model;
 
-import hudson.plugins.report.jck.model.Suite;
 import java.util.List;
 
-public class BuildReport {
+public class BuildReport implements java.io.Serializable {
 
     private final int buildNumber;
     private final String buildName;
