@@ -52,6 +52,7 @@ import java.util.stream.Collectors;
 
 import static hudson.plugins.report.jck.Constants.REPORT_JSON;
 import static hudson.plugins.report.jck.Constants.REPORT_TESTS_LIST_JSON;
+import hudson.util.RunList;
 
 public class BuildSummaryParser {
 
@@ -67,10 +68,14 @@ public class BuildSummaryParser {
     }
 
     List<String> getBlacklisted(Job<?, ?> job) {
+        return getBlacklisted(job.getBuilds());
+    }
+
+    List<String> getBlacklisted(RunList<?> runs) {
         int limit = getMaxItems();
         List<String> blacklisted = new ArrayList<>(limit);
         List<BuildReport> list = new ArrayList<>();
-        for (Run run : job.getBuilds()) {
+        for (Run run : runs) {
             if (run.getResult() == null || run.getResult().isWorseThan(Result.UNSTABLE)) {
                 continue;
             }
@@ -98,10 +103,14 @@ public class BuildSummaryParser {
     }
 
     public List<BuildReport> parseJobReports(Job<?, ?> job) {
+        return parseJobReports(job.getBuilds());
+    }
+
+    public List<BuildReport> parseJobReports(RunList<?> runs) {
         int limit = getMaxItems();
         List<BuildReport> list = new ArrayList<>();
-        List<String> blacklisted = getBlacklisted(job);
-        for (Run run : job.getBuilds()) {
+        List<String> blacklisted = getBlacklisted(runs);
+        for (Run run : runs) {
             if (run.getResult() == null || run.getResult().isWorseThan(Result.UNSTABLE)) {
                 continue;
             }
