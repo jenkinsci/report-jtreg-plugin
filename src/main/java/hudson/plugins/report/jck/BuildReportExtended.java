@@ -33,13 +33,17 @@ public class BuildReportExtended extends BuildReport {
     private final List<String> addedSuites;
     private final List<String> removedSuites;
     private final List<SuiteTestChanges> testChanges;
+    private final int total;
+    private final int notRun;
 
     public BuildReportExtended(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites,
-            List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges) {
-        super(buildNumber, buildName, passed, failed, error, suites);
+            List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges, int total, int notRun) {
+        super(buildNumber, buildName, passed, failed, error, suites, total, notRun);
         this.addedSuites = addedSuites;
         this.removedSuites = removedSuites;
         this.testChanges = testChanges;
+        this.total = total;
+        this.notRun = notRun;
     }
 
     public List<String> getAddedSuites() {
@@ -52,6 +56,16 @@ public class BuildReportExtended extends BuildReport {
 
     public List<SuiteTestChanges> getTestChanges() {
         return testChanges;
+    }
+
+    @Override
+    public int getTotal(){
+        return total;
+    }
+
+    @Override
+    public int getNotRun(){
+        return notRun;
     }
 
 }

@@ -136,14 +136,18 @@ public class BuildSummaryParser {
         int passed = 0;
         int failed = 0;
         int error = 0;
+        int total = 0;
+        int notRun = 0;
 
         for (Suite suite : suites) {
             passed += suite.getReport().getTestsPassed();
             failed += suite.getReport().getTestsFailed();
             error += suite.getReport().getTestsError();
+            total += suite.getReport().getTestsTotal();
+            notRun += suite.getReport().getTestsNotRun();
         }
 
-        return new BuildReport(build.getNumber(), build.getDisplayName(), passed, failed, error, suites);
+        return new BuildReport(build.getNumber(), build.getDisplayName(), passed, failed, error, suites, total, notRun);
     }
 
     public BuildReportExtended parseBuildReportExtended(Run<?, ?> build) throws Exception {
@@ -280,7 +284,9 @@ public class BuildSummaryParser {
                 currentReport.getSuites(),
                 addedSuites,
                 removedSuites,
-                result);
+                result,
+                currentReport.getTotal(),
+                currentReport.getNotRun());
     }
 
     private List<Suite> parseBuildSummary(Run<?, ?> build) throws Exception {

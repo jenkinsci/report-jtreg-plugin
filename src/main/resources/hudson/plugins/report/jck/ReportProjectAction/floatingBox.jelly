@@ -2,7 +2,7 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:local="local">
     <h3 style="font-family: monospace">Number of Failures: ${action.displayName}</h3>
     <div id="jckErrorsFailuresChartContainer" style="margin-right: 10pt"><canvas id='jckErrorsFailuresChart' width='600' height='300'></canvas></div>
-    <h3 style="font-family: monospace">Number of Passed tests: ${action.displayName}</h3>
+    <h3 style="font-family: monospace">Number of Tests total: ${action.displayName}</h3>
     <div id="jckPassedChartContainer" style="margin-right: 10pt"><canvas id='jckPassedChart' width='600' height='300'></canvas></div>
     <h3 style="font-family: monospace">Regressions: ${action.displayName}</h3>
     <div id="jckRegressionsChartContainer" style="margin-right: 10pt"><canvas id='jckRegressionsChart' width='600' height='250'></canvas></div>
@@ -72,7 +72,7 @@
         ],
                 datasets: [
                 {
-                label: "Passed tests",
+                label: "Tests total",
                         fillColor: "rgba(180,180,180,0.2)",
                         strokeColor: "rgba(180,180,180,1)",
                         pointColor: "rgba(180,180,180,1)",
@@ -81,7 +81,7 @@
                         pointHighlightStroke: "rgba(180,180,180,1)",
                         data: [
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
-            ${build.passed}<j:if test="${!status.last}">,</j:if>
+            ${build.total}<j:if test="${!status.last}">,</j:if>
         </j:forEach>
                         ]
                 }
