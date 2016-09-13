@@ -147,6 +147,10 @@ public class BuildSummaryParser {
             notRun += suite.getReport().getTestsNotRun();
         }
 
+        if (prefixes.contains("jck")){
+           total -= notRun;
+        }
+
         return new BuildReport(build.getNumber(), build.getDisplayName(), passed, failed, error, suites, total, notRun);
     }
 

@@ -72,7 +72,7 @@ public class BuildReport implements java.io.Serializable {
     }
 
     public int getTotal(){
-        return total - notRun;
+        return total;
     }
 
     public int getNotRun(){
