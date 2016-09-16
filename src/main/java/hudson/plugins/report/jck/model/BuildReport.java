@@ -34,6 +34,7 @@ public class BuildReport implements java.io.Serializable {
     private final int error;
     private final int total;
     private final int notRun;
+    private final int run;
     private final List<Suite> suites;
 
     public BuildReport(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites, int total, int notRun) {
@@ -45,6 +46,7 @@ public class BuildReport implements java.io.Serializable {
         this.suites = suites;
         this.total = total;
         this.notRun = notRun;
+        this.run = 0;
     }
 
     public int getBuildNumber() {
@@ -77,6 +79,9 @@ public class BuildReport implements java.io.Serializable {
 
     public int getNotRun(){
         return notRun;
+    }
+    public int getRun(){
+        return total - notRun;
     }
 
 }

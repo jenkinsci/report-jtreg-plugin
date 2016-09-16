@@ -147,9 +147,9 @@ public class BuildSummaryParser {
             notRun += suite.getReport().getTestsNotRun();
         }
 
-        if (prefixes.contains("jck")){
-           total -= notRun;
-        }
+        //if (prefixes.contains("jck")){
+        //   total -= notRun;
+        //}
         //jtreg need to have not runned tests included, but jck have to be excluded.
 
         return new BuildReport(build.getNumber(), build.getDisplayName(), passed, failed, error, suites, total, notRun);
