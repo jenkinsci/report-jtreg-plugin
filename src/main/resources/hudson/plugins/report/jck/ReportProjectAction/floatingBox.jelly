@@ -84,6 +84,20 @@
             ${build.total}<j:if test="${!status.last}">,</j:if>
         </j:forEach>
                         ]
+                },
+                {
+                label: "Runned tests",
+                        fillColor: "rgba(180,180,180,0.2)",
+                        strokeColor: "rgba(180,180,180,1)",
+                        pointColor: "rgba(180,180,180,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(180,180,180,1)",
+                        data: [
+        <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
+            ${build.Run}<j:if test="${!status.last}">,</j:if>
+        </j:forEach>
+                        ]
                 }
                 ]
         };
