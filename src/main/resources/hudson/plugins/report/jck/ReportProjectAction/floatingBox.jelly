@@ -1,11 +1,11 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:local="local">
     <h3 style="font-family: monospace">Number of Failures: ${action.displayName}</h3>
-    <div id="jckErrorsFailuresChartContainer" style="margin-right: 10pt"><canvas id='jckErrorsFailuresChart' width='600' height='300'></canvas></div>
+    <div id="jckErrorsFailuresChartContainer" style="margin-right: 10pt"><canvas id='jckErrorsFailuresChart' width='600' height='600'></canvas></div>
     <h3 style="font-family: monospace">Number of Tests total: ${action.displayName}</h3>
-    <div id="jckPassedChartContainer" style="margin-right: 10pt"><canvas id='jckPassedChart' width='600' height='300'></canvas></div>
+    <div id="jckPassedChartContainer" style="margin-right: 10pt"><canvas id='jckPassedChart' width='600' height='600'></canvas></div>
     <h3 style="font-family: monospace">Regressions: ${action.displayName}</h3>
-    <div id="jckRegressionsChartContainer" style="margin-right: 10pt"><canvas id='jckRegressionsChart' width='600' height='250'></canvas></div>
+    <div id="jckRegressionsChartContainer" style="margin-right: 10pt"><canvas id='jckRegressionsChart' width='600' height='600'></canvas></div>
             <j:set var="jckReports" value="${action.chartData}" />
     <script type="text/javascript">
         // &lt;![CDATA[
