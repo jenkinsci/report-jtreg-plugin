@@ -52,6 +52,9 @@ import java.util.stream.Collectors;
 
 import static hudson.plugins.report.jck.Constants.REPORT_JSON;
 import static hudson.plugins.report.jck.Constants.REPORT_TESTS_LIST_JSON;
+import hudson.plugins.report.jck.wrappers.RunWrapper;
+import hudson.plugins.report.jck.wrappers.RunWrapperFromDir;
+import hudson.plugins.report.jck.wrappers.RunWrapperFromRun;
 import hudson.util.RunList;
 
 public class BuildSummaryParser {
@@ -117,7 +120,7 @@ public class BuildSummaryParser {
             if (blacklisted.contains(run.getDisplayName())) {
                 continue;
             }
-             
+
             try {
                 BuildReport report = parseBuildReport(run);
                 list.add(report);
@@ -131,8 +134,26 @@ public class BuildSummaryParser {
         return list;
     }
 
+    public List<BuildReport> parseJobReports(File dir1, File dir2) {
+        List<BuildReport> list = new ArrayList<>();
+        try {
+            BuildReport report = parseBuildReport(new RunWrapperFromDir(dir1));
+            list.add(report);
+            BuildReport report2 = parseBuildReport(new RunWrapperFromDir(dir2));
+            list.add(report2);
+        } catch (Exception ignore) {
+            ignore.printStackTrace();
+        }
+        Collections.reverse(list);
+        return list;
+    }
+
     public BuildReport parseBuildReport(Run<?, ?> build) throws Exception {
-        List<Suite> suites = parseBuildSummary(build);
+        return parseBuildReport(new RunWrapperFromRun(build));
+    }
+
+    public BuildReport parseBuildReport(RunWrapper build) throws Exception {
+        List<Suite> suites = parseBuildSummary(build.getRoot());
         int passed = 0;
         int failed = 0;
         int error = 0;
@@ -146,14 +167,14 @@ public class BuildSummaryParser {
             total += suite.getReport().getTestsTotal();
             notRun += suite.getReport().getTestsNotRun();
         }
-        
+
         /*
         This condition is very unhappy.  
         Tck is saving to json total summ of tests as all *runnable* tests.  So total=total_runable+notRun (unexpected)
         jtregs are saving total sum of tests of all *run* tests. so   total_runable=total+notRun
         To do this properly, means to fix it in {jck,jtreg}reportPublisher
         but it also means to regenerate all the results:(
-        */
+         */
         //if (prefixes.contains("jck")){
         //   total -= notRun;
         //}
@@ -163,17 +184,19 @@ public class BuildSummaryParser {
         //https://github.com/judovana/jenkins-report-jck/pull/7/files#diff-bac5b237e72448e452669002e9d2eac1R74
         //in addition this chunk seems not fixing the issue of:
         //jtregs currenlty do not have any excluded tests. Once thy have, the graph will probably become broken
-        
-
-        return new BuildReport(build.getNumber(), build.getDisplayName(), passed, failed, error, suites, total, notRun);
+        return new BuildReport(build.getNumber(), build.getName(), passed, failed, error, suites, total, notRun);
     }
 
     public BuildReportExtended parseBuildReportExtended(Run<?, ?> build) throws Exception {
-        List<SuiteTests> currentBuildTestsList = parseSuiteTests(build);
-        List<SuiteTests> prevBuildTestsList;
         Run<?, ?> previousNotFailedBuild = build.getPreviousNotFailedBuild();
+        return parseBuildReportExtended(new RunWrapperFromRun(build), new RunWrapperFromRun(previousNotFailedBuild));
+    }
+
+    public BuildReportExtended parseBuildReportExtended(RunWrapper build, RunWrapper previousNotFailedBuild) throws Exception {
+        List<SuiteTests> currentBuildTestsList = parseSuiteTests(build.getRoot());
+        List<SuiteTests> prevBuildTestsList;
         if (previousNotFailedBuild != null) {
-            prevBuildTestsList = parseSuiteTests(previousNotFailedBuild);
+            prevBuildTestsList = parseSuiteTests(previousNotFailedBuild.getRoot());
         } else {
             prevBuildTestsList = new ArrayList<>();
         }
@@ -308,9 +331,13 @@ public class BuildSummaryParser {
     }
 
     private List<Suite> parseBuildSummary(Run<?, ?> build) throws Exception {
+        return parseBuildSummary(build.getRootDir());
+    }
+
+    private List<Suite> parseBuildSummary(File rootDir) throws Exception {
         List<Suite> result = new ArrayList<>();
         for (String prefix : prefixes) {
-            File reportFile = new File(build.getRootDir(), prefix + "-" + REPORT_JSON);
+            File reportFile = new File(rootDir, prefix + "-" + REPORT_JSON);
             if (reportFile.exists() && reportFile.isFile() && reportFile.canRead()) {
                 try (Reader in = new InputStreamReader(new BufferedInputStream(new FileInputStream(reportFile)),
                         StandardCharsets.UTF_8)) {
@@ -324,9 +351,13 @@ public class BuildSummaryParser {
     }
 
     private List<SuiteTests> parseSuiteTests(Run<?, ?> build) throws Exception {
+        return parseSuiteTests(build.getRootDir());
+    }
+
+    private List<SuiteTests> parseSuiteTests(File build) throws Exception {
         List<SuiteTests> result = new ArrayList<>();
         for (String prefix : prefixes) {
-            File suiteTestsFile = new File(build.getRootDir(), prefix + "-" + REPORT_TESTS_LIST_JSON);
+            File suiteTestsFile = new File(build, prefix + "-" + REPORT_TESTS_LIST_JSON);
             if (suiteTestsFile.exists() && suiteTestsFile.isFile() && suiteTestsFile.canRead()) {
                 try (Reader in = new InputStreamReader(new BufferedInputStream(new FileInputStream(suiteTestsFile)),
                         StandardCharsets.UTF_8)) {
