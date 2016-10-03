@@ -41,40 +41,77 @@ import java.util.List;
 public class CompareBuilds {
 
     public static void main(String[] args) throws Exception {
-//        args = new String[]{
-//            //            "/home/tester/jenkins/jenkins_home/jobs/tck-ojdk7-rhel6-x64/builds/27",
-//            //            "/home/tester/jenkins/jenkins_home/jobs/tck-ojdk7-rhel6-x64/builds/28"};
-//            "/home/tester/jenkins/jenkins_home/jobs/jtreg-ojdk8-rhel6-i586/builds/27",
-//            "/home/tester/jenkins/jenkins_home/jobs/jtreg-ojdk8-rhel6-i586/builds/28"};
-        new CompareBuilds().work(args[0], args[1]);
+        Arguments a = new Arguments(args).parse();
+        new CompareBuilds().work(a);
     }
 
-    private void work(String oldOne, String newOne) throws IOException, Exception {
-        JckReportPublisher jcp = new JckReportPublisher("report-{runtime,devtools,compiler}.xml.gz");
-        BuildSummaryParser bs = new BuildSummaryParser(Arrays.asList("jck", "jtreg"), jcp);
+    private void work(Arguments a) throws IOException, Exception {
+        for (int i = 0; i < a.getDirsToWork().size(); i++) {
+            File newOne = a.getDirsToWork().get(i);
+            File oldOne = null;
+            if (i < a.getDirsToWork().size() - 1) {
+                oldOne = a.getDirsToWork().get(i + 1);
+            }
+            JckReportPublisher jcp = new JckReportPublisher("report-{runtime,devtools,compiler}.xml.gz");
+            BuildSummaryParser bs = new BuildSummaryParser(Arrays.asList("jck", "jtreg"), jcp);
 
-        BuildReport br = bs.parseJobReports(new File(newOne));
-        printReport(br, null);
-        printSuites(br.getSuites(), null);
-        printProblems(br.getSuites());
-        BuildReport br1 = bs.parseJobReports(new File(oldOne));
-        printReport(br1, null);
-        printSuites(br1.getSuites(), null);
-        printProblems(br1.getSuites());
+            BuildReport br = bs.parseJobReports(newOne);
+            if (a.viewInfoProblems() || a.viewInfoSummary() || a.viewInfoSummarySuites()) {
+                printName(br, null);
+            }
+            if (a.viewInfoSummary()) {
+                printReport(br, null);
+            }
+            if (a.viewInfoSummarySuites()) {
+                printSuites(br.getSuites(), null);
+            }
+            if (a.viewInfoProblems()) {
+                printProblems(br.getSuites());
+            }
+            if (oldOne != null) {
+                BuildReport br1 = bs.parseJobReports(oldOne);
+                if (a.viewInfoProblems() || a.viewInfoSummary() || a.viewInfoSummarySuites()) {
+                    printName(br1, null);
+                }
+                if (a.viewInfoSummary()) {
+                    printReport(br1, null);
+                }
+                if (a.viewInfoSummarySuites()) {
+                    printSuites(br1.getSuites(), null);
+                }
+                if (a.viewInfoProblems()) {
+                    printProblems(br1.getSuites());
+                }
 
-        System.out.println("----------- diff summary -----------");
-        BuildReportExtended bex = bs.parseBuildReportExtended(new RunWrapperFromDir(new File(newOne)), new RunWrapperFromDir(new File(oldOne)));
-        printReport(bex, br1);
-        printSuites(bex.getSuites(), br1.getSuites());
-        System.out.println("----------- comaprsion -----------");
-        System.out.println("    Removed suites: " + bex.getRemovedSuites().size());
-        printStringList("        ", bex.getRemovedSuites());
-        System.out.println("      Added suites: " + bex.getRemovedSuites().size());
-        printStringList("        ", bex.getAddedSuites());
-        printTestChangesSummary(bex.getTestChanges());
-        System.out.println("----------- comaprsion details -----------");
-        printTestChangesDetails(bex.getTestChanges());
+                BuildReportExtended bex = null;
+                if (a.viewDiffDetails() || a.viewDiffList() || a.viewDiffSummary() || a.viewDiffSummarySuites()) {
+                    System.out.println("----------- diff summary -----------");
+                    bex = bs.parseBuildReportExtended(new RunWrapperFromDir(newOne), new RunWrapperFromDir(oldOne));
+                    printName(bex, br1);
+                }
+                if (a.viewDiffSummary()) {
+                    printReport(bex, br1);
+                }
+                if (a.viewDiffSummarySuites()) {
+                    printSuites(bex.getSuites(), br1.getSuites());
+                }
+                if (a.viewDiffDetails() || a.viewDiffList()) {
+                    System.out.println("----------- comaprsion -----------");
+                    System.out.println("    Removed suites: " + bex.getRemovedSuites().size());
+                    printStringList("        ", bex.getRemovedSuites());
+                    System.out.println("      Added suites: " + bex.getRemovedSuites().size());
+                    printStringList("        ", bex.getAddedSuites());
+                }
+                if (a.viewDiffDetails()) {
+                    printTestChangesSummary(bex.getTestChanges());
+                }
+                if (a.viewDiffList()) {
+                    System.out.println("----------- comaprsion details -----------");
+                    printTestChangesDetails(bex.getTestChanges());
+                }
 
+            }
+        }
     }
 
     private void printStringList(String prefix, List<String> ss) {
@@ -143,12 +180,16 @@ public class CompareBuilds {
         }
     }
 
-    private void printReport(BuildReport br, BuildReport old) {
+    private void printName(BuildReport br, BuildReport old) {
         System.out.print(br.getBuildNumber() + ": " + br.getBuildName());
         if (old != null) {
             System.out.print(" x(old) " + old.getBuildNumber() + ": " + old.getBuildName());
         }
         System.out.println();
+
+    }
+
+    private void printReport(BuildReport br, BuildReport old) {
         System.out.print("Passed  : " + br.getPassed());
         if (old != null) {
             System.out.print(" x(old) " + old.getPassed() + " = " + intDiffToString(br.getPassed(), old.getPassed()));
