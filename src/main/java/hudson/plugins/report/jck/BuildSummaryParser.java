@@ -134,18 +134,13 @@ public class BuildSummaryParser {
         return list;
     }
 
-    public List<BuildReport> parseJobReports(File dir1, File dir2) {
-        List<BuildReport> list = new ArrayList<>();
+    public BuildReport parseJobReports(File dir1) {
         try {
-            BuildReport report = parseBuildReport(new RunWrapperFromDir(dir1));
-            list.add(report);
-            BuildReport report2 = parseBuildReport(new RunWrapperFromDir(dir2));
-            list.add(report2);
+            return parseBuildReport(new RunWrapperFromDir(dir1));
         } catch (Exception ignore) {
             ignore.printStackTrace();
+            return null;
         }
-        Collections.reverse(list);
-        return list;
     }
 
     public BuildReport parseBuildReport(Run<?, ?> build) throws Exception {
