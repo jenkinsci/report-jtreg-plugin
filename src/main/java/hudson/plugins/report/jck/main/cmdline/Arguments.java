@@ -74,9 +74,14 @@ public class Arguments {
         }
         for (String base1 : base) {
             String opt = base1.split("=")[0];
-            if (opt.startsWith("-") && !arrayContains(switches, opt)) {
-                System.err.println("WARNING unknown param " + opt);
+            try {
+                Integer.valueOf(opt);
+            } catch (Exception ex) {
+                //not u number.. is known?
+                if (opt.startsWith("-") && !arrayContains(switches, opt)) {
+                    System.err.println("WARNING unknown param " + opt);
 
+                }
             }
         }
     }
@@ -95,11 +100,13 @@ public class Arguments {
     static final String view_info_summary = "info-summary";
     static final String view_info_summary_suites = "info-summary-suites";
     static final String view_info_problems = "info-problems";
+    static final String view_info = "info";
 
     static final String view_diff_summary = "diff-summary";
     static final String view_diff_summary_suites = "diff-summary-suites";
     static final String view_diff_details = "diff-details";
     static final String view_diff_list = "diff-list";
+    static final String view_diff = "diff";
 
     static final String view_hide_positives = "hide-positives";
     static final String view_hide_negatives = "hide-negatives";
@@ -109,7 +116,8 @@ public class Arguments {
     private static final String[] knownViews = new String[]{
         view_info_summary, view_info_summary_suites, view_info_problems,
         view_diff_summary, view_diff_summary_suites, view_diff_details, view_diff_list,
-        view_hide_positives, view_hide_negatives, view_hide_misses, view_hide_totals
+        view_hide_positives, view_hide_negatives, view_hide_misses, view_hide_totals,
+        view_diff, view_info
     };
 
     public Options parse() {
@@ -170,7 +178,7 @@ public class Arguments {
             }
             jobName = mainArgs.get(0);
             jobsDir = new File(jenkinsDir, "jobs");
-            possibleJobs = jobDir.list();
+            possibleJobs = jobsDir.list();
             if (!arrayContains(possibleJobs, jobName)) {
                 System.out.println("Possible jobs");
                 for (String jobs : possibleJobs) {
