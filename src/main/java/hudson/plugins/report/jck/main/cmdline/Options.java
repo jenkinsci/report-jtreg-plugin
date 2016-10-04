@@ -46,32 +46,48 @@ public class Options {
         return dirsToWork;
     }
 
+    public boolean hideMisses() {
+        return views.contains(Arguments.view_hide_misses);
+    }
+
+    public boolean hideTotals() {
+        return views.contains(Arguments.view_hide_totals);
+    }
+
+    public boolean hideNegatives() {
+        return views.contains(Arguments.view_hide_negatives);
+    }
+
+    public boolean hidePositives() {
+        return views.contains(Arguments.view_hide_positives);
+    }
+
     public boolean viewInfoSummary() {
-        return views.isEmpty() || views.contains(Arguments.view_info_summary);
+        return views.isEmpty() || views.contains(Arguments.view_info_summary) || views.contains(Arguments.view_info);
     }
 
     public boolean viewInfoSummarySuites() {
-        return views.isEmpty() || views.contains(Arguments.view_info_summary_suites);
+        return views.isEmpty() || views.contains(Arguments.view_info_summary_suites) || views.contains(Arguments.view_info);
     }
 
     public boolean viewInfoProblems() {
-        return views.isEmpty() || views.contains(Arguments.view_info_problems);
+        return views.isEmpty() || views.contains(Arguments.view_info_problems) || views.contains(Arguments.view_info);
     }
 
     public boolean viewDiffSummary() {
-        return views.isEmpty() || views.contains(Arguments.view_diff_summary);
+        return views.isEmpty() || views.contains(Arguments.view_diff_summary) || views.contains(Arguments.view_diff);
     }
 
     public boolean viewDiffSummarySuites() {
-        return views.isEmpty() || views.contains(Arguments.view_diff_summary_suites);
+        return views.isEmpty() || views.contains(Arguments.view_diff_summary_suites) || views.contains(Arguments.view_diff);
     }
 
     public boolean viewDiffDetails() {
-        return views.isEmpty() || views.contains(Arguments.view_diff_details);
+        return views.isEmpty() || views.contains(Arguments.view_diff_details) || views.contains(Arguments.view_diff);
     }
 
     public boolean viewDiffList() {
-        return views.isEmpty() || views.contains(Arguments.view_diff_list);
+        return views.isEmpty() || views.contains(Arguments.view_diff_list) || views.contains(Arguments.view_diff);
     }
 
     void setOutputType(String output_type) {
@@ -83,11 +99,11 @@ public class Options {
     }
 
     public boolean isInfo() {
-        return (this.viewInfoProblems() || this.viewInfoSummary() || this.viewInfoSummarySuites());
+        return (this.viewInfoProblems() || this.viewInfoSummary() || this.viewInfoSummarySuites() || views.contains(Arguments.view_info));
     }
 
     public boolean isDiff() {
-        return this.viewDiffDetails() || this.viewDiffList() || this.viewDiffSummary() || this.viewDiffSummarySuites();
+        return this.viewDiffDetails() || this.viewDiffList() || this.viewDiffSummary() || this.viewDiffSummarySuites() || views.contains(Arguments.view_diff);
     }
 
     void setFill(boolean b) {
