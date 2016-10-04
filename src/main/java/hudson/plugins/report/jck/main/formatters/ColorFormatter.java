@@ -23,10 +23,13 @@
  */
 package hudson.plugins.report.jck.main.formatters;
 
+import java.io.PrintStream;
+
 
 public class ColorFormatter extends BasicFormatter {
 
-    public ColorFormatter() {
+    public ColorFormatter(PrintStream stream) {
+        super(stream);
     }
     
 }

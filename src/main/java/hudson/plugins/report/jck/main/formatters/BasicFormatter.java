@@ -23,7 +23,29 @@
  */
 package hudson.plugins.report.jck.main.formatters;
 
+import java.io.PrintStream;
 
-public abstract class BasicFormatter implements Formatter{
-    
+public abstract class BasicFormatter implements Formatter {
+
+    PrintStream o;
+
+    public BasicFormatter(PrintStream o) {
+        this.o = o;
+    }
+
+    @Override
+    public void print(String s) {
+        o.print(s);
+    }
+
+    @Override
+    public void println(String s) {
+        o.println();
+    }
+
+    @Override
+    public void println() {
+        println("");
+    }
+
 }

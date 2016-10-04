@@ -23,10 +23,20 @@
  */
 package hudson.plugins.report.jck.main.formatters;
 
+import java.io.PrintStream;
+
 
 public class HtmlFormatter extends BasicFormatter {
 
-    public HtmlFormatter() {
+    public HtmlFormatter(PrintStream stream) {
+        super(stream);
     }
+
+    @Override
+    public void println(String s) {
+        println(s+"<br/>");
+    }
+    
+    
     
 }

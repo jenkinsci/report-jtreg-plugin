@@ -23,10 +23,15 @@
  */
 package hudson.plugins.report.jck.main.formatters;
 
+import java.io.PrintStream;
+
+
 
 public class PlainFormatter extends BasicFormatter {
 
-    public PlainFormatter() {
+
+    public PlainFormatter(PrintStream stream) {
+        super(stream);
     }
     
 }

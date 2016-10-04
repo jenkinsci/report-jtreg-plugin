@@ -26,4 +26,9 @@ package hudson.plugins.report.jck.main.formatters;
 
 public interface Formatter {
     
+    public void print(String s);
+    public void println();
+    public void println(String s);
+    
+    
 }

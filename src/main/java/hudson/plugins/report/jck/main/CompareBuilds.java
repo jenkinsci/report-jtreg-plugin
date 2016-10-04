@@ -44,6 +44,7 @@ public class CompareBuilds {
 
     public static void main(String[] args) throws Exception {
         Options options = new Arguments(args).parse();
+        options.setStream(System.out);
         new CompareBuilds(options).work();
     }
     private final Options options;
@@ -92,7 +93,7 @@ public class CompareBuilds {
 
                 BuildReportExtended bex = null;
                 if (options.isDiff()) {
-                    System.out.println("----------- diff summary -----------");
+                   options.getFormatter().println("----------- diff summary -----------");
                     bex = bs.parseBuildReportExtended(new RunWrapperFromDir(newOne), new RunWrapperFromDir(oldOne));
                     printName(bex, br1);
                 }
@@ -103,17 +104,17 @@ public class CompareBuilds {
                     printSuites(bex.getSuites(), br1.getSuites());
                 }
                 if (options.viewDiffDetails() || options.viewDiffList()) {
-                    System.out.println("----------- comaprsion -----------");
-                    System.out.println("    Removed suites: " + bex.getRemovedSuites().size());
+                   options.getFormatter().println("----------- comaprsion -----------");
+                   options.getFormatter().println("    Removed suites: " + bex.getRemovedSuites().size());
                     printStringList("        ", bex.getRemovedSuites());
-                    System.out.println("      Added suites: " + bex.getRemovedSuites().size());
+                   options.getFormatter().println("      Added suites: " + bex.getRemovedSuites().size());
                     printStringList("        ", bex.getAddedSuites());
                 }
                 if (options.viewDiffDetails()) {
                     printTestChangesSummary(bex.getTestChanges());
                 }
                 if (options.viewDiffList()) {
-                    System.out.println("----------- comaprsion details -----------");
+                   options.getFormatter().println("----------- comaprsion details -----------");
                     printTestChangesDetails(bex.getTestChanges());
                 }
 
@@ -123,7 +124,7 @@ public class CompareBuilds {
 
     private void printStringList(String prefix, List<String> ss) {
         for (String s : ss) {
-            System.out.println(prefix + s);
+           options.getFormatter().println(prefix + s);
         }
     }
 
@@ -148,115 +149,115 @@ public class CompareBuilds {
                 old = oldSuite.getReport();
             }
             Report br = s.getReport();
-            System.out.print("    " + s.getName());
+           options.getFormatter().print("    " + s.getName());
             if (old != null) {
-                System.out.print(" x(old) " + oldSuite.getName());
+               options.getFormatter().print(" x(old) " + oldSuite.getName());
             }
-            System.out.println();
+           options.getFormatter().println();
             if (!options.hidePositives()) {
-                System.out.print("    Passed  : " + br.getTestsPassed());
+               options.getFormatter().print("    Passed  : " + br.getTestsPassed());
                 if (old != null) {
-                    System.out.print(" x(old) " + old.getTestsPassed() + " = " + intDiffToString(br.getTestsPassed(), old.getTestsPassed())
+                   options.getFormatter().print(" x(old) " + old.getTestsPassed() + " = " + intDiffToString(br.getTestsPassed(), old.getTestsPassed())
                     );
                 }
-                System.out.println();
+               options.getFormatter().println();
             }
             if (!options.hideNegatives()) {
-                System.out.print("    Failed  : " + br.getTestsFailed());
+               options.getFormatter().print("    Failed  : " + br.getTestsFailed());
                 if (old != null) {
-                    System.out.print(" x(old) " + old.getTestsFailed() + " = " + intDiffToString(br.getTestsFailed(), old.getTestsFailed()));
+                   options.getFormatter().print(" x(old) " + old.getTestsFailed() + " = " + intDiffToString(br.getTestsFailed(), old.getTestsFailed()));
                 }
-                System.out.println();
-                System.out.print("    Error   : " + br.getTestsError());
+               options.getFormatter().println();
+               options.getFormatter().print("    Error   : " + br.getTestsError());
                 if (old != null) {
-                    System.out.print(" x(old) " + old.getTestsError() + " = " + intDiffToString(br.getTestsError(), old.getTestsError()));
+                   options.getFormatter().print(" x(old) " + old.getTestsError() + " = " + intDiffToString(br.getTestsError(), old.getTestsError()));
                 }
-                System.out.println();
+               options.getFormatter().println();
             }
             if (!options.hideTotals()) {
-                System.out.print("    Total   : " + br.getTestsTotal());
+               options.getFormatter().print("    Total   : " + br.getTestsTotal());
                 if (old != null) {
-                    System.out.print(" x(old) " + old.getTestsTotal() + " = " + intDiffToString(br.getTestsTotal(), old.getTestsTotal()));
+                   options.getFormatter().print(" x(old) " + old.getTestsTotal() + " = " + intDiffToString(br.getTestsTotal(), old.getTestsTotal()));
                 }
-                System.out.println();
+               options.getFormatter().println();
             }
             if (!options.hideMisses()) {
-                System.out.print("    Ignored : " + br.getTestsNotRun());
+               options.getFormatter().print("    Ignored : " + br.getTestsNotRun());
                 if (old != null) {
-                    System.out.print(" x(old) " + old.getTestsNotRun() + " = " + intDiffToString(br.getTestsNotRun(), old.getTestsNotRun()));
+                   options.getFormatter().print(" x(old) " + old.getTestsNotRun() + " = " + intDiffToString(br.getTestsNotRun(), old.getTestsNotRun()));
                 }
-                System.out.println();
+               options.getFormatter().println();
             }
             if (!options.hideNegatives()) {
-                System.out.print("    Problem : " + br.getTestProblems().size());
+               options.getFormatter().print("    Problem : " + br.getTestProblems().size());
                 if (old != null) {
-                    System.out.print(" x(old) " + old.getTestProblems().size() + " = " + intDiffToString(br.getTestProblems().size(), old.getTestProblems().size()));
+                   options.getFormatter().print(" x(old) " + old.getTestProblems().size() + " = " + intDiffToString(br.getTestProblems().size(), old.getTestProblems().size()));
                 }
-                System.out.println();
+               options.getFormatter().println();
             }
         }
     }
 
     private void printName(BuildReport br, BuildReport old) {
-        System.out.print(br.getBuildNumber() + ": " + br.getBuildName());
+       options.getFormatter().print(br.getBuildNumber() + ": " + br.getBuildName());
         if (old != null) {
-            System.out.print(" x(old) " + old.getBuildNumber() + ": " + old.getBuildName());
+           options.getFormatter().print(" x(old) " + old.getBuildNumber() + ": " + old.getBuildName());
         }
-        System.out.println();
+       options.getFormatter().println();
 
     }
 
     private void printReport(BuildReport br, BuildReport old) {
         if (!options.hidePositives()) {
-            System.out.print("Passed  : " + br.getPassed());
+           options.getFormatter().print("Passed  : " + br.getPassed());
             if (old != null) {
-                System.out.print(" x(old) " + old.getPassed() + " = " + intDiffToString(br.getPassed(), old.getPassed()));
+               options.getFormatter().print(" x(old) " + old.getPassed() + " = " + intDiffToString(br.getPassed(), old.getPassed()));
             }
-            System.out.println();
+           options.getFormatter().println();
         }
         if (!options.hideNegatives()) {
-            System.out.print("Failed  : " + br.getFailed());
+           options.getFormatter().print("Failed  : " + br.getFailed());
             if (old != null) {
-                System.out.print(" x(old) " + old.getFailed() + " = " + intDiffToString(br.getFailed(), old.getFailed())
+               options.getFormatter().print(" x(old) " + old.getFailed() + " = " + intDiffToString(br.getFailed(), old.getFailed())
                 );
             }
-            System.out.println();
-            System.out.print("Error   : " + br.getError());
+           options.getFormatter().println();
+           options.getFormatter().print("Error   : " + br.getError());
             if (old != null) {
-                System.out.print(" x(old) " + old.getError() + " = " + intDiffToString(br.getError(), old.getError()));
+               options.getFormatter().print(" x(old) " + old.getError() + " = " + intDiffToString(br.getError(), old.getError()));
             }
-            System.out.println();
+           options.getFormatter().println();
         }
         if (!options.hideTotals()) {
-            System.out.print("Total   : " + br.getTotal());
+           options.getFormatter().print("Total   : " + br.getTotal());
             if (old != null) {
-                System.out.print(" x(old) " + old.getTotal() + " = " + intDiffToString(br.getTotal(), old.getTotal()));
+               options.getFormatter().print(" x(old) " + old.getTotal() + " = " + intDiffToString(br.getTotal(), old.getTotal()));
             }
-            System.out.println();
+           options.getFormatter().println();
         }
         if (!options.hideMisses()) {
-            System.out.print("Ignored : " + br.getNotRun());
+           options.getFormatter().print("Ignored : " + br.getNotRun());
             if (old != null) {
-                System.out.print(" x(old) " + old.getNotRun() + " = " + intDiffToString(br.getNotRun(), old.getNotRun()));
+               options.getFormatter().print(" x(old) " + old.getNotRun() + " = " + intDiffToString(br.getNotRun(), old.getNotRun()));
             }
-            System.out.println();
+           options.getFormatter().println();
         }
-        System.out.print("Suites  : " + br.getSuites().size());
+       options.getFormatter().print("Suites  : " + br.getSuites().size());
         if (old != null) {
-            System.out.print(" x(old) " + old.getSuites().size() + " = " + intDiffToString(br.getSuites().size(), old.getSuites().size()));
+           options.getFormatter().print(" x(old) " + old.getSuites().size() + " = " + intDiffToString(br.getSuites().size(), old.getSuites().size()));
         }
-        System.out.println();
+       options.getFormatter().println();
     }
 
     private void printProblems(List<Suite> suites) {
         for (Suite s : suites) {
-            System.out.println("    *** " + s.getName() + " *** ");
+           options.getFormatter().println("    *** " + s.getName() + " *** ");
             for (Test t : s.getReport().getTestProblems()) {
-                System.out.println("       Name : " + t.getName());
-                System.out.println("       Line : " + t.getStatusLine());
+               options.getFormatter().println("       Name : " + t.getName());
+               options.getFormatter().println("       Line : " + t.getStatusLine());
                 for (TestOutput o : t.getOutputs()) {
-                    System.out.println("         Name  :\n" + o.getName());
-                    System.out.println("         Value :\n" + o.getValue());
+                   options.getFormatter().println("         Name  :\n" + o.getName());
+                   options.getFormatter().println("         Value :\n" + o.getValue());
                 }
 
             }
@@ -265,17 +266,17 @@ public class CompareBuilds {
 
     private void printTestChangesSummary(List<SuiteTestChanges> testChanges) {
         for (SuiteTestChanges st : testChanges) {
-            System.out.println("       *** " + st.getName() + " *** ");
+           options.getFormatter().println("       *** " + st.getName() + " *** ");
             if (!options.hideMisses()) {
-                System.out.println("        removed : " + st.getRemoved().size());
-                System.out.println("        added   : " + st.getAdded().size());
+               options.getFormatter().println("        removed : " + st.getRemoved().size());
+               options.getFormatter().println("        added   : " + st.getAdded().size());
             }
             if (!options.hidePositives()) {
-                System.out.println("        fixes   : " + st.getFixes().size());
+               options.getFormatter().println("        fixes   : " + st.getFixes().size());
             }
             if (!options.hideNegatives()) {
-                System.out.println("        errors  : " + st.getErrors().size());
-                System.out.println("        failures: " + st.getFailures().size());
+               options.getFormatter().println("        errors  : " + st.getErrors().size());
+               options.getFormatter().println("        failures: " + st.getFailures().size());
             }
 
         }
@@ -283,21 +284,21 @@ public class CompareBuilds {
 
     private void printTestChangesDetails(List<SuiteTestChanges> testChanges) {
         for (SuiteTestChanges st : testChanges) {
-            System.out.println("       *** " + st.getName() + " *** ");
+           options.getFormatter().println("       *** " + st.getName() + " *** ");
             if (!options.hideMisses()) {
-                System.out.println("        removed : ");
+               options.getFormatter().println("        removed : ");
                 printStringList("            ", st.getRemoved());
-                System.out.println("        added   : ");
+               options.getFormatter().println("        added   : ");
                 printStringList("            ", st.getAdded());
             }
             if (!options.hidePositives()) {
-                System.out.println("        fixes   : ");
+               options.getFormatter().println("        fixes   : ");
                 printStringList("            ", st.getFixes());
             }
             if (!options.hideNegatives()) {
-                System.out.println("        errors  : ");
+               options.getFormatter().println("        errors  : ");
                 printStringList("            ", st.getErrors());
-                System.out.println("        failures: ");
+               options.getFormatter().println("        failures: ");
                 printStringList("            ", st.getFailures());
             }
 

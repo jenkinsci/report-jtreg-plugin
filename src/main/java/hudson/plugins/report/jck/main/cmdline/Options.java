@@ -30,6 +30,7 @@ import hudson.plugins.report.jck.main.formatters.BasicFormatter;
 import hudson.plugins.report.jck.main.formatters.Formatter;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,7 @@ public class Options {
     private String output_type;
     private final List<String> views;
     private BasicFormatter formatter;
+    private PrintStream stream;
 
     public Options() {
         this.views = new ArrayList<>();
@@ -194,14 +196,22 @@ public class Options {
     public Formatter getFormatter() {
         if (formatter == null) {
             if (output_type.equals(Arguments.output_color)) {
-                formatter = new ColorFormatter();
+                formatter = new ColorFormatter(stream);
             } else if (output_type.equals(Arguments.output_html)) {
-                formatter = new HtmlFormatter();
+                formatter = new HtmlFormatter(stream);
             } else {
-                formatter = new PlainFormatter();
+                formatter = new PlainFormatter(stream);
             }
         }
         return formatter;
 
+    }
+    
+    public void setStream(PrintStream o){
+        this.stream=o;
+    }
+    
+    public PrintStream getStream(){
+        return stream;
     }
 }
