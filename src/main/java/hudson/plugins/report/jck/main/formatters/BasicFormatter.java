@@ -27,7 +27,7 @@ import java.io.PrintStream;
 
 public abstract class BasicFormatter implements Formatter {
 
-    PrintStream o;
+    protected PrintStream o;
 
     public BasicFormatter(PrintStream o) {
         this.o = o;
@@ -40,7 +40,7 @@ public abstract class BasicFormatter implements Formatter {
 
     @Override
     public void println(String s) {
-        o.println();
+        o.println(s);
     }
 
     @Override

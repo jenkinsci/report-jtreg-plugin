@@ -47,10 +47,5 @@ public class HtmlFormatter extends BasicFormatter {
         return s.replaceAll(" ", "&nbsp;");
     }
     
-    
-    
-    
-    
-    
-    
+  
 }
