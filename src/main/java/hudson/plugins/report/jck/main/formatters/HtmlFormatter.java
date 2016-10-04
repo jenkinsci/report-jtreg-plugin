@@ -33,9 +33,23 @@ public class HtmlFormatter extends BasicFormatter {
     }
 
     @Override
-    public void println(String s) {
-        println(s+"<br/>");
+    public void print(String s) {
+        super.print(sanitize(s));
     }
+
+    
+    @Override
+    public void println(String s) {
+        super.println(sanitize(s)+"<br/>");
+    }
+
+    private String sanitize(String s) {
+        return s.replaceAll(" ", "&nbsp;");
+    }
+    
+    
+    
+    
     
     
     

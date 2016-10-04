@@ -25,11 +25,21 @@ package hudson.plugins.report.jck.main.formatters;
 
 import java.io.PrintStream;
 
-
 public class ColorFormatter extends BasicFormatter {
+
+    String BLACK = "[0;30m";
+    String RED = "[0;31m";
+    String GREEN = "[0;32m";
+    String BLUE = "[0;34m";
+    String MAGENTA = "[0;35m";
+    String CYAN = "[0;36m";
+    String LBLUE = "[1;34m";
+    String LGREEN = "[1;32m";
+    String YELLOW = "[1;33m";
+    String RESET = "[0m";
 
     public ColorFormatter(PrintStream stream) {
         super(stream);
     }
-    
+
 }
