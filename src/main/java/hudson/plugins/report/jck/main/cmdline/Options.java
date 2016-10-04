@@ -23,6 +23,11 @@
  */
 package hudson.plugins.report.jck.main.cmdline;
 
+import hudson.plugins.report.jck.main.formatters.ColorFormatter;
+import hudson.plugins.report.jck.main.formatters.HtmlFormatter;
+import hudson.plugins.report.jck.main.formatters.PlainFormatter;
+import hudson.plugins.report.jck.main.formatters.BasicFormatter;
+import hudson.plugins.report.jck.main.formatters.Formatter;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -36,6 +41,7 @@ public class Options {
     private boolean fill = false;
     private String output_type;
     private final List<String> views;
+    private BasicFormatter formatter;
 
     public Options() {
         this.views = new ArrayList<>();
@@ -183,5 +189,19 @@ public class Options {
                 }
             }
         }
+    }
+
+    public Formatter getFormatter() {
+        if (formatter == null) {
+            if (output_type.equals(Arguments.output_color)) {
+                formatter = new ColorFormatter();
+            } else if (output_type.equals(Arguments.output_html)) {
+                formatter = new HtmlFormatter();
+            } else {
+                formatter = new PlainFormatter();
+            }
+        }
+        return formatter;
+
     }
 }

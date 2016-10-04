@@ -93,8 +93,8 @@ public class Arguments {
 
     private static final String[] switches = {output, view, fillSwitch, skipFailedSwitch};
 
-    private static final String output_html = "html";
-    private static final String output_color = "color";
+    static final String output_html = "html";
+    static final String output_color = "color";
     private static final String[] knownOutputs = new String[]{output_color, output_html};
 
     static final String view_info_summary = "info-summary";
