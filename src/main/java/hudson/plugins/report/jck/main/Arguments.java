@@ -257,7 +257,7 @@ class Arguments {
         if (skipFailed) {
             if (!file.exists()
                     || !new File(file, "log").exists()
-                    || tail(new File(file, "log")).contains("FAILURE")) {
+                    || tail(new File(file, "log")).matches(".*(ABORTED|FAILURE).*")) {
                 System.err.println("File " + file + " excluded - " + skipFailedSwitch + " specified, and it seems to be fialed build");
             } else {
                 dirsToWork.add(file);
