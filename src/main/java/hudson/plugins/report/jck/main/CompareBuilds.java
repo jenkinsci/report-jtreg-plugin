@@ -23,9 +23,11 @@
  */
 package hudson.plugins.report.jck.main;
 
+import hudson.plugins.report.jck.main.cmdline.Arguments;
 import hudson.plugins.report.jck.BuildReportExtended;
 import hudson.plugins.report.jck.BuildSummaryParser;
 import hudson.plugins.report.jck.JckReportPublisher;
+import hudson.plugins.report.jck.main.cmdline.Options;
 import hudson.plugins.report.jck.model.BuildReport;
 import hudson.plugins.report.jck.model.Report;
 import hudson.plugins.report.jck.model.Suite;
@@ -41,71 +43,76 @@ import java.util.List;
 public class CompareBuilds {
 
     public static void main(String[] args) throws Exception {
-        Arguments a = new Arguments(args).parse();
-        new CompareBuilds().work(a);
+        Options options = new Arguments(args).parse();
+        new CompareBuilds(options).work();
+    }
+    private final Options options;
+
+    private CompareBuilds(Options options) {
+        this.options = options;
     }
 
-    private void work(Arguments a) throws IOException, Exception {
-        for (int i = 0; i < a.getDirsToWork().size(); i++) {
-            File newOne = a.getDirsToWork().get(i);
+    private void work() throws IOException, Exception {
+        for (int i = 0; i < options.getDirsToWork().size(); i++) {
+            File newOne = options.getDirsToWork().get(i);
             File oldOne = null;
-            if (i < a.getDirsToWork().size() - 1) {
-                oldOne = a.getDirsToWork().get(i + 1);
+            if (i < options.getDirsToWork().size() - 1) {
+                oldOne = options.getDirsToWork().get(i + 1);
             }
             JckReportPublisher jcp = new JckReportPublisher("report-{runtime,devtools,compiler}.xml.gz");
             BuildSummaryParser bs = new BuildSummaryParser(Arrays.asList("jck", "jtreg"), jcp);
 
             BuildReport br = bs.parseJobReports(newOne);
-            if (a.viewInfoProblems() || a.viewInfoSummary() || a.viewInfoSummarySuites()) {
+            if (options.isInfo()) {
                 printName(br, null);
             }
-            if (a.viewInfoSummary()) {
+            if (options.viewInfoSummary()) {
                 printReport(br, null);
             }
-            if (a.viewInfoSummarySuites()) {
+            if (options.viewInfoSummarySuites()) {
                 printSuites(br.getSuites(), null);
             }
-            if (a.viewInfoProblems()) {
+            if (options.viewInfoProblems()) {
                 printProblems(br.getSuites());
             }
             if (oldOne != null) {
                 BuildReport br1 = bs.parseJobReports(oldOne);
-                if (a.viewInfoProblems() || a.viewInfoSummary() || a.viewInfoSummarySuites()) {
+                if (options.isInfo()) {
                     printName(br1, null);
                 }
-                if (a.viewInfoSummary()) {
+                if (options.viewInfoSummary()) {
                     printReport(br1, null);
                 }
-                if (a.viewInfoSummarySuites()) {
+                if (options.viewInfoSummarySuites()) {
                     printSuites(br1.getSuites(), null);
                 }
-                if (a.viewInfoProblems()) {
+                if (options.viewInfoProblems()) {
                     printProblems(br1.getSuites());
                 }
 
                 BuildReportExtended bex = null;
-                if (a.viewDiffDetails() || a.viewDiffList() || a.viewDiffSummary() || a.viewDiffSummarySuites()) {
+                if (options.isDiff()) {
                     System.out.println("----------- diff summary -----------");
                     bex = bs.parseBuildReportExtended(new RunWrapperFromDir(newOne), new RunWrapperFromDir(oldOne));
                     printName(bex, br1);
                 }
-                if (a.viewDiffSummary()) {
+                if (options.viewDiffSummary()) {
                     printReport(bex, br1);
                 }
-                if (a.viewDiffSummarySuites()) {
+                if (options.viewDiffSummarySuites()) {
                     printSuites(bex.getSuites(), br1.getSuites());
                 }
-                if (a.viewDiffDetails() || a.viewDiffList()) {
+                if (options.viewDiffDetails() || options.viewDiffList()) {
                     System.out.println("----------- comaprsion -----------");
                     System.out.println("    Removed suites: " + bex.getRemovedSuites().size());
                     printStringList("        ", bex.getRemovedSuites());
                     System.out.println("      Added suites: " + bex.getRemovedSuites().size());
                     printStringList("        ", bex.getAddedSuites());
                 }
-                if (a.viewDiffDetails()) {
+                if (options.viewDiffDetails()) {
                     printTestChangesSummary(bex.getTestChanges());
                 }
-                if (a.viewDiffList()) {
+                if (options.viewDiffList()) {
                     System.out.println("----------- comaprsion details -----------");
                     printTestChangesDetails(bex.getTestChanges());
                 }
