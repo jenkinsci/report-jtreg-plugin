@@ -35,9 +35,11 @@ public class Arguments {
     private boolean argsAreDirs;
     private String jenkinsDir;
     private String jobName;
+    private File jobsDir;
     private File jobDir;
     private File buildsDir;
     private int latestBuild;
+    private String[] possibleJobs;
 
     public Arguments(String[] args) {
         this.mainArgs = new ArrayList<>(args.length);
@@ -167,7 +169,16 @@ public class Arguments {
                 throw new RuntimeException("You are working in jenkins jobs mode, but non -Djenkins_home nor $JENKINS_HOME is specified");
             }
             jobName = mainArgs.get(0);
-            jobDir = new File(jenkinsDir + "/jobs/" + jobName);
+            jobsDir = new File(jenkinsDir, "jobs");
+            possibleJobs = jobDir.list();
+            if (!arrayContains(possibleJobs, jobName)) {
+                System.out.println("Possible jobs");
+                for (String jobs : possibleJobs) {
+                    System.out.println(jobs);
+                }
+                throw new RuntimeException("Unknown job " + jobName);
+            }
+            jobDir = new File(jobsDir, jobName);
             buildsDir = new File(jobDir, "builds");
             latestBuild = getLatestBuildId(buildsDir);
             if (result.isFill()) {
