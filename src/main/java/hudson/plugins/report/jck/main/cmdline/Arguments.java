@@ -25,6 +25,7 @@ package hudson.plugins.report.jck.main.cmdline;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -144,11 +145,6 @@ public class Arguments {
         if (result.isFill() && mainArgs.size() <= 2) {
             throw new RuntimeException(fillSwitch + " can be used only for two or more job pointers. You have " + (mainArgs.size() - 1));
         }
-        //fill canbe used with odd number of jobPointers
-        // so removing one for job name
-        invalidated (result.isFill() && (mainArgs.size() - 1) % 2 == 1) {
-            throw new RuntimeException(fillSwitch + " can be used only for even number of main arguments (job name donot count)");
-        }
         Boolean allSameKind = null;
         for (String string : mainArgs) {
             if (allSameKind == null) {
@@ -172,17 +168,11 @@ public class Arguments {
             }
             jobsDir = new File(jenkinsDir, "jobs");
             possibleJobs = jobsDir.list();
-            jobName = mainArgs.get(0);
-            if (!arrayContains(possibleJobs, jobName)) {
-                System.out.println("Possible jobs");
-                for (String jobs : possibleJobs) {
-                    System.out.println(jobs);
-                }
-                throw new RuntimeException("Unknown job " + jobName);
-            }
-            jobDir = new File(jobsDir, jobName);
-            buildsDir = new File(jobDir, "builds");
-            latestBuild = getLatestBuildId(buildsDir);
+            Arrays.sort(possibleJobs);
+            String jobName = null;
+            File jobDir;
+            File buildsDir = null;
+            Integer latestBuild = null;
             if (result.isFill()) {
                 int i = -1;
                 while (true) {
@@ -190,8 +180,25 @@ public class Arguments {
                     if (i >= mainArgs.size()) {
                         break;
                     }
-                    int from = Integer.valueOf(mainArgs.get(i));
-                    int to = Integer.valueOf(mainArgs.get(i + 1));
+                    String arg = mainArgs.get(i);
+                    if (!isNumber(arg)) {
+                        jobName = arg;
+                        checkJob(jobName);
+                        jobDir = new File(jobsDir, jobName);
+                        buildsDir = new File(jobDir, "builds");
+                        latestBuild = getLatestBuildId(buildsDir);
+                        continue;
+                    }
+                    if (jobName == null) {
+                        throw new RuntimeException("You are tying to specify build " + arg + " but not have no job specified ahead.");
+                    }
+                    int from = Integer.valueOf(arg);
+                    i++;
+                    arg = mainArgs.get(i);
+                    if (!isNumber(arg)) {
+                        throw new RuntimeException("You have " + fillSwitch + " set, but when reading " + arg + " it looks like odd number of arguments. Even expected");
+                    }
+                    int to = Integer.valueOf(arg);
                     if (from <= 0) {
                         from = latestBuild + from;
                     }
@@ -212,7 +219,18 @@ public class Arguments {
                 }
             } else {
                 for (int i = 0; i < mainArgs.size(); i++) {
-                    isJobNumber(mainArgs.get(i))
+                    String arg = mainArgs.get(i);
+                    if (!isNumber(arg)) {
+                        jobName = arg;
+                        checkJob(jobName);
+                        jobDir = new File(jobsDir, jobName);
+                        buildsDir = new File(jobDir, "builds");
+                        latestBuild = getLatestBuildId(buildsDir);
+                        continue;
+                    }
+                    if (jobName == null) {
+                        throw new RuntimeException("You are tying to specify build " + arg + " but not have no job specified ahead.");
+                    }
                     int jobId = Integer.valueOf(mainArgs.get(i));
                     if (jobId <= 0) {
                         jobId = latestBuild + jobId;
@@ -285,6 +303,20 @@ public class Arguments {
             return true;
         } catch (Exception ex) {
             return false;
+        }
+    }
+
+    private boolean isJob(String jobName) {
+        return arrayContains(possibleJobs, jobName);
+    }
+
+    private void checkJob(String jobName) {
+        if (!isJob(jobName)) {
+            System.out.println("Possible jobs");
+            for (String jobs : possibleJobs) {
+                System.out.println(jobs);
+            }
+            throw new RuntimeException("Unknown job `" + jobName + "`");
         }
     }
 }
