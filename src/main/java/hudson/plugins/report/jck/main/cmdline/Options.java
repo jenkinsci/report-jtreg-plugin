@@ -195,9 +195,9 @@ public class Options {
 
     public Formatter getFormatter() {
         if (formatter == null) {
-            if (output_type.equals(Arguments.output_color)) {
+            if (Arguments.output_color.equals(output_type)) {
                 formatter = new ColorFormatter(stream);
-            } else if (output_type.equals(Arguments.output_html)) {
+            } else if (Arguments.output_html.equals(output_type)) {
                 formatter = new HtmlFormatter(stream);
             } else {
                 formatter = new PlainFormatter(stream);
