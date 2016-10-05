@@ -23,36 +23,24 @@
  */
 package hudson.plugins.report.jck.main.formatters;
 
-public interface Formatter {
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 
-    public enum SupportedColors {
-        Default,
-        Black,
-        Red,
-        Green,
-        Yellow,
-        Blue,
-        Magenta,
-        Cyan,
-        LightRed,
-        LightGreen,
-        LightYellow,
-        LightBlue,
-        LightMagenta,
-        LightCyan,
+public abstract class StringMappedFormatter extends BasicFormatter {
 
+    protected final Map<Formatter.SupportedColors, String> colors = new HashMap<>();
+
+    public StringMappedFormatter(PrintStream o) {
+        super(o);
     }
 
-    public void print(String s);
-
-    public void println();
-
-    public void println(String s);
-
-    public void startBold();
-
-    public void startColor(SupportedColors color);
-
-    public void reset();
+    protected String getColor(SupportedColors color) {
+        String sc = colors.get(color);
+        if (sc == null) {
+            throw new RuntimeException("Unknown color " + color);
+        }
+        return sc;
+    }
 
 }

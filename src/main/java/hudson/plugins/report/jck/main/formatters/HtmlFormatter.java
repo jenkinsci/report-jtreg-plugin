@@ -24,12 +24,14 @@
 package hudson.plugins.report.jck.main.formatters;
 
 import java.io.PrintStream;
+import java.util.LinkedList;
+import java.util.List;
 
-
-public class HtmlFormatter extends BasicFormatter {
+public class HtmlFormatter extends StringMappedFormatter {
 
     public HtmlFormatter(PrintStream stream) {
         super(stream);
+        fillColors();
     }
 
     @Override
@@ -37,15 +39,59 @@ public class HtmlFormatter extends BasicFormatter {
         super.print(sanitize(s));
     }
 
-    
     @Override
     public void println(String s) {
-        super.println(sanitize(s)+"<br/>");
+        super.println(sanitize(s) + "<br/>");
     }
 
     private String sanitize(String s) {
-        return s.replaceAll(" ", "&nbsp;");
+        if (s == null) {
+            return null;
+        }
+        return s.replaceAll("  ", "&nbsp; ");
     }
-    
-  
+
+    private void fillColors() {
+        colors.put(SupportedColors.Black, template("black"));
+        colors.put(SupportedColors.Red, template("red"));
+        colors.put(SupportedColors.Green, template("green"));
+        colors.put(SupportedColors.Yellow, template("yellow"));
+        colors.put(SupportedColors.Blue, template("blue"));
+        colors.put(SupportedColors.Magenta, template("magenta"));
+        colors.put(SupportedColors.Cyan, template("cyan"));
+        colors.put(SupportedColors.LightRed, template("OrangeRed"));
+        colors.put(SupportedColors.LightGreen, template("LightGreen"));
+        colors.put(SupportedColors.LightYellow, template("LightYellow"));
+        colors.put(SupportedColors.LightBlue, template("LightBlue"));
+        colors.put(SupportedColors.LightMagenta, template("Violet"));
+        colors.put(SupportedColors.LightCyan, template("LightCyan"));
+    }
+
+    private List<String> clossingBuffer = new LinkedList();
+
+    private String template(String color) {
+        //keep only one space! see sanitize
+        return "<span style='color:" + color + "'>";
+    }
+
+    @Override
+    public void startBold() {
+        print("<b>");
+        clossingBuffer.add("</b>");
+    }
+
+    @Override
+    public void startColor(SupportedColors color) {
+        print(getColor(color));
+        clossingBuffer.add("</span>");
+    }
+
+    @Override
+    public void reset() {
+        while (!clossingBuffer.isEmpty()) {
+            print(clossingBuffer.get(clossingBuffer.size() - 1));
+            clossingBuffer.remove(clossingBuffer.size() - 1);
+        }
+    }
+
 }

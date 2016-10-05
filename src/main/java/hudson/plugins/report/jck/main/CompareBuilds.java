@@ -28,6 +28,7 @@ import hudson.plugins.report.jck.BuildReportExtended;
 import hudson.plugins.report.jck.BuildSummaryParser;
 import hudson.plugins.report.jck.JckReportPublisher;
 import hudson.plugins.report.jck.main.cmdline.Options;
+import hudson.plugins.report.jck.main.formatters.Formatter;
 import hudson.plugins.report.jck.model.BuildReport;
 import hudson.plugins.report.jck.model.Report;
 import hudson.plugins.report.jck.model.Suite;
@@ -200,12 +201,14 @@ public class CompareBuilds {
     }
 
     private void printName(BuildReport br, BuildReport old) {
+        options.getFormatter().startColor(Formatter.SupportedColors.LightCyan);
         options.getFormatter().print(br.getBuildNumber() + ": " + br.getBuildName());
         if (old != null) {
             options.getFormatter().print(" x(old) " + old.getBuildNumber() + ": " + old.getBuildName());
         }
         options.getFormatter().println();
         String nwNra = getChangelogsNvr(br.getBuildName());
+        options.getFormatter().startBold();
         options.getFormatter().print(nwNra);
         String nwNraOld = null;
         if (old != null) {
@@ -215,7 +218,7 @@ public class CompareBuilds {
         if (nwNra != null || nwNraOld != null) {
             options.getFormatter().println();
         }
-
+        options.getFormatter().reset();
     }
 
     private void printReport(BuildReport br, BuildReport old) {

@@ -33,5 +33,23 @@ public class PlainFormatter extends BasicFormatter {
     public PlainFormatter(PrintStream stream) {
         super(stream);
     }
+
+    @Override
+    public void startBold() {
+        //no op
+    }
+
+
+    @Override
+    public void startColor(SupportedColors color) {
+        //no op
+    }
+
+    @Override
+    public void reset() {
+        //no op
+    }
+
+   
     
 }

@@ -24,22 +24,65 @@
 package hudson.plugins.report.jck.main.formatters;
 
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ColorFormatter extends BasicFormatter {
+public class ColorFormatter extends StringMappedFormatter {
 
-    String BLACK = "[0;30m";
-    String RED = "[0;31m";
-    String GREEN = "[0;32m";
-    String BLUE = "[0;34m";
-    String MAGENTA = "[0;35m";
-    String CYAN = "[0;36m";
-    String LBLUE = "[1;34m";
-    String LGREEN = "[1;32m";
-    String YELLOW = "[1;33m";
-    String RESET = "[0m";
+    private static final String Default = "\\e[39m";
+
+    private static final String ResetAll = "\\e[0m";
+
+    private static final String Bold = "\\e[1m";
+
+    private static final String Black = "\\e[30m";
+    private static final String Red = "\\e[31m";
+    private static final String Green = "\\e[32m";
+    private static final String Yellow = "\\e[33m";
+    private static final String Blue = "\\e[34m";
+    private static final String Magenta = "\\e[35m";
+    private static final String Cyan = "\\e[36m";
+    private static final String LightRed = "\\e[91m";
+    private static final String LightGreen = "\\e[92m";
+    private static final String LightYellow = "\\e[93m";
+    private static final String LightBlue = "\\e[94m";
+    private static final String LightMagenta = "\\e[95m";
+    private static final String LightCyan = "\\e[96m";
+
+    private void fillColors() {
+        colors.put(SupportedColors.Black, Black);
+        colors.put(SupportedColors.Red, Red);
+        colors.put(SupportedColors.Green, Green);
+        colors.put(SupportedColors.Yellow, Yellow);
+        colors.put(SupportedColors.Blue, Blue);
+        colors.put(SupportedColors.Magenta, Magenta);
+        colors.put(SupportedColors.Cyan, Cyan);
+        colors.put(SupportedColors.LightRed, LightRed);
+        colors.put(SupportedColors.LightGreen, LightGreen);
+        colors.put(SupportedColors.LightYellow, LightYellow);
+        colors.put(SupportedColors.LightBlue, LightBlue);
+        colors.put(SupportedColors.LightMagenta, LightMagenta);
+        colors.put(SupportedColors.LightCyan, LightCyan);
+    }
 
     public ColorFormatter(PrintStream stream) {
         super(stream);
+        fillColors();
+    }
+
+    @Override
+    public void startBold() {
+        print(Bold);
+    }
+
+    @Override
+    public void startColor(SupportedColors color) {
+        print(getColor(color));
+    }
+
+    @Override
+    public void reset() {
+        print(ResetAll);
     }
 
 }
