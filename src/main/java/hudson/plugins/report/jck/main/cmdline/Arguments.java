@@ -34,11 +34,7 @@ public class Arguments {
     private final List<String> mainArgs;
     private boolean argsAreDirs;
     private String jenkinsDir;
-    private String jobName;
     private File jobsDir;
-    private File jobDir;
-    private File buildsDir;
-    private int latestBuild;
     private String[] possibleJobs;
 
     public Arguments(String[] args) {
@@ -46,15 +42,15 @@ public class Arguments {
         if (args.length == 0) {
             System.out.println(" options DIR1 DIR2 DIR3 ... DIRn");
             System.out.println("  or  ");
-            System.out.println(" options JOB_NAME jobPointer1 jobPointer2 jobPointer3 ... jobPointerN");
+            System.out.println(" options JOB_NAME-1 buildPointer1.1 buildPointer1.2  ... jobPointer1.N JOB_NAME-2 buildPointer2.1 buildPointer2.2  ... jobPointer2.N ... JOB_NAME-N ...jobPointerN.N");
             System.out.println("  options:  ");
             System.out.println(" " + output + "=" + argsToHelp(knownOutputs));
             System.out.println(" default output is 'plain text'. 0-1 of " + output + " is allowed.");
             System.out.println(" " + view + "=" + argsToHelp(knownViews));
             System.out.println(" default view is 'all'. 0-N of " + view + " is allowed.");
             System.out.println(" job pointers are numbers. If zero or negative, then it is 0 for last one, -1 for one beofre last ...");
-            System.out.println(" When using even (>1)number of job pointers, you can use " + fillSwitch + " switch to consider them as rows");
-            System.out.println(" Another strange argument is " + skipFailedSwitch + " which will skip failed/notexisting dirs during listing.");
+            System.out.println(" When using even number of build pointers, you can use " + fillSwitch + " switch to consider them as rows");
+            System.out.println(" Another strange argument is " + skipFailedSwitch + " which will skip failed/aborted/not-existing builds/dirs during listing.");
             throw new RuntimeException("At least one param expected");
         }
         this.base = new String[args.length];
@@ -74,9 +70,7 @@ public class Arguments {
         }
         for (String base1 : base) {
             String opt = base1.split("=")[0];
-            try {
-                Integer.valueOf(opt);
-            } catch (Exception ex) {
+            if (!isNumber(opt)) {
                 //not u number.. is known?
                 if (opt.startsWith("-") && !arrayContains(switches, opt)) {
                     System.err.println("WARNING unknown param " + opt);
@@ -152,7 +146,7 @@ public class Arguments {
         }
         //fill canbe used with odd number of jobPointers
         // so removing one for job name
-        if (result.isFill() && (mainArgs.size() - 1) % 2 == 1) {
+        invalidated (result.isFill() && (mainArgs.size() - 1) % 2 == 1) {
             throw new RuntimeException(fillSwitch + " can be used only for even number of main arguments (job name donot count)");
         }
         Boolean allSameKind = null;
@@ -176,9 +170,9 @@ public class Arguments {
             if (jenkinsDir == null) {
                 throw new RuntimeException("You are working in jenkins jobs mode, but non -Djenkins_home nor $JENKINS_HOME is specified");
             }
-            jobName = mainArgs.get(0);
             jobsDir = new File(jenkinsDir, "jobs");
             possibleJobs = jobsDir.list();
+            jobName = mainArgs.get(0);
             if (!arrayContains(possibleJobs, jobName)) {
                 System.out.println("Possible jobs");
                 for (String jobs : possibleJobs) {
@@ -190,8 +184,12 @@ public class Arguments {
             buildsDir = new File(jobDir, "builds");
             latestBuild = getLatestBuildId(buildsDir);
             if (result.isFill()) {
-                //skipping first one - job name
-                for (int i = 1; i < mainArgs.size(); i += 2) {
+                int i = -1;
+                while (true) {
+                    i++;
+                    if (i >= mainArgs.size()) {
+                        break;
+                    }
                     int from = Integer.valueOf(mainArgs.get(i));
                     int to = Integer.valueOf(mainArgs.get(i + 1));
                     if (from <= 0) {
@@ -213,8 +211,8 @@ public class Arguments {
                     }
                 }
             } else {
-                //skipping first one - job name
-                for (int i = 1; i < mainArgs.size(); i++) {
+                for (int i = 0; i < mainArgs.size(); i++) {
+                    isJobNumber(mainArgs.get(i))
                     int jobId = Integer.valueOf(mainArgs.get(i));
                     if (jobId <= 0) {
                         jobId = latestBuild + jobId;
@@ -279,5 +277,14 @@ public class Arguments {
             return 1;
         }
         return jobId;
+    }
+
+    public boolean isNumber(String s) {
+        try {
+            Integer.valueOf(s);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 }
