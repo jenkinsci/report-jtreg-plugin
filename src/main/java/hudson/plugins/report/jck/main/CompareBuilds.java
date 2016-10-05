@@ -265,10 +265,12 @@ public class CompareBuilds {
             options.getFormatter().println("    *** " + s.getName() + " *** ");
             for (Test t : s.getReport().getTestProblems()) {
                 options.getFormatter().println("       Name : " + t.getName());
-                options.getFormatter().println("       Line : " + t.getStatusLine());
-                for (TestOutput o : t.getOutputs()) {
-                    options.getFormatter().println("         Name  :\n" + o.getName());
-                    options.getFormatter().println("         Value :\n" + o.getValue());
+                if (!options.hideValues()) {
+                    options.getFormatter().println("       Line : " + t.getStatusLine());
+                    for (TestOutput o : t.getOutputs()) {
+                        options.getFormatter().println("         Name  :\n" + o.getName());
+                        options.getFormatter().println("         Value :\n" + o.getValue());
+                    }
                 }
 
             }

@@ -96,6 +96,7 @@ public class Arguments {
     static final String view_info_summary_suites = "info-summary-suites";
     static final String view_info_problems = "info-problems";
     static final String view_info = "info";
+    static final String view_info_hidevalues = "info-hide-details";
 
     static final String view_diff_summary = "diff-summary";
     static final String view_diff_summary_suites = "diff-summary-suites";
@@ -109,7 +110,7 @@ public class Arguments {
     static final String view_hide_totals = "hide-totals";
 
     private static final String[] knownViews = new String[]{
-        view_info_summary, view_info_summary_suites, view_info_problems,
+        view_info_summary, view_info_summary_suites, view_info_problems, view_info_hidevalues,
         view_diff_summary, view_diff_summary_suites, view_diff_details, view_diff_list,
         view_hide_positives, view_hide_negatives, view_hide_misses, view_hide_totals,
         view_diff, view_info

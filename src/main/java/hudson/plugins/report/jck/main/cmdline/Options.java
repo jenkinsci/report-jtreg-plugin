@@ -69,6 +69,10 @@ public class Options {
     public boolean hidePositives() {
         return views.contains(Arguments.view_hide_positives);
     }
+    
+    public boolean hideValues() {
+        return views.contains(Arguments.view_info_hidevalues);
+    }
 
     public boolean viewInfoSummary() {
         return views.isEmpty() || views.contains(Arguments.view_info_summary) || views.contains(Arguments.view_info);
