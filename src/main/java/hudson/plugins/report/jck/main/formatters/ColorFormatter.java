@@ -117,4 +117,9 @@ public class ColorFormatter extends StringMappedFormatter {
         startColor(SupportedColors.LightBlue);
     }
 
+    @Override
+    public void startTitle4() {
+        startColor(SupportedColors.Blue);
+    }
+
 }

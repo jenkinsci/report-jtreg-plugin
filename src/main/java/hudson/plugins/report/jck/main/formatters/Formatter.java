@@ -59,8 +59,10 @@ public interface Formatter {
 
     public void closeDoc();
 
+    public void startTitle4();
+
     public void startTitle3();
-    
+
     public void startTitle2();
 
     public void startTitle1();

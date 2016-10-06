@@ -166,18 +166,35 @@ public class CompareBuilds {
                 old = oldSuite.getReport();
             }
             Report br = s.getReport();
+            format().startTitle4();
             format().print("    " + s.getName());
+            format().reset();
             if (old != null) {
+                format().startTitle4();
                 format().print(" x(old) " + oldSuite.getName());
+                format().reset();
             }
             format().println();
             if (!options.hidePositives()) {
+                int eval = 0;
+                if (old != null) {
+                    eval = intDiff(br.getTestsPassed(), old.getTestsPassed());
+                } else if (eval > 0) {
+                    format().startColor(Formatter.SupportedColors.LightGreen);
+                }
+                if (eval < 0) {
+                    format().startColor(Formatter.SupportedColors.LightGreen);
+                    format().startBold();
+                } else {
+                    format().startColor(Formatter.SupportedColors.Green);
+                }
                 format().print("    Passed  : " + br.getTestsPassed());
                 if (old != null) {
                     format().print(" x(old) " + old.getTestsPassed() + " = " + intDiffToString(br.getTestsPassed(), old.getTestsPassed())
                     );
                 }
                 format().println();
+                format().reset();
             }
             if (!options.hideNegatives()) {
                 format().print("    Failed  : " + br.getTestsFailed());
@@ -239,11 +256,24 @@ public class CompareBuilds {
 
     private void printReport(BuildReport br, BuildReport old) {
         if (!options.hidePositives()) {
+            int eval = 0;
+            if (old != null) {
+                eval = intDiff(br.getPassed(), old.getPassed());
+            }
+            if (eval > 0) {
+                format().startColor(Formatter.SupportedColors.LightGreen);
+            } else if (eval < 0) {
+                format().startColor(Formatter.SupportedColors.LightGreen);
+                format().startBold();
+            } else {
+                format().startColor(Formatter.SupportedColors.Green);
+            }
             format().print("Passed  : " + br.getPassed());
             if (old != null) {
                 format().print(" x(old) " + old.getPassed() + " = " + intDiffToString(br.getPassed(), old.getPassed()));
             }
             format().println();
+            format().reset();
         }
         if (!options.hideNegatives()) {
             format().print("Failed  : " + br.getFailed());
@@ -342,11 +372,16 @@ public class CompareBuilds {
     }
 
     private String intDiffToString(int iN, int iO) {
-        int i = iN - iO;
+        int i = intDiff(iN, iO);
         if (i <= 0) {
             return "" + i;
         }
         return "+" + i;
+
+    }
+
+    private int intDiff(int iN, int iO) {
+        return iN - iO;
 
     }
 

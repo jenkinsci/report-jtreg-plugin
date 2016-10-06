@@ -70,4 +70,9 @@ public class PlainFormatter extends BasicFormatter {
     public void startTitle3() {
         //no op
     }
+
+    @Override
+    public void startTitle4() {
+        //no op
+    }
 }
