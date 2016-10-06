@@ -188,6 +188,7 @@ public class Arguments {
                         jobDir = new File(jobsDir, jobName);
                         buildsDir = new File(jobDir, "builds");
                         latestBuild = getLatestBuildId(buildsDir);
+                        System.err.println("latest build for "+jobName+" is "+latestBuild);
                         continue;
                     }
                     if (jobName == null) {
@@ -227,17 +228,37 @@ public class Arguments {
                         jobDir = new File(jobsDir, jobName);
                         buildsDir = new File(jobDir, "builds");
                         latestBuild = getLatestBuildId(buildsDir);
+                        System.err.println("latest build for "+jobName+" is "+latestBuild);
                         continue;
                     }
                     if (jobName == null) {
                         throw new RuntimeException("You are tying to specify build " + arg + " but not have no job specified ahead.");
                     }
-                    int jobId = Integer.valueOf(mainArgs.get(i));
+                    int origJobId = Integer.valueOf(mainArgs.get(i));
+                    int jobId = origJobId;
                     if (jobId <= 0) {
                         jobId = latestBuild + jobId;
                     }
                     jobId = sanitize(jobId);
-                    result.add(new File(buildsDir, String.valueOf(jobId)));
+                    if (result.isSkipFailed()) {
+                        while (true) {
+                            //iterating untill we find an passing build
+                            boolean added = result.add(new File(buildsDir, String.valueOf(jobId)));
+                            if (added) {
+                                break;
+                            }
+                            if (origJobId < 0) {
+                                jobId--;
+                            } else {
+                                jobId++;
+                            }
+                            if ((jobId < 1) || (jobId > latestBuild)) {
+                                break;
+                            }
+                        }
+                    } else {
+                        result.add(new File(buildsDir, String.valueOf(jobId)));
+                    }
                 }
             }
         } else {
