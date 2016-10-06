@@ -51,7 +51,7 @@ public class Arguments {
             System.out.println(" default view is 'all'. 0-N of " + view + " is allowed.");
             System.out.println(" job pointers are numbers. If zero or negative, then it is 0 for last one, -1 for one beofre last ...");
             System.out.println(" When using even number of build pointers, you can use " + fillSwitch + " switch to consider them as rows");
-            System.out.println(" Another strange argument is " + skipFailedSwitch + " which will skip failed/aborted/not-existing builds/dirs during listing.");
+            System.out.println(" Another strange argument is " + keepFailedSwitch + " which will include failed/aborted/not-existing builds/dirs during listing.");
             throw new RuntimeException("At least one param expected");
         }
         this.base = new String[args.length];
@@ -84,9 +84,9 @@ public class Arguments {
     private static final String output = "-output";
     private static final String view = "-view";
     private static final String fillSwitch = "-fill";
-    private static final String skipFailedSwitch = "-skip-failed";
+    private static final String keepFailedSwitch = "-keep-failed";
 
-    private static final String[] switches = {output, view, fillSwitch, skipFailedSwitch};
+    private static final String[] switches = {output, view, fillSwitch, keepFailedSwitch};
 
     static final String output_html = "html";
     static final String output_color = "color";
@@ -133,8 +133,8 @@ public class Arguments {
                 result.addView(nextView);
             } else if (arg.equals(fillSwitch)) {
                 result.setFill(true);
-            } else if (arg.equals(skipFailedSwitch)) {
-                result.setSkipFailed(true);
+            } else if (arg.equals(keepFailedSwitch)) {
+                result.setSkipFailed(false);
             } else {
                 mainArgs.add(arg);
             }

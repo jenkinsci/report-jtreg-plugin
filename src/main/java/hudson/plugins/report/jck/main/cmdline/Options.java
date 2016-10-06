@@ -37,7 +37,7 @@ import java.util.List;
 
 public class Options {
 
-    private boolean skipFailed;
+    private boolean skipFailed = true;
     private final List<File> dirsToWork;
     private boolean fill = false;
     private String output_type;
