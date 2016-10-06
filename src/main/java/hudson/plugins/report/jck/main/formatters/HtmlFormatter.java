@@ -94,4 +94,14 @@ public class HtmlFormatter extends StringMappedFormatter {
         }
     }
 
+    @Override
+    public void initDoc() {
+        println("<div style='background-color:black;color:white'>");
+    }
+
+    @Override
+    public void closeDoc() {
+        println("</div>");
+    }
+
 }

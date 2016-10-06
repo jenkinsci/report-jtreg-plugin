@@ -28,26 +28,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ColorFormatter extends StringMappedFormatter {
+//those are NOT spaces but bash \e
+    private static final String Default = "[39m";
 
-    private static final String Default = "\\e[39m";
+    private static final String ResetAll = "[0m";
 
-    private static final String ResetAll = "\\e[0m";
+    private static final String Bold = "[1m";
 
-    private static final String Bold = "\\e[1m";
-
-    private static final String Black = "\\e[30m";
-    private static final String Red = "\\e[31m";
-    private static final String Green = "\\e[32m";
-    private static final String Yellow = "\\e[33m";
-    private static final String Blue = "\\e[34m";
-    private static final String Magenta = "\\e[35m";
-    private static final String Cyan = "\\e[36m";
-    private static final String LightRed = "\\e[91m";
-    private static final String LightGreen = "\\e[92m";
-    private static final String LightYellow = "\\e[93m";
-    private static final String LightBlue = "\\e[94m";
-    private static final String LightMagenta = "\\e[95m";
-    private static final String LightCyan = "\\e[96m";
+    private static final String Black = "[30m";
+    private static final String Red = "[31m";
+    private static final String Green = "[32m";
+    private static final String Yellow = "[33m";
+    private static final String Blue = "[34m";
+    private static final String Magenta = "[35m";
+    private static final String Cyan = "[36m";
+    private static final String LightRed = "[91m";
+    private static final String LightGreen = "[92m";
+    private static final String LightYellow = "[93m";
+    private static final String LightBlue = "[94m";
+    private static final String LightMagenta = "[95m";
+    private static final String LightCyan = "[96m";
 
     private void fillColors() {
         colors.put(SupportedColors.Black, Black);
@@ -83,6 +83,23 @@ public class ColorFormatter extends StringMappedFormatter {
     @Override
     public void reset() {
         print(ResetAll);
+        preset();
+    }
+
+    @Override
+    public void initDoc() {
+        reset();
+    }
+
+    @Override
+    public void closeDoc() {
+        print(ResetAll);
+    }
+
+    private void preset() {
+        //sets black background and white font
+        print("[49m");
+        print("[97m");
     }
 
 }

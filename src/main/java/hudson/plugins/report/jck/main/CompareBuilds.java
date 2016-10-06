@@ -56,6 +56,15 @@ public class CompareBuilds {
     }
 
     private void work() throws IOException, Exception {
+        try {
+            options.getFormatter().initDoc();
+            workImpl();
+        } finally {
+            options.getFormatter().closeDoc();
+        }
+    }
+
+    private void workImpl() throws IOException, Exception {
         for (int i = 0; i < options.getDirsToWork().size(); i++) {
             File newOne = options.getDirsToWork().get(i);
             File oldOne = null;

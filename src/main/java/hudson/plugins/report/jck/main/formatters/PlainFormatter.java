@@ -50,6 +50,16 @@ public class PlainFormatter extends BasicFormatter {
         //no op
     }
 
+    @Override
+    public void initDoc() {
+        //no op
+    }
+
+    @Override
+    public void closeDoc() {
+        //no op
+    }
+
    
     
 }
