@@ -38,7 +38,10 @@ import hudson.plugins.report.jck.model.TestOutput;
 import hudson.plugins.report.jck.wrappers.RunWrapperFromDir;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
@@ -176,18 +179,7 @@ public class CompareBuilds {
             }
             format().println();
             if (!options.hidePositives()) {
-                int eval = 0;
-                if (old != null) {
-                    eval = intDiff(br.getTestsPassed(), old.getTestsPassed());
-                } else if (eval > 0) {
-                    format().startColor(Formatter.SupportedColors.LightGreen);
-                }
-                if (eval < 0) {
-                    format().startColor(Formatter.SupportedColors.LightGreen);
-                    format().startBold();
-                } else {
-                    format().startColor(Formatter.SupportedColors.Green);
-                }
+                setFontByDiff(br, old, "getTestsPassed", Formatter.SupportedColors.Green, Formatter.SupportedColors.LightGreen);
                 format().print("    Passed  : " + br.getTestsPassed());
                 if (old != null) {
                     format().print(" x(old) " + old.getTestsPassed() + " = " + intDiffToString(br.getTestsPassed(), old.getTestsPassed())
@@ -197,15 +189,19 @@ public class CompareBuilds {
                 format().reset();
             }
             if (!options.hideNegatives()) {
+                setFontByDiffNeg(br, old, "getTestsFailed", Formatter.SupportedColors.Red, Formatter.SupportedColors.LightRed);
                 format().print("    Failed  : " + br.getTestsFailed());
                 if (old != null) {
                     format().print(" x(old) " + old.getTestsFailed() + " = " + intDiffToString(br.getTestsFailed(), old.getTestsFailed()));
                 }
+                format().reset();
                 format().println();
+                setFontByDiffNeg(br, old, "getTestsError", Formatter.SupportedColors.Red, Formatter.SupportedColors.LightRed);
                 format().print("    Error   : " + br.getTestsError());
                 if (old != null) {
                     format().print(" x(old) " + old.getTestsError() + " = " + intDiffToString(br.getTestsError(), old.getTestsError()));
                 }
+                format().reset();
                 format().println();
             }
             if (!options.hideTotals()) {
@@ -216,17 +212,21 @@ public class CompareBuilds {
                 format().println();
             }
             if (!options.hideMisses()) {
+                setFontByDiffAbs(br, old, "getTestsNotRun", Formatter.SupportedColors.Yellow, Formatter.SupportedColors.Yellow);
                 format().print("    Ignored : " + br.getTestsNotRun());
                 if (old != null) {
                     format().print(" x(old) " + old.getTestsNotRun() + " = " + intDiffToString(br.getTestsNotRun(), old.getTestsNotRun()));
                 }
+                format().reset();
                 format().println();
             }
             if (!options.hideNegatives()) {
+                setFontByDiffNeg(br, old, "getTestProblems", Formatter.SupportedColors.Red, Formatter.SupportedColors.LightRed);
                 format().print("    Problem : " + br.getTestProblems().size());
                 if (old != null) {
                     format().print(" x(old) " + old.getTestProblems().size() + " = " + intDiffToString(br.getTestProblems().size(), old.getTestProblems().size()));
                 }
+                format().reset();
                 format().println();
             }
         }
@@ -256,18 +256,7 @@ public class CompareBuilds {
 
     private void printReport(BuildReport br, BuildReport old) {
         if (!options.hidePositives()) {
-            int eval = 0;
-            if (old != null) {
-                eval = intDiff(br.getPassed(), old.getPassed());
-            }
-            if (eval > 0) {
-                format().startColor(Formatter.SupportedColors.LightGreen);
-            } else if (eval < 0) {
-                format().startColor(Formatter.SupportedColors.LightGreen);
-                format().startBold();
-            } else {
-                format().startColor(Formatter.SupportedColors.Green);
-            }
+            setFontByDiff(br, old, "getPassed", Formatter.SupportedColors.Green, Formatter.SupportedColors.LightGreen);
             format().print("Passed  : " + br.getPassed());
             if (old != null) {
                 format().print(" x(old) " + old.getPassed() + " = " + intDiffToString(br.getPassed(), old.getPassed()));
@@ -276,16 +265,20 @@ public class CompareBuilds {
             format().reset();
         }
         if (!options.hideNegatives()) {
+            setFontByDiffNeg(br, old, "getFailed", Formatter.SupportedColors.Red, Formatter.SupportedColors.LightRed);
             format().print("Failed  : " + br.getFailed());
             if (old != null) {
                 format().print(" x(old) " + old.getFailed() + " = " + intDiffToString(br.getFailed(), old.getFailed())
                 );
             }
+            format().reset();
             format().println();
+            setFontByDiffNeg(br, old, "getError", Formatter.SupportedColors.Red, Formatter.SupportedColors.LightRed);
             format().print("Error   : " + br.getError());
             if (old != null) {
                 format().print(" x(old) " + old.getError() + " = " + intDiffToString(br.getError(), old.getError()));
             }
+            format().reset();
             format().println();
         }
         if (!options.hideTotals()) {
@@ -296,10 +289,12 @@ public class CompareBuilds {
             format().println();
         }
         if (!options.hideMisses()) {
+            setFontByDiffAbs(br, old, "getNotRun", Formatter.SupportedColors.Yellow, Formatter.SupportedColors.Yellow);
             format().print("Ignored : " + br.getNotRun());
             if (old != null) {
                 format().print(" x(old) " + old.getNotRun() + " = " + intDiffToString(br.getNotRun(), old.getNotRun()));
             }
+            format().reset();
             format().println();
         }
         format().print("Suites  : " + br.getSuites().size());
@@ -315,13 +310,22 @@ public class CompareBuilds {
             format().println("    *** " + s.getName() + " *** ");
             format().reset();
             for (Test t : s.getReport().getTestProblems()) {
+                format().startBold();
+                format().startColor(Formatter.SupportedColors.LightRed);
                 format().println("       Name : " + t.getName());
+                format().reset();
+                format().startColor(Formatter.SupportedColors.Red);
                 if (!options.hideValues()) {
                     format().println("       Line : " + t.getStatusLine());
                     for (TestOutput o : t.getOutputs()) {
-                        format().println("         Name  :\n" + o.getName());
+                        format().startColor(Formatter.SupportedColors.LightRed);
+                        format().println("         Name  :" + o.getName());
+                        format().reset();
+                        format().startColor(Formatter.SupportedColors.Red);
                         format().println("         Value :\n" + o.getValue());
+                        format().reset();
                     }
+                    format().reset();
                 }
 
             }
@@ -334,15 +338,25 @@ public class CompareBuilds {
             format().println("       *** " + st.getName() + " *** ");
             format().reset();
             if (!options.hideMisses()) {
-                format().println("        removed : " + st.getRemoved().size());
-                format().println("        added   : " + st.getAdded().size());
+                setFontByKNownResult(-1 * st.getRemoved().size(), Formatter.SupportedColors.Red);
+                format().println("        removed : " + intDiffToString(st.getRemoved().size()));
+                format().reset();
+                setFontByKNownResult(-1 * st.getAdded().size(), Formatter.SupportedColors.Green);
+                format().println("        added   : " + intDiffToString(st.getAdded().size()));
+                format().reset();
             }
             if (!options.hidePositives()) {
-                format().println("        fixes   : " + st.getFixes().size());
+                setFontByKNownResult(-1 * st.getFixes().size(), Formatter.SupportedColors.LightGreen);
+                format().println("        fixes   : " + intDiffToString(st.getFixes().size()));
+                format().reset();
             }
             if (!options.hideNegatives()) {
-                format().println("        errors  : " + st.getErrors().size());
-                format().println("        failures: " + st.getFailures().size());
+                setFontByKNownResult(-1 * (st.getErrors().size()), Formatter.SupportedColors.LightRed);
+                format().println("        errors  : " + intDiffToString(st.getErrors().size()));
+                format().reset();
+                setFontByKNownResult(-1 * (st.getFailures().size()), Formatter.SupportedColors.LightRed);
+                format().println("        failures: " + intDiffToString(st.getFailures().size()));
+                format().reset();
             }
 
         }
@@ -353,26 +367,39 @@ public class CompareBuilds {
             format().println("       *** " + st.getName() + " *** ");
             if (!options.hideMisses()) {
                 format().println("        removed : ");
+                setFontByKNownResult(-1 * st.getRemoved().size(), Formatter.SupportedColors.Red);
                 printStringList("            ", st.getRemoved());
+                format().reset();
                 format().println("        added   : ");
+                setFontByKNownResult(-1 * st.getAdded().size(), Formatter.SupportedColors.Green);
                 printStringList("            ", st.getAdded());
+                format().reset();
             }
             if (!options.hidePositives()) {
                 format().println("        fixes   : ");
+                setFontByKNownResult(-1 * st.getFixes().size(), Formatter.SupportedColors.LightGreen);
                 printStringList("            ", st.getFixes());
+                format().reset();
             }
             if (!options.hideNegatives()) {
                 format().println("        errors  : ");
+                setFontByKNownResult(-1 * (st.getErrors().size()), Formatter.SupportedColors.LightRed);
                 printStringList("            ", st.getErrors());
+                format().reset();
                 format().println("        failures: ");
+                setFontByKNownResult(-1 * (st.getFailures().size()), Formatter.SupportedColors.LightRed);
                 printStringList("            ", st.getFailures());
+                format().reset();
             }
 
         }
     }
 
     private String intDiffToString(int iN, int iO) {
-        int i = intDiff(iN, iO);
+        return intDiffToString(intDiff(iN, iO));
+    }
+
+    private String intDiffToString(int i) {
         if (i <= 0) {
             return "" + i;
         }
@@ -422,5 +449,68 @@ public class CompareBuilds {
     //shortcut
     private Formatter format() {
         return options.getFormatter();
+    }
+
+    private void setFontByDiff(Object br, Object old, String method, Formatter.SupportedColors c0, Formatter.SupportedColors cNonZero) {
+        setFontByDiff(br, old, method, 1, c0, cNonZero);
+    }
+
+    private void setFontByDiffNeg(Object br, Object old, String method, Formatter.SupportedColors c0, Formatter.SupportedColors cNonZero) {
+        setFontByDiff(br, old, method, -1, c0, cNonZero);
+    }
+
+    private void setFontByDiffAbs(Object br, Object old, String method, Formatter.SupportedColors c0, Formatter.SupportedColors cNonZero) {
+        setFontByDiff(br, old, method, 0, c0, cNonZero);
+    }
+
+    private void setFontByDiff(Object br, Object old, String method, int difMultiplier, Formatter.SupportedColors c0, Formatter.SupportedColors cNonZero) {
+
+        int eval = 0;
+        if (old != null) {
+            eval = intDiff(callMethod(br, method), callMethod(old, method));
+            if (difMultiplier == 0 && eval > 0) {
+                eval = eval * -1;
+            } else {
+                eval = difMultiplier * eval;
+            }
+        }
+        setFontByKNownResult(eval, cNonZero, c0);
+
+    }
+
+    //negative makes it bold
+    private void setFontByKNownResult(int eval, Formatter.SupportedColors c) {
+        setFontByKNownResult(eval, c, c);
+    }
+
+    //when result is zero, one color is shown
+    //when nonzero, second color is shown
+    //when negative, it is bold in addition
+    private void setFontByKNownResult(int eval, Formatter.SupportedColors cNonZero, Formatter.SupportedColors c0) {
+        if (eval > 0) {
+            format().startColor(cNonZero);
+        } else if (eval < 0) {
+            format().startColor(cNonZero);
+            format().startBold();
+        } else {
+            format().startColor(c0);
+        }
+    }
+
+    private int callMethod(Object o, String method) {
+        try {
+            return callMethodImpl(o, method);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private int callMethodImpl(Object o, String method) throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        Method m = o.getClass().getMethod(method);
+        Object res = m.invoke(o);
+        if (res instanceof Collection) {
+            return ((Collection) res).size();
+        }
+        return (int) res;
     }
 }
