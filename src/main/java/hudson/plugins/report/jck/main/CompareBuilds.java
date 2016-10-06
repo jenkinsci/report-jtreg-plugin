@@ -57,10 +57,10 @@ public class CompareBuilds {
 
     private void work() throws IOException, Exception {
         try {
-            options.getFormatter().initDoc();
+            format().initDoc();
             workImpl();
         } finally {
-            options.getFormatter().closeDoc();
+            format().closeDoc();
         }
     }
 
@@ -104,7 +104,9 @@ public class CompareBuilds {
 
                 BuildReportExtended bex = null;
                 if (options.isDiff()) {
-                    options.getFormatter().println("----------- diff summary -----------");
+                    format().startTitle3();
+                    format().println("----------- diff summary -----------");
+                    format().reset();
                     bex = bs.parseBuildReportExtended(new RunWrapperFromDir(newOne), new RunWrapperFromDir(oldOne));
                     printName(bex, br1);
                 }
@@ -115,17 +117,21 @@ public class CompareBuilds {
                     printSuites(bex.getSuites(), br1.getSuites());
                 }
                 if (options.viewDiffDetails() || options.viewDiffList()) {
-                    options.getFormatter().println("----------- comaprsion -----------");
-                    options.getFormatter().println("    Removed suites: " + bex.getRemovedSuites().size());
+                    format().startTitle3();
+                    format().println("----------- comaprsion -----------");
+                    format().reset();
+                    format().println("    Removed suites: " + bex.getRemovedSuites().size());
                     printStringList("        ", bex.getRemovedSuites());
-                    options.getFormatter().println("      Added suites: " + bex.getRemovedSuites().size());
+                    format().println("      Added suites: " + bex.getRemovedSuites().size());
                     printStringList("        ", bex.getAddedSuites());
                 }
                 if (options.viewDiffDetails()) {
                     printTestChangesSummary(bex.getTestChanges());
                 }
                 if (options.viewDiffList()) {
-                    options.getFormatter().println("----------- comaprsion details -----------");
+                    format().startTitle3();
+                    format().println("----------- comaprsion details -----------");
+                    format().reset();
                     printTestChangesDetails(bex.getTestChanges());
                 }
 
@@ -135,7 +141,7 @@ public class CompareBuilds {
 
     private void printStringList(String prefix, List<String> ss) {
         for (String s : ss) {
-            options.getFormatter().println(prefix + s);
+            format().println(prefix + s);
         }
     }
 
@@ -160,128 +166,131 @@ public class CompareBuilds {
                 old = oldSuite.getReport();
             }
             Report br = s.getReport();
-            options.getFormatter().print("    " + s.getName());
+            format().print("    " + s.getName());
             if (old != null) {
-                options.getFormatter().print(" x(old) " + oldSuite.getName());
+                format().print(" x(old) " + oldSuite.getName());
             }
-            options.getFormatter().println();
+            format().println();
             if (!options.hidePositives()) {
-                options.getFormatter().print("    Passed  : " + br.getTestsPassed());
+                format().print("    Passed  : " + br.getTestsPassed());
                 if (old != null) {
-                    options.getFormatter().print(" x(old) " + old.getTestsPassed() + " = " + intDiffToString(br.getTestsPassed(), old.getTestsPassed())
+                    format().print(" x(old) " + old.getTestsPassed() + " = " + intDiffToString(br.getTestsPassed(), old.getTestsPassed())
                     );
                 }
-                options.getFormatter().println();
+                format().println();
             }
             if (!options.hideNegatives()) {
-                options.getFormatter().print("    Failed  : " + br.getTestsFailed());
+                format().print("    Failed  : " + br.getTestsFailed());
                 if (old != null) {
-                    options.getFormatter().print(" x(old) " + old.getTestsFailed() + " = " + intDiffToString(br.getTestsFailed(), old.getTestsFailed()));
+                    format().print(" x(old) " + old.getTestsFailed() + " = " + intDiffToString(br.getTestsFailed(), old.getTestsFailed()));
                 }
-                options.getFormatter().println();
-                options.getFormatter().print("    Error   : " + br.getTestsError());
+                format().println();
+                format().print("    Error   : " + br.getTestsError());
                 if (old != null) {
-                    options.getFormatter().print(" x(old) " + old.getTestsError() + " = " + intDiffToString(br.getTestsError(), old.getTestsError()));
+                    format().print(" x(old) " + old.getTestsError() + " = " + intDiffToString(br.getTestsError(), old.getTestsError()));
                 }
-                options.getFormatter().println();
+                format().println();
             }
             if (!options.hideTotals()) {
-                options.getFormatter().print("    Total   : " + br.getTestsTotal());
+                format().print("    Total   : " + br.getTestsTotal());
                 if (old != null) {
-                    options.getFormatter().print(" x(old) " + old.getTestsTotal() + " = " + intDiffToString(br.getTestsTotal(), old.getTestsTotal()));
+                    format().print(" x(old) " + old.getTestsTotal() + " = " + intDiffToString(br.getTestsTotal(), old.getTestsTotal()));
                 }
-                options.getFormatter().println();
+                format().println();
             }
             if (!options.hideMisses()) {
-                options.getFormatter().print("    Ignored : " + br.getTestsNotRun());
+                format().print("    Ignored : " + br.getTestsNotRun());
                 if (old != null) {
-                    options.getFormatter().print(" x(old) " + old.getTestsNotRun() + " = " + intDiffToString(br.getTestsNotRun(), old.getTestsNotRun()));
+                    format().print(" x(old) " + old.getTestsNotRun() + " = " + intDiffToString(br.getTestsNotRun(), old.getTestsNotRun()));
                 }
-                options.getFormatter().println();
+                format().println();
             }
             if (!options.hideNegatives()) {
-                options.getFormatter().print("    Problem : " + br.getTestProblems().size());
+                format().print("    Problem : " + br.getTestProblems().size());
                 if (old != null) {
-                    options.getFormatter().print(" x(old) " + old.getTestProblems().size() + " = " + intDiffToString(br.getTestProblems().size(), old.getTestProblems().size()));
+                    format().print(" x(old) " + old.getTestProblems().size() + " = " + intDiffToString(br.getTestProblems().size(), old.getTestProblems().size()));
                 }
-                options.getFormatter().println();
+                format().println();
             }
         }
     }
 
     private void printName(BuildReport br, BuildReport old) {
-        options.getFormatter().startColor(Formatter.SupportedColors.LightCyan);
-        options.getFormatter().print(br.getBuildNumber() + ": " + br.getBuildName());
+        format().startTitle2();
+        format().print(br.getBuildNumber() + ": " + br.getBuildName());
         if (old != null) {
-            options.getFormatter().print(" x(old) " + old.getBuildNumber() + ": " + old.getBuildName());
+            format().print(" x(old) " + old.getBuildNumber() + ": " + old.getBuildName());
         }
-        options.getFormatter().println();
+        format().reset();
+        format().println();
         String nwNra = getChangelogsNvr(br.getBuildName());
-        options.getFormatter().startBold();
-        options.getFormatter().print(nwNra);
+        format().startTitle1();
+        format().print(nwNra);
         String nwNraOld = null;
         if (old != null) {
             nwNraOld = getChangelogsNvr(old.getBuildName());
-            options.getFormatter().print(" x(old) " + nwNraOld);
+            format().print(" x(old) " + nwNraOld);
         }
         if (nwNra != null || nwNraOld != null) {
-            options.getFormatter().println();
+            format().println();
         }
-        options.getFormatter().reset();
+        format().reset();
     }
 
     private void printReport(BuildReport br, BuildReport old) {
         if (!options.hidePositives()) {
-            options.getFormatter().print("Passed  : " + br.getPassed());
+            format().print("Passed  : " + br.getPassed());
             if (old != null) {
-                options.getFormatter().print(" x(old) " + old.getPassed() + " = " + intDiffToString(br.getPassed(), old.getPassed()));
+                format().print(" x(old) " + old.getPassed() + " = " + intDiffToString(br.getPassed(), old.getPassed()));
             }
-            options.getFormatter().println();
+            format().println();
         }
         if (!options.hideNegatives()) {
-            options.getFormatter().print("Failed  : " + br.getFailed());
+            format().print("Failed  : " + br.getFailed());
             if (old != null) {
-                options.getFormatter().print(" x(old) " + old.getFailed() + " = " + intDiffToString(br.getFailed(), old.getFailed())
+                format().print(" x(old) " + old.getFailed() + " = " + intDiffToString(br.getFailed(), old.getFailed())
                 );
             }
-            options.getFormatter().println();
-            options.getFormatter().print("Error   : " + br.getError());
+            format().println();
+            format().print("Error   : " + br.getError());
             if (old != null) {
-                options.getFormatter().print(" x(old) " + old.getError() + " = " + intDiffToString(br.getError(), old.getError()));
+                format().print(" x(old) " + old.getError() + " = " + intDiffToString(br.getError(), old.getError()));
             }
-            options.getFormatter().println();
+            format().println();
         }
         if (!options.hideTotals()) {
-            options.getFormatter().print("Total   : " + br.getTotal());
+            format().print("Total   : " + br.getTotal());
             if (old != null) {
-                options.getFormatter().print(" x(old) " + old.getTotal() + " = " + intDiffToString(br.getTotal(), old.getTotal()));
+                format().print(" x(old) " + old.getTotal() + " = " + intDiffToString(br.getTotal(), old.getTotal()));
             }
-            options.getFormatter().println();
+            format().println();
         }
         if (!options.hideMisses()) {
-            options.getFormatter().print("Ignored : " + br.getNotRun());
+            format().print("Ignored : " + br.getNotRun());
             if (old != null) {
-                options.getFormatter().print(" x(old) " + old.getNotRun() + " = " + intDiffToString(br.getNotRun(), old.getNotRun()));
+                format().print(" x(old) " + old.getNotRun() + " = " + intDiffToString(br.getNotRun(), old.getNotRun()));
             }
-            options.getFormatter().println();
+            format().println();
         }
-        options.getFormatter().print("Suites  : " + br.getSuites().size());
+        format().print("Suites  : " + br.getSuites().size());
         if (old != null) {
-            options.getFormatter().print(" x(old) " + old.getSuites().size() + " = " + intDiffToString(br.getSuites().size(), old.getSuites().size()));
+            format().print(" x(old) " + old.getSuites().size() + " = " + intDiffToString(br.getSuites().size(), old.getSuites().size()));
         }
-        options.getFormatter().println();
+        format().println();
     }
 
     private void printProblems(List<Suite> suites) {
         for (Suite s : suites) {
-            options.getFormatter().println("    *** " + s.getName() + " *** ");
+            format().startTitle3();
+            format().println("    *** " + s.getName() + " *** ");
+            format().reset();
             for (Test t : s.getReport().getTestProblems()) {
-                options.getFormatter().println("       Name : " + t.getName());
+                format().println("       Name : " + t.getName());
                 if (!options.hideValues()) {
-                    options.getFormatter().println("       Line : " + t.getStatusLine());
+                    format().println("       Line : " + t.getStatusLine());
                     for (TestOutput o : t.getOutputs()) {
-                        options.getFormatter().println("         Name  :\n" + o.getName());
-                        options.getFormatter().println("         Value :\n" + o.getValue());
+                        format().println("         Name  :\n" + o.getName());
+                        format().println("         Value :\n" + o.getValue());
                     }
                 }
 
@@ -291,17 +300,19 @@ public class CompareBuilds {
 
     private void printTestChangesSummary(List<SuiteTestChanges> testChanges) {
         for (SuiteTestChanges st : testChanges) {
-            options.getFormatter().println("       *** " + st.getName() + " *** ");
+            format().startTitle3();
+            format().println("       *** " + st.getName() + " *** ");
+            format().reset();
             if (!options.hideMisses()) {
-                options.getFormatter().println("        removed : " + st.getRemoved().size());
-                options.getFormatter().println("        added   : " + st.getAdded().size());
+                format().println("        removed : " + st.getRemoved().size());
+                format().println("        added   : " + st.getAdded().size());
             }
             if (!options.hidePositives()) {
-                options.getFormatter().println("        fixes   : " + st.getFixes().size());
+                format().println("        fixes   : " + st.getFixes().size());
             }
             if (!options.hideNegatives()) {
-                options.getFormatter().println("        errors  : " + st.getErrors().size());
-                options.getFormatter().println("        failures: " + st.getFailures().size());
+                format().println("        errors  : " + st.getErrors().size());
+                format().println("        failures: " + st.getFailures().size());
             }
 
         }
@@ -309,21 +320,21 @@ public class CompareBuilds {
 
     private void printTestChangesDetails(List<SuiteTestChanges> testChanges) {
         for (SuiteTestChanges st : testChanges) {
-            options.getFormatter().println("       *** " + st.getName() + " *** ");
+            format().println("       *** " + st.getName() + " *** ");
             if (!options.hideMisses()) {
-                options.getFormatter().println("        removed : ");
+                format().println("        removed : ");
                 printStringList("            ", st.getRemoved());
-                options.getFormatter().println("        added   : ");
+                format().println("        added   : ");
                 printStringList("            ", st.getAdded());
             }
             if (!options.hidePositives()) {
-                options.getFormatter().println("        fixes   : ");
+                format().println("        fixes   : ");
                 printStringList("            ", st.getFixes());
             }
             if (!options.hideNegatives()) {
-                options.getFormatter().println("        errors  : ");
+                format().println("        errors  : ");
                 printStringList("            ", st.getErrors());
-                options.getFormatter().println("        failures: ");
+                format().println("        failures: ");
                 printStringList("            ", st.getFailures());
             }
 
@@ -371,5 +382,10 @@ public class CompareBuilds {
             return null;
         }
         return null;
+    }
+
+    //shortcut
+    private Formatter format() {
+        return options.getFormatter();
     }
 }

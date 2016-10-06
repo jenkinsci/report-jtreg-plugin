@@ -54,9 +54,15 @@ public interface Formatter {
     public void startColor(SupportedColors color);
 
     public void reset();
-    
+
     public void initDoc();
+
     public void closeDoc();
-            
+
+    public void startTitle3();
+    
+    public void startTitle2();
+
+    public void startTitle1();
 
 }

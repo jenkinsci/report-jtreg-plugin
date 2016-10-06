@@ -104,4 +104,22 @@ public class HtmlFormatter extends StringMappedFormatter {
         println("</div>");
     }
 
+    @Override
+    public void startTitle2() {
+        print("<h2>");
+        clossingBuffer.add("</h2>");
+    }
+
+    @Override
+    public void startTitle3() {
+        print("<h3>");
+        clossingBuffer.add("</h3>");
+    }
+
+    @Override
+    public void startTitle1() {
+        print("<h1>");
+        clossingBuffer.add("</h1>");
+    }
+
 }

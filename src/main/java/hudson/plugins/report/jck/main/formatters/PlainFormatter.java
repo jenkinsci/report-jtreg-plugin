@@ -25,10 +25,7 @@ package hudson.plugins.report.jck.main.formatters;
 
 import java.io.PrintStream;
 
-
-
 public class PlainFormatter extends BasicFormatter {
-
 
     public PlainFormatter(PrintStream stream) {
         super(stream);
@@ -38,7 +35,6 @@ public class PlainFormatter extends BasicFormatter {
     public void startBold() {
         //no op
     }
-
 
     @Override
     public void startColor(SupportedColors color) {
@@ -60,6 +56,18 @@ public class PlainFormatter extends BasicFormatter {
         //no op
     }
 
-   
-    
+    @Override
+    public void startTitle2() {
+        //no op
+    }
+
+    @Override
+    public void startTitle1() {
+        //no op
+    }
+
+    @Override
+    public void startTitle3() {
+        //no op
+    }
 }

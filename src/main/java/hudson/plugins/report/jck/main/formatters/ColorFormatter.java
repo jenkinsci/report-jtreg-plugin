@@ -24,11 +24,10 @@
 package hudson.plugins.report.jck.main.formatters;
 
 import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ColorFormatter extends StringMappedFormatter {
 //those are NOT spaces but bash \e
+
     private static final String Default = "[39m";
 
     private static final String ResetAll = "[0m";
@@ -100,6 +99,22 @@ public class ColorFormatter extends StringMappedFormatter {
         //sets black background and white font
         print("[49m");
         print("[97m");
+    }
+
+    @Override
+    public void startTitle2() {
+        startColor(SupportedColors.Cyan);
+    }
+
+    @Override
+    public void startTitle1() {
+        startColor(SupportedColors.Cyan);
+        startBold();
+    }
+
+    @Override
+    public void startTitle3() {
+        startColor(SupportedColors.LightBlue);
     }
 
 }
