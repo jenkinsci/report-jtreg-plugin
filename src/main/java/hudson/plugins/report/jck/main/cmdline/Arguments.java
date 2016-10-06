@@ -24,6 +24,7 @@
 package hudson.plugins.report.jck.main.cmdline;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,17 +42,7 @@ public class Arguments {
     public Arguments(String[] args) {
         this.mainArgs = new ArrayList<>(args.length);
         if (args.length == 0) {
-            System.out.println(" options DIR1 DIR2 DIR3 ... DIRn");
-            System.out.println("  or  ");
-            System.out.println(" options JOB_NAME-1 buildPointer1.1 buildPointer1.2  ... jobPointer1.N JOB_NAME-2 buildPointer2.1 buildPointer2.2  ... jobPointer2.N ... JOB_NAME-N ...jobPointerN.N");
-            System.out.println("  options:  ");
-            System.out.println(" " + output + "=" + argsToHelp(knownOutputs));
-            System.out.println(" default output is 'plain text'. 0-1 of " + output + " is allowed.");
-            System.out.println(" " + view + "=" + argsToHelp(knownViews));
-            System.out.println(" default view is 'all'. 0-N of " + view + " is allowed.");
-            System.out.println(" job pointers are numbers. If zero or negative, then it is 0 for last one, -1 for one beofre last ...");
-            System.out.println(" When using even number of build pointers, you can use " + fillSwitch + " switch to consider them as rows");
-            System.out.println(" Another strange argument is " + keepFailedSwitch + " which will include failed/aborted/not-existing builds/dirs during listing.");
+            printHelp(System.out);
             throw new RuntimeException("At least one param expected");
         }
         this.base = new String[args.length];
@@ -79,6 +70,20 @@ public class Arguments {
                 }
             }
         }
+    }
+
+    private void printHelp(PrintStream p) {
+        p.println(" options DIR1 DIR2 DIR3 ... DIRn");
+        p.println("  or  ");
+        p.println(" options JOB_NAME-1 buildPointer1.1 buildPointer1.2  ... jobPointer1.N JOB_NAME-2 buildPointer2.1 buildPointer2.2  ... jobPointer2.N ... JOB_NAME-N ...jobPointerN.N");
+        p.println("  options:  ");
+        p.println(" " + output + "=" + argsToHelp(knownOutputs));
+        p.println(" default output is 'plain text'. 0-1 of " + output + " is allowed.");
+        p.println(" " + view + "=" + argsToHelp(knownViews));
+        p.println(" default view is 'all'. 0-N of " + view + " is allowed.");
+        p.println(" job pointers are numbers. If zero or negative, then it is 0 for last one, -1 for one beofre last ...");
+        p.println(" When using even number of build pointers, you can use " + fillSwitch + " switch to consider them as rows");
+        p.println(" Another strange argument is " + keepFailedSwitch + " which will include failed/aborted/not-existing builds/dirs during listing.");
     }
 
     private static final String output = "-output";
