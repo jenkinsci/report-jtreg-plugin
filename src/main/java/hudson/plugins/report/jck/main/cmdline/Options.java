@@ -134,29 +134,31 @@ public class Options {
         return skipFailed;
     }
 
-    void add(File file) {
+    boolean add(File file) {
         if (skipFailed) {
             if (!file.exists()
                     || !new File(file, "log").exists()
                     || tail(new File(file, "log")).matches(".*(ABORTED|FAILURE).*")) {
                 System.err.println("File " + file + " excluded -  skipping of failed builds allowed, and it seems to be fialed build");
+                return false;
             } else {
-                addImpl(file);
+                return addImpl(file);
             }
         } else {
-            addImpl(file);
+            return addImpl(file);
         }
     }
 
-    private void addImpl(File file) {
+    private boolean addImpl(File file) {
         if (dirsToWork.size() >= 2) {
             if (file.equals(dirsToWork.get(dirsToWork.size() - 1)) && file.equals(dirsToWork.get(dirsToWork.size() - 2))) {
                 System.err.println("Excluding " + file + " - three same files in row");
-                return;
+                return false;
             }
         }
         dirsToWork.add(file);
         System.err.println("Added " + file + " !");
+        return true;
     }
 
     //maybe linux only, not utf8 valid solution... nto much tested, just copypasted and worked
