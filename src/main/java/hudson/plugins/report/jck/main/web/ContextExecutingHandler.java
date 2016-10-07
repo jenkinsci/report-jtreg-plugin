@@ -100,10 +100,10 @@ public class ContextExecutingHandler implements HttpHandler {
         public void runImpl() throws IOException {
             String requestedFile = t.getRequestURI().getPath();
             String params = t.getRequestURI().getQuery();
-            params = params.replace("generated-part=", "");
-            params = params.replace("custom-part=", "");
             List<String> parsedParams = new ArrayList<>();
             if (params != null) {
+                params = params.replace("generated-part=", "");
+                params = params.replace("custom-part=", "");
                 String[] ps = params.split("&+");
                 for (String p : ps) {
                     String pp = URLDecoder.decode(p, "utf-8").trim();
