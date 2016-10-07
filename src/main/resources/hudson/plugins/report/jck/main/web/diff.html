@@ -1,0 +1,390 @@
+<!-- WARNING -->
+<!-- the comments around various outputs are marks fro preprocessor! -->
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <script type="text/javascript">
+            function show(id_show) {
+                document.getElementById(id_show).style.display = 'block';
+            }
+            function hide(id_show) {
+                document.getElementById(id_show).style.display = 'none';
+            }
+
+            function showHideStds(id_show, id_hide1, id_hide2) {
+                show(id_show)
+                hide(id_hide1)
+                hide(id_hide2)
+            }
+
+            function showStds() {
+                show("out")
+                show("err")
+                hide("in")
+            }
+
+            function showAllStds() {
+                show("out")
+                show("err")
+                show("in")
+            }
+
+            function getSelectValues(select) {
+                var result = [];
+                var options = select && select.options;
+                var opt;
+
+                for (var i = 0, iLen = options.length; i < iLen; i++) {
+                    opt = options[i];
+
+                    if (opt.selected) {
+        //      result.push(opt.value || opt.text);
+                        result.push(opt.text);
+                    }
+                }
+                return result;
+            }
+
+            function generateComand() {
+                var views = getSelectValues(document.getElementById("views"))
+                var genCmd = "";
+                for (var i = 0; i < views.length; i++) {
+                    genCmd = genCmd + " -view=" + views[i] + "  ";
+                }
+
+                var e = document.getElementById("outputs");
+                //var value = e.options[e.selectedIndex].value;
+                var text = e.options[e.selectedIndex].text;
+                if (text != "") {
+                    genCmd = genCmd + " -output=" + text + "  ";
+                }
+
+                var kfe = document.getElementById("-keep-failed");
+                if (kfe.checked) {
+                    genCmd = genCmd + "-keep-failed  ";
+                }
+                var fe = document.getElementById("-fill");
+                if (fe.checked) {
+                    genCmd = genCmd + "-fill  ";
+                }
+
+                document.getElementById("genCmd").value = genCmd
+            }
+
+            function adjustComand() {
+                var jobs = document.getElementById("jobs");
+                var initValue = document.getElementById("customCmd").value;
+                var selJob = jobs.options[jobs.selectedIndex].text;
+                document.getElementById("customCmd").value = initValue + "  " + selJob + "  ";
+            }
+
+        </script>
+    </head>
+    <body onLoad="generateComand()">
+        <div id="inButton"  onclick="showHideStds('in', 'err', 'out');" style="border:double;float:left">
+            input
+        </div>
+        <div id="serrButton" onclick="showHideStds('err', 'in', 'out');" style="border:double;float:left">
+            serr
+        </div>
+        <div id="soutButton" onclick="showHideStds('out', 'err', 'in');" style="border:double;float:left">
+            sout
+        </div>
+        <div id="outs" onclick="showStds();" style="border:double;float:left">
+            outs
+        </div>
+        <div id="all" onclick="showAllStds();" style="border:double;float:left">
+            all
+        </div>
+        <div id="reset1" style="clear:left">
+        </div>
+        <div id="in" style="display:block;border:solid;">
+            <h4>webui for cmdl tool to diff jck/jtreg reuslts in job and among jobs on hydra</h4>
+            <p>
+                If you need some grepping, you may wont to run <a href="http://git.engineering.redhat.com/git/users/jvanek/TckScripts/.git/tree/jenkins/custom_run_wrappers/diff_jobs_hydra.sh">http://git.engineering.redhat.com/git/users/jvanek/TckScripts/.git/tree/jenkins/custom_run_wrappers/diff_jobs_hydra.sh</a> commandline application. <br/>
+                This page is wrapper arund that  anyway.
+            </p>
+            <p>
+            <pre>
+<!--help-->
+ options DIR1 DIR2 DIR3 ... DIRn
+  or  
+ options JOB_NAME-1 buildPointer1.1 buildPointer1.2  ... jobPointer1.N JOB_NAME-2 buildPointer2.1 buildPointer2.2  ... jobPointer2.N ... JOB_NAME-N ...jobPointerN.N
+  options:  
+ -output=color|html
+ default output is 'plain text'. 0-1 of -output is allowed.
+ -view=info-summary|info-summary-suites|info-problems|info-hide-details|diff-summary|diff-summary-suites|diff-details|diff-list|hide-positives|hide-negatives|hide-misses|hide-totals|diff|info
+ default view is 'all'. 0-N of -view is allowed.
+ job pointers are numbers. If zero or negative, then it is 0 for last one, -1 for one beofre last ...
+ When using even number of build pointers, you can use -fill switch to consider them as rows
+ Another strange argument is -keep-failed which will include failed/aborted/not-existing builds/dirs during listing.
+<!--helpEnd-->
+            </pre>
+        </p>
+        <form action="diff.html">
+            Generated command:  <input style="width:80%" type="text" id="genCmd" name="generated-part" value="" readonly></input><br/>
+            Custom command:  <input style="width:80%" type="text" id="customCmd" name="custom-part" value=""></input><br/>
+            <input type="submit" value="Submit">
+        </form> 
+
+        <div style="float:left;margin:15px" >
+            View (0-n)</br>
+            <small>Nothing == show all</small></br>
+            <select id="views" multiple size=20  onclick="generateComand();">
+                <!--views-->
+                <option value="view1">info-summary</option>
+                <option value="view2">info-summary-suites</option>
+                <option value="view3">info-problems</option>
+                <option value="view4">info-hide-details</option>
+                <option value="view5">diff-summary</option>
+                <option value="view6">diff-summary-suites</option>
+                <option value="view7">diff-details</option>
+                <option value="view8">diff-list</option>
+                <option value="view9">hide-positives</option>
+                <option value="view10">hide-negatives</option>
+                <option value="view11">hide-misses</option>
+                <option value="view12">hide-totals</option>
+                <option value="view13">diff</option>
+                <option value="view14">info</option>
+                <!--viewsEnd-->
+            </select> 
+        </div>
+        <div style="float:left;margin:15px" >
+            Output 0 or 1.</br>
+            <small>It is strongly recommneded to keep html:))</small></br>
+            <small>Nothing is plain text</small></br>
+            <select id="outputs" onclick="generateComand();">
+                <!--outputs-->
+                <option value="output1" selected >html</option>
+                <option value="output2">color</option>
+                <option value="output3"></option>
+                <!--outputsEnd-->
+            </select> 
+        </div>
+
+        <div style="float:left;margin:15px" >
+            additional switches</br>
+            <small>Fill is powerfull, keep-failed useless!</small></br>
+            <!--swithces-->
+            <input onclick="generateComand();" type="checkbox" class="switch" id="-keep-failed" value=-keep-failed>-keep-failed</input><br/>
+            <input onclick="generateComand();" type="checkbox" class="switch" id="-fill" value=-fill>-fill</input>
+            <!--swithcesEnd-->
+        </div>
+
+
+        <div style="float:left;margin:15px" >
+            Jobs</br>
+            <small>Each can be added more then once,. but mostly dont have sense</small></br>
+            <select id="jobs">
+                <!--jobs-->
+                <option value="job0">build-static-ojdk7-rhel6-i586</option>
+                <option value="job1">build-static-ojdk7-rhel6-x64</option>
+                <option value="job2">build-static-ojdk8-rhel6-i586</option>
+                <option value="job3">build-static-ojdk8-rhel6-x64</option>
+                <option value="job4">dotNET2-rhel7-x64</option>
+                <option value="job5">dotNET-rhel7-x64</option>
+                <option value="job6">execute-command-hydra</option>
+                <option value="job7">execute-command-odin</option>
+                <option value="job8">fix-subscription-rhel6-i586-hydra</option>
+                <option value="job9">fix-subscription-rhel6-i586-odin</option>
+                <option value="job10">fix-subscription-rhel6-x64-hydra</option>
+                <option value="job11">fix-subscription-rhel6-x64-odin</option>
+                <option value="job12">fix-subscription-rhel7-x64-hydra</option>
+                <option value="job13">fix-subscription-rhel7-x64-odin</option>
+                <option value="job14">fix-subscription-vmArg-hydra</option>
+                <option value="job15">fix-subscription-vmArg-odin</option>
+                <option value="job16">icedtea-web</option>
+                <option value="job17">jcstress-ojdk8-fedora-x64</option>
+                <option value="job18">jcstress-ojdk8-rhel6-x64</option>
+                <option value="job19">jcstress-ojdk8-rhel7-aarch64</option>
+                <option value="job20">jcstress-ojdk8-rhel7-x64</option>
+                <option value="job21">jtreg-ojdk7-rhel6-i586</option>
+                <option value="job22">jtreg-ojdk7-rhel6-x64</option>
+                <option value="job23">jtreg-ojdk7-rhel7-aarch64</option>
+                <option value="job24">jtreg-ojdk7-rhel7-x64</option>
+                <option value="job25">jtreg-ojdk8-f23-x64</option>
+                <option value="job26">jtreg-ojdk8-f24-x64</option>
+                <option value="job27">jtreg-ojdk8-rhel6-i586</option>
+                <option value="job28">jtreg-ojdk8-rhel6-x64</option>
+                <option value="job29">jtreg-ojdk8-rhel7-aarch64</option>
+                <option value="job30">jtreg-ojdk8-rhel7-x64</option>
+                <option value="job31">pull-ojdk7-forest-static</option>
+                <option value="job32">pull-ojdk7u-static</option>
+                <option value="job33">pull-ojdk8u-aarch64-shenandoah-static</option>
+                <option value="job34">pull-ojdk8u-aarch64-static</option>
+                <option value="job35">pull-ojdk8u-dev-static</option>
+                <option value="job36">pull-ojdk8u-static</option>
+                <option value="job37">radargun3-ojdk8-fedora-x64</option>
+                <option value="job38">radargun3-ojdk8-rhel6-x64</option>
+                <option value="job39">radargun3-ojdk8-rhel7-aarch64</option>
+                <option value="job40">radargun3-ojdk8-rhel7-x64</option>
+                <option value="job41">radargun-ojdk7-rhel6-x64</option>
+                <option value="job42">radargun-ojdk7-rhel7-aarch64</option>
+                <option value="job43">radargun-ojdk7-rhel7-x64</option>
+                <option value="job44">radargun-ojdk8-fedora-x64</option>
+                <option value="job45">radargun-ojdk8-rhel6-x64</option>
+                <option value="job46">radargun-ojdk8-rhel7-aarch64</option>
+                <option value="job47">radargun-ojdk8-rhel7-x64</option>
+                <option value="job48">reproducers-regular-ojdk7-rhel6-i586</option>
+                <option value="job49">reproducers-regular-ojdk7-rhel6-x64</option>
+                <option value="job50">reproducers-regular-ojdk7-rhel7-aarch64</option>
+                <option value="job51">reproducers-regular-ojdk7-rhel7-x64</option>
+                <option value="job52">reproducers-regular-ojdk8-f23-x64</option>
+                <option value="job53">reproducers-regular-ojdk8-f24-x64</option>
+                <option value="job54">reproducers-regular-ojdk8-rhel6-i586</option>
+                <option value="job55">reproducers-regular-ojdk8-rhel6-x64</option>
+                <option value="job56">reproducers-regular-ojdk8-rhel7-aarch64</option>
+                <option value="job57">reproducers-regular-ojdk8-rhel7-x64</option>
+                <option value="job58">reproducers-regular-ojdk8-win10-x64</option>
+                <option value="job59">reproducers-regular-ojdk8-win7-x64</option>
+                <option value="job60">reproducers-regular-ojdk8-win8-x64</option>
+                <option value="job61">reproducers-security-ojdk7-rhel6-i586</option>
+                <option value="job62">reproducers-security-ojdk7-rhel6-x64</option>
+                <option value="job63">reproducers-security-ojdk7-rhel7-aarch64</option>
+                <option value="job64">reproducers-security-ojdk7-rhel7-x64</option>
+                <option value="job65">reproducers-security-ojdk8-f23-x64</option>
+                <option value="job66">reproducers-security-ojdk8-f24-x64</option>
+                <option value="job67">reproducers-security-ojdk8-rhel6-i586</option>
+                <option value="job68">reproducers-security-ojdk8-rhel6-x64</option>
+                <option value="job69">reproducers-security-ojdk8-rhel7-aarch64</option>
+                <option value="job70">reproducers-security-ojdk8-rhel7-x64</option>
+                <option value="job71">reproducers-security-ojdk8-rhel7-x64-multilib</option>
+                <option value="job72">reproducers-security-ojdk8-win10-x64</option>
+                <option value="job73">reproducers-security-ojdk8-win7-x64</option>
+                <option value="job74">reproducers-security-ojdk8-win8-x64</option>
+                <option value="job75">rhqe-ojdk7-rhel5-i586</option>
+                <option value="job76">rhqe-ojdk7-rhel5-x64</option>
+                <option value="job77">rhqe-ojdk7-rhel6-i586</option>
+                <option value="job78">rhqe-ojdk7-rhel6-x64</option>
+                <option value="job79">rhqe-ojdk7-rhel7-aarch64</option>
+                <option value="job80">rhqe-ojdk7-rhel7-x64</option>
+                <option value="job81">rhqe-ojdk8-f23-x64</option>
+                <option value="job82">rhqe-ojdk8-f24-x64</option>
+                <option value="job83">rhqe-ojdk8-rhel6-i586</option>
+                <option value="job84">rhqe-ojdk8-rhel6-x64</option>
+                <option value="job85">rhqe-ojdk8-rhel7-aarch64</option>
+                <option value="job86">rhqe-ojdk8-rhel7-x64</option>
+                <option value="job87">spec-jbb-ojdk7-rhel6-x64</option>
+                <option value="job88">spec-jbb-ojdk7-rhel7-aarch64</option>
+                <option value="job89">spec-jbb-ojdk7-rhel7-x64</option>
+                <option value="job90">spec-jbb-ojdk8-fedora-x64</option>
+                <option value="job91">spec-jbb-ojdk8-rhel6-x64</option>
+                <option value="job92">spec-jbb-ojdk8-rhel7-aarch64</option>
+                <option value="job93">spec-jbb-ojdk8-rhel7-x64</option>
+                <option value="job94">spec-jvm-ojdk8-fedora-x64</option>
+                <option value="job95">spec-jvm-ojdk8-rhel6-x64</option>
+                <option value="job96">spec-jvm-ojdk8-rhel7-aarch64</option>
+                <option value="job97">spec-jvm-ojdk8-rhel7-x64</option>
+                <option value="job98">tck-ojdk6-rhel5-i586</option>
+                <option value="job99">tck-ojdk6-rhel5-x64</option>
+                <option value="job100">tck-ojdk6-rhel6-i586</option>
+                <option value="job101">tck-ojdk6-rhel6-x64</option>
+                <option value="job102">tck-ojdk6-rhel7-x64</option>
+                <option value="job103">tck-ojdk7-rhel5-i586</option>
+                <option value="job104">tck-ojdk7-rhel5-x64</option>
+                <option value="job105">tck-ojdk7-rhel6-i586</option>
+                <option value="job106">tck-ojdk7-rhel6-x64</option>
+                <option value="job107">tck-ojdk7-rhel7-aarch64</option>
+                <option value="job108">tck-ojdk7-rhel7-x64</option>
+                <option value="job109">tck-ojdk8-f23-x64</option>
+                <option value="job110">tck-ojdk8-f24-x64</option>
+                <option value="job111">tck-ojdk8-rhel6-i586</option>
+                <option value="job112">tck-ojdk8-rhel6-x64</option>
+                <option value="job113">tck-ojdk8-rhel7-aarch64</option>
+                <option value="job114">tck-ojdk8-rhel7-x64</option>
+                <option value="job115">tck-ojdk8-rhel7-x64-multilib</option>
+                <option value="job116">tck-ojdk8-win10-x64</option>
+                <option value="job117">tck-ojdk8-win7-x64</option>
+                <option value="job118">tck-ojdk8-win8-x64</option>
+                <option value="job119">thermostat-rhscl-rhel7-x64</option>
+                <option value="job120">tps-ibm6-rhel5-i586</option>
+                <option value="job121">tps-ibm6-rhel5-x64</option>
+                <option value="job122">tps-ibm6-rhel6-i586</option>
+                <option value="job123">tps-ibm6-rhel6-x64</option>
+                <option value="job124">tps-ibm6-rhel7-x64</option>
+                <option value="job125">tps-ibm7-rhel5-i586</option>
+                <option value="job126">tps-ibm7-rhel5-x64</option>
+                <option value="job127">tps-ibm7-rhel6-i586</option>
+                <option value="job128">tps-ibm7-rhel6-x64</option>
+                <option value="job129">tps-ibm7-rhel7-x64</option>
+                <option value="job130">tps-ibm8-rhel6-i586</option>
+                <option value="job131">tps-ibm8-rhel6-x64</option>
+                <option value="job132">tps-ibm8-rhel7-x64</option>
+                <option value="job133">tps-ojdk6-rhel5-i586</option>
+                <option value="job134">tps-ojdk6-rhel5-x64</option>
+                <option value="job135">tps-ojdk6-rhel6-i586</option>
+                <option value="job136">tps-ojdk6-rhel6-x64</option>
+                <option value="job137">tps-ojdk6-rhel7-x64</option>
+                <option value="job138">tps-ojdk7-rhel5-i586</option>
+                <option value="job139">tps-ojdk7-rhel5-x64</option>
+                <option value="job140">tps-ojdk7-rhel6-i586</option>
+                <option value="job141">tps-ojdk7-rhel6-x64</option>
+                <option value="job142">tps-ojdk7-rhel7-x64</option>
+                <option value="job143">tps-ojdk8-f23-x64</option>
+                <option value="job144">tps-ojdk8-f24-x64</option>
+                <option value="job145">tps-ojdk8-rhel6-i586</option>
+                <option value="job146">tps-ojdk8-rhel6-x64</option>
+                <option value="job147">tps-ojdk8-rhel7-x64</option>
+                <option value="job148">tps-oracle6-rhel5-i586</option>
+                <option value="job149">tps-oracle6-rhel5-x64</option>
+                <option value="job150">tps-oracle6-rhel6-i586</option>
+                <option value="job151">tps-oracle6-rhel6-x64</option>
+                <option value="job152">tps-oracle6-rhel7-x64</option>
+                <option value="job153">tps-oracle7-rhel5-i586</option>
+                <option value="job154">tps-oracle7-rhel5-x64</option>
+                <option value="job155">tps-oracle7-rhel6-i586</option>
+                <option value="job156">tps-oracle7-rhel6-x64</option>
+                <option value="job157">tps-oracle7-rhel7-x64</option>
+                <option value="job158">tps-oracle8-rhel6-i586</option>
+                <option value="job159">tps-oracle8-rhel6-x64</option>
+                <option value="job160">tps-oracle8-rhel7-x64</option>
+                <option value="job161">tps-srpm-ojdk6-rhel5-i586</option>
+                <option value="job162">tps-srpm-ojdk6-rhel5-x64</option>
+                <option value="job163">tps-srpm-ojdk6-rhel6-i586</option>
+                <option value="job164">tps-srpm-ojdk6-rhel6-x64</option>
+                <option value="job165">tps-srpm-ojdk6-rhel7-x64</option>
+                <option value="job166">tps-srpm-ojdk7-rhel5-i586</option>
+                <option value="job167">tps-srpm-ojdk7-rhel5-x64</option>
+                <option value="job168">tps-srpm-ojdk7-rhel6-i586</option>
+                <option value="job169">tps-srpm-ojdk7-rhel6-x64</option>
+                <option value="job170">tps-srpm-ojdk7-rhel7-x64</option>
+                <option value="job171">tps-srpm-ojdk8-f24-x64</option>
+                <option value="job172">tps-srpm-ojdk8-rhel6-i586</option>
+                <option value="job173">tps-srpm-ojdk8-rhel6-x64</option>
+                <option value="job174">tps-srpm-ojdk8-rhel7-x64</option>
+                <option value="job175">update-f23-x64</option>
+                <option value="job176">update-f23-x64-odin</option>
+                <option value="job177">update-f24-x64</option>
+                <option value="job178">update-f24-x64-odin</option>
+                <option value="job179">update-rhel6-i586</option>
+                <option value="job180">update-rhel6-i586-odin</option>
+                <option value="job181">update-rhel6-x64</option>
+                <option value="job182">update-rhel6-x64-odin</option>
+                <option value="job183">update-rhel7-x64</option>
+                <option value="job184">update-rhel7-x64-odin</option>
+                <!--jobsEnd-->
+            </select> 
+            <div id="addJob"  style="border:double; text-align: center; margin:5px" >Add (not yet implemented) -> </div>
+            <div id="copyJob"  style="border:double; text-align: center;" onClick="adjustComand()">jsut put to custom cmdline</div>
+        </div>
+
+
+        <div style="float:left;margin:15px" >
+            Selected Jobs</br>
+            <small>Add build ids (negatives are going from top, zero is newest)</small></br>
+            <div id="selectedJobs" >
+            </div>
+        </div>
+        <div style="clear:left" >
+        </div>
+    </div>
+    <div id="out" style="border:solid;">
+        <!--
+        *** Closing and serr is generated, to allow live streaming of results ***
+            </div>
+            <div id="err" style="border:solid;">
+            </div>
+        </body>
+        </html>
+        -->
+
