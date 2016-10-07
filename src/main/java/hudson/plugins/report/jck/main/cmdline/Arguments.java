@@ -127,13 +127,15 @@ public class Arguments {
             if (arg.startsWith(output + "=")) {
                 String output_type = arg.split("=")[1];
                 if (!arrayContains(knownOutputs, output_type)) {
-                    throw new RuntimeException("uknown arg for " + output + " - " + output_type);
+                    System.err.println(argsToHelp(knownOutputs));
+                    throw new RuntimeException("unknown arg for " + output + " - " + output_type);
                 }
                 result.setOutputType(output_type);
             } else if (arg.startsWith(view + "=")) {
                 String nextView = arg.split("=")[1];
                 if (!arrayContains(knownViews, nextView)) {
-                    throw new RuntimeException("uknown arg for " + view + " - " + nextView);
+                    System.err.println(argsToHelp(knownViews));
+                    throw new RuntimeException("unknown arg for " + view + " - " + nextView);
                 }
                 result.addView(nextView);
             } else if (arg.equals(fillSwitch)) {
