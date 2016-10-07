@@ -254,7 +254,7 @@ public class Arguments {
                             if (added) {
                                 break;
                             }
-                            if (origJobId < 0) {
+                            if (origJobId <= 0) {
                                 jobId--;
                             } else {
                                 jobId++;
