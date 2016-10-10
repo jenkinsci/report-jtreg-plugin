@@ -29,6 +29,7 @@ import java.io.PrintStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -95,15 +96,18 @@ public class Arguments {
 
     private static final String output = "-output";
     private static final String view = "-view";
+
     private static final String fillSwitch = "-fill";
     private static final String keepFailedSwitch = "-keep-failed";
 
-    private static final String[] switches = {output, view, fillSwitch, keepFailedSwitch};
+    public static final String[] knownBoolSwitches = sortA(new String[]{fillSwitch, keepFailedSwitch});
 
-    static final String output_html = "html";
+    private static final String[] switches = concat(new String[]{output, view}, knownBoolSwitches);
+
+    public static final String output_html = "html";
     static final String output_html2 = "html2";
     static final String output_color = "color";
-    private static final String[] knownOutputs = new String[]{output_html, output_color, output_html2};
+    public static final String[] knownOutputs = sortA(new String[]{output_html, output_color, output_html2});
 
     static final String view_info_summary = "info-summary";
     static final String view_info_summary_suites = "info-summary-suites";
@@ -122,12 +126,12 @@ public class Arguments {
     static final String view_hide_misses = "hide-misses";
     static final String view_hide_totals = "hide-totals";
 
-    private static final String[] knownViews = new String[]{
+    public static final String[] knownViews = sortA(new String[]{
         view_info_summary, view_info_summary_suites, view_info_problems, view_info_hidevalues,
         view_diff_summary, view_diff_summary_suites, view_diff_details, view_diff_list,
         view_hide_positives, view_hide_negatives, view_hide_misses, view_hide_totals,
         view_diff, view_info
-    };
+    });
 
     public Options parse() {
         Options result = new Options();
@@ -297,6 +301,20 @@ public class Arguments {
             return 1;
         }
         return jobId;
+    }
+
+    private static String[] sortA(String[] string) {
+        Arrays.sort(string);
+        return string;
+    }
+
+    public static String[] concat(String[] a, String[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+        String[] c = new String[aLen + bLen];
+        System.arraycopy(a, 0, c, 0, aLen);
+        System.arraycopy(b, 0, c, aLen, bLen);
+        return c;
     }
 
 }

@@ -129,7 +129,30 @@ public class ContextExecutingHandler implements HttpHandler {
         private String processTemplate(final String template) {
             String r = template;
             r = r.replaceAll("(?s)<!--help-->.*<!--helpEnd-->", Arguments.printHelp());
+            StringBuilder views = new StringBuilder();
+            for (int i = 0; i < Arguments.knownViews.length; i++) {
+                String string = Arguments.knownViews[i];
+                views.append("<option value=\"view").append(i + 1).append("\">").append(string).append("</option>").append("\n");
+
+            }
+            r = r.replaceAll("(?s)<!--views-->.*<!--viewsEnd-->", views.toString());
+            views = new StringBuilder();
+            for (int i = 0; i < Arguments.knownOutputs.length; i++) {
+                String string = Arguments.knownOutputs[i];
+                views.append("<option value=\"output").append(i + 1).append("\"  ").append(setSelected(string, Arguments.output_html)).append("  >").append(string).append("</option>").append("\n");
+
+            }
+            r = r.replaceAll("(?s)<!--outputs-->.*<!--outputsEnd-->", views.toString());
+
             return r;
+        }
+
+        private String setSelected(String string, String current) {
+            if (string.equals(current)) {
+                return "selected";
+            } else {
+                return "";
+            }
         }
 
     }
