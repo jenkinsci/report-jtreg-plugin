@@ -23,8 +23,11 @@
  */
 package hudson.plugins.report.jck.main.cmdline;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -68,7 +71,14 @@ public class Arguments {
         }
     }
 
-    private void printHelp(PrintStream p) {
+    public static String printHelp() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+        printHelp(ps);
+        return new String(baos.toByteArray(), StandardCharsets.UTF_8);
+    }
+
+    private static void printHelp(PrintStream p) {
         p.println(" options DIR1 DIR2 DIR3 ... DIRn");
         p.println("  or  ");
         p.println(" options JOB_NAME-1 buildPointer1.1 buildPointer1.2  ... jobPointer1.N JOB_NAME-2 buildPointer2.1 buildPointer2.2  ... jobPointer2.N ... JOB_NAME-N ...jobPointerN.N");
@@ -271,7 +281,7 @@ public class Arguments {
         return result;
     }
 
-    private String argsToHelp(String[] outputs) {
+    private static String argsToHelp(String[] outputs) {
         StringBuilder sb = new StringBuilder();
         for (String o : outputs) {
             sb.append(o).append("|");

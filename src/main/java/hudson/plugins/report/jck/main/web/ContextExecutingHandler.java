@@ -25,7 +25,9 @@ package hudson.plugins.report.jck.main.web;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import hudson.plugins.report.jck.main.cmdline.Arguments;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -69,7 +71,7 @@ public class ContextExecutingHandler implements HttpHandler {
                 if (line == null) {
                     return sb.toString();
                 }
-                sb.append(line + "\n");
+                sb.append(line).append("\n");
             }
         }
     }
@@ -108,7 +110,7 @@ public class ContextExecutingHandler implements HttpHandler {
             }
             parsedParams.add(0, targetProgram.getAbsolutePath());
             t.sendResponseHeaders(200, 0);
-            try (OutputStreamWriter wos = new OutputStreamWriter(t.getResponseBody(), "utf-8")) {
+            try (BufferedWriter wos = new BufferedWriter(new OutputStreamWriter(t.getResponseBody(), "utf-8"))) {
                 wos.write(processTemplate(template));
                 ProcessWrapper pw = new ProcessWrapper(wos, parsedParams.toArray(new String[parsedParams.size()]));
                 pw.run();
@@ -124,8 +126,10 @@ public class ContextExecutingHandler implements HttpHandler {
 
         }
 
-        private String processTemplate(String template) {
-            return template;
+        private String processTemplate(final String template) {
+            String r = template;
+            r = r.replaceAll("(?s)<!--help-->.*<!--helpEnd-->", Arguments.printHelp());
+            return r;
         }
 
     }

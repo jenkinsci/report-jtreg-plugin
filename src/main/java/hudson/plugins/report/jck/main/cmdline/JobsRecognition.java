@@ -161,6 +161,7 @@ public class JobsRecognition {
         }
         int latest = getLatestBuildId(jobName);
         Collections.sort(results);
+        formatter.initDoc();
         for (Integer result : results) {
             File f = creteBuildDir(jobName, result);
             if (isUnknown(f)) {
@@ -188,6 +189,7 @@ public class JobsRecognition {
             }
             formatter.closeBuildsList();
         }
+        formatter.closeDoc();
     }
 
     public static boolean isNumber(String s) {
