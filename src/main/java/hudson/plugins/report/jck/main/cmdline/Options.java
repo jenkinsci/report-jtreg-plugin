@@ -28,6 +28,7 @@ import hudson.plugins.report.jck.main.formatters.HtmlFormatter;
 import hudson.plugins.report.jck.main.formatters.PlainFormatter;
 import hudson.plugins.report.jck.main.formatters.BasicFormatter;
 import hudson.plugins.report.jck.main.formatters.Formatter;
+import hudson.plugins.report.jck.main.formatters.HtmlFormatter2;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -69,7 +70,7 @@ public class Options {
     public boolean hidePositives() {
         return views.contains(Arguments.view_hide_positives);
     }
-    
+
     public boolean hideValues() {
         return views.contains(Arguments.view_info_hidevalues);
     }
@@ -166,6 +167,8 @@ public class Options {
                 formatter = new ColorFormatter(stream);
             } else if (Arguments.output_html.equals(output_type)) {
                 formatter = new HtmlFormatter(stream);
+            } else if (Arguments.output_html2.equals(output_type)) {
+                formatter = new HtmlFormatter2(stream);
             } else {
                 formatter = new PlainFormatter(stream);
             }

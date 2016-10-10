@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2016.
+ * Copyright 2016 jvanek.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,50 +23,18 @@
  */
 package hudson.plugins.report.jck.main.formatters;
 
-public interface Formatter {
+import java.io.PrintStream;
 
-    public enum SupportedColors {
-        Default,
-        Black,
-        Red,
-        Green,
-        Yellow,
-        Blue,
-        Magenta,
-        Cyan,
-        LightRed,
-        LightGreen,
-        LightYellow,
-        LightBlue,
-        LightMagenta,
-        LightCyan,
+public class HtmlFormatter2 extends HtmlFormatter {
 
+    public HtmlFormatter2(PrintStream stream) {
+        super(stream);
     }
 
-    public void print(String s);
-
-    public void println();
-
-    public void println(String s);
-
-    public void startBold();
-
-    public void startColor(SupportedColors color);
-
-    public void reset();
-
-    public void initDoc();
-
-    public void closeDoc();
-
-    public void startTitle4();
-
-    public void startTitle3();
-
-    public void startTitle2();
-
-    public void startTitle1();
-
-    public void closeBuildsList();
+    @Override
+    public void closeBuildsList() {
+        print(" | ");
+        reset();
+    }
 
 }

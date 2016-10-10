@@ -48,4 +48,10 @@ public abstract class BasicFormatter implements Formatter {
         println("");
     }
 
+    @Override
+    public void closeBuildsList() {
+        println("");
+        reset();
+    }
+
 }

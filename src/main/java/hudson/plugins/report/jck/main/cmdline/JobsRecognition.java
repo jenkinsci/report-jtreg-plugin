@@ -186,12 +186,7 @@ public class JobsRecognition {
             if (isUnknown(f)){
                 formatter.print(" [unknown status!]");
             }
-            if (formatter instanceof HtmlFormatter) {
-                formatter.print(" | ");
-            } else {
-                formatter.println("");
-            }
-            formatter.reset();
+            formatter.closeBuildsList();
         }
     }
 
