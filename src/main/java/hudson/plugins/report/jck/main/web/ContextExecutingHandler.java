@@ -31,9 +31,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -44,14 +42,10 @@ import java.util.List;
  */
 public class ContextExecutingHandler implements HttpHandler {
 
-    private final File jenkinsHome;
     private final File targetProgram;
-    private final File jenkinsJobs;
     private final String template;
 
-    public ContextExecutingHandler(File jenkinsHome, File targetProgram) throws IOException {
-        this.jenkinsHome = jenkinsHome;
-        this.jenkinsJobs = new File(jenkinsHome, "jobs");
+    public ContextExecutingHandler(File targetProgram) throws IOException {
         this.targetProgram = targetProgram;
         this.template = loadDifTempalte();
     }

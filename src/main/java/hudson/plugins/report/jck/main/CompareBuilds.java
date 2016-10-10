@@ -27,6 +27,7 @@ import hudson.plugins.report.jck.main.cmdline.Arguments;
 import hudson.plugins.report.jck.BuildReportExtended;
 import hudson.plugins.report.jck.BuildSummaryParser;
 import hudson.plugins.report.jck.JckReportPublisher;
+import hudson.plugins.report.jck.main.cmdline.JobsRecognition;
 import hudson.plugins.report.jck.main.cmdline.Options;
 import hudson.plugins.report.jck.main.formatters.Formatter;
 import hudson.plugins.report.jck.model.BuildReport;
@@ -43,13 +44,11 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Scanner;
 
 public class CompareBuilds {
 
     public static void main(String[] args) throws Exception {
         Options options = new Arguments(args).parse();
-        options.setStream(System.out);
         new CompareBuilds(options).work();
     }
     private final Options options;
@@ -240,12 +239,12 @@ public class CompareBuilds {
         }
         format().reset();
         format().println();
-        String nwNra = getChangelogsNvr(br.getBuildName());
+        String nwNra = JobsRecognition.getChangelogsNvr(new File(br.getBuildName()));
         format().startTitle1();
         format().print(nwNra);
         String nwNraOld = null;
         if (old != null) {
-            nwNraOld = getChangelogsNvr(old.getBuildName());
+            nwNraOld = JobsRecognition.getChangelogsNvr(new File(old.getBuildName()));
             format().print(" x(old) " + nwNraOld);
         }
         if (nwNra != null || nwNraOld != null) {
@@ -410,40 +409,6 @@ public class CompareBuilds {
     private int intDiff(int iN, int iO) {
         return iN - iO;
 
-    }
-
-    private String getChangelogsNvr(String buildName) {
-        File f = new File(buildName, "changelog.xml");
-        try {
-            String content = new Scanner(f).useDelimiter("\\Z").next();
-            String[] lines = content.split("[<>]");
-            boolean read1 = true;
-            boolean read2 = false;
-            for (String line : lines) {
-                line = line.replaceAll("\\s+", "");
-                if (line.isEmpty()) {
-                    continue;
-                }
-                if (read1 && read2) {
-                    return line;
-                }
-                if (line.equals("rpms")) {
-                    read1 = false;
-                }
-                if (line.equals("/rpms")) {
-                    read1 = true;
-                }
-                if (line.equals("nvr")) {
-                    read2 = true;
-                }
-                if (line.equals("/nvr")) {
-                    read2 = false;
-                }
-            }
-        } catch (Exception ex) {
-            return null;
-        }
-        return null;
     }
 
     //shortcut

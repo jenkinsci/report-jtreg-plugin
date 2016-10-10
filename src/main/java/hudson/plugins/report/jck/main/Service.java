@@ -36,7 +36,6 @@ public class Service {
     public static void main(String... args) throws IOException {
         HttpServer hs = HttpServer.create(new InetSocketAddress(port), 0);
         hs.createContext("/diff.html", new ContextExecutingHandler(
-                new File("/home/tester/jenkins/jenkins_home"),
                 new File("/home/tester/vm-shared/TckScripts/jenkins/custom_run_wrappers/diff_jobs_hydra.sh")));
         hs.start();
         System.out.println("Diff server started. Running at " + port + ". Terminate to end.");

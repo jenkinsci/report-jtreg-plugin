@@ -26,7 +26,6 @@ package hudson.plugins.report.jck.main.cmdline;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,9 +34,6 @@ public class Arguments {
     private final String[] base;
     private final List<String> mainArgs;
     private boolean argsAreDirs;
-    private String jenkinsDir;
-    private File jobsDir;
-    private String[] possibleJobs;
 
     public Arguments(String[] args) {
         this.mainArgs = new ArrayList<>(args.length);
@@ -62,9 +58,9 @@ public class Arguments {
         }
         for (String base1 : base) {
             String opt = base1.split("=")[0];
-            if (!isNumber(opt)) {
+            if (!JobsRecognition.isNumber(opt)) {
                 //not u number.. is known?
-                if (opt.startsWith("-") && !arrayContains(switches, opt)) {
+                if (opt.startsWith("-") && !JobsRecognition.arrayContains(switches, opt)) {
                     System.err.println("WARNING unknown param " + opt);
 
                 }
@@ -76,6 +72,7 @@ public class Arguments {
         p.println(" options DIR1 DIR2 DIR3 ... DIRn");
         p.println("  or  ");
         p.println(" options JOB_NAME-1 buildPointer1.1 buildPointer1.2  ... jobPointer1.N JOB_NAME-2 buildPointer2.1 buildPointer2.2  ... jobPointer2.N ... JOB_NAME-N ...jobPointerN.N");
+        p.println("     If you use only jobname, then its builds will be listed:  ");
         p.println("  options:  ");
         p.println(" " + output + "=" + argsToHelp(knownOutputs));
         p.println(" default output is 'plain text'. 0-1 of " + output + " is allowed.");
@@ -123,17 +120,18 @@ public class Arguments {
 
     public Options parse() {
         Options result = new Options();
+        result.setStream(System.out);
         for (String arg : base) {
             if (arg.startsWith(output + "=")) {
                 String output_type = arg.split("=")[1];
-                if (!arrayContains(knownOutputs, output_type)) {
+                if (!JobsRecognition.arrayContains(knownOutputs, output_type)) {
                     System.err.println(argsToHelp(knownOutputs));
                     throw new RuntimeException("unknown arg for " + output + " - " + output_type);
                 }
                 result.setOutputType(output_type);
             } else if (arg.startsWith(view + "=")) {
                 String nextView = arg.split("=")[1];
-                if (!arrayContains(knownViews, nextView)) {
+                if (!JobsRecognition.arrayContains(knownViews, nextView)) {
                     System.err.println(argsToHelp(knownViews));
                     throw new RuntimeException("unknown arg for " + view + " - " + nextView);
                 }
@@ -147,7 +145,7 @@ public class Arguments {
             }
         }
         if (mainArgs.isEmpty()) {
-            throw new RuntimeException("No main argument. At elast one Directory is expected");
+            throw new RuntimeException("No main argument. At elast one directory or jobname is expected");
         }
 
         if (result.isFill() && mainArgs.size() <= 2) {
@@ -166,20 +164,16 @@ public class Arguments {
         }
         argsAreDirs = allSameKind;
 
-        jenkinsDir = System.getProperty("jenkins_home");
-        if (jenkinsDir == null) {
-            jenkinsDir = System.getenv("JENKINS_HOME");
-        }
         if (!argsAreDirs) {
-            if (jenkinsDir == null) {
+            if (JobsRecognition.jobsRecognition().getJenkinsDir() == null) {
                 throw new RuntimeException("You are working in jenkins jobs mode, but non -Djenkins_home nor $JENKINS_HOME is specified");
             }
-            jobsDir = new File(jenkinsDir, "jobs");
-            possibleJobs = jobsDir.list();
-            Arrays.sort(possibleJobs);
+            if (mainArgs.size() == 1) {
+                //only information about job will be printed
+                JobsRecognition.jobsRecognition().printJobInfo(mainArgs.get(0), result.getFormatter());
+                System.exit(0);
+            }
             String jobName = null;
-            File jobDir;
-            File buildsDir = null;
             Integer latestBuild = null;
             if (result.isFill()) {
                 int i = -1;
@@ -189,13 +183,11 @@ public class Arguments {
                         break;
                     }
                     String arg = mainArgs.get(i);
-                    if (!isNumber(arg)) {
+                    if (!JobsRecognition.isNumber(arg)) {
                         jobName = arg;
-                        checkJob(jobName);
-                        jobDir = new File(jobsDir, jobName);
-                        buildsDir = new File(jobDir, "builds");
-                        latestBuild = getLatestBuildId(buildsDir);
-                        System.err.println("latest build for "+jobName+" is "+latestBuild);
+                        JobsRecognition.jobsRecognition().checkJob(jobName);
+                        latestBuild = JobsRecognition.jobsRecognition().getLatestBuildId(jobName);
+                        System.err.println("latest build for " + jobName + " is " + latestBuild);
                         continue;
                     }
                     if (jobName == null) {
@@ -204,7 +196,7 @@ public class Arguments {
                     int from = Integer.valueOf(arg);
                     i++;
                     arg = mainArgs.get(i);
-                    if (!isNumber(arg)) {
+                    if (!JobsRecognition.isNumber(arg)) {
                         throw new RuntimeException("You have " + fillSwitch + " set, but when reading " + arg + " it looks like odd number of arguments. Even expected");
                     }
                     int to = Integer.valueOf(arg);
@@ -218,24 +210,22 @@ public class Arguments {
                     to = sanitize(to);
                     if (from > to) {
                         for (int x = from; x >= to; x--) {
-                            result.add(new File(buildsDir, String.valueOf(x)));
+                            result.add(JobsRecognition.jobsRecognition().creteBuildDir(jobName, x));
                         }
                     } else {
                         for (int x = from; x <= to; x++) {
-                            result.add(new File(buildsDir, String.valueOf(x)));
+                            result.add(JobsRecognition.jobsRecognition().creteBuildDir(jobName, x));
                         }
                     }
                 }
             } else {
                 for (int i = 0; i < mainArgs.size(); i++) {
                     String arg = mainArgs.get(i);
-                    if (!isNumber(arg)) {
+                    if (!JobsRecognition.isNumber(arg)) {
                         jobName = arg;
-                        checkJob(jobName);
-                        jobDir = new File(jobsDir, jobName);
-                        buildsDir = new File(jobDir, "builds");
-                        latestBuild = getLatestBuildId(buildsDir);
-                        System.err.println("latest build for "+jobName+" is "+latestBuild);
+                        JobsRecognition.jobsRecognition().checkJob(jobName);
+                        latestBuild = JobsRecognition.jobsRecognition().getLatestBuildId(jobName);
+                        System.err.println("latest build for " + jobName + " is " + latestBuild);
                         continue;
                     }
                     if (jobName == null) {
@@ -250,7 +240,7 @@ public class Arguments {
                     if (result.isSkipFailed()) {
                         while (true) {
                             //iterating untill we find an passing build
-                            boolean added = result.add(new File(buildsDir, String.valueOf(jobId)));
+                            boolean added = result.add(JobsRecognition.jobsRecognition().creteBuildDir(jobName, jobId));
                             if (added) {
                                 break;
                             }
@@ -264,7 +254,7 @@ public class Arguments {
                             }
                         }
                     } else {
-                        result.add(new File(buildsDir, String.valueOf(jobId)));
+                        result.add(JobsRecognition.jobsRecognition().creteBuildDir(jobName, jobId));
                     }
                 }
             }
@@ -291,34 +281,6 @@ public class Arguments {
         return sb.toString();
     }
 
-    private boolean arrayContains(String[] as, String s) {
-        for (String a : as) {
-            if (a.equals(s)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static int getLatestBuildId(File jobDir) {
-        if (jobDir.exists() && jobDir.isDirectory()) {
-            String[] files = jobDir.list();
-            List<Integer> results = new ArrayList<>(files.length);
-            for (String file : files) {
-                try {
-                    Integer i = Integer.valueOf(file);
-                    results.add(i);
-                } catch (Exception ex) {
-                    System.err.println(jobDir + "/" + file + " is not number.");
-                }
-            }
-            Collections.sort(results);
-            return results.get(results.size() - 1);
-        } else {
-            throw new RuntimeException(jobDir + " do not exists or is not directory");
-        }
-    }
-
     private int sanitize(int jobId) {
         if (jobId <= 0) {
             return 1;
@@ -326,26 +288,4 @@ public class Arguments {
         return jobId;
     }
 
-    public boolean isNumber(String s) {
-        try {
-            Integer.valueOf(s);
-            return true;
-        } catch (Exception ex) {
-            return false;
-        }
-    }
-
-    private boolean isJob(String jobName) {
-        return arrayContains(possibleJobs, jobName);
-    }
-
-    private void checkJob(String jobName) {
-        if (!isJob(jobName)) {
-            System.out.println("Possible jobs");
-            for (String jobs : possibleJobs) {
-                System.out.println(jobs);
-            }
-            throw new RuntimeException("Unknown job `" + jobName + "`");
-        }
-    }
 }

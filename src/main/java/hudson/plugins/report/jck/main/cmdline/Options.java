@@ -137,8 +137,7 @@ public class Options {
     boolean add(File file) {
         if (skipFailed) {
             if (!file.exists()
-                    || !new File(file, "log").exists()
-                    || tail(new File(file, "log")).matches(".*(ABORTED|FAILURE).*")) {
+                    || JobsRecognition.jobsRecognition().shouldBeSkipped(file)) {
                 System.err.println("File " + file + " excluded -  skipping of failed builds allowed, and it seems to be fialed build");
                 return false;
             } else {
@@ -159,53 +158,6 @@ public class Options {
         dirsToWork.add(file);
         System.err.println("Added " + file + " !");
         return true;
-    }
-
-    //maybe linux only, not utf8 valid solution... nto much tested, just copypasted and worked
-    private String tail(File file) {
-        RandomAccessFile fileHandler = null;
-        try {
-            fileHandler = new RandomAccessFile(file, "r");
-            long fileLength = fileHandler.length() - 1;
-            StringBuilder sb = new StringBuilder();
-
-            for (long filePointer = fileLength; filePointer != -1; filePointer--) {
-                fileHandler.seek(filePointer);
-                int readByte = fileHandler.readByte();
-
-                if (readByte == 0xA) {
-                    if (filePointer == fileLength) {
-                        continue;
-                    }
-                    break;
-
-                } else if (readByte == 0xD) {
-                    if (filePointer == fileLength - 1) {
-                        continue;
-                    }
-                    break;
-                }
-
-                sb.append((char) readByte);
-            }
-
-            String lastLine = sb.reverse().toString();
-            return lastLine;
-        } catch (java.io.FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-            return null;
-        } finally {
-            if (fileHandler != null) {
-                try {
-                    fileHandler.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
     public Formatter getFormatter() {
