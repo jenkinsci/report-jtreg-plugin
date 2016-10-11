@@ -163,6 +163,7 @@ public class JobsRecognition {
         Collections.sort(results);
         formatter.initDoc();
         for (Integer result : results) {
+            formatter.small();
             File f = creteBuildDir(jobName, result);
             if (isUnknown(f)) {
                 formatter.startColor(Formatter.SupportedColors.Magenta);

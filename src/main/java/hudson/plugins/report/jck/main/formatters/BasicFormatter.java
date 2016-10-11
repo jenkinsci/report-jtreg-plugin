@@ -54,4 +54,11 @@ public abstract class BasicFormatter implements Formatter {
         reset();
     }
 
+    @Override
+    public void small(){
+        
+    }
+    
+    
+
 }

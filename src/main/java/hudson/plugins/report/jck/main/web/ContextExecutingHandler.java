@@ -139,11 +139,15 @@ public class ContextExecutingHandler implements HttpHandler {
             r = multilineReplaceMark("views", r, views);
 
             views = new StringBuilder();
+            int maxI=0;
             for (int i = 0; i < Arguments.knownOutputs.length; i++) {
+                maxI=i;
                 String string = Arguments.knownOutputs[i];
                 views.append("<option value=\"output").append(i + 1).append("\"  ").append(setSelected(string, Arguments.output_html)).append("  >").append(string).append("</option>").append("\n");
 
             }
+            //special case, nothing for plaintext
+            views.append("<option value=\"output").append(maxI + 1).append("\" >").append("").append("</option>").append("\n");
             r = multilineReplaceMark("outputs", r, views);
 
             views = new StringBuilder();

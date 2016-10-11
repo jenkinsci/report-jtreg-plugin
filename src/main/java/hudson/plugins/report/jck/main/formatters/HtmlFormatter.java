@@ -67,7 +67,7 @@ public class HtmlFormatter extends StringMappedFormatter {
         colors.put(SupportedColors.LightCyan, template("LightCyan"));
     }
 
-    private List<String> clossingBuffer = new LinkedList();
+    protected List<String> clossingBuffer = new LinkedList();
 
     private String template(String color) {
         //keep only one space! see sanitize
@@ -115,6 +115,7 @@ public class HtmlFormatter extends StringMappedFormatter {
         print("<h4>");
         clossingBuffer.add("</h4>");
     }
+
     @Override
     public void startTitle3() {
         print("<h3>");

@@ -68,5 +68,6 @@ public interface Formatter {
     public void startTitle1();
 
     public void closeBuildsList();
+    public void small();
 
 }

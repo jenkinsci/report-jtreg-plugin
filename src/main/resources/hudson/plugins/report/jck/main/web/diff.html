@@ -38,11 +38,58 @@
                     opt = options[i];
 
                     if (opt.selected) {
-        //      result.push(opt.value || opt.text);
+                        //      result.push(opt.value || opt.text);
                         result.push(opt.text);
                     }
                 }
                 return result;
+            }
+
+            function deletElementByID() {
+                var elementID = this.id
+                var element = document.getElementById("DIV" + elementID)
+                element.parentNode.removeChild(element);
+                generateComand()
+            }
+
+
+            function load_jobs(id, jobName) {
+                document.getElementById(id).innerHTML = '<object style="width:100%" type="text/html" data="diff.html?generated-part=+-output%3Dhtml2+' + jobName + '" ></object>';
+            }
+
+            function addJob() {
+                var id = new Date().getTime();
+                var futureParent = document.getElementById("selectedJobs")
+                var jobs = document.getElementById("jobs");
+                var selJob = jobs.options[jobs.selectedIndex].text;
+                var mainWrapper = document.createElement("div")
+                var title = document.createElement("h5")
+                var input = document.createElement("input")
+                var jobsDiv = document.createElement("div")
+
+                mainWrapper.id = "DIV" + id;
+                title.id = id;
+                title.addEventListener("click", deletElementByID, false);
+                input.id = "IN" + id;
+                input.oninput = generateComand ;
+                input.setAttribute("class", "dynamicJobs")
+                input.style.width = "100%"
+                jobsDiv.id = "JOBS" + id;
+                jobsDiv.style.width = "100%"
+
+                input.value = " " + selJob + " "
+                title.appendChild(document.createTextNode(selJob + " click to remove, write jobs"))
+
+                mainWrapper.appendChild(title);
+                mainWrapper.appendChild(input);
+                mainWrapper.appendChild(jobsDiv);
+
+                futureParent.appendChild(mainWrapper);
+
+                generateComand()
+                if (document.getElementById("ajaxEanbled").checked) {
+                    load_jobs("JOBS" + id, selJob)
+                }
             }
 
             function generateComand() {
@@ -66,6 +113,11 @@
                 var fe = document.getElementById("-fill");
                 if (fe.checked) {
                     genCmd = genCmd + "-fill  ";
+                }
+
+                var magicJobs = document.getElementsByClassName("dynamicJobs");
+                for (var i = 0; i < magicJobs.length; i++) {
+                    genCmd = genCmd + " " + magicJobs[i].value;
                 }
 
                 document.getElementById("genCmd").value = genCmd
@@ -124,7 +176,9 @@
         <form action="diff.html">
             Generated command:  <input style="width:80%" type="text" id="genCmd" name="generated-part" value="" readonly></input><br/>
             Custom command:  <input style="width:80%" type="text" id="customCmd" name="custom-part" value=""></input><br/>
-            <input type="submit" value="Submit" style="width: 80%; margin-left: auto; margin-right: auto">
+            <div style="text-align:center; border:dotted" style="width:100%">
+                <input type="submit" value="Submit" style="width: 80%" >
+            </div>
         </form> 
 
         <div style="float:left;margin:15px" >
@@ -364,8 +418,9 @@
                 <option value="job184">update-rhel7-x64-odin</option>
                 <!--jobsEnd-->
             </select> 
-            <div id="addJob"  style="border:double; text-align: center; margin:5px" >Add (not yet implemented) -> </div>
+            <div id="addJob"  style="border:double; text-align: center; margin:5px" onClick="addJob()">Add -> </div>
             <div id="copyJob"  style="border:double; text-align: center;" onClick="adjustComand()">jsut put to custom cmdline</div>
+            <input type="checkbox" class="ajaxEanbled" id="ajaxEanbled" value="ajaxEanbled" checked >enable ajax</input>
         </div>
 
 

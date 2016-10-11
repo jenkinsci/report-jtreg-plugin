@@ -32,8 +32,16 @@ public class HtmlFormatter2 extends HtmlFormatter {
     }
 
     @Override
+    public void small() {
+        print("<small>");
+        clossingBuffer.add("</small>");
+    }
+
+    @Override
     public void closeBuildsList() {
-        print(" | ");
+        reset();
+        small();
+        print(" |x| ");
         reset();
     }
 
