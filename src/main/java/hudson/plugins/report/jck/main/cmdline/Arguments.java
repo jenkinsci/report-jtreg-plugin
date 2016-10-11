@@ -86,8 +86,9 @@ public class Arguments {
         p.println(" " + output + "=" + argsToHelp(knownOutputs));
         p.println(" default output is 'plain text'. 0-1 of " + output + " is allowed.");
         p.println(" " + view + "=" + argsToHelp(knownViews));
-        p.println(" default view is 'all'. 0-N of " + view + " is allowed.");
+        p.println(" default view is 'all'. 0-N of " + view + " is allowed. Best view is " + bestViewToString() + "");
         p.println(" job pointers are numbers. If zero or negative, then it is 0 for last one, -1 for one beofre last ...");
+        p.println(" Unknow job will lead to listing of jobs.");
         p.println(" When using even number of build pointers, you can use " + fillSwitch + " switch to consider them as rows");
         p.println(" Another strange argument is " + keepFailedSwitch + " which will include failed/aborted/not-existing builds/dirs during listing.");
     }
@@ -127,7 +128,7 @@ public class Arguments {
     public static final String[] bestViews = sortA(new String[]{
         view_diff_list, view_info, view_info_hidevalues
     });
-    
+
     public static final String[] knownViews = sortA(new String[]{
         view_info_summary, view_info_summary_suites, view_info_problems, view_info_hidevalues,
         view_diff_summary, view_diff_summary_suites, view_diff_details, view_diff_list,
@@ -317,6 +318,14 @@ public class Arguments {
         System.arraycopy(a, 0, c, 0, aLen);
         System.arraycopy(b, 0, c, aLen, bLen);
         return c;
+    }
+
+    private static String bestViewToString() {
+        StringBuilder sb = new StringBuilder();
+        for (String v : bestViews) {
+            sb.append(" " + view + "=").append(v).append(" ");
+        }
+        return sb.toString();
     }
 
 }
