@@ -124,6 +124,10 @@ public class Arguments {
     static final String view_hide_misses = "hide-misses";
     static final String view_hide_totals = "hide-totals";
 
+    public static final String[] bestViews = sortA(new String[]{
+        view_diff_list, view_info, view_info_hidevalues
+    });
+    
     public static final String[] knownViews = sortA(new String[]{
         view_info_summary, view_info_summary_suites, view_info_problems, view_info_hidevalues,
         view_diff_summary, view_diff_summary_suites, view_diff_details, view_diff_list,

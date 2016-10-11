@@ -133,7 +133,7 @@ public class ContextExecutingHandler implements HttpHandler {
             StringBuilder views = new StringBuilder();
             for (int i = 0; i < Arguments.knownViews.length; i++) {
                 String string = Arguments.knownViews[i];
-                views.append("<option value=\"view").append(i + 1).append("\">").append(string).append("</option>").append("\n");
+                views.append("<option value=\"view").append(i + 1).append("\"").append(setSelected(string, Arguments.bestViews)).append(">").append(string).append("</option>").append("\n");
 
             }
             r = multilineReplaceMark("views", r, views);
@@ -173,8 +173,15 @@ public class ContextExecutingHandler implements HttpHandler {
             return r;
         }
 
-        private String setSelected(String string, String current) {
-            if (string.equals(current)) {
+        private String setSelected(String string, String wonted) {
+            if (string.equals(wonted)) {
+                return "selected";
+            } else {
+                return "";
+            }
+        }
+        private String setSelected(String string, String[] wonted) {
+            if (JobsRecognition.arrayContains(wonted, string)) {
                 return "selected";
             } else {
                 return "";

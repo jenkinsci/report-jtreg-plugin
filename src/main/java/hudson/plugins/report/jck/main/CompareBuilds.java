@@ -338,23 +338,23 @@ public class CompareBuilds {
             format().reset();
             if (!options.hideMisses()) {
                 setFontByKNownResult(-1 * st.getRemoved().size(), Formatter.SupportedColors.Red);
-                format().println("        removed : " + intDiffToString(st.getRemoved().size()));
+                format().println("  newly removed : " + intDiffToString(st.getRemoved().size()));
                 format().reset();
                 setFontByKNownResult(-1 * st.getAdded().size(), Formatter.SupportedColors.Green);
-                format().println("        added   : " + intDiffToString(st.getAdded().size()));
+                format().println("  newly added   : " + intDiffToString(st.getAdded().size()));
                 format().reset();
             }
             if (!options.hidePositives()) {
                 setFontByKNownResult(-1 * st.getFixes().size(), Formatter.SupportedColors.LightGreen);
-                format().println("        fixes   : " + intDiffToString(st.getFixes().size()));
+                format().println("    new fixes   : " + intDiffToString(st.getFixes().size()));
                 format().reset();
             }
             if (!options.hideNegatives()) {
                 setFontByKNownResult(-1 * (st.getErrors().size()), Formatter.SupportedColors.LightRed);
-                format().println("        errors  : " + intDiffToString(st.getErrors().size()));
+                format().println("    new errors  : " + intDiffToString(st.getErrors().size()));
                 format().reset();
                 setFontByKNownResult(-1 * (st.getFailures().size()), Formatter.SupportedColors.LightRed);
-                format().println("        failures: " + intDiffToString(st.getFailures().size()));
+                format().println("    new failures: " + intDiffToString(st.getFailures().size()));
                 format().reset();
             }
 
@@ -365,27 +365,27 @@ public class CompareBuilds {
         for (SuiteTestChanges st : testChanges) {
             format().println("       *** " + st.getName() + " *** ");
             if (!options.hideMisses()) {
-                format().println("        removed : ");
+                format().println("  newly removed : ");
                 setFontByKNownResult(-1 * st.getRemoved().size(), Formatter.SupportedColors.Red);
                 printStringList("            ", st.getRemoved());
                 format().reset();
-                format().println("        added   : ");
+                format().println("  newly added   : ");
                 setFontByKNownResult(-1 * st.getAdded().size(), Formatter.SupportedColors.Green);
                 printStringList("            ", st.getAdded());
                 format().reset();
             }
             if (!options.hidePositives()) {
-                format().println("        fixes   : ");
+                format().println("    new fixes   : ");
                 setFontByKNownResult(-1 * st.getFixes().size(), Formatter.SupportedColors.LightGreen);
                 printStringList("            ", st.getFixes());
                 format().reset();
             }
             if (!options.hideNegatives()) {
-                format().println("        errors  : ");
+                format().println("    new errors  : ");
                 setFontByKNownResult(-1 * (st.getErrors().size()), Formatter.SupportedColors.LightRed);
                 printStringList("            ", st.getErrors());
                 format().reset();
-                format().println("        failures: ");
+                format().println("    new failures: ");
                 setFontByKNownResult(-1 * (st.getFailures().size()), Formatter.SupportedColors.LightRed);
                 printStringList("            ", st.getFailures());
                 format().reset();

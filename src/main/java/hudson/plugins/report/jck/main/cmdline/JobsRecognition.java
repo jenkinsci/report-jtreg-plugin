@@ -323,7 +323,12 @@ public class JobsRecognition {
         if (!f.exists()) {
             return true;
         }
-        return !(isAborted(f) || isFailed(f) || isUnstable(f) || isPassed(f));
+        try {
+            return !(isAborted(f) || isFailed(f) || isUnstable(f) || isPassed(f));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return true;
+        }
     }
 
 }
