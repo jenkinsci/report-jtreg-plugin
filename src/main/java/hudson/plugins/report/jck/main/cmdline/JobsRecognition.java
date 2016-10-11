@@ -52,7 +52,6 @@ public class JobsRecognition {
 
     private String jenkinsDir;
     private File jobsDir;
-    private final String[] possibleJobs;
 
     public JobsRecognition() {
         jenkinsDir = System.getProperty("jenkins_home");
@@ -60,8 +59,6 @@ public class JobsRecognition {
             jenkinsDir = System.getenv("JENKINS_HOME");
         }
         jobsDir = new File(jenkinsDir, "jobs");
-        possibleJobs = jobsDir.list();
-        Arrays.sort(possibleJobs);
     }
 
     public File getJobsDir() {
@@ -73,11 +70,13 @@ public class JobsRecognition {
     }
 
     public String[] getPossibleJobs() {
+        String[] possibleJobs = jobsDir.list();
+        Arrays.sort(possibleJobs, Collections.reverseOrder());
         return possibleJobs;
     }
 
     public boolean isJob(String jobName) {
-        return arrayContains(possibleJobs, jobName);
+        return arrayContains(getPossibleJobs(), jobName);
     }
 
     private File creteJobFile(String jobName) {
@@ -143,7 +142,8 @@ public class JobsRecognition {
     public void checkJob(String jobName) {
         if (!isJob(jobName)) {
             System.err.println("Possible jobs");
-            for (String jobs : possibleJobs) {
+            String[] pj = getPossibleJobs();
+            for (String jobs : pj) {
                 System.err.println(jobs);
             }
             throw new RuntimeException("Unknown job `" + jobName + "`");
@@ -184,7 +184,7 @@ public class JobsRecognition {
                 //tt = tt.trim();
             }
             formatter.print(" [" + tt + "]");
-            if (isUnknown(f)){
+            if (isUnknown(f)) {
                 formatter.print(" [unknown status!]");
             }
             formatter.closeBuildsList();

@@ -26,6 +26,7 @@ package hudson.plugins.report.jck.main.web;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import hudson.plugins.report.jck.main.cmdline.Arguments;
+import hudson.plugins.report.jck.main.cmdline.JobsRecognition;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -135,15 +136,36 @@ public class ContextExecutingHandler implements HttpHandler {
                 views.append("<option value=\"view").append(i + 1).append("\">").append(string).append("</option>").append("\n");
 
             }
-            r = r.replaceAll("(?s)<!--views-->.*<!--viewsEnd-->", views.toString());
+            r = multilineReplaceMark("views", r, views);
+
             views = new StringBuilder();
             for (int i = 0; i < Arguments.knownOutputs.length; i++) {
                 String string = Arguments.knownOutputs[i];
                 views.append("<option value=\"output").append(i + 1).append("\"  ").append(setSelected(string, Arguments.output_html)).append("  >").append(string).append("</option>").append("\n");
 
             }
-            r = r.replaceAll("(?s)<!--outputs-->.*<!--outputsEnd-->", views.toString());
+            r = multilineReplaceMark("outputs", r, views);
 
+            views = new StringBuilder();
+            for (String string : Arguments.knownBoolSwitches) {
+                views.append("  <input onclick=\"generateComand();\" type=\"checkbox\" class=\"switch\" id=\"").append(string).append("\" value=\"").append(string).append("\">").append(string).append("</input><br/>\n");
+            }
+            r = multilineReplaceMark("swithces", r, views);
+
+            views = new StringBuilder();
+            String[] jobs = JobsRecognition.jobsRecognition().getPossibleJobs();
+            for (int i = 0; i < jobs.length; i++) {
+                String string = jobs[i];
+                views.append("<option value=\"job").append(i + 1).append("\">").append(string).append("</option>").append("\n");
+
+            }
+            r = multilineReplaceMark("jobs", r, views);
+
+            return r;
+        }
+
+        private String multilineReplaceMark(String mark, String orig, StringBuilder views) {
+            String r = orig.replaceAll("(?s)<!--" + mark + "-->.*<!--" + mark + "End-->", views.toString());
             return r;
         }
 
