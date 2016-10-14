@@ -349,7 +349,14 @@ public class BuildSummaryParser {
         return parseSuiteTests(build.getRootDir());
     }
 
-    private List<SuiteTests> parseSuiteTests(File build) throws Exception {
+    /**
+     * this is very costly mehtod, use rarely
+     * 
+     * @param build
+     * @return list of all tests in suite
+     * @throws Exception 
+     */
+    public List<SuiteTests> parseSuiteTests(File build) throws Exception {
         List<SuiteTests> result = new ArrayList<>();
         for (String prefix : prefixes) {
             File suiteTestsFile = new File(build, prefix + "-" + REPORT_TESTS_LIST_JSON);

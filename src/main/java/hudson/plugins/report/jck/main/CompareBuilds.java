@@ -34,6 +34,7 @@ import hudson.plugins.report.jck.model.BuildReport;
 import hudson.plugins.report.jck.model.Report;
 import hudson.plugins.report.jck.model.Suite;
 import hudson.plugins.report.jck.model.SuiteTestChanges;
+import hudson.plugins.report.jck.model.SuiteTests;
 import hudson.plugins.report.jck.model.Test;
 import hudson.plugins.report.jck.model.TestOutput;
 import hudson.plugins.report.jck.wrappers.RunWrapperFromDir;
@@ -89,6 +90,11 @@ public class CompareBuilds {
             if (options.viewInfoProblems()) {
                 printProblems(br.getSuites());
             }
+
+            if (options.viewAllTests()) {
+                printAllTests(bs.parseSuiteTests(newOne), br.getSuites());
+            }
+
             if (oldOne != null) {
                 BuildReport br1 = bs.parseJobReports(oldOne);
                 if (options.isInfo()) {
@@ -477,5 +483,46 @@ public class CompareBuilds {
             return ((Collection) res).size();
         }
         return (int) res;
+    }
+
+    private void printAllTests(List<SuiteTests> all, List<Suite> probelms) {
+        format().startTitle2();
+        format().println("  ***  All tests!  *** ");
+        format().reset();
+        for (SuiteTests suiteTest : all) {
+            format().startTitle3();
+            format().println("    *** " + suiteTest.getName() + " *** ");
+            format().reset();
+            for (String test : suiteTest.getTests()) {
+                if (isProblem(suiteTest.getName(), test, probelms)) {
+                    if (!options.hideNegatives()) {
+                        format().startColor(Formatter.SupportedColors.Red);
+                        format().println("          " + test + " (FAILED or ERROR)");
+                    }
+                } else if (!options.hidePositives()) {
+                    format().startColor(Formatter.SupportedColors.Green);
+                    format().print("          " + test + " ");
+                    format().startColor(Formatter.SupportedColors.Yellow);
+                    format().println("(PASS or MISSING)");
+                }
+
+                format().reset();
+
+            }
+
+        }
+    }
+
+    private boolean isProblem(String name, String test, List<Suite> probelms) {
+        for (Suite probelm : probelms) {
+            if (probelm.getName().equals(name)) {
+                for (Test t : probelm.getReport().getTestProblems()) {
+                    if (t.getName().equals(test)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

@@ -86,6 +86,9 @@ public class Options {
     public boolean viewInfoProblems() {
         return views.isEmpty() || views.contains(Arguments.view_info_problems) || views.contains(Arguments.view_info);
     }
+    public boolean viewAllTests() {
+        return views.isEmpty() || views.contains(Arguments.view_all_tests);
+    }
 
     public boolean viewDiffSummary() {
         return views.isEmpty() || views.contains(Arguments.view_diff_summary) || views.contains(Arguments.view_diff);
