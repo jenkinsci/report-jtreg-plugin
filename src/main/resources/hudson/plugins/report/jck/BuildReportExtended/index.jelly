@@ -2,6 +2,9 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:test="/lib/test">
     <l:layout title="${it.run} ${it.displayName}">
         <l:main-panel>
+            <a href="${it.previousLink}/">${it.previousLinkName}</a>
+            ${it.buildNumber}
+            <a href="${it.nextLink}/">${it.nextLinkName}</a> <br/>
             <j:if test="${it.suites != null}">
                 <div class="jck">
                     <table>
@@ -28,7 +31,9 @@
                             </j:forEach>
                         </tbody>
                     </table>
+                    <hr/> <a name="problems"/>
                     <h2>Failures and Errors</h2>
+                    <a href="#diff">diff</a> | <a href="#all">all</a> |
                     <j:forEach var="suite" items="${it.suites}" varStatus="suitesStatus">
                         <j:if test="${suite.report != null and suite.report.testProblems != null and suite.report.testProblems.size() > 0}">
                             <div style="font-weight: bold; font-size: large;">${suite.name}</div>
@@ -90,7 +95,9 @@
                             </j:forEach>
                         </ul>
                     </j:if>
+                    <hr/> <a name="diff"/>
                     <h2>Test status changes:</h2>
+                    <a href="#all">all</a> | <a href="#problems">problems</a> |
                     <j:forEach var="suite" items="${it.testChanges}" varStatus="suitesStatus">
                         <div style="font-weight: bold; font-size: large;">${suite.name}</div>
                         <j:if test="${suite.fixes.size() > 0}">
@@ -143,6 +150,47 @@
                                 </j:forEach>
                             </ul>
                         </j:if>
+                    </j:forEach>
+                </div>
+            </j:if>
+            <hr/> <a name="all"/>
+            <j:if test="${it.allTests != null}">
+                <div class="jck">
+                   <h2>All tests</h2>
+                   <a href="#diff">diff</a> | <a href="#problems">problems</a> <br/>
+                    <j:forEach var="suite" items="${it.allTests.allTestsAndSuites}" varStatus="suitesStatus">
+                        <j:forEach var="suiteHrefs" items="${it.allTests.allTestsAndSuites}" varStatus="suitesStatus">
+                            <a href="#${suiteHrefs.name}">${suiteHrefs.name}</a> |
+                        </j:forEach>
+                        <div style="font-weight: bold; font-size: large;">${suite.name}</div>
+                        <a name="${suite.name}"></a>
+                        <ul>
+                            <j:forEach items="${suite.testsLimited}" var="t" varStatus="testStatus">
+                                <small><li>
+                                    <j:if test="${t.status != null}">
+                                        <j:if test="${t.status.failed}">
+                                            <span style="color:red">
+                                                ${t.testName}&amp;nbsp;
+                                                ${t.status}&amp;nbsp;
+                                            </span>
+                                        </j:if>
+                                        <j:if test="${t.status.passed}">
+                                            <span style="color:green">
+                                                ${t.testName}&amp;nbsp;
+                                            </span>
+                                            <span style="color:yellow">
+                                                ${t.status}&amp;nbsp;
+                                            </span>
+                                        </j:if>
+                                    </j:if>
+                                    <j:if test="${t.status == null}">      
+                                        <b>                   
+                                            ${t.testName}&amp;nbsp;
+                                        </b> 
+                                    </j:if>
+                                </li></small>
+                            </j:forEach>
+                        </ul>
                     </j:forEach>
                 </div>
             </j:if>

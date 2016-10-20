@@ -26,6 +26,7 @@ package hudson.plugins.report.jck;
 import hudson.plugins.report.jck.model.BuildReport;
 import hudson.plugins.report.jck.model.Suite;
 import hudson.plugins.report.jck.model.SuiteTestChanges;
+import hudson.plugins.report.jck.model.SuitesWithResults;
 import java.util.List;
 
 public class BuildReportExtended extends BuildReport {
@@ -35,15 +36,33 @@ public class BuildReportExtended extends BuildReport {
     private final List<SuiteTestChanges> testChanges;
     private final int total;
     private final int notRun;
+    private final SuitesWithResults allTests;
 
     public BuildReportExtended(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites,
-            List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges, int total, int notRun) {
+            List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges, int total, int notRun, SuitesWithResults allTests) {
         super(buildNumber, buildName, passed, failed, error, suites, total, notRun);
         this.addedSuites = addedSuites;
         this.removedSuites = removedSuites;
         this.testChanges = testChanges;
         this.total = total;
         this.notRun = notRun;
+        this.allTests = allTests;
+    }
+
+    public String getPreviousLink() {
+        return "../../" + (getBuildNumber() - 1) + "/java-reports";
+    }
+
+    public String getPreviousLinkName() {
+        return " << " + (getBuildNumber() - 1) + " << ";
+    }
+
+    public String getNextLink() {
+        return "../../" + (getBuildNumber() + 1) + "/java-reports";
+    }
+
+    public String getNextLinkName() {
+        return " >> " + (getBuildNumber() + 1) + " >> ";
     }
 
     public List<String> getAddedSuites() {
@@ -59,13 +78,17 @@ public class BuildReportExtended extends BuildReport {
     }
 
     @Override
-    public int getTotal(){
+    public int getTotal() {
         return total;
     }
 
     @Override
-    public int getNotRun(){
+    public int getNotRun() {
         return notRun;
+    }
+
+    public SuitesWithResults getAllTests() {
+        return allTests;
     }
 
 }

@@ -52,6 +52,8 @@ import java.util.stream.Collectors;
 
 import static hudson.plugins.report.jck.Constants.REPORT_JSON;
 import static hudson.plugins.report.jck.Constants.REPORT_TESTS_LIST_JSON;
+import hudson.plugins.report.jck.model.SuiteTestsWithResults;
+import hudson.plugins.report.jck.model.SuitesWithResults;
 import hudson.plugins.report.jck.wrappers.RunWrapper;
 import hudson.plugins.report.jck.wrappers.RunWrapperFromDir;
 import hudson.plugins.report.jck.wrappers.RunWrapperFromRun;
@@ -310,7 +312,12 @@ public class BuildSummaryParser {
                 result.add(changes);
             }
         }
-
+        SuitesWithResults allTests = null;
+        try {
+            allTests = SuitesWithResults.create(currentBuildTestsList, parseBuildReport(build));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return new BuildReportExtended(
                 currentReport.getBuildNumber(),
                 currentReport.getBuildName(),
@@ -322,7 +329,8 @@ public class BuildSummaryParser {
                 removedSuites,
                 result,
                 currentReport.getTotal(),
-                currentReport.getNotRun());
+                currentReport.getNotRun(),
+                allTests);
     }
 
     private List<Suite> parseBuildSummary(Run<?, ?> build) throws Exception {
@@ -351,10 +359,10 @@ public class BuildSummaryParser {
 
     /**
      * this is very costly mehtod, use rarely
-     * 
+     *
      * @param build
      * @return list of all tests in suite
-     * @throws Exception 
+     * @throws Exception
      */
     public List<SuiteTests> parseSuiteTests(File build) throws Exception {
         List<SuiteTests> result = new ArrayList<>();

@@ -34,7 +34,8 @@ import hudson.plugins.report.jck.model.BuildReport;
 import hudson.plugins.report.jck.model.Report;
 import hudson.plugins.report.jck.model.Suite;
 import hudson.plugins.report.jck.model.SuiteTestChanges;
-import hudson.plugins.report.jck.model.SuiteTests;
+import hudson.plugins.report.jck.model.SuiteTestsWithResults;
+import hudson.plugins.report.jck.model.SuitesWithResults;
 import hudson.plugins.report.jck.model.Test;
 import hudson.plugins.report.jck.model.TestOutput;
 import hudson.plugins.report.jck.wrappers.RunWrapperFromDir;
@@ -92,7 +93,7 @@ public class CompareBuilds {
             }
 
             if (options.viewAllTests()) {
-                printAllTests(bs.parseSuiteTests(newOne), br.getSuites());
+                printAllTests(bs.parseBuildReportExtended(new RunWrapperFromDir(newOne), null));
             }
 
             if (oldOne != null) {
@@ -485,25 +486,26 @@ public class CompareBuilds {
         return (int) res;
     }
 
-    private void printAllTests(List<SuiteTests> all, List<Suite> probelms) {
+    private void printAllTests(BuildReportExtended bre) {
         format().startTitle2();
         format().println("  ***  All tests!  *** ");
         format().reset();
-        for (SuiteTests suiteTest : all) {
+        List<SuiteTestsWithResults> all = bre.getAllTests().getAllTestsAndSuites();
+        for (SuiteTestsWithResults suiteTest : all) {
             format().startTitle3();
             format().println("    *** " + suiteTest.getName() + " *** ");
             format().reset();
-            for (String test : suiteTest.getTests()) {
-                if (isProblem(suiteTest.getName(), test, probelms)) {
+            for (SuiteTestsWithResults.StringWithResult test : suiteTest.getTests()) {
+                if (test.getStatus() == SuiteTestsWithResults.TestStatusSimplified.FAILED_OR_ERROR) {
                     if (!options.hideNegatives()) {
                         format().startColor(Formatter.SupportedColors.Red);
-                        format().println("          " + test + " (FAILED or ERROR)");
+                        format().println("          " + test.getTestName() + " " + test.getStatus().toString());
                     }
                 } else if (!options.hidePositives()) {
                     format().startColor(Formatter.SupportedColors.Green);
-                    format().print("          " + test + " ");
+                    format().print("          " + test.getTestName() + " ");
                     format().startColor(Formatter.SupportedColors.Yellow);
-                    format().println("(PASS or MISSING)");
+                    format().println(test.getStatus().toString());
                 }
 
                 format().reset();
@@ -513,16 +515,4 @@ public class CompareBuilds {
         }
     }
 
-    private boolean isProblem(String name, String test, List<Suite> probelms) {
-        for (Suite probelm : probelms) {
-            if (probelm.getName().equals(name)) {
-                for (Test t : probelm.getReport().getTestProblems()) {
-                    if (t.getName().equals(test)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
 }
