@@ -38,9 +38,21 @@ public class JtregReportPublisher extends AbstractReportPublisher {
         super(reportFileGlob);
     }
 
+    public static String sfxs="zip,tar,tar.gz,tar.bz2,tar.xz";
+    
+    public static boolean isJtregArchive(String s){
+        String[] ss = sfxs.split(",");
+        for (String s1 : ss) {
+            if (s.endsWith(s1)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     @Override
     protected String defaultReportFileGlob() {
-        return "glob:*.{zip,tar,tar.gz,tar.bz2,tar.xz}";
+        return "glob:*.{"+sfxs+"}";
     }
 
     @Override
