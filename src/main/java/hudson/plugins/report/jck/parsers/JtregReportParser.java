@@ -73,7 +73,7 @@ public class JtregReportParser implements ReportParser {
                 }
                 try {
                     XMLStreamReader reader = inputFactory.createXMLStreamReader(new CloseShieldInputStream(in), "UTF-8");
-                    testsList.add(parseTest(reader));
+                    testsList.addAll(parseTest(reader));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -113,58 +113,66 @@ public class JtregReportParser implements ReportParser {
         return path.getFileName().toString();
     }
 
-    private Test parseTest(XMLStreamReader in) throws Exception {
+    private List<Test> parseTest(XMLStreamReader in) throws Exception {
+        List<Test> r = new ArrayList<>();
         while (in.hasNext()) {
             int event = in.next();
             if (event == START_ELEMENT && "testsuite".equals(in.getLocalName())) {
-                break;
+
+                String name = findAttributeValue(in, "name");
+                String failuresStr = findAttributeValue(in, "failures");
+                String errorsStr = findAttributeValue(in, "errors");
+
+                int failures = tryParseString(failuresStr);
+                int errors = tryParseString(errorsStr);
+
+                String statusLine = "";
+                String stdOutput = "";
+                String errOutput = "";
+
+                while (in.hasNext()) {
+                    event = in.next();
+                    if (event == START_ELEMENT && "properties".equals(in.getLocalName())) {
+                        statusLine = findStatusLine(in);
+                        continue;
+                    }
+                    if (event == START_ELEMENT && "system-out".equals(in.getLocalName())) {
+                        stdOutput = captureCharacters(in, "system-out");
+                        continue;
+                    }
+                    if (event == START_ELEMENT && "system-err".equals(in.getLocalName())) {
+                        errOutput = captureCharacters(in, "system-err");
+                        continue;
+                    }
+
+                    if (event == END_ELEMENT && "testsuite".equals(in.getLocalName())) {
+                        break;
+                    }
+                }
+
+                TestStatus status;
+                if (errors > 0) {
+                    status = TestStatus.ERROR;
+                } else if (failures > 0) {
+                    status = TestStatus.FAILED;
+                } else {
+                    status = TestStatus.PASSED;
+                }
+
+                List<TestOutput> outputs = Arrays.asList(
+                        new TestOutput("system-out", stdOutput),
+                        new TestOutput("system-err", errOutput)
+                );
+
+                Test t = new Test(name,
+                        status,
+                        statusLine,
+                        outputs);
+                r.add(t);
+
             }
         }
-        String name = findAttributeValue(in, "name");
-        String failuresStr = findAttributeValue(in, "failures");
-        String errorsStr = findAttributeValue(in, "errors");
-
-        int failures = tryParseString(failuresStr);
-        int errors = tryParseString(errorsStr);
-
-        String statusLine = "";
-        String stdOutput = "";
-        String errOutput = "";
-
-        while (in.hasNext()) {
-            int event = in.next();
-            if (event == START_ELEMENT && "properties".equals(in.getLocalName())) {
-                statusLine = findStatusLine(in);
-                continue;
-            }
-            if (event == START_ELEMENT && "system-out".equals(in.getLocalName())) {
-                stdOutput = captureCharacters(in, "system-out");
-                continue;
-            }
-            if (event == START_ELEMENT && "system-err".equals(in.getLocalName())) {
-                errOutput = captureCharacters(in, "system-err");
-                continue;
-            }
-        }
-
-        TestStatus status;
-        if (errors > 0) {
-            status = TestStatus.ERROR;
-        } else if (failures > 0) {
-            status = TestStatus.FAILED;
-        } else {
-            status = TestStatus.PASSED;
-        }
-
-        List<TestOutput> outputs = Arrays.asList(
-                new TestOutput("system-out", stdOutput),
-                new TestOutput("system-err", errOutput)
-        );
-
-        return new Test(name,
-                status,
-                statusLine,
-                outputs);
+        return r;
     }
 
     private String findAttributeValue(XMLStreamReader in, String name) {
