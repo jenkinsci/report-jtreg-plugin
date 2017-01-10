@@ -117,7 +117,7 @@ public class JtregReportParser implements ReportParser {
         List<Test> r = new ArrayList<>();
         while (in.hasNext()) {
             int event = in.next();
-            if (event == START_ELEMENT && "testsuite".equals(in.getLocalName())) {
+            if (event == START_ELEMENT && TESTSUITE.equals(in.getLocalName())) {
 
                 String name = findAttributeValue(in, "name");
                 String failuresStr = findAttributeValue(in, "failures");
@@ -132,20 +132,20 @@ public class JtregReportParser implements ReportParser {
 
                 while (in.hasNext()) {
                     event = in.next();
-                    if (event == START_ELEMENT && "properties".equals(in.getLocalName())) {
+                    if (event == START_ELEMENT && PROPERTIES.equals(in.getLocalName())) {
                         statusLine = findStatusLine(in);
                         continue;
                     }
-                    if (event == START_ELEMENT && "system-out".equals(in.getLocalName())) {
-                        stdOutput = captureCharacters(in, "system-out");
+                    if (event == START_ELEMENT && SYSTEMOUT.equals(in.getLocalName())) {
+                        stdOutput = captureCharacters(in, SYSTEMOUT);
                         continue;
                     }
-                    if (event == START_ELEMENT && "system-err".equals(in.getLocalName())) {
-                        errOutput = captureCharacters(in, "system-err");
+                    if (event == START_ELEMENT && SYSTEMERR.equals(in.getLocalName())) {
+                        errOutput = captureCharacters(in, SYSTEMERR);
                         continue;
                     }
 
-                    if (event == END_ELEMENT && "testsuite".equals(in.getLocalName())) {
+                    if (event == END_ELEMENT && TESTSUITE.equals(in.getLocalName())) {
                         break;
                     }
                 }
@@ -160,8 +160,8 @@ public class JtregReportParser implements ReportParser {
                 }
 
                 List<TestOutput> outputs = Arrays.asList(
-                        new TestOutput("system-out", stdOutput),
-                        new TestOutput("system-err", errOutput)
+                        new TestOutput(SYSTEMOUT, stdOutput),
+                        new TestOutput(SYSTEMERR, errOutput)
                 );
 
                 Test t = new Test(name,
@@ -174,6 +174,10 @@ public class JtregReportParser implements ReportParser {
         }
         return r;
     }
+    private static final String SYSTEMOUT = "system-out";
+    private static final String SYSTEMERR = "system-err";
+    private static final String TESTSUITE = "testsuite";
+    private static final String PROPERTIES = "properties";
 
     private String findAttributeValue(XMLStreamReader in, String name) {
         int count = in.getAttributeCount();
@@ -199,7 +203,7 @@ public class JtregReportParser implements ReportParser {
     private String findStatusLine(XMLStreamReader in) throws Exception {
         while (in.hasNext()) {
             int event = in.next();
-            if (event == END_ELEMENT && "properties".equals(in.getLocalName())) {
+            if (event == END_ELEMENT && PROPERTIES.equals(in.getLocalName())) {
                 break;
             }
             if (event == START_ELEMENT && "property".equals(in.getLocalName())) {
