@@ -40,8 +40,14 @@ public class ReportChartColumn extends ListViewColumn {
     }
 
     public List<BuildReport> getJckReport(Job<?, ?> job) {
-        AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(((Project)job).getPublishersList());
-        return new BuildSummaryParser(Arrays.asList("jck", "jtreg"), settings).parseJobReports(job);
+        AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(((Project) job).getPublishersList());
+        List<BuildReport> r = new BuildSummaryParser(Arrays.asList("jck", "jtreg"), settings).parseJobReports(job);
+        try {
+            ReportProjectAction.cacheSumms(job.getRootDir(), r);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return r;
     }
 
     @Extension

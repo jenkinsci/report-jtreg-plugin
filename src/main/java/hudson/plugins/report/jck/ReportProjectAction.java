@@ -29,6 +29,11 @@ import hudson.model.Project;
 import static hudson.plugins.report.jck.ReportAction.getAbstractReportPublisher;
 import hudson.plugins.report.jck.model.BuildReport;
 import hudson.plugins.report.jck.model.ProjectReport;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -80,12 +85,14 @@ public class ReportProjectAction implements Action {
     }
 
     public ProjectReport getChartData() {
-        AbstractReportPublisher settings = getAbstractReportPublisher(((Project)job).getPublishersList());
+        AbstractReportPublisher settings = getAbstractReportPublisher(((Project) job).getPublishersList());
         List<BuildReport> reports = new BuildSummaryParser(prefixes, settings).parseJobReports(job);
-        return new ProjectReport(
+        ProjectReport report = new ProjectReport(
                 reports,
                 collectImprovements(reports),
                 collectRegressions(reports));
+        cacheTotals(((Project) job).getRootDir(), report);
+        return report;
     }
 
     private List<Integer> collectImprovements(List<BuildReport> reports) {
@@ -146,5 +153,71 @@ public class ReportProjectAction implements Action {
                         .map(t -> s.getName() + " / " + t.getName()))
                 .collect(Collectors.toSet());
     }
+    
+    public static void cacheTotals(File rootBuild, ProjectReport projectRreport) {
+        try {
+            cacheTotalsImpl(rootBuild, projectRreport);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 
+    private static final String CACHEDSUMMREGRESSIONSPROPERTIES = "cached-summ-regressions.properties";
+    private static final String CACHEDSUMMRESULTSPROPERTIES = "cached-summ-results.properties";
+
+    static void cacheTotalsImpl(File rootBuild, ProjectReport projectRreport) throws IOException {
+        cacheSumms(rootBuild, projectRreport.getReports());
+        for (int i = 0; i < projectRreport.getReports().size(); i++) {
+            BuildReport buildReport = projectRreport.getReports().get(i);
+            File cachedRegressions = getCachedRegressionsFile(rootBuild, buildReport);
+            if (!cachedRegressions.exists()) {
+                try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cachedRegressions), "utf-8"))) {
+                    bw.write("jrp.improvements=" + projectRreport.getImprovements().get(i));
+                    bw.newLine();
+                    bw.write("jrp.regressions=" + projectRreport.getRegressions().get(i));
+                    bw.newLine();
+                }
+
+            }
+
+        }
+
+    }
+
+    private static File getCachedRegressionsFile(File rootBuild, BuildReport buildReport) {
+        return getCachedFile(rootBuild, buildReport, CACHEDSUMMREGRESSIONSPROPERTIES);
+    }
+
+    private static File getCachedResultsFile(File rootBuild, BuildReport report) {
+        return getCachedFile(rootBuild, report, CACHEDSUMMRESULTSPROPERTIES);
+    }
+    
+    private static File getCachedFile(File root, BuildReport report, String name) {
+        return new File(new File(new File(root, "builds"), report.getBuildNumber() + ""), name);
+    }
+    
+    
+
+    static void cacheSumms(File rootBuild, List<BuildReport> reports) throws IOException {
+
+        for (BuildReport report : reports) {
+            File cachedResults = getCachedResultsFile(rootBuild, report);
+            if (!cachedResults.exists()) {
+                try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cachedResults), "utf-8"))) {
+                    bw.write("jrp.errors=" + report.getError());
+                    bw.newLine();
+                    bw.write("jrp.failures=" + report.getFailed());
+                    bw.newLine();
+                    bw.write("jrp.notrun=" + report.getNotRun());
+                    bw.newLine();
+                    bw.write("jrp.passed=" + report.getPassed());
+                    bw.newLine();
+                    bw.write("jrp.total=" + report.getTotal());
+                    bw.newLine();
+                    bw.write("jrp.failedAndErrors=" + (report.getFailed() + report.getError()));
+                    bw.newLine();
+                }
+            }
+        }
+    }
 }
