@@ -84,7 +84,7 @@ public class BuildSummaryParser {
             if (run.getResult() == null || run.getResult().isWorseThan(Result.UNSTABLE)) {
                 continue;
             }
-            if (settings.getResultsBlackList() != null && !settings.getResultsBlackList().trim().isEmpty()) {
+            if (settings != null && settings.getResultsBlackList() != null && !settings.getResultsBlackList().trim().isEmpty()) {
                 String[] items = settings.getResultsBlackList().split("\\s+");
                 for (String item : items) {
                     if (run.getDisplayName().matches(item)) {

@@ -12,7 +12,7 @@
         var data = {
         labels: [
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
-        "${build.buildName}"<j:if test="${!status.last}">,</j:if>
+        "${build.buildNameShortened}"<j:if test="${!status.last}">,</j:if>
         </j:forEach>
         ],
                 datasets: [
@@ -54,7 +54,7 @@
         var jckErrorsChart = new Chart(ctx).Line(data, options);
         var buildsMap = {};
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
-        buildsMap["${build.buildName}"] = "${build.buildNumber}";
+        buildsMap["${build.buildNameShortened}"] = "${build.buildNumber}";
         </j:forEach>
         document.getElementById("jckErrorsFailuresChartContainer").onclick = function (evt) {
         var activePoints = jckErrorsChart.getPointsAtEvent(evt);
@@ -67,7 +67,7 @@
         var data = {
         labels: [
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
-        "${build.buildName}"<j:if test="${!status.last}">,</j:if>
+        "${build.buildNameShortened}"<j:if test="${!status.last}">,</j:if>
         </j:forEach>
         ],
                 datasets: [
@@ -109,7 +109,7 @@
         var jckPassedChart = new Chart(ctx).Line(data, options);
         var buildsMap = {};
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
-        buildsMap["${build.buildName}"] = "${build.buildNumber}";
+        buildsMap["${build.buildNameShortened}"] = "${build.buildNumber}";
         </j:forEach>
         document.getElementById("jckPassedChartContainer").onclick = function (evt) {
         var activePoints = jckPassedChart.getPointsAtEvent(evt);
@@ -122,7 +122,7 @@
         var data = {
         labels: [
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
-        "${build.buildName}"<j:if test="${!status.last}">,</j:if>
+        "${build.buildNameShortened}"<j:if test="${!status.last}">,</j:if>
         </j:forEach>
         ],
                 datasets: [
@@ -161,7 +161,7 @@
         document.getElementById("jckRegressionsChartContainer").onclick = function (evt) {
         var buildsMap = {};
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
-        buildsMap["${build.buildName}"] = "${build.buildNumber}";
+        buildsMap["${build.buildNameShortened}"] = "${build.buildNumber}";
         </j:forEach>
         var activePoints = jckRegressions.getBarsAtEvent(evt);
         window.open(buildsMap[activePoints[0].label] + "/java-reports", "_blank");
