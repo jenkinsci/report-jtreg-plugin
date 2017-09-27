@@ -165,6 +165,7 @@ public class ReportProjectAction implements Action {
     private static final String CACHEDSUMMREGRESSIONSPROPERTIES = "cached-summ-regressions.properties";
     private static final String CACHEDSUMMRESULTSPROPERTIES = "cached-summ-results.properties";
 
+    //this happily ignores combined jck+jtreg reporting, but as it is never used, it may be already corupted elsewhere
     static void cacheTotalsImpl(File rootBuild, ProjectReport projectRreport) throws IOException {
         cacheSumms(rootBuild, projectRreport.getReports());
         for (int i = 0; i < projectRreport.getReports().size(); i++) {
@@ -197,9 +198,8 @@ public class ReportProjectAction implements Action {
     }
     
     
-
+//this happily ignores combined jck+jtreg reporting, but as it is never used, it may be already corupted elsewhere
     static void cacheSumms(File rootBuild, List<BuildReport> reports) throws IOException {
-
         for (BuildReport report : reports) {
             File cachedResults = getCachedResultsFile(rootBuild, report);
             if (!cachedResults.exists()) {

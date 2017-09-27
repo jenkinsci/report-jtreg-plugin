@@ -48,6 +48,8 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 import static hudson.plugins.report.jck.Constants.REPORT_JSON;
 import static hudson.plugins.report.jck.Constants.REPORT_TESTS_LIST_JSON;
+import hudson.plugins.report.jck.model.BuildReport;
+import java.util.Arrays;
 
 abstract public class AbstractReportPublisher extends Recorder {
 
@@ -115,6 +117,32 @@ abstract public class AbstractReportPublisher extends Recorder {
                 StandardCharsets.UTF_8)) {
             new GsonBuilder().setPrettyPrinting().create().toJson(reportShort, out);
         }
+        cacheReport(reportShort, jsonFile);
+    }
+
+    private void cacheReport(List<Suite> reportShort, File jsonFile) {
+        try {
+            int passedSumm = 0;
+            int notRunSumm = 0;
+            int failedSumm = 0;
+            int errorSumm = 0;
+            int totalSumm = 0;
+            String name = "";
+            for (Suite s : reportShort) {
+                passedSumm += s.getReport().getTestsPassed();
+                notRunSumm += s.getReport().getTestsNotRun();
+                failedSumm += s.getReport().getTestsFailed();
+                errorSumm += s.getReport().getTestsError();
+                totalSumm += s.getReport().getTestsTotal();
+                name = name + s.getName() + " ";
+            }
+            File buildDir = jsonFile.getParentFile();
+            int buildNumber = Integer.valueOf(buildDir.getName());
+            BuildReport br = new BuildReport(buildNumber, name.trim(), passedSumm, failedSumm, errorSumm, reportShort, totalSumm, notRunSumm);
+            ReportProjectAction.cacheSumms(buildDir.getParentFile().getParentFile(), Arrays.asList(new BuildReport[]{br}));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void storeFullTestsList(List<Suite> reportFull, File jsonFile) throws IOException {
@@ -160,7 +188,7 @@ abstract public class AbstractReportPublisher extends Recorder {
     }
 
     public String getMaxBuilds() {
-        if (maxBuilds == null){
+        if (maxBuilds == null) {
             return "10";
         }
         return maxBuilds;
