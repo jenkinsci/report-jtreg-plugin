@@ -98,7 +98,7 @@ public class JtregReportParser implements ReportParser {
                 .collect(Collectors.toList());
         ReportFull fullReport = new ReportFull(
                 (int) testsList.stream().sequential().filter(t -> t.getStatus() == TestStatus.PASSED).count(),
-                0,
+                (int) testsList.stream().sequential().filter(t -> t.getStatus() == TestStatus.NOT_RUN).count(),
                 (int) testsList.stream().sequential().filter(t -> t.getStatus() == TestStatus.FAILED).count(),
                 (int) testsList.stream().sequential().filter(t -> t.getStatus() == TestStatus.ERROR).count(),
                 testsList.size(), testProblems, testNames);
@@ -137,6 +137,8 @@ public class JtregReportParser implements ReportParser {
     private static final String TESTCASE = "testcase";
     private static final String PROPERTIES = "properties";
     private static final String FAILURE = "failure";
+    private static final String SKIPPED = "skipped";
+    private static final String ERROR = "error";
 
     private String findAttributeValue(XMLStreamReader in, String name) {
         int count = in.getAttributeCount();
@@ -216,12 +218,14 @@ public class JtregReportParser implements ReportParser {
         final String failuresStr = findAttributeValue(in, "failures");
         final String errorsStr = findAttributeValue(in, "errors");
         final String totalStr = findAttributeValue(in, "tests");
+        final String totalSkip = findAttributeValue(in, "skipped");
 
         final int failures = tryParseString(failuresStr);
         final int errors = tryParseString(errorsStr);
         final int total = tryParseString(totalStr);
+        final int skipped = tryParseString(totalSkip);
 
-        JtregBackwardCompatibileSuite suite = new JtregBackwardCompatibileSuite(name, failures, errors, total);
+        JtregBackwardCompatibileSuite suite = new JtregBackwardCompatibileSuite(name, failures, errors, total, skipped);
 
         String statusLine = "";
         String stdOutput = "";
@@ -253,15 +257,6 @@ public class JtregReportParser implements ReportParser {
             }
         }
 
-        TestStatus status;
-        if (errors > 0) {
-            status = TestStatus.ERROR;
-        } else if (failures > 0) {
-            status = TestStatus.FAILED;
-        } else {
-            status = TestStatus.PASSED;
-        }
-
         //order imortant! see revalidateTests
         List<TestOutput> outputs = Arrays.asList(
                 new TestOutput(SYSTEMOUT, stdOutput),
@@ -270,37 +265,40 @@ public class JtregReportParser implements ReportParser {
 
         suite.setStatusLine(statusLine);
         suite.setOutputs(outputs);
-        suite.setStatus(status);
         return suite;
 
     }
+
+    /**
+     * Test status of testcase is determined from its child tags( <skipped>, <failure>, <error> ).
+     * If it doesn't contain any of these tags, test is considered passed. If it contains both failure and error tags,
+     * test status is set to error.
+     */
 
     private JtregBackwardCompatibileTest parseTestcase(XMLStreamReader in) throws Exception {
 
         final String testName = findAttributeValue(in, "name");
         final String className = findAttributeValue(in, "classname");
 
-        boolean failureFound = false;
+        TestStatus status = TestStatus.PASSED;
 
         String failureOutput = "";
         String stdOutput = "";
-        String errOutput = "";
+        String sysErrOutput = "";
         String message = "";
-        String type = "";
+        StringBuilder errOutput = new StringBuilder();
 
         while (in.hasNext()) {
             int event = in.next();
             if (event == START_ELEMENT && FAILURE.equals(in.getLocalName())) {
                 final String lEmessage = findAttributeValue(in, "message");
-                final String lEtype = findAttributeValue(in, "type");
                 if (lEmessage != null) {
                     message = lEmessage;
                 }
-                if (lEtype != null) {
-                    type = lEtype;
-                }
                 failureOutput = captureCharacters(in, FAILURE);
-                failureFound = true;
+                if (status != TestStatus.ERROR) {
+                    status = TestStatus.FAILED;
+                }
                 continue;
             }
             if (event == START_ELEMENT && SYSTEMOUT.equals(in.getLocalName())) {
@@ -308,10 +306,18 @@ public class JtregReportParser implements ReportParser {
                 continue;
             }
             if (event == START_ELEMENT && SYSTEMERR.equals(in.getLocalName())) {
-                errOutput = captureCharacters(in, SYSTEMERR);
+                sysErrOutput = captureCharacters(in, SYSTEMERR);
                 continue;
             }
-
+            if (event == START_ELEMENT && SKIPPED.equals(in.getLocalName())) {
+                status = TestStatus.NOT_RUN;
+                continue;
+            }
+            if (event == START_ELEMENT && ERROR.equals(in.getLocalName())) {
+                status = TestStatus.ERROR;
+                errOutput.append(captureCharacters(in, ERROR)).append('\n');
+                continue;
+            }
             if (event == END_ELEMENT && TESTCASE.equals(in.getLocalName())) {
                 break;
             }
@@ -320,10 +326,10 @@ public class JtregReportParser implements ReportParser {
         //order imortant! see revalidateTests
         List<TestOutput> outputs = Arrays.asList(
                 new TestOutput(SYSTEMOUT, stdOutput),
-                new TestOutput(SYSTEMERR, errOutput)
+                new TestOutput(SYSTEMERR, sysErrOutput)
         );
 
-        return new JtregBackwardCompatibileTest(className, null, message, outputs, testName, failureOutput, type, failureFound);
+        return new JtregBackwardCompatibileTest(className, status, message, outputs, testName, failureOutput, errOutput.toString());
     }
 
     @FunctionalInterface
@@ -336,15 +342,13 @@ public class JtregReportParser implements ReportParser {
 
         private final String testName;
         private final String failureOutput;
-        private final String failureType;
-        private final boolean failed;
+        private final String errorOutput;
 
-        public JtregBackwardCompatibileTest(String className, TestStatus status, String statusLine, List<TestOutput> outputs, String testName, String failureOutput, String failureType, boolean failed) {
+        public JtregBackwardCompatibileTest(String className, TestStatus status, String statusLine, List<TestOutput> outputs, String testName, String failureOutput, String errorOutput) {
             super(className, status, statusLine, outputs);
             this.testName = testName;
             this.failureOutput = failureOutput;
-            this.failureType = failureType;
-            this.failed = failed;
+            this.errorOutput = errorOutput;
         }
 
     }
@@ -355,21 +359,15 @@ public class JtregReportParser implements ReportParser {
         private final int failures;
         private final int errors;
         private final int total;
+        private final int skipped;
         private List<TestOutput> outputs;
         private final List<JtregBackwardCompatibileTest> settedTests = new ArrayList<>();
         private List<Test> revalidatedCopyOfTests;
-        private TestStatus status;
         private String statusLine;
         private boolean validated = false;
 
         /**
-         * This method is handling backward compatibility. Is setting error
-         * based on suite info, and is setting backward compatible name if
-         * applicable.
-         *
-         * eg: sout/err should be testsuite's only, but we have to distribute
-         * them to individual tests eg: error seems to be indetectbale from test
-         * itself, so it needs to be set from suite too
+         * This method is handling backward compatibility by converting JtregBackwardCompatibleTest to Test
          */
         private void revalidateTests() {
             revalidatedCopyOfTests = new ArrayList<>(settedTests.size());
@@ -380,35 +378,8 @@ public class JtregReportParser implements ReportParser {
             int cSkipp = 0;
             int cTotoal = 0;
             for (JtregBackwardCompatibileTest testcase : settedTests) {
-                Test t = null;
-                //99% of legacy suites is mapped 1 testsuite == 1 testcase
-                //if there is only one test in suite, consider it like this
-                if (settedTests.size() == 1) {
-                    //TODO - remove this backward compaatibility after few runs
-                    //this is causing bad baehavior, when :
-                    //  we have testite with one test, whichch is because of this swithc shown in legacy mode
-                    //  hhowever, seconf test is added. That measn the instead of test added, we eill see test rmeoved and two "new" tests added
-                    //  and vice versa
-                    //TODO maybe add date > 2017 to above == 1 condition? :P
-                    t = mergeOutputs(name, testcase, status);
+                final Test t = mergeOutputs(name + '#' + testcase.testName, testcase, testcase.getStatus());
 
-                } else {
-                    TestStatus st;
-                    //we are loosing error status, as 
-                    //type att. seems to be unused.
-                    //also not run  is lot, but that was probably never used
-                    //the ony correct error is when whole testsuite really error
-                    if (testcase.failed) {
-                        st = TestStatus.FAILED;
-                    } else {
-                        st = TestStatus.PASSED;
-                    }
-                    if (testcase.failureType.toUpperCase().startsWith("ERROR") || errors == total) {
-                        st = TestStatus.ERROR;
-                    }
-                    t = mergeOutputs(name + "#" + testcase.testName, testcase, st);
-
-                }
                 switch (t.getStatus()) {
                     case ERROR:
                         cErr++;
@@ -441,8 +412,12 @@ public class JtregReportParser implements ReportParser {
                 System.out.println("Error tests expected " + errors + " got " + cErr);
                 i++;
             }
-            if (cErr + cFail + cPass != cTotoal) {
-                System.out.println("Total(2) tests expected " + cTotoal + " got " + (cErr + cFail + cPass));
+            if (cSkipp != skipped) {
+                System.out.println("Skipped tests expected " + skipped + " got " + cSkipp);
+                i++;
+            }
+            if (cErr + cFail + cPass + cSkipp != cTotoal) {
+                System.out.println("Total(2) tests expected " + cTotoal + " got " + (cErr + cFail + cPass + cSkipp));
                 i++;
             }
             if (i == 0) {
@@ -451,11 +426,12 @@ public class JtregReportParser implements ReportParser {
             validated = true;
         }
 
-        private JtregBackwardCompatibileSuite(String name, int failures, int errors, int totals) {
+        private JtregBackwardCompatibileSuite(String name, int failures, int errors, int totals, int skipped) {
             this.name = name;
             this.failures = failures;
             this.errors = errors;
             this.total = totals;
+            this.skipped = skipped;
         }
 
         private Collection<? extends Test> getTests() {
@@ -473,10 +449,6 @@ public class JtregReportParser implements ReportParser {
             this.outputs = outputs;
         }
 
-        private void setStatus(TestStatus status) {
-            this.status = status;
-        }
-
         private void add(JtregBackwardCompatibileTest test) {
             validated = false;
             settedTests.add(test);
@@ -485,7 +457,7 @@ public class JtregReportParser implements ReportParser {
         private Test mergeOutputs(String nwName, JtregBackwardCompatibileTest testcase, TestStatus st) {
             List<TestOutput> newOutputs = Arrays.asList(
                     new TestOutput(SYSTEMOUT, "---- suite ----\n" + outputs.get(0).getValue() + "\n---- test ----\n" + testcase.getOutputs().get(0).getValue()),
-                    new TestOutput(SYSTEMERR, "---- suite ----\n" + outputs.get(1).getValue() + "\n---- test ----\n" + testcase.getOutputs().get(1).getValue() + "\n---- fail ----\n" + testcase.failureOutput)
+                    new TestOutput(SYSTEMERR, "---- suite ----\n" + outputs.get(1).getValue() + "\n---- test ----\n" + testcase.getOutputs().get(1).getValue() + "\n---- fail ----\n" + testcase.failureOutput + "\n---- error ----\n" + testcase.errorOutput)
             );
             //merge status line of suite, and testcase (failure is already in stderr)
             String nwStatus;
