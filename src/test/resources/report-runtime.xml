@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?><Report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Report.xsd" formatVersion="v1" generatedTime="2018-03-20T15:44:12+00:00">
+<TestResults>
+        <TestResult url="api/java_applet/Applet/AccessibleApplet/serial/index.html#Constructor" status="PASSED" workDirID="1">
+            <DescriptionData>
+                <Property name="$root" value="/jck/10/JCK-runtime-10/tests"/>
+                <Property name="$file" value="/jck/10/JCK-runtime-10/tests/api/java_applet/Applet/AccessibleApplet/serial/index.html"/>
+                <Property name="executeArgs" value="-TestCaseID ALL"/>
+                <Property name="executeClass" value="javasoft.sqe.tests.api.java.applet.Applet.AccessibleApplet.serial.ConstructorTests"/>
+                <Property name="executeLocks" value="needDisplay"/>
+                <Property name="id" value="Constructor"/>
+                <Property name="selectIf" value="!platform.isHeadless"/>
+                <Property name="source" value="ConstructorTests.java"/>
+                <Property name="testingScope" value="java.desktop"/>
+                <Property name="title" value="Applet.AccessibleApplet ConstructorTest tests"/>
+                <Keywords>
+                    <Item value="positive"/>
+                    <Item value="runtime"/>
+                </Keywords>
+            </DescriptionData>
+            <TestEnvironment>
+                <Property name="platform.isHeadless" value="false"/>
+                <Property name="workDirRootDir" value="/jck/10/JCK-runtime-10-work"/>
+                <Property name="user.home" value="/home/tester"/>
+                <Property name="command.testExecute" value="com.sun.jck.lib.ExecJCKTestOtherJVMCmd LD_LIBRARY_PATH=/jck/10/lib DISPLAY=:0 HOME=${user.home} /jck/10/jdk/bin/java --add-modules=ALL-SYSTEM -Djdk.xml.maxXMLNameLimit=4096 -Dmultitest.testcaseOrder=sorted -Djava.rmi.server.useCodebaseOnly=false -Djdk.attach.allowAttachSelf=true -Xmx999m ${jvmtiAgentOptions} -verify $jdwpAgentOptions -classpath ${testSuiteRootDir}/classes:$additionalClassPath:${testSuiteRootDir}/lib/extensions/JCK-extensions.jar:&quot;/jck/10/JCK-runtime-10/lib/extensions&quot; $JPLISAgentOpts $JPLISAgent2Opts $jvmArgSplashOpt -Djava.security.policy=${testSuiteRootDir}/lib/jck.policy -Djava.rmi.activation.port=2345 $modulepathVmOpt $addModVmOpt $testExecuteTarget $testExecuteArgs"/>
+                <Property name="testExecute.isGroupMode" value="false"/>
+                <Property name="platform.pathSeparator" value=":"/>
+                <Property name="platform.fileSeparator" value="/"/>
+            </TestEnvironment>
+            <ResultProperties endTime="2018-03-20T04:32:47+00:00">
+                <Property name="description" value="file:/jck/10/JCK-runtime-10/tests/api/java_applet/Applet/AccessibleApplet/serial/index.html#Constructor"/>
+                <Property name="environment" value="jck_runtime_linux"/>
+                <Property name="execStatus" value="Passed. test cases: 1; all passed"/>
+                <Property name="harnessLoaderMode" value="Classpath Loader"/>
+                <Property name="harnessVariety" value="Full Bundle"/>
+                <Property name="javatestOS" value="Linux 3.10.0-693.17.1.el7.x86_64 (amd64)"/>
+                <Property name="javatestVersion" value="5.0"/>
+                <Property name="script" value="com.sun.jck.lib.JCKScript"/>
+                <Property name="sections" value="script_messages testExecute"/>
+                <Property name="start" value="Tue Mar 20 04:32:44 UTC 2018"/>
+                <Property name="test" value="api/java_applet/Applet/AccessibleApplet/serial/index.html#Constructor"/>
+                <Property name="timeoutSeconds" value="600"/>
+                <Property name="totalTime" value="2971"/>
+                <Property name="work" value="/jck/10/JCK-runtime-10-work/api/java_applet/Applet/AccessibleApplet/serial"/>
+            </ResultProperties>
+            <Sections>
+                <Section title="script_messages">
+                    <Output title="messages">
+                        <![CDATA[Executing test class...
+]]>
+                    </Output>
+                </Section>
+                <Section title="testExecute" status="PASSED">
+                    <Output title="messages">
+                        <![CDATA[command: com.sun.jck.lib.ExecJCKTestOtherJVMCmd LD_LIBRARY_PATH=/jck/10/lib DISPLAY=:0 HOME=/home/tester /jck/10/jdk/bin/java --add-modules=ALL-SYSTEM -Djdk.xml.maxXMLNameLimit=4096 -Dmultitest.testcaseOrder=sorted -Djava.rmi.server.useCodebaseOnly=false -Djdk.attach.allowAttachSelf=true -Xmx999m -verify -classpath /jck/10/JCK-runtime-10/classes::/jck/10/JCK-runtime-10/lib/extensions/JCK-extensions.jar:/jck/10/JCK-runtime-10/lib/extensions -Djava.security.policy=/jck/10/JCK-runtime-10/lib/jck.policy -Djava.rmi.activation.port=2345 javasoft.sqe.tests.api.java.applet.Applet.AccessibleApplet.serial.ConstructorTests -TestCaseID ALL
+]]>
+                    </Output>
+                    <Output title="out1">
+                        <![CDATA[WARNING: Using incubator modules: jdk.incubator.httpclient
+serial2001: Passed. OKAY
+STATUS:Passed.test cases: 1; all passed
+]]>
+                    </Output>
+                    <Output title="out2">
+                        <![CDATA[Creating StreamObject from Object
+Checking for JDK Version : 1.3
+Creating spec class.
+Verifying the constraints on the serial fields
+Checking for JDK Version : 1.4
+Creating spec class.
+Verifying the constraints on the serial fields
+Checking for JDK Version : 1.5
+Creating spec class.
+Verifying the constraints on the serial fields
+Checking for JDK Version : 6.0
+Creating spec class.
+Verifying the constraints on the serial fields
+Checking for JDK Version : 7.0
+Creating spec class.
+Verifying the constraints on the serial fields
+Checking for JDK Version : 8.0
+Creating spec class.
+Verifying the constraints on the serial fields
+Checking for JDK Version : 9.0
+Creating spec class.
+Verifying the constraints on the serial fields
+serial2001 passed.
+]]>
+                    </Output>
+                </Section>
+            </Sections>
+        </TestResult>
+        <TestResult url="api/java_awt/awt_focus_subsystem/focus_vetoablechangelistener/index.html#VetoableChangeListener" status="FAILED" workDirID="1">
+            <DescriptionData>
+                <Property name="$root" value="/jck/10/JCK-runtime-10/tests"/>
+                <Property name="$file" value="/jck/10/JCK-runtime-10/tests/api/java_awt/awt_focus_subsystem/focus_vetoablechangelistener/index.html"/>
+                <Property name="context" value="platform.crossWindowFocusTransferSupported platform.crossWindowFocusTransferSupported"/>
+                <Property name="executeArgs" value="-timeoutFactor $javatestTimeoutFactor"/>
+                <Property name="executeClass" value="javasoft.sqe.tests.api.java.awt.awt_focus_subsystem.focus_vetoablechangelistener.VChangeListenerTests"/>
+                <Property name="executeLocks" value="java.awt.KeyboardFocusManager java.lang.SecurityManager java.awt.Robot needDisplay java.awt.datatransfer javasoft.sqe.jck.lib.PlafTest"/>
+                <Property name="id" value="VetoableChangeListener"/>
+                <Property name="selectIf" value="!platform.isHeadless &amp; platform.robotAvailable"/>
+                <Property name="source" value="VChangeListenerTests.java"/>
+                <Property name="testingScope" value="java.desktop"/>
+                <Property name="title" value="VetoableChangeListenerTest"/>
+                <Keywords>
+                    <Item value="focusmanagement"/>
+                    <Item value="positive"/>
+                    <Item value="runtime"/>
+                </Keywords>
+            </DescriptionData>
+            <TestEnvironment>
+                <Property name="testExecute.isGroupMode" value="false"/>
+                <Property name="platform.isHeadless" value="false"/>
+                <Property name="platform.pathSeparator" value=":"/>
+                <Property name="user.home" value="/home/tester"/>
+                <Property name="platform.robotAvailable" value="true"/>
+                <Property name="platform.fileSeparator" value="/"/>
+                <Property name="workDirRootDir" value="/jck/10/JCK-runtime-10-work"/>
+                <Property name="platform.crossWindowFocusTransferSupported" value="true"/>
+                <Property name="command.testExecute" value="com.sun.jck.lib.ExecJCKTestOtherJVMCmd DISPLAY=:0 HOME=${user.home} /jck/10/jdk/bin/java --add-modules=ALL-SYSTEM -Djdk.xml.maxXMLNameLimit=4096 -Dmultitest.testcaseOrder=sorted -Djava.rmi.server.useCodebaseOnly=false -Djdk.attach.allowAttachSelf=true -Xmx999m ${jvmtiAgentOptions} -verify $jdwpAgentOptions -classpath ${testSuiteRootDir}/classes:$additionalClassPath:${testSuiteRootDir}/lib/extensions/JCK-extensions.jar:&quot;/jck/10/JCK-runtime-10/lib/extensions&quot; $JPLISAgentOpts $JPLISAgent2Opts $jvmArgSplashOpt -Djava.security.policy=${testSuiteRootDir}/lib/jck.policy $modulepathVmOpt $addModVmOpt $testExecuteTarget $testExecuteArgs"/>
+            </TestEnvironment>
+            <ResultProperties endTime="2018-03-20T15:07:34+00:00">
+                <Property name="description" value="file:/jck/10/JCK-runtime-10/tests/api/java_awt/awt_focus_subsystem/focus_vetoablechangelistener/index.html#VetoableChangeListener"/>
+                <Property name="environment" value="jck_runtime_linux"/>
+                <Property name="execStatus" value="Failed. unexpected exit code: exit code 143"/>
+                <Property name="harnessLoaderMode" value="Classpath Loader"/>
+                <Property name="harnessVariety" value="Full Bundle"/>
+                <Property name="javatestOS" value="Linux 3.10.0-693.17.1.el7.x86_64 (amd64)"/>
+                <Property name="javatestVersion" value="5.0"/>
+                <Property name="script" value="com.sun.jck.lib.JCKScript"/>
+                <Property name="sections" value="script_messages testExecute"/>
+                <Property name="start" value="Tue Mar 20 15:02:29 UTC 2018"/>
+                <Property name="test" value="api/java_awt/awt_focus_subsystem/focus_vetoablechangelistener/index.html#VetoableChangeListener"/>
+                <Property name="timeoutSeconds" value="1200"/>
+                <Property name="totalTime" value="305323"/>
+                <Property name="work" value="/jck/10/JCK-runtime-10-work/api/java_awt/awt_focus_subsystem/focus_vetoablechangelistener"/>
+            </ResultProperties>
+            <Sections>
+                <Section title="script_messages">
+                    <Output title="messages">
+                        <![CDATA[Executing test class...
+]]>
+                    </Output>
+                </Section>
+                <Section title="testExecute" status="FAILED">
+                    <Output title="messages">
+                        <![CDATA[command: com.sun.jck.lib.ExecJCKTestOtherJVMCmd DISPLAY=:0 HOME=/home/tester /jck/10/jdk/bin/java --add-modules=ALL-SYSTEM -Djdk.xml.maxXMLNameLimit=4096 -Dmultitest.testcaseOrder=sorted -Djava.rmi.server.useCodebaseOnly=false -Djdk.attach.allowAttachSelf=true -Xmx999m -verify -classpath /jck/10/JCK-runtime-10/classes::/jck/10/JCK-runtime-10/lib/extensions/JCK-extensions.jar:/jck/10/JCK-runtime-10/lib/extensions -Djava.security.policy=/jck/10/JCK-runtime-10/lib/jck.policy javasoft.sqe.tests.api.java.awt.awt_focus_subsystem.focus_vetoablechangelistener.VChangeListenerTests -timeoutFactor 2.0 -platform.crossWindowFocusTransferSupported true -platform.crossWindowFocusTransferSupported true
+]]>
+                    </Output>
+                    <Output title="out1">
+                        <![CDATA[WARNING: Using incubator modules: jdk.incubator.httpclient
+]]>
+                    </Output>
+                    <Output title="out2"/>
+                </Section>
+            </Sections>
+        </TestResult>
+<TestResult url="api/java_awt/Image_pack/ComponentColorModel/index.html#ConstructorTesttestCase1" status="FAILED" workDirID="1">
+            <DescriptionData>
+                <Property name="$root" value="/jck/10/JCK-runtime-10/tests"/>
+                <Property name="$file" value="/jck/10/JCK-runtime-10/tests/api/java_awt/Image_pack/ComponentColorModel/index.html"/>
+                <Property name="executeArgs" value="-TestCaseID testCase1 testCase2"/>
+                <Property name="executeClass" value="javasoft.sqe.tests.api.java.awt.Image_pack.ComponentColorModel.ConstructorTest"/>
+                <Property name="id" value="ConstructorTesttestCase1"/>
+                <Property name="source" value="ConstructorTest.java"/>
+                <Property name="testingScope" value="java.desktop"/>
+                <Property name="title" value="ConstructorTesttestCase1 - ComponentColorModel(ColorSpace, int[], boolean, boolean, int,int)"/>
+                <Keywords>
+                    <Item value="positive"/>
+                    <Item value="runtime"/>
+                </Keywords>
+            </DescriptionData>
+            <TestEnvironment>
+                <Property name="workDirRootDir" value="/jck/10/JCK-runtime-10-work"/>
+                <Property name="user.home" value="/home/tester"/>
+                <Property name="command.testExecute" value="com.sun.jck.lib.ExecJCKTestOtherJVMCmd LD_LIBRARY_PATH=/jck/10/lib DISPLAY=:0 HOME=${user.home} /jck/10/jdk/bin/java --add-modules=ALL-SYSTEM -Djdk.xml.maxXMLNameLimit=4096 -Dmultitest.testcaseOrder=sorted -Djava.rmi.server.useCodebaseOnly=false -Djdk.attach.allowAttachSelf=true -Xmx999m ${jvmtiAgentOptions} -verify $jdwpAgentOptions -classpath ${testSuiteRootDir}/classes:$additionalClassPath:${testSuiteRootDir}/lib/extensions/JCK-extensions.jar:&quot;/jck/10/JCK-runtime-10/lib/extensions&quot; $JPLISAgentOpts $JPLISAgent2Opts $jvmArgSplashOpt -Djava.security.policy=${testSuiteRootDir}/lib/jck.policy -Djava.rmi.activation.port=2345 $modulepathVmOpt $addModVmOpt $testExecuteTarget $testExecuteArgs"/>
+                <Property name="testExecute.isGroupMode" value="false"/>
+                <Property name="platform.pathSeparator" value=":"/>
+                <Property name="platform.fileSeparator" value="/"/>
+            </TestEnvironment>
+            <ResultProperties endTime="2018-03-20T12:56:12+00:00">
+                <Property name="description" value="file:/jck/10/JCK-runtime-10/tests/api/java_awt/Image_pack/ComponentColorModel/index.html#ConstructorTesttestCase1"/>
+                <Property name="environment" value="jck_runtime_linux"/>
+                <Property name="execStatus" value="Failed. test cases: 2; passed: 1; failed: 1; first test case failure: testCase1"/>
+                <Property name="harnessLoaderMode" value="Classpath Loader"/>
+                <Property name="harnessVariety" value="Full Bundle"/>
+                <Property name="javatestOS" value="Linux 3.10.0-693.17.1.el7.x86_64 (amd64)"/>
+                <Property name="javatestVersion" value="5.0"/>
+                <Property name="script" value="com.sun.jck.lib.JCKScript"/>
+                <Property name="sections" value="script_messages testExecute"/>
+                <Property name="start" value="Tue Mar 20 12:56:11 UTC 2018"/>
+                <Property name="test" value="api/java_awt/Image_pack/ComponentColorModel/index.html#ConstructorTesttestCase1"/>
+                <Property name="timeoutSeconds" value="600"/>
+                <Property name="totalTime" value="1077"/>
+                <Property name="work" value="/jck/10/JCK-runtime-10-work/api/java_awt/Image_pack/ComponentColorModel"/>
+            </ResultProperties>
+            <Sections>
+                <Section title="script_messages">
+                    <Output title="messages">
+                        <![CDATA[Executing test class...
+]]>
+                    </Output>
+                </Section>
+                <Section title="testExecute" status="FAILED">
+<Output title="messages">
+                        <![CDATA[command: com.sun.jck.lib.ExecJCKTestOtherJVMCmd LD_LIBRARY_PATH=/jck/10/lib DISPLAY=:0 HOME=/home/tester /jck/10/jdk/bin/java --add-modules=ALL-SYSTEM -Djdk.xml.maxXMLNameLimit=4096 -Dmultitest.testcaseOrder=sorted -Djava.rmi.server.useCodebaseOnly=false -Djdk.attach.allowAttachSelf=true -Xmx999m -verify -classpath /jck/10/JCK-runtime-10/classes::/jck/10/JCK-runtime-10/lib/extensions/JCK-extensions.jar:/jck/10/JCK-runtime-10/lib/extensions -Djava.security.policy=/jck/10/JCK-runtime-10/lib/jck.policy -Djava.rmi.activation.port=2345 javasoft.sqe.tests.api.java.awt.Image_pack.ComponentColorModel.ConstructorTest -TestCaseID testCase1 testCase2
+]]>
+                    </Output>
+                    <Output title="out1">
+                        <![CDATA[WARNING: Using incubator modules: jdk.incubator.httpclient
+java.lang.ArrayIndexOutOfBoundsException: 3
+        at javasoft.sqe.tests.api.java.awt.Image_pack.ComponentColorModel.ConstructorTest.construct(ConstructorTest.java:373)
+        at javasoft.sqe.tests.api.java.awt.Image_pack.ComponentColorModel.ConstructorTest.testCase1(ConstructorTest.java:136)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+        at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+        at javasoft.sqe.javatest.lib.MultiTest.invokeTestCase(MultiTest.java:405)
+        at javasoft.sqe.javatest.lib.MultiTest.run(MultiTest.java:194)
+        at javasoft.sqe.javatest.lib.MultiTest.run(MultiTest.java:126)
+        at javasoft.sqe.tests.api.java.awt.Image_pack.ComponentColorModel.ConstructorTest.main(ConstructorTest.java:52)
+testCase1: Failed. Test case throws exception: java.lang.ArrayIndexOutOfBoundsException: 3
+testCase2: Passed. (ran 22 test cases)
+STATUS:Failed.test cases: 2; passed: 1; failed: 1; first test case failure: testCase1
+]]>
+                    </Output>
+                    <Output title="out2"/>
+                </Section>
+            </Sections>
+        </TestResult>
+</TestResults>

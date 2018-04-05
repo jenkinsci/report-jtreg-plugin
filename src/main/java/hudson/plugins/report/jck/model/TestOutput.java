@@ -1,5 +1,7 @@
 package hudson.plugins.report.jck.model;
 
+import java.util.Objects;
+
 public class TestOutput implements Comparable<TestOutput>, java.io.Serializable {
 
     private final String name;
@@ -29,4 +31,26 @@ public class TestOutput implements Comparable<TestOutput>, java.io.Serializable 
         return name.compareTo(o.getName());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TestOutput that = (TestOutput) o;
+        return Objects.equals(name, that.name) && Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name, value);
+    }
+
+    @Override
+    public String toString() {
+        return "TestOutput{" + "name='" + name + '\'' + ", value='" + value + '\'' + '}';
+    }
 }

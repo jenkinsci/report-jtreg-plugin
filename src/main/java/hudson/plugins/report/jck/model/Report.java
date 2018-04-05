@@ -24,6 +24,7 @@
 package hudson.plugins.report.jck.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Report implements java.io.Serializable {
 
@@ -67,4 +68,29 @@ public class Report implements java.io.Serializable {
         return testProblems;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Report report = (Report) o;
+        return testsPassed == report.testsPassed && testsNotRun == report.testsNotRun && testsFailed == report
+                .testsFailed && testsError == report.testsError && testsTotal == report.testsTotal && Objects.equals
+                (testProblems, report.testProblems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(testsPassed, testsNotRun, testsFailed, testsError, testsTotal, testProblems);
+    }
+
+    @Override
+    public String toString() {
+        return "Report{" + "testsPassed=" + testsPassed + ", testsNotRun=" + testsNotRun + ", testsFailed=" +
+                testsFailed + ", testsError=" + testsError + ", testsTotal=" + testsTotal + ", testProblems=" +
+                testProblems + '}';
+    }
 }

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?><Report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Report.xsd" formatVersion="v1" generatedTime="2018-03-19T22:43:49+00:00">
+        <TestResults>
+          <TestResult url="api/java_rmi/Naming/index.html#Bind" status="PASSED" workDirID="1">
+            <DescriptionData>
+                <Property name="$root" value="/jck/10/JCK-compiler-10/tests"/>
+                <Property name="$file" value="/jck/10/JCK-compiler-10/tests/api/java_rmi/Naming/index.html"/>
+                <Property name="context" value="network.tcpPortRange"/>
+                <Property name="executeArgs" value="-timeoutFactor $javatestTimeoutFactor"/>
+                <Property name="executeClass" value="javasoft.sqe.tests.api.java.rmi.Naming.BindTests"/>
+                <Property name="executeLocks" value="java.lang.SecurityManager networkPortRange"/>
+                <Property name="id" value="Bind"/>
+                <Property name="rmicClasses" value="javasoft.sqe.tests.api.java.rmi.Naming.NBindImpl"/>
+                <Property name="source" value="BindTests.java"/>
+                <Property name="title" value="Bind"/>
+                <Keywords>
+                    <Item value="compiler"/>
+                    <Item value="positive"/>
+                    <Item value="runtime"/>
+                </Keywords>
+            </DescriptionData>
+            <TestEnvironment>
+                <Property name="testCompile.isGroupMode" value="false"/>
+                <Property name="command.testRMIC" value="com.sun.javatest.lib.ProcessCommand  /jck/10/jdk/bin/rmic  -classpath ${workDirRootDir}/classes:${testSuiteRootDir}/classes:${testSuiteRootDir}/lib/javatest.jar -d ${workDirRootDir}/classes $testRmicClasses"/>
+                <Property name="command.refExecute" value="com.sun.jck.lib.ExecJCKTestOtherJVMCmd CLASSPATH=${workDirRootDir}/classes:${testSuiteRootDir}/classes:${testSuiteRootDir}/lib/javatest.jar:$additionalClassPath /jck/10/jdk/bin/java -Xfuture -Djava.security.policy=${testSuiteRootDir}/lib/jck.policy $modulepathRefOpt $addModRefOpt $testRefExecuteTarget $testExecuteArgs"/>
+                <Property name="workDirRootDir" value="/jck/10/JCK-compiler-10-work"/>
+                <Property name="network.tcpPortRange" value="0"/>
+                <Property name="command.testCompile.java" value="com.sun.javatest.lib.ProcessCommand /jck/10/jdk/bin/javac -classpath ${workDirRootDir}/classes:${testSuiteRootDir}/classes:${testSuiteRootDir}/lib/javatest.jar $modulesourcepathOpt $modulepathCompilerOpt $addModCompilerOpt -d $outDir $testSource"/>
+                <Property name="refExecute.isGroupMode" value="false"/>
+                <Property name="platform.fileSeparator" value="/"/>
+            </TestEnvironment>
+            <ResultProperties endTime="2018-03-19T12:20:27+00:00">
+                <Property name="description" value="file:/jck/10/JCK-compiler-10/tests/api/java_rmi/Naming/index.html#Bind"/>
+                <Property name="environment" value="jck_compiler_linux"/>
+                <Property name="execStatus" value="Passed. test cases: 7; all passed"/>
+                <Property name="harnessLoaderMode" value="Classpath Loader"/>
+                <Property name="harnessVariety" value="Full Bundle"/>
+                <Property name="javatestOS" value="Linux 3.10.0-693.17.1.el7.x86_64 (amd64)"/>
+                <Property name="javatestVersion" value="5.0"/>
+                <Property name="script" value="com.sun.jck.lib.JCKScript"/>
+                <Property name="sections" value="script_messages testCompile.java testRMIC refExecute"/>
+                <Property name="start" value="Mon Mar 19 12:20:13 UTC 2018"/>
+                <Property name="test" value="api/java_rmi/Naming/index.html#Bind"/>
+                <Property name="timeoutSeconds" value="600"/>
+                <Property name="totalTime" value="13738"/>
+                <Property name="work" value="/jck/10/JCK-compiler-10-work/api/java_rmi/Naming"/>
+            </ResultProperties>
+            <Sections>
+                <Section title="script_messages">
+                    <Output title="messages">
+                        <![CDATA[Testing Java compiler...
+Testing RMI compiler...
+Positive test: executing compiled class files...
+]]>
+                    </Output>
+                </Section>
+                <Section title="testCompile.java" status="PASSED">
+                    <Output title="messages">
+                        <![CDATA[command: com.sun.javatest.lib.ProcessCommand /jck/10/jdk/bin/javac -classpath /jck/10/JCK-compiler-10-work/classes:/jck/10/JCK-compiler-10/classes:/jck/10/JCK-compiler-10/lib/javatest.jar -d /jck/10/JCK-compiler-10-work/classes /jck/10/JCK-compiler-10/tests/api/java_rmi/Naming/BindTests.java
+]]>
+                    </Output>
+                    <Output title="out1"/>
+                    <Output title="out2"/>
+                </Section>
+                <Section title="testRMIC" status="PASSED">
+                    <Output title="messages">
+                        <![CDATA[command: com.sun.javatest.lib.ProcessCommand /jck/10/jdk/bin/rmic -classpath /jck/10/JCK-compiler-10-work/classes:/jck/10/JCK-compiler-10/classes:/jck/10/JCK-compiler-10/lib/javatest.jar -d /jck/10/JCK-compiler-10-work/classes javasoft.sqe.tests.api.java.rmi.Naming.NBindImpl
+]]>
+                    </Output>
+                    <Output title="out1"/>
+                    <Output title="out2">
+                        <![CDATA[Warning: generation and use of skeletons and static stubs for JRMP
+is deprecated. Skeletons are unnecessary, and static stubs have
+been superseded by dynamically generated stubs. Users are
+encouraged to migrate away from using rmic to generate skeletons and static
+stubs. See the documentation for java.rmi.server.UnicastRemoteObject.
+]]>
+                    </Output>
+                </Section>
+                <Section title="refExecute" status="PASSED">
+                    <Output title="messages">
+                        <![CDATA[command: com.sun.jck.lib.ExecJCKTestOtherJVMCmd CLASSPATH=/jck/10/JCK-compiler-10-work/classes:/jck/10/JCK-compiler-10/classes:/jck/10/JCK-compiler-10/lib/javatest.jar: /jck/10/jdk/bin/java -Xfuture -Djava.security.policy=/jck/10/JCK-compiler-10/lib/jck.policy javasoft.sqe.tests.api.java.rmi.Naming.BindTests -timeoutFactor 1.0 -network.tcpPortRange 0
+]]>
+                    </Output>
+                    <Output title="out1">
+                        <![CDATA[Bind0001: Passed. OKAY
+Bind0002: Passed. OKAY
+Bind0003: Passed. OKAY
+Bind0004: Passed. OKAY
+Bind0005: Passed. OKAY
+Bind0006: Passed. OKAY
+Bind0007: Passed. OKAY
+STATUS:Passed.test cases: 7; all passed
+]]>
+                    </Output>
+                    <Output title="out2">
+                        <![CDATA[Registry created on port 45430
+Bind OKAY
+first Bind OKAY
+AlreadyBoundException was thrown as expected
+Registry removed
+]]>
+                    </Output>
+                </Section>
+            </Sections>
+          </TestResult>
+          <TestResult url="api/javax_annotation/processing/Messager/index.html#PM1_NEG" status="PASSED" workDirID="1">
+            <DescriptionData>
+                <Property name="$root" value="/jck/10/JCK-compiler-10/tests"/>
+                <Property name="$file" value="/jck/10/JCK-compiler-10/tests/api/javax_annotation/processing/Messager/index.html"/>
+                <Property name="apClass" value="javasoft.sqe.tests.api.javax.annotation.processing.Messager.PM1_NEG"/>
+                <Property name="apSource" value="PM1_NEG.java PMCommonNeg.java PMCommon.java"/>
+                <Property name="executeClass" value="javasoft.sqe.tests.api.javax.annotation.processing.Messager.S_PM1_NEG"/>
+                <Property name="id" value="PM1_NEG"/>
+                <Property name="source" value="PMCommon.java PMCommonNeg.java S_PM1_NEG.java PM1_NEG.java"/>
+                <Property name="title" value="PM1_NEG - Tested methods: void printMessage(Diagnostic.Kind kind, String msg)"/>
+                <Keywords>
+                    <Item value="annot_proc_api"/>
+                    <Item value="compiler"/>
+                    <Item value="negative"/>
+                </Keywords>
+            </DescriptionData>
+            <TestEnvironment>
+                <Property name="testCompile.isGroupMode" value="false"/>
+                <Property name="command.testAnnoProcSrc.java" value="com.sun.javatest.lib.ProcessCommand /jck/10/jdk/bin/javac -classpath ${workDirRootDir}/classes:${testSuiteRootDir}/classes:${testSuiteRootDir}/lib/javatest.jar $modulesourcepathOpt $modulepathCompilerOpt $addModCompilerOpt -d $outDir -processor $apClass -AjckTestWorkDir=$testWorkDirURL -AjckApArgs=$apArgs -s $testWorkDir $testSource"/>
+                <Property name="workDirRootDir" value="/jck/10/JCK-compiler-10-work"/>
+                <Property name="testAnnoProcSrc.isGroupMode" value="false"/>
+                <Property name="platform.fileSeparator" value="/"/>
+            </TestEnvironment>
+            <ResultProperties endTime="2018-03-19T12:21:51+00:00">
+                <Property name="description" value="file:/jck/10/JCK-compiler-10/tests/api/javax_annotation/processing/Messager/index.html#PM1_NEG"/>
+                <Property name="environment" value="jck_compiler_linux"/>
+                <Property name="execStatus" value="Passed. compilation failed as expected"/>
+                <Property name="harnessLoaderMode" value="Classpath Loader"/>
+                <Property name="harnessVariety" value="Full Bundle"/>
+                <Property name="javatestOS" value="Linux 3.10.0-693.17.1.el7.x86_64 (amd64)"/>
+                <Property name="javatestVersion" value="5.0"/>
+                <Property name="script" value="com.sun.jck.lib.JCKScript"/>
+                <Property name="sections" value="script_messages testAnnoProcSrc.java"/>
+                <Property name="start" value="Mon Mar 19 12:21:47 UTC 2018"/>
+                <Property name="test" value="api/javax_annotation/processing/Messager/index.html#PM1_NEG"/>
+                <Property name="timeoutSeconds" value="600"/>
+                <Property name="totalTime" value="3749"/>
+                <Property name="work" value="/jck/10/JCK-compiler-10-work/api/javax_annotation/processing/Messager"/>
+            </ResultProperties>
+            <Sections>
+                <Section title="script_messages">
+                    <Output title="messages">
+                        <![CDATA[Testing Java compiler...
+Running with annotation processor...
+Negative test: checking compilation failed...
+]]>
+                    </Output>
+                </Section>
+                <Section title="testAnnoProcSrc.java" status="FAILED">
+                    <Output title="messages">
+                        <![CDATA[command: com.sun.javatest.lib.ProcessCommand /jck/10/jdk/bin/javac -classpath /jck/10/JCK-compiler-10-work/classes:/jck/10/JCK-compiler-10/classes:/jck/10/JCK-compiler-10/lib/javatest.jar -d /jck/10/JCK-compiler-10-work/classes -processor javasoft.sqe.tests.api.javax.annotation.processing.Messager.PM1_NEG -AjckTestWorkDir=file:/jck/10/JCK-compiler-10-work/api/javax_annotation/processing/Messager/ -AjckApArgs=-testName+index_PM1_NEG -s /jck/10/JCK-compiler-10-work/api/javax_annotation/processing/Messager /jck/10/JCK-compiler-10/tests/api/javax_annotation/processing/Messager/S_PM1_NEG.java
+]]>
+                    </Output>
+                    <Output title="out1">
+                        <![CDATA[error:
+error:
+error: a message 1234567890
+error:
+error:
+error: a message 1234567890
+6 errors
+]]>
+                    </Output>
+                    <Output title="out2">
+                        <![CDATA[Test status: STATUS:Passed. OK
+]]>
+                    </Output>
+                </Section>
+            </Sections>
+          </TestResult>
+          <TestResult url="api/javax_lang/model/element/ModuleElement/ModEleDirVisit.html" status="FAILED" workDirID="1">
+            <DescriptionData>
+                <Property name="$root" value="/jck/10/JCK-compiler-10/tests"/>
+                <Property name="$file" value="/jck/10/JCK-compiler-10/tests/api/javax_lang/model/element/ModuleElement/ModEleDirVisit.html"/>
+                <Property name="apArgs" value="-testArgs javasoft.sqe.tests.api.javax.lang.model.element.ModuleElement.DirVisitorVisitDefaultTests"/>
+                <Property name="apClass" value="javasoft.sqe.jck.lib.javax.annotation.processing.ProcessorMultiTestWrapper"/>
+                <Property name="apSource" value="DirVisitorVisitDefaultTests.java"/>
+                <Property name="executeClass" value="javasoft.sqe.tests.api.javax.lang.model.element.ModuleElement.DirVisitorVisitDefaultTests"/>
+                <Property name="source" value="DirVisitorVisitDefaultTests.java S_DirVisitorVisitDefaultTests.java"/>
+                <Property name="title" value="DirVisitorVisitDefault - ModuleElement Directive visit default implementation test"/>
+                <Keywords>
+                    <Item value="annot_proc_api"/>
+                    <Item value="compiler"/>
+                    <Item value="positive"/>
+                    <Item value="runtime"/>
+                </Keywords>
+            </DescriptionData>
+            <TestEnvironment>
+                <Property name="testCompile.isGroupMode" value="false"/>
+                <Property name="command.testAnnoProcSrc.java" value="com.sun.javatest.lib.ProcessCommand /jck/10/jdk/bin/javac -classpath ${workDirRootDir}/classes:${testSuiteRootDir}/classes:${testSuiteRootDir}/lib/javatest.jar $modulesourcepathOpt $modulepathCompilerOpt $addModCompilerOpt -d $outDir -processor $apClass -AjckTestWorkDir=$testWorkDirURL -AjckApArgs=$apArgs -s $testWorkDir $testSource"/>
+                <Property name="workDirRootDir" value="/jck/10/JCK-compiler-10-work"/>
+                <Property name="testAnnoProcSrc.isGroupMode" value="false"/>
+                <Property name="platform.fileSeparator" value="/"/>
+            </TestEnvironment>
+            <ResultProperties endTime="2018-03-19T22:38:18+00:00">
+                <Property name="description" value="file:/jck/10/JCK-compiler-10/tests/api/javax_lang/model/element/ModuleElement/ModEleDirVisit.html"/>
+                <Property name="environment" value="jck_compiler_linux"/>
+                <Property name="execStatus" value="Failed. compilation failed unexpectedly [test cases: 1; all failed; first test case failure: testVisitDefaultImpl]"/>
+                <Property name="harnessLoaderMode" value="Classpath Loader"/>
+                <Property name="harnessVariety" value="Full Bundle"/>
+                <Property name="javatestOS" value="Linux 3.10.0-693.17.1.el7.x86_64 (amd64)"/>
+                <Property name="javatestVersion" value="5.0"/>
+                <Property name="script" value="com.sun.jck.lib.JCKScript"/>
+                <Property name="sections" value="script_messages testAnnoProcSrc.java"/>
+                <Property name="start" value="Mon Mar 19 22:38:16 UTC 2018"/>
+                <Property name="test" value="api/javax_lang/model/element/ModuleElement/ModEleDirVisit.html"/>
+                <Property name="timeoutSeconds" value="600"/>
+                <Property name="totalTime" value="2522"/>
+                <Property name="work" value="/jck/10/JCK-compiler-10-work/api/javax_lang/model/element/ModuleElement"/>
+            </ResultProperties>
+            <Sections>
+                <Section title="script_messages">
+                    <Output title="messages">
+                        <![CDATA[Testing Java compiler...
+Running with annotation processor...
+]]>
+                    </Output>
+                </Section>
+                <Section title="testAnnoProcSrc.java" status="PASSED">
+                    <Output title="messages">
+                        <![CDATA[command: com.sun.javatest.lib.ProcessCommand /jck/10/jdk/bin/javac -classpath /jck/10/JCK-compiler-10-work/classes:/jck/10/JCK-compiler-10/classes:/jck/10/JCK-compiler-10/lib/javatest.jar -d /jck/10/JCK-compiler-10-work/classes -processor javasoft.sqe.jck.lib.javax.annotation.processing.ProcessorMultiTestWrapper -AjckTestWorkDir=file:/jck/10/JCK-compiler-10-work/api/javax_lang/model/element/ModuleElement/ -AjckApArgs=-testName+ModEleDirVisit+-testArgs+javasoft.sqe.tests.api.javax.lang.model.element.ModuleElement.DirVisitorVisitDefaultTests -s /jck/10/JCK-compiler-10-work/api/javax_lang/model/element/ModuleElement /jck/10/JCK-compiler-10/tests/api/javax_lang/model/element/ModuleElement/S_DirVisitorVisitDefaultTests.java
+]]>
+                    </Output>
+                    <Output title="out1"/>
+                    <Output title="out2">
+                        <![CDATA[testModuleFinder = null
+testModuleName = null
+rootModules = []
+locations = []
+chosen loader = java.net.URLClassLoader@4f6ee6e4
+chosen loader's parent = java.net.URLClassLoader@4466af20
+executeArgs = []
+java version "10-internal"
+OpenJDK Runtime Environment (build 10-internal+0-adhoc.tester.openjdk)
+OpenJDK 64-Bit Server VM (build 10-internal+0-adhoc.tester.openjdk, mixed mode)
+
+invoking visit(d) ---
+testVisitDefaultImpl: Failed. Implementation is not as per spec
+Test status: STATUS:Failed. test cases: 1; all failed; first test case failure: testVisitDefaultImpl
+]]>
+                    </Output>
+                </Section>
+            </Sections>
+        </TestResult>
+</TestResults>

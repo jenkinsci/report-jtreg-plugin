@@ -59,7 +59,7 @@ public class JckReportParser implements ReportParser {
         throw new IllegalArgumentException("file name does not end with either .xml or .xml.gz extension: " + fullName);
     }
 
-    private ReportFull parseReport(InputStream reportStream) throws Exception {
+    ReportFull parseReport(InputStream reportStream) throws Exception {
         try (Reader reader = new InputStreamReader(reportStream, "UTF-8")) {
             ReportFull report = parseReport(reader);
             return report;
@@ -198,7 +198,12 @@ public class JckReportParser implements ReportParser {
                 break;
             }
             if (event == CDATA || event == CHARACTERS) {
-                return new TestOutput(resultTitle, in.getText());
+                StringBuilder outputString = new StringBuilder();
+                do {
+                    outputString.append(in.getText());
+                    event = in.next();
+                } while (event == CDATA || event == CHARACTERS);
+                return new TestOutput(resultTitle, outputString.toString().trim());
             }
         }
         return new TestOutput(resultTitle, "");

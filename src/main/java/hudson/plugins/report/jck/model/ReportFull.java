@@ -1,6 +1,7 @@
 package hudson.plugins.report.jck.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ReportFull extends Report {
 
@@ -15,4 +16,28 @@ public class ReportFull extends Report {
         return testsList;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        ReportFull that = (ReportFull) o;
+        return Objects.equals(testsList, that.testsList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), testsList);
+    }
+
+    @Override
+    public String toString() {
+        return "ReportFull{" + "testsList=" + testsList + "} " + super.toString();
+    }
 }

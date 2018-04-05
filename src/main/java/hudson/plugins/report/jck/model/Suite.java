@@ -23,6 +23,8 @@
  */
 package hudson.plugins.report.jck.model;
 
+import java.util.Objects;
+
 import static hudson.plugins.report.jck.utils.MoreStrings.compareStrings;
 
 public class Suite implements Comparable<Suite>, java.io.Serializable {
@@ -48,4 +50,25 @@ public class Suite implements Comparable<Suite>, java.io.Serializable {
         return compareStrings(name, o.getName());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Suite suite = (Suite) o;
+        return Objects.equals(name, suite.name) && Objects.equals(report, suite.report);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, report);
+    }
+
+    @Override
+    public String toString() {
+        return "Suite{" + "name='" + name + '\'' + ", report=" + report + '}';
+    }
 }
