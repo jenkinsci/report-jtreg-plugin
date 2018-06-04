@@ -61,6 +61,11 @@ import hudson.util.RunList;
 
 public class BuildSummaryParser {
 
+    private static interface ListProvider {
+
+        String getList();
+    }
+
     private final Set<String> prefixes = new HashSet<>();
     private final AbstractReportPublisher settings;
 
@@ -74,21 +79,44 @@ public class BuildSummaryParser {
 
     List<String> getBlacklisted(Job<?, ?> job) {
         return getBlacklisted(job.getBuilds());
+
+    }
+
+    List<String> getWhitelisted(Job<?, ?> job) {
+        return getWhitelisted(job.getBuilds());
     }
 
     List<String> getBlacklisted(RunList<?> runs) {
+        return getList(runs, new ListProvider() {
+            @Override
+            public String getList() {
+                return settings.getResultsBlackList();
+            }
+        });
+    }
+
+    List<String> getWhitelisted(RunList<?> runs) {
+        return getList(runs, new ListProvider() {
+            @Override
+            public String getList() {
+                return settings.getResultsWhiteList();
+            }
+        });
+    }
+
+    List<String> getList(RunList<?> runs, ListProvider provider) {
         int limit = getMaxItems();
-        List<String> blacklisted = new ArrayList<>(limit);
+        List<String> listed = new ArrayList<>(limit);
         List<BuildReport> list = new ArrayList<>();
         for (Run run : runs) {
             if (run.getResult() == null || run.getResult().isWorseThan(Result.UNSTABLE)) {
                 continue;
             }
-            if (settings != null && settings.getResultsBlackList() != null && !settings.getResultsBlackList().trim().isEmpty()) {
-                String[] items = settings.getResultsBlackList().split("\\s+");
+            if (settings != null && provider.getList() != null && !provider.getList().trim().isEmpty()) {
+                String[] items = provider.getList().split("\\s+");
                 for (String item : items) {
                     if (run.getDisplayName().matches(item)) {
-                        blacklisted.add(run.getDisplayName());
+                        listed.add(run.getDisplayName());
                     }
                 }
             }
@@ -96,7 +124,7 @@ public class BuildSummaryParser {
                 break;
             }
         }
-        return blacklisted;
+        return listed;
     }
 
     private int getMaxItems() {
@@ -115,11 +143,15 @@ public class BuildSummaryParser {
         int limit = getMaxItems();
         List<BuildReport> list = new ArrayList<>();
         List<String> blacklisted = getBlacklisted(runs);
+        List<String> whitelisted = getWhitelisted(runs);
         for (Run run : runs) {
             if (run.getResult() == null || run.getResult().isWorseThan(Result.UNSTABLE)) {
                 continue;
             }
             if (blacklisted.contains(run.getDisplayName())) {
+                continue;
+            }
+            if (!whitelisted.contains(run.getDisplayName()) && !whitelisted.isEmpty()) {
                 continue;
             }
 

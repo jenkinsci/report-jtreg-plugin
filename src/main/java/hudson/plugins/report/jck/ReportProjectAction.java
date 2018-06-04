@@ -69,9 +69,14 @@ public class ReportProjectAction implements Action {
     public String getDisplayName() {
         AbstractReportPublisher settings = getAbstractReportPublisher(((Project)job).getPublishersList());
         List<String> blisted = new BuildSummaryParser(prefixes, settings).getBlacklisted(job);
+        List<String> wlisted = new BuildSummaryParser(prefixes, settings).getWhitelisted(job);
         String appendix = "";
-        if (blisted.size()>0){
-            appendix=" (blacklisted "+blisted.size()+")";
+        if (blisted.size() > 0 && wlisted.size() > 0) {
+            appendix = " (blacklisted " + blisted.size() + ")" + " (whitelisted " + wlisted.size() + ")";
+        } else if (blisted.size() > 0) {
+            appendix = " (blacklisted " + blisted.size() + ")";
+        } else if (wlisted.size() > 0) {
+            appendix = " (whitelisted " + wlisted.size() + ")";
         }
         return prefixes.stream()
                 .sequential()
@@ -153,7 +158,7 @@ public class ReportProjectAction implements Action {
                         .map(t -> s.getName() + " / " + t.getName()))
                 .collect(Collectors.toSet());
     }
-    
+
     public static void cacheTotals(File rootBuild, ProjectReport projectRreport) {
         try {
             cacheTotalsImpl(rootBuild, projectRreport);
@@ -192,12 +197,11 @@ public class ReportProjectAction implements Action {
     private static File getCachedResultsFile(File rootBuild, BuildReport report) {
         return getCachedFile(rootBuild, report, CACHEDSUMMRESULTSPROPERTIES);
     }
-    
+
     private static File getCachedFile(File root, BuildReport report, String name) {
         return new File(new File(new File(root, "builds"), report.getBuildNumber() + ""), name);
     }
-    
-    
+
 //this happily ignores combined jck+jtreg reporting, but as it is never used, it may be already corupted elsewhere
     static void cacheSumms(File rootBuild, List<BuildReport> reports) throws IOException {
         for (BuildReport report : reports) {

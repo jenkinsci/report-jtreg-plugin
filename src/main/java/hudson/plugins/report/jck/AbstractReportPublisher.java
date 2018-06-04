@@ -55,6 +55,7 @@ abstract public class AbstractReportPublisher extends Recorder {
 
     private String reportFileGlob;
     private String resultsBlackList;
+    private String resultsWhiteList;
     private String maxBuilds;
 
     public AbstractReportPublisher(String reportFileGlob) {
@@ -200,6 +201,15 @@ abstract public class AbstractReportPublisher extends Recorder {
         } catch (NumberFormatException ex) {
             return 10;
         }
+    }
+
+    public String getResultsWhiteList() {
+        return resultsWhiteList;
+    }
+
+    @DataBoundSetter
+    public void setResultsWhiteList(String resultsWhiteList) {
+        this.resultsWhiteList = resultsWhiteList;
     }
 
 }

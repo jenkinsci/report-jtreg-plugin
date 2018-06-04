@@ -6,6 +6,9 @@
     <f:entry field="resultsBlackList" title="Packages blacklisted">
         <f:textbox />
     </f:entry>
+    <f:entry field="resultsWhiteList" title="Packages whitelisted">
+        <f:textbox />
+    </f:entry>
     <f:entry field="maxBuilds" title="Number of builds to show">
         <f:textbox />
     </f:entry>
