@@ -4,7 +4,9 @@ Jenkins plugin to show unit-test, tesng, jtreg and JCK reports summaries, diffs 
 The plugin reads archived gzipped xml files prdoduced by junit/testng/jtreg/jck suites  ([or anyhow else generated](https://github.com/judovana/OpenJdkBuilder/blob/master/tck/autoruns/jtreg-shell-xml.sh)) runs
 
 * [Job run details](#job-run-view)
-* [Project details](#project-summary)
+    * [run page](#run-page)
+    * [details page](#details-page)
+* [Project details](#project-details)
 * [View](#view-summary)
 * [Blacklist and Whitelist](#blacklist-and-whitelist)
 * [Project Settings](#project-settings)
@@ -13,8 +15,10 @@ The plugin reads archived gzipped xml files prdoduced by junit/testng/jtreg/jck 
 * [Future work](#future-work)
 
 ## Job run details
+### run page
+### details page
 ## Project details
-## View
+## View summary
 ## Blacklist and Whitelist
 ## Project Settings
 ## View Settings
