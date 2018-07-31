@@ -122,3 +122,5 @@ Html output is much more clumsy, but the listing of switches and jobs is live, a
 ## Future work
 * To figure out how to make job-name based view on top of the shared settings.
 * make cli more user friendly
+
+This plugin depends on https://github.com/judovana/jenkins-chartjs-plugin
