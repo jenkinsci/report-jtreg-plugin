@@ -24,7 +24,9 @@ The level of granularity is up to you. The tar.gz archvies are later cached as t
 ## Job run details
 
 ### run page
-On a build page, simple ```JTREG Reports Total: X, Error: Y, Failed: Z``` message is printed, where **JTREG Reports** is link to  dretails page:
+Quick overview in build page:
+![koji-jtreg-rpms](https://user-images.githubusercontent.com/2904395/43510354-a8f3e86c-9575-11e8-9318-c3516d65a876.png)
+simple, but a lot of saying ```JTREG Reports Total: X, Error: Y, Failed: Z``` message is printed, where **JTREG Reports** is link to  dretails page:
 
 ### details page
 ![details page](https://user-images.githubusercontent.com/2904395/43016541-6cb4cc5c-8c53-11e8-944b-cf1d274c492e.png)
