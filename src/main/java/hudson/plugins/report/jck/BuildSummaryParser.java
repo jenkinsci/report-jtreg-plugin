@@ -64,6 +64,8 @@ public class BuildSummaryParser {
     private static interface ListProvider {
 
         String getList();
+
+        int getSurrounding();
     }
 
     private final Set<String> prefixes = new HashSet<>();
@@ -86,11 +88,20 @@ public class BuildSummaryParser {
         return getWhitelisted(job.getBuilds());
     }
 
+    int getWhiteListSizeWithoutSurroundings(Job<?, ?> job) {
+        return getWhiteListSizeWithoutSurroundings(job.getBuilds()).size();
+    }
+
     List<String> getBlacklisted(RunList<?> runs) {
         return getList(runs, new ListProvider() {
             @Override
             public String getList() {
                 return settings.getResultsBlackList();
+            }
+
+            @Override
+            public int getSurrounding() {
+                return 0;
             }
         });
     }
@@ -101,6 +112,25 @@ public class BuildSummaryParser {
             public String getList() {
                 return settings.getResultsWhiteList();
             }
+
+            @Override
+            public int getSurrounding() {
+                return settings.getRangeAroundWlist();
+            }
+        });
+    }
+
+    List<String> getWhiteListSizeWithoutSurroundings(RunList<?> runs) {
+        return getList(runs, new ListProvider() {
+            @Override
+            public String getList() {
+                return settings.getResultsWhiteList();
+            }
+
+            @Override
+            public int getSurrounding() {
+                return 0;
+            }
         });
     }
 
@@ -108,7 +138,9 @@ public class BuildSummaryParser {
         int limit = getMaxItems();
         List<String> listed = new ArrayList<>(limit);
         List<BuildReport> list = new ArrayList<>();
-        for (Run run : runs) {
+        Run[] builds = runs.toArray(new Run[0]);
+        for (int i = 0; i < builds.length; i++) {
+            Run run = builds[i];
             if (run.getResult() == null || run.getResult().isWorseThan(Result.UNSTABLE)) {
                 continue;
             }
@@ -116,12 +148,19 @@ public class BuildSummaryParser {
                 String[] items = provider.getList().split("\\s+");
                 for (String item : items) {
                     if (run.getDisplayName().matches(item)) {
-                        listed.add(run.getDisplayName());
+                        for (int j = -(provider.getSurrounding()); j < provider.getSurrounding() + 1; j++) {
+                            if (i + j >= 0 && i + j < builds.length) {
+                                /*Preventing duplicates in whitelist. Not because of the graph, there is
+                                already chunk of code preventing from showing duplicity in the graph.
+                                (The final list are recreated again with help of these lists)
+                                Its because lenght of whitelist which is shown over the graph.*/
+                                if (!listed.contains(builds[i + j].getDisplayName())) {
+                                    listed.add(builds[i + j].getDisplayName());
+                                }
+                            }
+                        }
                     }
                 }
-            }
-            if (list.size() == limit) {
-                break;
             }
         }
         return listed;

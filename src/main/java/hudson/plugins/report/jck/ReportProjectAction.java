@@ -70,13 +70,14 @@ public class ReportProjectAction implements Action {
         AbstractReportPublisher settings = getAbstractReportPublisher(((Project)job).getPublishersList());
         List<String> blisted = new BuildSummaryParser(prefixes, settings).getBlacklisted(job);
         List<String> wlisted = new BuildSummaryParser(prefixes, settings).getWhitelisted(job);
+        int whiteListSizeWithoutSurroundings = new BuildSummaryParser(prefixes, settings).getWhiteListSizeWithoutSurroundings(job);
         String appendix = "";
         if (blisted.size() > 0 && wlisted.size() > 0) {
-            appendix = " (blacklisted " + blisted.size() + ")" + " (whitelisted " + wlisted.size() + ")";
+            appendix = " (blacklisted " + blisted.size() + ")" + " (whitelisted " + whiteListSizeWithoutSurroundings + "/" + Integer.toString(wlisted.size()-whiteListSizeWithoutSurroundings) + ")";
         } else if (blisted.size() > 0) {
             appendix = " (blacklisted " + blisted.size() + ")";
         } else if (wlisted.size() > 0) {
-            appendix = " (whitelisted " + wlisted.size() + ")";
+            appendix = " (whitelisted " + whiteListSizeWithoutSurroundings + "/" + Integer.toString(wlisted.size()-whiteListSizeWithoutSurroundings) + ")";
         }
         return prefixes.stream()
                 .sequential()

@@ -57,6 +57,7 @@ abstract public class AbstractReportPublisher extends Recorder {
     private String resultsBlackList;
     private String resultsWhiteList;
     private String maxBuilds;
+    private int rangeAroundWlist;
 
     public AbstractReportPublisher(String reportFileGlob) {
         this.reportFileGlob = reportFileGlob;
@@ -210,6 +211,15 @@ abstract public class AbstractReportPublisher extends Recorder {
     @DataBoundSetter
     public void setResultsWhiteList(String resultsWhiteList) {
         this.resultsWhiteList = resultsWhiteList;
+    }
+
+    public int getRangeAroundWlist() {
+        return rangeAroundWlist;
+    }
+
+    @DataBoundSetter
+    public void setRangeAroundWlist(int rangeAroundWlist) {
+        this.rangeAroundWlist = rangeAroundWlist;
     }
 
 }
