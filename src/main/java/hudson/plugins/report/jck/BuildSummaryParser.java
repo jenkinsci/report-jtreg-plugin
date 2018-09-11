@@ -153,7 +153,11 @@ public class BuildSummaryParser {
                                 /*Preventing duplicates in whitelist. Not because of the graph, there is
                                 already chunk of code preventing from showing duplicity in the graph.
                                 (The final list are recreated again with help of these lists)
-                                Its because lenght of whitelist which is shown over the graph.*/
+                                Its because lenght of whitelist which is shown over the graph.
+                                BUG
+                                We have some point(a) which is in range around whitelist and point(b) which
+                                have same name but its not in range. Bug is that both points are shown in result
+                                its caused by generating second array(graph points) from names contained in this array*/
                                 if (!listed.contains(builds[i + j].getDisplayName())) {
                                     listed.add(builds[i + j].getDisplayName());
                                 }
