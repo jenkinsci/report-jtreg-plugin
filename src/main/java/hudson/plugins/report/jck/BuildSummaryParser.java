@@ -148,19 +148,16 @@ public class BuildSummaryParser {
                 String[] items = provider.getList().split("\\s+");
                 for (String item : items) {
                     if (run.getDisplayName().matches(item)) {
-                        for (int j = -(provider.getSurrounding()); j < provider.getSurrounding() + 1; j++) {
-                            if (i + j >= 0 && i + j < builds.length) {
-                                /*Preventing duplicates in whitelist. Not because of the graph, there is
-                                already chunk of code preventing from showing duplicity in the graph.
-                                (The final list are recreated again with help of these lists)
-                                Its because lenght of whitelist which is shown over the graph.
-                                BUG
-                                We have some point(a) which is in range around whitelist and point(b) which
-                                have same name but its not in range. Bug is that both points are shown in result
-                                its caused by generating second array(graph points) from names contained in this array*/
-                                if (!listed.contains(builds[i + j].getDisplayName())) {
-                                    listed.add(builds[i + j].getDisplayName());
-                                }
+                        int numberOfFailedBuilds = 0;
+                        for (int j = 0; j <= provider.getSurrounding() + numberOfFailedBuilds; j++) {
+                            if (addNotFailedBuild(i + j, listed, builds)) {
+                                numberOfFailedBuilds++;
+                            }
+                        }
+                        numberOfFailedBuilds = 0;
+                        for (int j = -1; j >= -(provider.getSurrounding() + numberOfFailedBuilds); j--) {
+                            if (addNotFailedBuild(i + j, listed, builds)) {
+                                numberOfFailedBuilds++;
                             }
                         }
                     }
@@ -168,6 +165,27 @@ public class BuildSummaryParser {
             }
         }
         return listed;
+    }
+
+    private boolean addNotFailedBuild(int position, List<String> result, Run[] builds) {
+        if (position >= 0 && position < builds.length) {
+            boolean crashed = builds[position].getResult() == null || builds[position].getResult().isWorseThan(Result.UNSTABLE);
+            if (crashed) {
+                return true;
+            }
+            /*Preventing duplicates in whitelist. Not because of the graph, there is
+            already chunk of code preventing from showing duplicity in the graph.
+            (The final list are recreated again with help of these lists)
+            Its because lenght of whitelist which is shown over the graph.
+            BUG
+            We have some point(a) which is in range around whitelist and point(b) which
+            have same name but its not in range. Bug is that both points are shown in result
+            its caused by generating second array(graph points) from names contained in this array*/
+            if (!result.contains(builds[position].getDisplayName())) {
+                result.add(builds[position].getDisplayName());
+            }
+        }
+        return false;
     }
 
     private int getMaxItems() {
