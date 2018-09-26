@@ -7,6 +7,7 @@
     <h3 style="font-family: monospace">Regressions: ${action.displayName}</h3>
     <div id="jckRegressionsChartContainer" style="margin-right: 10pt"><canvas id='jckRegressionsChart' width='600' height='600'></canvas></div>
             <j:set var="jckReports" value="${action.chartData}" />
+    <script type="text/javascript">var buildsMap = {};</script>
     <script type="text/javascript">
         // &lt;![CDATA[
         var data = {
@@ -52,7 +53,6 @@
         };
         var ctx = document.getElementById("jckErrorsFailuresChart").getContext("2d");
         var jckErrorsChart = new Chart(ctx).Line(data, options);
-        var buildsMap = {};
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
         buildsMap["${build.buildNameShortened}"] = "${build.buildNumber}";
         </j:forEach>
@@ -106,13 +106,12 @@
                 multiTooltipTemplate: "&lt;%= datasetLabel + \": \" + value %&gt;"
         };
         var ctx = document.getElementById("jckPassedChart").getContext("2d");
-        var jckPassedChart = new Chart(ctx).Line(data, options);
-        var buildsMap = {};
+        var jckPassedChartTck = new Chart(ctx).Line(data, options);
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
         buildsMap["${build.buildNameShortened}"] = "${build.buildNumber}";
         </j:forEach>
         document.getElementById("jckPassedChartContainer").onclick = function (evt) {
-        var activePoints = jckPassedChart.getPointsAtEvent(evt);
+        var activePoints = jckPassedChartTck.getPointsAtEvent(evt);
         window.open(buildsMap[activePoints[0].label] + "/java-reports", "_blank");
         };
         // ]]&gt;
@@ -159,7 +158,6 @@
         var ctx = document.getElementById("jckRegressionsChart").getContext("2d");
         var jckRegressions = new Chart(ctx).Bar(data, options);
         document.getElementById("jckRegressionsChartContainer").onclick = function (evt) {
-        var buildsMap = {};
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
         buildsMap["${build.buildNameShortened}"] = "${build.buildNumber}";
         </j:forEach>

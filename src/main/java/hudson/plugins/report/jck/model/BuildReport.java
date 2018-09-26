@@ -49,7 +49,7 @@ public class BuildReport implements java.io.Serializable {
         this.total = total;
         this.notRun = notRun;
         this.run = 0;
-        this.buildNameShortened=Chartjs.getShortName(buildName);
+        this.buildNameShortened=Chartjs.getShortName(buildName, buildNumber);
     }
 
     public String getBuildNameShortened() {
