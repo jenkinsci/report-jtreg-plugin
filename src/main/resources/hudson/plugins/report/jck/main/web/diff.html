@@ -121,6 +121,7 @@
                 }
 
                 document.getElementById("genCmd").value = genCmd
+
             }
 
             function adjustComand() {
@@ -130,9 +131,35 @@
                 document.getElementById("customCmd").value = initValue + "  " + selJob + "  ";
             }
 
+            function firstLoad() {
+                generateComand()
+                var urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.toString().length > 0) {
+                    for(var pair of urlParams.entries()) {
+                        console.log(pair[0]+ ', '+ pair[1]);
+                        if (pair[0] == "custom-part") {
+                            document.getElementById("customCmd").value=pair[1]
+                        }
+                        if (pair[0] == "generated-part") {
+                            //pair[1] must be processed manually
+                            var spaces = new RegExp(" +"); 
+                            var sa = pair[1].split(spaces);
+                            for(var i=0;i<sa.length;i++){
+                                item=sa[i]
+                                if(item.trim().length>0) {
+                                    console.log(item) //usually something like -param=value
+                                }
+                            }
+                        }
+                    }
+                //reason why it is guarded by elenggth>0
+                generateComand()
+                }
+            }
+
         </script>
     </head>
-    <body onLoad="generateComand()">
+    <body onLoad="firstLoad()">
         <div id="inButton"  onclick="showHideStds('in', 'err', 'out');" style="border:double;float:left">
             input
         </div>
