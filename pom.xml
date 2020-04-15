@@ -9,9 +9,8 @@
     <artifactId>jenkins-report-jck</artifactId>
     <version>0.1-SNAPSHOT</version>
     <!-- use hpi for jenkins plugin build (most commont) or jar for assembled diff run. See fakekoji's server package-info-->
-    <!--    <packaging>hpi</packaging>-->
-    <packaging>hpi</packaging>
-    <!--    <packaging>jar</packaging>-->
+        <packaging>hpi</packaging>
+    <!--<packaging>jar</packaging>-->
     <name>Jenkins JCK report publisher plugin</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -49,7 +48,7 @@
                 </configuration>
             </plugin>
             <plugin>
-                <!-- 
+                <!--
                 Assembly plugin works only when packaging is JAR. Is ignored for HDPI
                 -->
                 <artifactId>maven-assembly-plugin</artifactId>

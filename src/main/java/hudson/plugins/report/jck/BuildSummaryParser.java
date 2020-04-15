@@ -406,8 +406,9 @@ public class BuildSummaryParser {
             }
         }
         SuitesWithResults allTests = null;
+        String job = build.getRoot().getParentFile().getParentFile().getName();
         try {
-            allTests = SuitesWithResults.create(currentBuildTestsList, parseBuildReport(build));
+            allTests = SuitesWithResults.create(currentBuildTestsList, parseBuildReport(build), job, build.getNumber());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -423,7 +424,8 @@ public class BuildSummaryParser {
                 result,
                 currentReport.getTotal(),
                 currentReport.getNotRun(),
-                allTests);
+                allTests,
+                job);
     }
 
     private List<Suite> parseBuildSummary(Run<?, ?> build) throws Exception {

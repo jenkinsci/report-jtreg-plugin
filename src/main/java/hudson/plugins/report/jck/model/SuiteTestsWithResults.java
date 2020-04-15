@@ -29,13 +29,22 @@ import java.util.List;
 import java.util.Collections;
 
 public class SuiteTestsWithResults implements java.io.Serializable {
+    //fixme pass from build system
+    public static final String DIFF_SERVER = "http://hydra.brq.redhat.com:9090/diff.html";
+    //++wycheproof-jp8-ojdk8~udev~upstream-el6.x86_64-jfrenabled.release.sdk-el7z.x86_64.beaker-x11.defaultgc.legacy.lnxagent.jfroff+3+++jtreg~tier1-jp8-ojdk8~u~upstream-win2012.x86_64-hotspot.release.sdk-win10.x86_64.vagrant-x11.defaultgc.legacy.lnxagent.jfroff++0
+    private static final String DIFF_URL = DIFF_SERVER + "?generated-part=+-view%3Dall-tests+++-view%3Dinfo-summary+++-view%3Dinfo-summary-suites+++-output%3Dhtml++&custom-part=";//+job+number //eg as above;
+    private static final int MAX = 1000;
 
     private final String name;
     private final List<StringWithResult> tests;
+    private final String job;
+    private final int id;
 
-    public SuiteTestsWithResults(String name, List<StringWithResult> tests) {
+    public SuiteTestsWithResults(String name, List<StringWithResult> tests, String job, int id) {
         this.name = name;
         this.tests = tests;
+        this.job = job;
+        this.id = id;
     }
 
     public String getName() {
@@ -47,17 +56,24 @@ public class SuiteTestsWithResults implements java.io.Serializable {
     }
 
     public List<StringWithResult> getTestsLimited() {
-        if (tests.size() <= 1000) {
+        if (tests.size() <= MAX) {
             return getTests();
         } else {
             final List<StringWithResult> truncated = new ArrayList<>(1001);
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < MAX; i++) {
                 StringWithResult get = tests.get(i);
                 truncated.add(get);
             }
-            truncated.add(new StringWithResult("... Shown 1000 from " + tests.size() + ". To see remaining " + (tests.size() - 1000) + " use our cmdline diff tool!", null));
             return truncated;
         }
+    }
+
+    public String getSentence() {
+        return "... Shown " + MAX + " from " + tests.size() + ". To see remaining " + (tests.size() - 1000) + " use our cmdline diff tool or ";
+    }
+
+    public String getLink() {
+        return DIFF_URL + job + "+" + id;
     }
 
     public static class StringWithResult {

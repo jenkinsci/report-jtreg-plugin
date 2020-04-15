@@ -32,6 +32,11 @@
                         </tbody>
                     </table>
                     <hr/> <a name="problems"/>
+                     <small>
+                         <b>
+                              <a href="${it.linkTraces}">all traces</a>&amp;nbsp;
+                         </b>
+                     </small>
                     <h2>Failures and Errors</h2>
                     <a href="#diff">diff</a> | <a href="#all">all</a> |
                     <j:forEach var="suite" items="${it.suites}" varStatus="suitesStatus">
@@ -190,8 +195,18 @@
                                     </j:if>
                                 </li></small>
                             </j:forEach>
+                            <small>
+                                 <b>
+                                    ${suite.sentence}&amp;nbsp;<a href="${suite.link}">web ui</a>&amp;nbsp;
+                                 </b>
+                            </small>
                         </ul>
                     </j:forEach>
+                    <small>
+                         <b>
+                            you can play with diff cli or in this&amp;nbsp;<a href="${it.linkDiff}">web ui</a>&amp;nbsp;
+                         </b>
+                   </small>
                 </div>
             </j:if>
         </l:main-panel>

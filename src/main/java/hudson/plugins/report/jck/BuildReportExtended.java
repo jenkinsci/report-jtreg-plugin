@@ -23,10 +23,8 @@
  */
 package hudson.plugins.report.jck;
 
-import hudson.plugins.report.jck.model.BuildReport;
-import hudson.plugins.report.jck.model.Suite;
-import hudson.plugins.report.jck.model.SuiteTestChanges;
-import hudson.plugins.report.jck.model.SuitesWithResults;
+import hudson.plugins.report.jck.model.*;
+
 import java.util.List;
 
 public class BuildReportExtended extends BuildReport {
@@ -37,10 +35,12 @@ public class BuildReportExtended extends BuildReport {
     private final int total;
     private final int notRun;
     private final SuitesWithResults allTests;
+    private final String job;
 
     public BuildReportExtended(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites,
-            List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges, int total, int notRun, SuitesWithResults allTests) {
+                               List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges, int total, int notRun, SuitesWithResults allTests, String job) {
         super(buildNumber, buildName, passed, failed, error, suites, total, notRun);
+        this.job = job;
         this.addedSuites = addedSuites;
         this.removedSuites = removedSuites;
         this.testChanges = testChanges;
@@ -89,6 +89,27 @@ public class BuildReportExtended extends BuildReport {
 
     public SuitesWithResults getAllTests() {
         return allTests;
+    }
+
+    //generated-part=+-view%3Ddiff-list+++-view%3Ddiff-summary+++-view%3Ddiff-summary-suites+++-view%3Dinfo-problems+++-view%3Dinfo-summary+++-output%3Dhtml++&custom-part=++wycheproof-jp8-ojdk8~upstream~cpu-el6.x86_64-hotspot.release.sdk-el7z.x86_64.beaker-x11.defaultgc.legacy.lnxagent.jfroff+++0+-1
+    private static final String DIFF_URL = SuiteTestsWithResults.DIFF_SERVER + "?generated-part=+-view%3Ddiff-list+++-view%3Ddiff-summary+++-view%3Ddiff-summary-suites+++-view%3Dinfo-problems+++-view%3Dinfo-summary+++-output%3Dhtml++-fill++&custom-part=";//+job+numbers //eg as above;
+
+    public String getLinkDiff() {
+        return DIFF_URL + job + "+" + getBuildNumber() + "+" + lowestBuildForFil();
+    }
+
+    private int lowestBuildForFil() {
+        if (getBuildNumber() > 10) {
+            return getBuildNumber() - 10;
+        } else {
+            return 1;
+        }
+    }
+
+    private static final String TRACES_URL = SuiteTestsWithResults.DIFF_SERVER + "?generated-part=+-view%3Dinfo+++-output%3Dhtml++&custom-part=";//+job+numbers //eg as above;
+
+    public String getLinkTraces() {
+        return TRACES_URL + job + "+" + getBuildNumber();
     }
 
 }

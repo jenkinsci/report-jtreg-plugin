@@ -30,7 +30,7 @@ import java.util.Collections;
 
 public class SuitesWithResults implements java.io.Serializable {
 
-    public static SuitesWithResults create(List<SuiteTests> currentBuildTestsList, BuildReport problems) {
+    public static SuitesWithResults create(List<SuiteTests> currentBuildTestsList, BuildReport problems, String job, int id) {
         List<SuiteTestsWithResults> futureSuitests = new ArrayList<>(currentBuildTestsList.size());
         for (SuiteTests suiteTest : currentBuildTestsList) {
             final List<SuiteTestsWithResults.StringWithResult> testsForThisSuite = new ArrayList<>(suiteTest.getTests().size());
@@ -41,7 +41,7 @@ public class SuitesWithResults implements java.io.Serializable {
                     testsForThisSuite.add(new SuiteTestsWithResults.StringWithResult(test, SuiteTestsWithResults.TestStatusSimplified.PASSED_OR_MISSING));
                 }
             }
-            futureSuitests.add(new SuiteTestsWithResults(suiteTest.getName(), testsForThisSuite));
+            futureSuitests.add(new SuiteTestsWithResults(suiteTest.getName(), testsForThisSuite, job, id));
         }
         return new SuitesWithResults(futureSuitests);
     }
