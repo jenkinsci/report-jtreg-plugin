@@ -69,7 +69,11 @@ public class SuiteTestsWithResults implements java.io.Serializable {
     }
 
     public String getSentence() {
-        return "... Shown " + MAX + " from " + tests.size() + ". To see remaining " + (tests.size() - 1000) + " use our cmdline diff tool or ";
+        if (tests.size() <= MAX) {
+            return "... Shown all " + tests.size() + ". Feel free to use our cmdline diff tool or ";
+        } else {
+            return "... Shown " + MAX + " from " + tests.size() + ". To see remaining " + (tests.size() - 1000) + " use our cmdline diff tool or ";
+        }
     }
 
     public String getLink() {
