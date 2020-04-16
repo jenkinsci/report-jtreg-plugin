@@ -72,9 +72,9 @@ public class SuiteTestsWithResults implements java.io.Serializable {
         if (tests == null || tests.isEmpty() ) {
             return "... No tests at all. Feel free to use our cmdline diff tool or ";
         } else if (tests.size() <= MAX) {
-            return "... Shown all " + tests.size() + "tests. Feel free to use our cmdline diff tool or ";
+            return "... Shown all " + tests.size() + " tests. Feel free to use our cmdline diff tool or ";
         } else {
-            return "... Shown " + MAX + " from " + tests.size() + "tests. To see remaining " + (tests.size() - 1000) + " use our cmdline diff tool or ";
+            return "... Shown " + MAX + " from " + tests.size() + " tests. To see remaining " + (tests.size() - 1000) + " use our cmdline diff tool or ";
         }
     }
 
