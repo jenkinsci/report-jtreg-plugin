@@ -44,7 +44,7 @@
                             <div style="font-weight: bold; font-size: large;">${suite.name}</div>
                             <ul>
                                 <j:forEach items="${suite.report.testProblems}" var="t" varStatus="testStatus">
-                                    <li>
+                                    <li id="${t.name}" style="list-style-type: none;"> <a style="text-decoration: none;" href="#${t.name}">🔗</a>
                                         ${t.name}&amp;nbsp;
                                         <a href="#" id="button_expand_${suitesStatus.count}_${testStatus.count}" style="font-size: smaller; display: inline" onclick="
                                                 document.getElementById('button_expand_${suitesStatus.count}_${testStatus.count}').style.display = 'none';
