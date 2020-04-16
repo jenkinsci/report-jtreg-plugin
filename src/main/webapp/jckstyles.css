@@ -1,3 +1,8 @@
+.jck :target {
+    border: 1px solid red;
+    border-collapse: collapse;
+}
+
 .jck table {
     border: 1px solid black;
     text-align: center;
