@@ -135,30 +135,31 @@ public class BuildSummaryParser {
     }
 
     List<String> getList(RunList<?> runs, ListProvider provider) {
+        final String list = provider.getList();
+        if (settings == null || list == null || list.trim().isEmpty()) {
+            return Collections.emptyList();
+        }
         int limit = getMaxItems();
         List<String> listed = new ArrayList<>(limit);
-        List<BuildReport> list = new ArrayList<>();
         Run[] builds = runs.toArray(new Run[0]);
         for (int i = 0; i < builds.length; i++) {
             Run run = builds[i];
             if (run.getResult() == null || run.getResult().isWorseThan(Result.UNSTABLE)) {
                 continue;
             }
-            if (settings != null && provider.getList() != null && !provider.getList().trim().isEmpty()) {
-                String[] items = provider.getList().split("\\s+");
-                for (String item : items) {
-                    if (run.getDisplayName().matches(item)) {
-                        int numberOfFailedBuilds = 0;
-                        for (int j = 0; j <= provider.getSurrounding() + numberOfFailedBuilds; j++) {
-                            if (addNotFailedBuild(i + j, listed, builds)) {
-                                numberOfFailedBuilds++;
-                            }
+            String[] items = list.split("\\s+");
+            for (String item : items) {
+                if (run.getDisplayName().matches(item)) {
+                    int numberOfFailedBuilds = 0;
+                    for (int j = 0; j <= provider.getSurrounding() + numberOfFailedBuilds; j++) {
+                        if (addNotFailedBuild(i + j, listed, builds)) {
+                            numberOfFailedBuilds++;
                         }
-                        numberOfFailedBuilds = 0;
-                        for (int j = -1; j >= -(provider.getSurrounding() + numberOfFailedBuilds); j--) {
-                            if (addNotFailedBuild(i + j, listed, builds)) {
-                                numberOfFailedBuilds++;
-                            }
+                    }
+                    numberOfFailedBuilds = 0;
+                    for (int j = -1; j >= -(provider.getSurrounding() + numberOfFailedBuilds); j--) {
+                        if (addNotFailedBuild(i + j, listed, builds)) {
+                            numberOfFailedBuilds++;
                         }
                     }
                 }
