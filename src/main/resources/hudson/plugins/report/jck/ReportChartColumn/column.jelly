@@ -1,8 +1,8 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
-    <td data="${it.getLatestResultFailures(job)}">
+    <j:set var="jckReports" value="${it.getJckReport(job)}" />
+    <td data="${it.getLatestResultFailures(jckReports)}">
         <div>
-            <j:set var="jckReports" value="${it.getJckReport(job)}" />
             <j:if test="${jckReports.isEmpty()}">
                 No JCK results yet
             </j:if>

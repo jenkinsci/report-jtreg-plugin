@@ -50,8 +50,7 @@ public class ReportChartColumn extends ListViewColumn {
         return r;
     }
 
-    public int getLatestResultFailures(Job<?, ?> job) {
-        List<BuildReport> reports = getJckReport(job);
+    public int getLatestResultFailures(final List<BuildReport> reports) {
         if (!reports.isEmpty()) {
             BuildReport lastReport = reports.get(reports.size() - 1);
             return lastReport.getFailed() + lastReport.getError();
