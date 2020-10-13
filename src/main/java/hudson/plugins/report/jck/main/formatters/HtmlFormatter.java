@@ -128,4 +128,12 @@ public class HtmlFormatter extends StringMappedFormatter {
         clossingBuffer.add("</h1>");
     }
 
+    public void pre(){
+        print("<pre>");
+    }
+
+    public void preClose(){
+        print("</pre>");
+    }
+
 }

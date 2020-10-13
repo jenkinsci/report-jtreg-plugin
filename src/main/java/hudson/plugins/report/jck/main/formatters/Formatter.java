@@ -69,5 +69,7 @@ public interface Formatter {
 
     public void closeBuildsList();
     public void small();
+    public void pre();
+    public void preClose();
 
 }

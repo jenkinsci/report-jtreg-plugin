@@ -58,6 +58,16 @@ public abstract class BasicFormatter implements Formatter {
     public void small(){
         
     }
+
+    @Override
+    public void pre(){
+
+    }
+
+    @Override
+    public void preClose(){
+
+    }
     
     
 

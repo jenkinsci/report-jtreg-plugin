@@ -35,6 +35,7 @@ import java.io.PrintStream;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class Options {
 
@@ -45,6 +46,8 @@ public class Options {
     private final List<String> views;
     private BasicFormatter formatter;
     private PrintStream stream;
+    private Pattern trackingRegex = Pattern.compile(".*");
+    private Pattern trackingRegexChanges = Pattern.compile(".*");
 
     public Options() {
         this.views = new ArrayList<>();
@@ -112,6 +115,22 @@ public class Options {
 
     void addView(String nextView) {
         views.add(nextView);
+    }
+
+    void setTrackingRegex(Pattern regex) {
+        this.trackingRegex=regex;
+    }
+
+    public Pattern getTrackingRegex() {
+        return trackingRegex;
+    }
+
+    void setTrackingRegexChanges(Pattern regex) {
+        this.trackingRegexChanges=regex;
+    }
+
+    public Pattern getTrackingRegexChanges() {
+        return trackingRegexChanges;
     }
 
     public boolean isInfo() {

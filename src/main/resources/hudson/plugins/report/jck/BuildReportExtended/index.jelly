@@ -56,6 +56,7 @@
                                                 document.getElementById('details_${suitesStatus.count}_${testStatus.count}').style.display = 'none';
                                                 document.getElementById('button_expand_${suitesStatus.count}_${testStatus.count}').style.display = 'inline';
                                                 return false;">(collapse)</a>
+                                        <a href="${t.getTrackingUrl(it.job)}" style="font-size: smaller;" >(track)</a>
                                         <div id="details_${suitesStatus.count}_${testStatus.count}" style="display: none">
                                             <ul>
                                                 <li><span style="font-weight: bold">Status:&amp;nbsp;</span>${t.status}</li>

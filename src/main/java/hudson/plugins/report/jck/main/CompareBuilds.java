@@ -35,10 +35,10 @@ import hudson.plugins.report.jck.model.Report;
 import hudson.plugins.report.jck.model.Suite;
 import hudson.plugins.report.jck.model.SuiteTestChanges;
 import hudson.plugins.report.jck.model.SuiteTestsWithResults;
-import hudson.plugins.report.jck.model.SuitesWithResults;
 import hudson.plugins.report.jck.model.Test;
 import hudson.plugins.report.jck.model.TestOutput;
 import hudson.plugins.report.jck.wrappers.RunWrapperFromDir;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -53,6 +53,7 @@ public class CompareBuilds {
         Options options = new Arguments(args).parse();
         new CompareBuilds(options).work();
     }
+
     private final Options options;
 
     private CompareBuilds(Options options) {
@@ -130,9 +131,9 @@ public class CompareBuilds {
                     format().println("----------- comaprsion -----------");
                     format().reset();
                     format().println("    Removed suites: " + bex.getRemovedSuites().size());
-                    printStringList("        ", bex.getRemovedSuites());
+                    printStringListUnfiltered("        ", bex.getRemovedSuites());
                     format().println("      Added suites: " + bex.getRemovedSuites().size());
-                    printStringList("        ", bex.getAddedSuites());
+                    printStringListUnfiltered("        ", bex.getAddedSuites());
                 }
                 if (options.viewDiffDetails()) {
                     printTestChangesSummary(bex.getTestChanges());
@@ -148,9 +149,17 @@ public class CompareBuilds {
         }
     }
 
-    private void printStringList(String prefix, List<String> ss) {
+    private void printStringListUnfiltered(String prefix, List<String> ss) {
         for (String s : ss) {
             format().println(prefix + s);
+        }
+    }
+
+    private void printStringListFiltered(String prefix, List<String> ss) {
+        for (String s : ss) {
+            if (options.getTrackingRegexChanges().matcher(s).matches()) {
+                format().println(prefix + s);
+            }
         }
     }
 
@@ -316,24 +325,28 @@ public class CompareBuilds {
             format().println("    *** " + s.getName() + " *** ");
             format().reset();
             for (Test t : s.getReport().getTestProblems()) {
-                format().startBold();
-                format().startColor(Formatter.SupportedColors.LightRed);
-                format().println("       Name : " + t.getName());
-                format().reset();
-                format().startColor(Formatter.SupportedColors.Red);
-                if (!options.hideValues()) {
-                    format().println("       Line : " + t.getStatusLine());
-                    for (TestOutput o : t.getOutputs()) {
-                        format().startColor(Formatter.SupportedColors.LightRed);
-                        format().println("         Name  :" + o.getName());
-                        format().reset();
-                        format().startColor(Formatter.SupportedColors.Red);
-                        format().println("         Value :\n" + o.getValue());
+                if (options.getTrackingRegex().matcher(t.getName()).matches()) {
+                    format().startBold();
+                    format().startColor(Formatter.SupportedColors.LightRed);
+                    format().println("       Name : " + t.getName());
+                    format().reset();
+                    format().startColor(Formatter.SupportedColors.Red);
+                    if (!options.hideValues()) {
+                        format().println("       Line : " + t.getStatusLine());
+                        for (TestOutput o : t.getOutputs()) {
+                            format().startColor(Formatter.SupportedColors.LightRed);
+                            format().println("         Name  :" + o.getName());
+                            format().reset();
+                            format().startColor(Formatter.SupportedColors.Red);
+                            format().print("         Value :\n");
+                            format().pre();
+                            format().println(o.getValue());
+                            format().preClose();
+                            format().reset();
+                        }
                         format().reset();
                     }
-                    format().reset();
                 }
-
             }
         }
     }
@@ -374,27 +387,27 @@ public class CompareBuilds {
             if (!options.hideMisses()) {
                 format().println("  newly removed : ");
                 setFontByKNownResult(-1 * st.getRemoved().size(), Formatter.SupportedColors.Red);
-                printStringList("            ", st.getRemoved());
+                printStringListFiltered("            ", st.getRemoved());
                 format().reset();
                 format().println("  newly added   : ");
                 setFontByKNownResult(-1 * st.getAdded().size(), Formatter.SupportedColors.Green);
-                printStringList("            ", st.getAdded());
+                printStringListFiltered("            ", st.getAdded());
                 format().reset();
             }
             if (!options.hidePositives()) {
                 format().println("    new fixes   : ");
                 setFontByKNownResult(-1 * st.getFixes().size(), Formatter.SupportedColors.LightGreen);
-                printStringList("            ", st.getFixes());
+                printStringListFiltered("            ", st.getFixes());
                 format().reset();
             }
             if (!options.hideNegatives()) {
                 format().println("    new errors  : ");
                 setFontByKNownResult(-1 * (st.getErrors().size()), Formatter.SupportedColors.LightRed);
-                printStringList("            ", st.getErrors());
+                printStringListFiltered("            ", st.getErrors());
                 format().reset();
                 format().println("    new failures: ");
                 setFontByKNownResult(-1 * (st.getFailures().size()), Formatter.SupportedColors.LightRed);
-                printStringList("            ", st.getFailures());
+                printStringListFiltered("            ", st.getFailures());
                 format().reset();
             }
 
@@ -496,20 +509,21 @@ public class CompareBuilds {
             format().println("    *** " + suiteTest.getName() + " *** ");
             format().reset();
             for (SuiteTestsWithResults.StringWithResult test : suiteTest.getTests()) {
-                if (test.getStatus() == SuiteTestsWithResults.TestStatusSimplified.FAILED_OR_ERROR) {
-                    if (!options.hideNegatives()) {
-                        format().startColor(Formatter.SupportedColors.Red);
-                        format().println("          " + test.getTestName() + " " + test.getStatus().toString());
+                if (options.getTrackingRegex().matcher(test.getTestName()).matches()) {
+                    if (test.getStatus() == SuiteTestsWithResults.TestStatusSimplified.FAILED_OR_ERROR) {
+                        if (!options.hideNegatives()) {
+                            format().startColor(Formatter.SupportedColors.Red);
+                            format().println("          " + test.getTestName() + " " + test.getStatus().toString());
+                        }
+                    } else if (!options.hidePositives()) {
+                        format().startColor(Formatter.SupportedColors.Green);
+                        format().print("          " + test.getTestName() + " ");
+                        format().startColor(Formatter.SupportedColors.Yellow);
+                        format().println(test.getStatus().toString());
                     }
-                } else if (!options.hidePositives()) {
-                    format().startColor(Formatter.SupportedColors.Green);
-                    format().print("          " + test.getTestName() + " ");
-                    format().startColor(Formatter.SupportedColors.Yellow);
-                    format().println(test.getStatus().toString());
+
+                    format().reset();
                 }
-
-                format().reset();
-
             }
 
         }

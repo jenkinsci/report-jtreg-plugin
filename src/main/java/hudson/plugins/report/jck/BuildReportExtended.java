@@ -77,6 +77,10 @@ public class BuildReportExtended extends BuildReport {
         return testChanges;
     }
 
+    public String getJob() {
+        return job;
+    }
+
     @Override
     public int getTotal() {
         return total;

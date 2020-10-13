@@ -30,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class Arguments {
 
@@ -91,17 +92,20 @@ public class Arguments {
         p.println(" Unknow job will lead to listing of jobs.");
         p.println(" When using even number of build pointers, you can use " + fillSwitch + " switch to consider them as rows");
         p.println(" Another strange argument is " + keepFailedSwitch + " which will include failed/aborted/not-existing builds/dirs during listing.");
+        p.println(" To observe only selcted set of tests, you can use: " + track+ "=regex (limit also chnages, use "+trackChanges+"=regex)");
     }
 
     private static final String output = "-output";
     private static final String view = "-view";
+    private static final String track = "-track";
+    private static final String trackChanges = "-trackChanges";
 
     private static final String fillSwitch = "-fill";
     private static final String keepFailedSwitch = "-keep-failed";
 
     public static final String[] knownBoolSwitches = sortA(new String[]{fillSwitch, keepFailedSwitch});
 
-    private static final String[] switches = concat(new String[]{output, view}, knownBoolSwitches);
+    private static final String[] switches = concat(new String[]{output, view, track}, knownBoolSwitches);
 
     public static final String output_html = "html";
     static final String output_html2 = "html2";
@@ -157,6 +161,12 @@ public class Arguments {
                     throw new RuntimeException("unknown arg for " + view + " - " + nextView);
                 }
                 result.addView(nextView);
+            } else if (arg.startsWith(track+ "=")) {
+                String trackRegex = arg.split("=")[1];
+                result.setTrackingRegex(Pattern.compile(trackRegex));
+            } else if (arg.startsWith(trackChanges+ "=")) {
+                String trackRegexChnages = arg.split("=")[1];
+                result.setTrackingRegexChanges(Pattern.compile(trackRegexChnages));
             } else if (arg.equals(fillSwitch)) {
                 result.setFill(true);
             } else if (arg.equals(keepFailedSwitch)) {
