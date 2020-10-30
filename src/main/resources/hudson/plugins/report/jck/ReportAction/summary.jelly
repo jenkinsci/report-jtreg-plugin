@@ -5,7 +5,7 @@
         <st:nbsp/>
         <j:set var="report" value="${it.target}"/>
         <j:if test="${report != null}">
-            Total: ${report.total}, Error: ${report.error}, Failed: ${report.failed}
+            Total: ${report.total}, Error: ${report.error}, Failed: ${report.failed}, Skipped: ${report.notRun}, Passed: ${report.passed}
         </j:if>
     </t:summary>
 </j:jelly>
