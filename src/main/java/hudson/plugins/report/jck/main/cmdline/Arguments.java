@@ -23,12 +23,16 @@
  */
 package hudson.plugins.report.jck.main.cmdline;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -71,9 +75,9 @@ public class Arguments {
         }
     }
 
-    public static String printHelp() {
+    public static String printHelp() throws UnsupportedEncodingException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(baos);
+        PrintStream ps = new PrintStream(baos, true, "UTF-8");
         printHelp(ps);
         return new String(baos.toByteArray(), StandardCharsets.UTF_8);
     }
@@ -103,14 +107,15 @@ public class Arguments {
     private static final String fillSwitch = "-fill";
     private static final String keepFailedSwitch = "-keep-failed";
 
-    public static final String[] knownBoolSwitches = sortA(new String[]{fillSwitch, keepFailedSwitch});
+    private static final String[]  knownBoolSwitchesBase = sortA(new String[]{fillSwitch, keepFailedSwitch});
+    public static final List<String> knownBoolSwitches = Collections.unmodifiableList(Arrays.asList(knownBoolSwitchesBase));
 
-    private static final String[] switches = concat(new String[]{output, view, track}, knownBoolSwitches);
+    private static final String[] switches = concat(new String[]{output, view, track}, knownBoolSwitchesBase);
 
     public static final String output_html = "html";
     static final String output_html2 = "html2";
     static final String output_color = "color";
-    public static final String[] knownOutputs = sortA(new String[]{output_html, output_color, output_html2});
+    public static final List<String> knownOutputs = Collections.unmodifiableList(Arrays.asList(sortA(new String[]{output_html, output_color, output_html2})));
 
     static final String view_info_summary = "info-summary";
     static final String view_info_summary_suites = "info-summary-suites";
@@ -131,11 +136,13 @@ public class Arguments {
     static final String view_hide_misses = "hide-misses";
     static final String view_hide_totals = "hide-totals";
 
-    public static final String[] bestViews = sortA(new String[]{
+    private static final String[] bestViewsBase = sortA(new String[]{
         view_diff_list, view_info, view_info_hidevalues
     });
 
-    public static final String[] knownViews = sortA(new String[]{
+    public static final List<String> bestViews = Collections.unmodifiableList(Arrays.asList(bestViewsBase));
+
+    private static final String[] knownViewsBase = sortA(new String[]{
         view_info_summary, view_info_summary_suites, view_info_problems, view_info_hidevalues,
         view_diff_summary, view_diff_summary_suites, view_diff_details, view_diff_list,
         view_hide_positives, view_hide_negatives, view_hide_misses, view_hide_totals,
@@ -143,20 +150,22 @@ public class Arguments {
         view_all_tests
     });
 
+    public static final List<String> knownViews = Collections.unmodifiableList(Arrays.asList(knownViewsBase));
+
     public Options parse() {
         Options result = new Options();
         result.setStream(System.out);
         for (String arg : base) {
             if (arg.startsWith(output + "=")) {
                 String output_type = arg.split("=")[1];
-                if (!JobsRecognition.arrayContains(knownOutputs, output_type)) {
+                if (!knownOutputs.contains(output_type)) {
                     System.err.println(argsToHelp(knownOutputs));
                     throw new RuntimeException("unknown arg for " + output + " - " + output_type);
                 }
                 result.setOutputType(output_type);
             } else if (arg.startsWith(view + "=")) {
                 String nextView = arg.split("=")[1];
-                if (!JobsRecognition.arrayContains(knownViews, nextView)) {
+                if (!knownViews.contains(nextView)) {
                     System.err.println(argsToHelp(knownViews));
                     throw new RuntimeException("unknown arg for " + view + " - " + nextView);
                 }
@@ -202,7 +211,7 @@ public class Arguments {
             if (mainArgs.size() == 1) {
                 //only information about job will be printed
                 JobsRecognition.jobsRecognition().printJobInfo(mainArgs.get(0), result.getFormatter());
-                System.exit(0);
+                return null;
             }
             String jobName = null;
             Integer latestBuild = null;
@@ -224,13 +233,13 @@ public class Arguments {
                     if (jobName == null) {
                         throw new RuntimeException("You are tying to specify build " + arg + " but not have no job specified ahead.");
                     }
-                    int from = Integer.valueOf(arg);
+                    int from = Integer.parseInt(arg);
                     i++;
                     arg = mainArgs.get(i);
                     if (!JobsRecognition.isNumber(arg)) {
                         throw new RuntimeException("You have " + fillSwitch + " set, but when reading " + arg + " it looks like odd number of arguments. Even expected");
                     }
-                    int to = Integer.valueOf(arg);
+                    int to = Integer.parseInt(arg);
                     if (from <= 0) {
                         from = latestBuild + from;
                     }
@@ -262,7 +271,7 @@ public class Arguments {
                     if (jobName == null) {
                         throw new RuntimeException("You are tying to specify build " + arg + " but not have no job specified ahead.");
                     }
-                    int origJobId = Integer.valueOf(mainArgs.get(i));
+                    int origJobId = Integer.parseInt(mainArgs.get(i));
                     int jobId = origJobId;
                     if (jobId <= 0) {
                         jobId = latestBuild + jobId;
@@ -301,7 +310,7 @@ public class Arguments {
         return result;
     }
 
-    private static String argsToHelp(String[] outputs) {
+   private static String argsToHelp(Iterable<String> outputs) {
         StringBuilder sb = new StringBuilder();
         for (String o : outputs) {
             sb.append(o).append("|");

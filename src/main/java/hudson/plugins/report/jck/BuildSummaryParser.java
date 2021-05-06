@@ -25,6 +25,7 @@ package hudson.plugins.report.jck;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.model.Job;
 import hudson.model.Result;
 import hudson.model.Run;
@@ -134,6 +135,7 @@ public class BuildSummaryParser {
         });
     }
 
+    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
     List<String> getList(RunList<?> runs, ListProvider provider) {
         final String list = provider.getList();
         if (settings == null || list == null || list.trim().isEmpty()) {
@@ -168,6 +170,7 @@ public class BuildSummaryParser {
         return listed;
     }
 
+    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
     private boolean addNotFailedBuild(int position, List<String> result, Run[] builds) {
         if (position >= 0 && position < builds.length) {
             boolean crashed = builds[position].getResult() == null || builds[position].getResult().isWorseThan(Result.UNSTABLE);
@@ -201,6 +204,7 @@ public class BuildSummaryParser {
         return parseJobReports(job.getBuilds());
     }
 
+    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
     public List<BuildReport> parseJobReports(RunList<?> runs) {
         int limit = getMaxItems();
         List<BuildReport> list = new ArrayList<>();
@@ -429,6 +433,7 @@ public class BuildSummaryParser {
                 job);
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD", justification = "Alhoug never called, this method is here to demonstrate (and ocassionally being used) how to access the root dir from run/build")
     private List<Suite> parseBuildSummary(Run<?, ?> build) throws Exception {
         return parseBuildSummary(build.getRootDir());
     }
@@ -449,6 +454,7 @@ public class BuildSummaryParser {
         return result;
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD", justification = "Alhoug never called, this method is here to demonstrate (and ocassionally being used) how to access the root dir from run/build")
     private List<SuiteTests> parseSuiteTests(Run<?, ?> build) throws Exception {
         return parseSuiteTests(build.getRootDir());
     }
@@ -476,7 +482,7 @@ public class BuildSummaryParser {
         return result;
     }
 
-    private class TestDescriptor {
+    private static class TestDescriptor {
 
         private final String name;
         private final TestStatus status;

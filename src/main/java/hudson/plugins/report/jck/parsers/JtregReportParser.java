@@ -23,6 +23,7 @@
  */
 package hudson.plugins.report.jck.parsers;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.plugins.report.jck.model.ReportFull;
 import hudson.plugins.report.jck.model.Suite;
 import hudson.plugins.report.jck.model.Test;
@@ -63,6 +64,7 @@ public class JtregReportParser implements ReportParser {
     private static final Map<String, ArchiveFactory> SUPPORTED_ARCHIVE_TYPES_MAP = createSupportedArchiveTypesMap();
 
     @Override
+    @SuppressFBWarnings(value = {"REC_CATCH_EXCEPTION", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
     public Suite parsePath(Path path) {
         List<Test> testsList = new ArrayList<>();
         try (ArchiveInputStream in = streamPath(path)) {
@@ -105,6 +107,7 @@ public class JtregReportParser implements ReportParser {
         return new Suite(suiteName(path), fullReport);
     }
 
+    @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "We desrve to die")
     private String suiteName(Path path) {
         for (Entry<String, ArchiveFactory> factory : SUPPORTED_ARCHIVE_TYPES_MAP.entrySet()) {
             String pathName = path.getFileName().toString();
@@ -189,6 +192,7 @@ public class JtregReportParser implements ReportParser {
         return "";
     }
 
+    @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "We desrve to die")
     private ArchiveInputStream streamPath(Path path) throws IOException {
         for (Entry<String, ArchiveFactory> factory : SUPPORTED_ARCHIVE_TYPES_MAP.entrySet()) {
             String pathName = path.getFileName().toString().toLowerCase();
@@ -338,6 +342,7 @@ public class JtregReportParser implements ReportParser {
         ArchiveInputStream create(InputStream in) throws IOException;
     }
 
+    @SuppressFBWarnings(value = "EQ_DOESNT_OVERRIDE_EQUALS", justification = "The Test ishandlig classes properly,but yes, this may get broken any time")
     private static class JtregBackwardCompatibileTest extends Test {
 
         private final String testName;

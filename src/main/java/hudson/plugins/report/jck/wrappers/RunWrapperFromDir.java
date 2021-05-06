@@ -44,7 +44,7 @@ public class RunWrapperFromDir implements RunWrapper {
 
     @Override
     public int getNumber() {
-        return Integer.valueOf(back.getName());
+        return Integer.parseInt(back.getName());
     }
 
     @Override

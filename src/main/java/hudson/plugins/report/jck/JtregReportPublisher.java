@@ -38,7 +38,7 @@ public class JtregReportPublisher extends AbstractReportPublisher {
         super(reportFileGlob);
     }
 
-    public static String sfxs="zip,tar,tar.gz,tar.bz2,tar.xz";
+    public static final String sfxs = "zip,tar,tar.gz,tar.bz2,tar.xz";
     
     public static boolean isJtregArchive(String s){
         String[] ss = sfxs.split(",");

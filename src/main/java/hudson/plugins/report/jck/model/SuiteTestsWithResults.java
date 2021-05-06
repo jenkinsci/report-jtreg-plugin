@@ -23,6 +23,8 @@
  */
 package hudson.plugins.report.jck.model;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +38,7 @@ public class SuiteTestsWithResults implements java.io.Serializable {
     private static final int MAX = 1000;
 
     private final String name;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification =  "should be internal implementation only, and thus ArrayList and that is serialisable")
     private final List<StringWithResult> tests;
     private final String job;
     private final int id;

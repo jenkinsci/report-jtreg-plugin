@@ -31,15 +31,21 @@ import java.net.InetSocketAddress;
 
 public class Service {
 
-    private static final int port = 9090;
-
     public static void main(String... args) throws IOException {
+        String file = "/home/tester/vm-shared/TckScripts/jenkins/custom_run_wrappers/diff_jobs_hydra.sh";
+        if (args.length>0) {
+            file = args[0];
+        }
+        int port = 9090;
+        if (args.length>1) {
+            port = Integer.parseInt(args[1]);
+        }
         HttpServer hs = HttpServer.create(new InetSocketAddress(port), 0);
         hs.createContext("/diff.html", new ContextExecutingHandler(
-                new File("/home/tester/vm-shared/TckScripts/jenkins/custom_run_wrappers/diff_jobs_hydra.sh")));
+                new File(file)));
         hs.start();
-        System.out.println("Diff server started. Running at " + port + ". Terminate to end.");
-        System.err.println("Diff server started. Running at " + port + ". Terminate to end.");
+        System.out.println("Diff server started. Running at " + port + ". Terminate to end. Run for: " + file);
+        System.err.println("Diff server started. Running at " + port + ". Terminate to end. Run for: " + file);
     }
 
 }

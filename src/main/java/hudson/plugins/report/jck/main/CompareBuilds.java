@@ -51,6 +51,9 @@ public class CompareBuilds {
 
     public static void main(String[] args) throws Exception {
         Options options = new Arguments(args).parse();
+        if (options == null){
+            return;
+        }
         new CompareBuilds(options).work();
     }
 

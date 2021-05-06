@@ -25,6 +25,8 @@ package hudson.plugins.report.jck.main.web;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -32,12 +34,12 @@ import java.io.Writer;
  */
 public class ProcessWrapper implements Runnable {
 
-    private final String[] cmds;
+    private final List<String> cmds;
     private final Writer out;
     private String errorResult;
 
-    public ProcessWrapper(Writer output, String[] cmds) {
-        this.cmds = cmds;
+    public ProcessWrapper(final Writer output,final String[] cmds) {
+        this.cmds = Arrays.asList(cmds);
         this.out = output;
     }
 

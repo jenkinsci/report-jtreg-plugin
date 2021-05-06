@@ -24,6 +24,7 @@
 package hudson.plugins.report.jck.main;
 
 import com.google.gson.GsonBuilder;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.plugins.report.jck.model.Report;
 import hudson.plugins.report.jck.model.ReportFull;
 import hudson.plugins.report.jck.model.Suite;
@@ -56,6 +57,7 @@ public class RecreateJtregReportSummaries {
         new RecreateJtregReportSummaries().work();
     }
 
+    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
     private void work() throws Exception {
         try (Stream<Path> dirsStream = Files.list(Paths.get("").toAbsolutePath().normalize())) {
             dirsStream.sequential()
@@ -64,6 +66,7 @@ public class RecreateJtregReportSummaries {
         }
     }
 
+    @SuppressFBWarnings(value = {"REC_CATCH_EXCEPTION", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
     private void recreateJtregReportSummaryForBuild(Path buildPath) {
         Path tckReportsArchive = buildPath.resolve("archive");
         if (!Files.exists(tckReportsArchive)) {

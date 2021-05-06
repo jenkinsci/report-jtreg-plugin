@@ -23,6 +23,7 @@
  */
 package hudson.plugins.report.jck;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.FilePath;
 import hudson.plugins.report.jck.model.Suite;
 import hudson.plugins.report.jck.parsers.ReportParser;
@@ -56,6 +57,7 @@ public class ReportParserCallable implements FilePath.FileCallable<List<Suite>> 
     }
 
     @Override
+    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
     public List<Suite> invoke(File f, VirtualChannel channel) throws IOException, InterruptedException {
         PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher(reportMatcherGlob);
         try (Stream<Path> filesStream = Files.walk(f.toPath()).sequential()) {

@@ -24,6 +24,7 @@
 package hudson.plugins.report.jck.model;
 
 import java.util.List;
+import java.util.Objects;
 
 import static hudson.plugins.report.jck.utils.MoreStrings.compareStrings;
 
@@ -48,5 +49,18 @@ public class SuiteTests implements Comparable<SuiteTests>, java.io.Serializable 
     @Override
     public int compareTo(SuiteTests o) {
         return compareStrings(name, o.getName());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SuiteTests that = (SuiteTests) o;
+        return Objects.equals(getName(), that.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName());
     }
 }

@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,9 +43,9 @@ public class JckReportParserTest {
         documentBuilderFactory.setNamespaceAware(true);
         try {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/" + xmlFileName)));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/" + xmlFileName), "UTF-8"));
             reader.readLine();
-            return documentBuilder.parse(new ReaderInputStream(reader));
+            return documentBuilder.parse(new ReaderInputStream(reader, StandardCharsets.UTF_8));
         } catch (SAXException | IOException | ParserConfigurationException e) {
             throw new RuntimeException();
         }
@@ -66,7 +67,9 @@ public class JckReportParserTest {
         ReportFull actualReport;
         final JckReportParser parser = new JckReportParser();
         try {
-            actualReport = parser.parseReport(this.getClass().getResourceAsStream("/" + reportCompilerFileName));
+            try (InputStream s = this.getClass().getResourceAsStream("/" + reportCompilerFileName)) {
+                actualReport = parser.parseReport(s);
+            }
         } catch (Exception e) {
             throw new RuntimeException();
         }
@@ -115,7 +118,9 @@ public class JckReportParserTest {
         ReportFull actualReport;
         final JckReportParser parser = new JckReportParser();
         try {
-            actualReport = parser.parseReport(this.getClass().getResourceAsStream("/" + reportDevtoolsFileName));
+            try (InputStream s = this.getClass().getResourceAsStream("/" + reportDevtoolsFileName)) {
+                actualReport = parser.parseReport(s);
+            }
         } catch (Exception e) {
             throw new RuntimeException();
         }
@@ -177,9 +182,10 @@ public class JckReportParserTest {
     public void parseRuntimeReportTest() {
         ReportFull actualReport;
         try {
-            final InputStream reportCompilerStream = this.getClass().getResourceAsStream("/" + reportRuntimeFileName);
-            final JckReportParser parser = new JckReportParser();
-            actualReport = parser.parseReport(reportCompilerStream);
+            try (InputStream reportCompilerStream = this.getClass().getResourceAsStream("/" + reportRuntimeFileName)) {
+                final JckReportParser parser = new JckReportParser();
+                actualReport = parser.parseReport(reportCompilerStream);
+            }
         } catch (Exception e) {
             throw new RuntimeException();
         }

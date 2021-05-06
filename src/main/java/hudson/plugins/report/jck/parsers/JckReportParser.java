@@ -1,5 +1,6 @@
 package hudson.plugins.report.jck.parsers;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.plugins.report.jck.model.ReportFull;
 import hudson.plugins.report.jck.model.Suite;
 import hudson.plugins.report.jck.model.Test;
@@ -48,6 +49,7 @@ public class JckReportParser implements ReportParser {
         return stream;
     }
 
+    @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "We desrve to die")
     private String suiteName(Path path) {
         String fullName = path.getFileName().toString();
         if (fullName.endsWith(".xml.gz")) {

@@ -24,6 +24,7 @@
 package hudson.plugins.report.jck;
 
 import com.google.gson.GsonBuilder;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
@@ -70,6 +71,7 @@ abstract public class AbstractReportPublisher extends Recorder {
     abstract protected String prefix();
 
     @Override
+    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
     final public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         String reportFileGlob = getReportFileGlob();
         if (reportFileGlob == null || reportFileGlob.trim().isEmpty()) {
@@ -129,18 +131,18 @@ abstract public class AbstractReportPublisher extends Recorder {
             int failedSumm = 0;
             int errorSumm = 0;
             int totalSumm = 0;
-            String name = "";
+            StringBuilder nameb = new StringBuilder();
             for (Suite s : reportShort) {
                 passedSumm += s.getReport().getTestsPassed();
                 notRunSumm += s.getReport().getTestsNotRun();
                 failedSumm += s.getReport().getTestsFailed();
                 errorSumm += s.getReport().getTestsError();
                 totalSumm += s.getReport().getTestsTotal();
-                name = name + s.getName() + " ";
+                nameb.append(s.getName()).append(" ");
             }
             File buildDir = jsonFile.getParentFile();
-            int buildNumber = Integer.valueOf(buildDir.getName());
-            BuildReport br = new BuildReport(buildNumber, name.trim(), passedSumm, failedSumm, errorSumm, reportShort, totalSumm, notRunSumm);
+            int buildNumber = Integer.parseInt(buildDir.getName());
+            BuildReport br = new BuildReport(buildNumber, nameb.toString().trim(), passedSumm, failedSumm, errorSumm, reportShort, totalSumm, notRunSumm);
             ReportProjectAction.cacheSumms(buildDir.getParentFile().getParentFile(), Arrays.asList(new BuildReport[]{br}));
         } catch (Exception ex) {
             ex.printStackTrace();

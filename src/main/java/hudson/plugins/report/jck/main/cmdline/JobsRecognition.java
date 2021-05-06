@@ -23,11 +23,14 @@
  */
 package hudson.plugins.report.jck.main.cmdline;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.plugins.report.jck.main.formatters.Formatter;
 import hudson.plugins.report.jck.main.formatters.HtmlFormatter;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,8 +72,16 @@ public class JobsRecognition {
         return jenkinsDir;
     }
 
+    public static String[] getNonNullListing(File f){
+        String[] l = f.list();
+        if (l == null){
+            throw new NullPointerException(f+" do not exists or is file or not accessible or hidden io error occured");
+        }
+        return l;
+    }
+
     public String[] getPossibleJobs() {
-        String[] possibleJobs = jobsDir.list();
+        String[] possibleJobs = getNonNullListing(jobsDir);
         Arrays.sort(possibleJobs, Collections.reverseOrder());
         return possibleJobs;
     }
@@ -122,7 +133,7 @@ public class JobsRecognition {
 
     private static int getLatestBuildId(File jobDir) {
         if (jobDir.exists() && jobDir.isDirectory()) {
-            String[] files = jobDir.list();
+            String[] files = getNonNullListing(jobDir);
             List<Integer> results = new ArrayList<>(files.length);
             for (String file : files) {
                 try {
@@ -152,7 +163,7 @@ public class JobsRecognition {
 
     void printJobInfo(String jobName, Formatter formatter) {
         checkJob(jobName);
-        String[] builds = creteBuildsDir(jobName).list();
+        String[] builds = getNonNullListing(creteBuildsDir(jobName));
         List<Integer> results = new ArrayList<>(builds.length);
         for (String build : builds) {
             if (isNumber(build)) {
@@ -205,7 +216,7 @@ public class JobsRecognition {
     public static String getChangelogsNvr(File buildPath) {
         File f = creteChangelogFile(buildPath);
         try {
-            String content = new Scanner(f).useDelimiter("\\Z").next();
+            String content = new Scanner(f, "UTF-8").useDelimiter("\\Z").next();
             String[] lines = content.split("[<>]");
             boolean read1 = true;
             boolean read2 = false;

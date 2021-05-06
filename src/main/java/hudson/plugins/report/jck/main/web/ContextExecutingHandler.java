@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +96,6 @@ public class ContextExecutingHandler implements HttpHandler {
         }
 
         public void runImpl() throws IOException {
-            String requestedFile = t.getRequestURI().getPath();
             String params = t.getRequestURI().getQuery();
             List<String> parsedParams = new ArrayList<>();
             if (params != null) {
@@ -127,12 +127,12 @@ public class ContextExecutingHandler implements HttpHandler {
 
         }
 
-        private String processTemplate(final String template) {
+        private String processTemplate(final String template) throws UnsupportedEncodingException {
             String r = template;
             r = r.replaceAll("(?s)<!--help-->.*<!--helpEnd-->", Arguments.printHelp());
             StringBuilder views = new StringBuilder();
-            for (int i = 0; i < Arguments.knownViews.length; i++) {
-                String string = Arguments.knownViews[i];
+            for (int i = 0; i < Arguments.knownViews.size(); i++) {
+                String string = Arguments.knownViews.get(i);
                 views.append("<option value=\"view").append(i + 1).append("\" ").append(setSelected(string, Arguments.bestViews)).append(">").append(string).append("</option>").append("\n");
 
             }
@@ -140,9 +140,9 @@ public class ContextExecutingHandler implements HttpHandler {
 
             views = new StringBuilder();
             int maxI=0;
-            for (int i = 0; i < Arguments.knownOutputs.length; i++) {
+            for (int i = 0; i < Arguments.knownOutputs.size(); i++) {
                 maxI=i;
-                String string = Arguments.knownOutputs[i];
+                String string = Arguments.knownOutputs.get(i);
                 views.append("<option value=\"output").append(i + 1).append("\"  ").append(setSelected(string, Arguments.output_html)).append("  >").append(string).append("</option>").append("\n");
 
             }
@@ -180,8 +180,8 @@ public class ContextExecutingHandler implements HttpHandler {
                 return "";
             }
         }
-        private String setSelected(String string, String[] wonted) {
-            if (JobsRecognition.arrayContains(wonted, string)) {
+        private String setSelected(String string, List<String> wonted) {
+            if (wonted.contains(string)) {
                 return "selected";
             } else {
                 return "";
