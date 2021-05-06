@@ -27,6 +27,7 @@ FIXME
         <maven.compiler.target>1.8</maven.compiler.target>
         <jenkins.version>2.235.1</jenkins.version>
         <java.level>8</java.level>
+        <slf.version>1.7.26</slf.version> <!-- Wee need to keep synced slf with jenkins, otherwise enforcer plugin fails. Not sure from where the older slfs may be arriving-->
     </properties>
 
     <developers>
@@ -85,6 +86,26 @@ FIXME
         </pluginRepository>
     </pluginRepositories>
     <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf.version}</version>
+        </dependency>
+        <dependency>
+              <groupId>org.slf4j</groupId>
+              <artifactId>jcl-over-slf4j</artifactId>
+              <version>${slf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>${slf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${slf.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>chartjs</artifactId>
