@@ -83,7 +83,7 @@ abstract public class AbstractReportPublisher extends Recorder {
         List<Suite> report = build.getWorkspace().act(
                 new ReportParserCallable(reportFileGlob, createReportParser()));
         if (report.stream().anyMatch(
-                s -> s.getReport() != null && (s.getReport().getTestsError() != 0 || s.getReport().getTestsFailed() != 0) || s.getReport().getTestsTotal() <= 0)) {
+                s -> s.getReport() != null && (s.getReport().getTestsError() != 0 || s.getReport().getTestsFailed() != 0 || s.getReport().getTestsTotal() <= 0))) {
             build.setResult(Result.UNSTABLE);
         }
         storeFailuresSummary(report, new File(build.getRootDir(), prefix() + "-" + REPORT_JSON));
