@@ -25,9 +25,12 @@ package hudson.plugins.report.jck;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.FilePath;
+import hudson.plugins.report.jck.model.Report;
 import hudson.plugins.report.jck.model.Suite;
 import hudson.plugins.report.jck.parsers.ReportParser;
 import hudson.remoting.VirtualChannel;
+import org.jenkinsci.remoting.RoleChecker;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -37,7 +40,6 @@ import java.nio.file.PathMatcher;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.jenkinsci.remoting.RoleChecker;
 
 public class ReportParserCallable implements FilePath.FileCallable<List<Suite>> {
 
@@ -67,6 +69,9 @@ public class ReportParserCallable implements FilePath.FileCallable<List<Suite>> 
                     .filter(e -> e != null)
                     .sorted()
                     .collect(Collectors.toList());
+            if (result != null && result.size() == 0) {
+                result.add(getFakeSuite());
+            }
             return result;
         }
     }
@@ -75,4 +80,7 @@ public class ReportParserCallable implements FilePath.FileCallable<List<Suite>> 
     public void checkRoles(RoleChecker rc) throws SecurityException {
     }
 
+    private Suite getFakeSuite() {
+        return new Suite("Fake suite", new Report(0, 0, 0, 0, 0, null));
+    }
 }
