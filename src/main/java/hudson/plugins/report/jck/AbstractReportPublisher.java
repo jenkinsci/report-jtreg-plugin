@@ -87,7 +87,7 @@ abstract public class AbstractReportPublisher extends Recorder {
             build.setResult(Result.UNSTABLE);
         }
         if (report.stream().anyMatch(
-                s -> s.getReport() != null && s.getReport().getTestsTotal() <= 0)) {
+                s -> s.getReport() != null && (s.getReport().getTestsTotal() <= 0 || s.getReport().getTestsTotal() == s.getReport().getTestsNotRun()))) {
             build.setResult(Result.FAILURE);
         }
         storeFailuresSummary(report, new File(build.getRootDir(), prefix() + "-" + REPORT_JSON));
