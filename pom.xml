@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-<!--
-FIXME
-mvn clean install with:
--Denforcer.skip=true -Dfindbugs.skip=true
-is now necessary
+<!-- FIXME
+mvn clean install -Denforcer.skip=true -Dfindbugs.skip=true
+is now necessary to run
  - enforcer banned our chart.js
  - but spotbugs found 32 valid issues
-FIXME
--->
+FIXME -->
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
@@ -17,16 +14,17 @@ FIXME
     </parent>
     <artifactId>jenkins-report-jck</artifactId>
     <version>0.1-SNAPSHOT</version>
-    <!-- use hpi for jenkins plugin build (most commont) or jar for assembled diff run. See fakekoji's server package-info-->
+    <!-- use -P hpi for jenkins plugin build (most common) or jar for assembled diff run by default. See Fakekoji's server package-info-->
     <packaging>${packaging-type}</packaging>
     <name>Jenkins JCK report publisher plugin</name>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <jenkins.version>2.235.1</jenkins.version>
         <java.level>8</java.level>
-        <slf.version>1.7.26</slf.version> <!-- Wee need to keep synced slf with jenkins, otherwise enforcer plugin fails. Not sure from where the older slfs may be arriving-->
+        <slf.version>1.7.26</slf.version> <!-- We need to keep synced slf with jenkins, otherwise enforcer plugin fails. Not sure from where the older slfs may be arriving-->
     </properties>
 
     <developers>
@@ -41,12 +39,14 @@ FIXME
             <email>jvanek@redhat.com</email>
         </developer>
     </developers>
+
     <licenses>
         <license>
             <name>MIT</name>
             <url>https://www.opensource.org/licenses/mit-license.php</url>
         </license>
     </licenses>
+
     <build>
         <plugins>
             <plugin>
@@ -117,6 +117,7 @@ FIXME
             <url>https://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
     </pluginRepositories>
+
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
