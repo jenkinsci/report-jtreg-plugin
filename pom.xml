@@ -18,8 +18,7 @@ FIXME
     <artifactId>jenkins-report-jck</artifactId>
     <version>0.1-SNAPSHOT</version>
     <!-- use hpi for jenkins plugin build (most commont) or jar for assembled diff run. See fakekoji's server package-info-->
-        <packaging>hpi</packaging>
-    <!--<packaging>jar</packaging>-->
+    <packaging>${packaging-type}</packaging>
     <name>Jenkins JCK report publisher plugin</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -59,20 +58,53 @@ FIXME
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <!--
-                Assembly plugin works only when packaging is JAR. Is ignored for HDPI
-                -->
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>jar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <packaging-type>jar</packaging-type>
+            </properties>
+
+            <dependencies>
+                <dependency>
+                    <groupId>org.jenkins-ci.main</groupId>
+                    <artifactId>jenkins-core</artifactId>
+                    <version>2.235.1</version>
+                </dependency>
+            </dependencies>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <!-- Assembly plugin works only when packaging is JAR. Is ignored for HDPI -->
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>2.6</version>
+                        <configuration>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <!-- To use this profile run command "mvn clean install -P hpi" -->
+            <id>hpi</id>
+
+            <properties>
+                <packaging-type>hpi</packaging-type>
+            </properties>
+        </profile>
+    </profiles>
+
     <repositories>
         <repository>
             <id>repo.jenkins-ci.org</id>
