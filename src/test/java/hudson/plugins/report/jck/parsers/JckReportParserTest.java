@@ -1,5 +1,6 @@
 package hudson.plugins.report.jck.parsers;
 
+import hudson.plugins.report.jck.model.Suite;
 import hudson.plugins.report.jck.model.Test;
 import hudson.plugins.report.jck.model.TestOutput;
 import hudson.plugins.report.jck.model.TestStatus;
@@ -16,6 +17,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,6 +30,7 @@ public class JckReportParserTest {
     private final static String reportCompilerFileName = "report-compiler.xml";
     private final static String reportDevtoolsFileName = "report-devtools.xml";
     private final static String reportRuntimeFileName = "report-runtime.xml";
+    private final static String rhqeFileName = "rhqe.tar.gz";
 
     private final static String WSIMPORT = "wsimport";
     private final static String OUT1 = "out1";
@@ -236,6 +239,23 @@ public class JckReportParserTest {
         );
 
         Assert.assertEquals("Expected suite doesn\'t match the actual suite", expectedReport, actualReport);
+    }
+
+    @org.junit.Test
+    public void parseRhqeTest() {
+        String tarball = "src/test/resources/" + rhqeFileName; //jtreg arser currently depends on file, and that file have to be tarball with named xmls
+        final JtregReportParser parser = new JtregReportParser();
+        Suite actualReport = parser.parsePath(new File(tarball).toPath());
+        List<Test> failures = actualReport.getReport().getTestProblems();
+        Assert.assertEquals(2, failures.size());
+        List<TestOutput> outputs1 = failures.get(0).getOutputs();
+        Assert.assertEquals(2, outputs1.size());
+        Assert.assertTrue(outputs1.get(1).getValue().contains("grep"));
+        Assert.assertTrue(outputs1.get(1).getValue().contains("Pack"));
+        List<TestOutput> outputs2 = failures.get(1).getOutputs();
+        Assert.assertEquals(2, outputs2.size());
+        Assert.assertTrue(outputs2.get(1).getValue().contains("head"));
+        Assert.assertTrue(outputs2.get(1).getValue().contains("Attempt"));
     }
 
     private String getExecStatusExpr(String testUrl) {
