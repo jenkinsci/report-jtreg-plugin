@@ -107,7 +107,7 @@ abstract public class AbstractReportPublisher extends Recorder {
         }
     }
 
-    private void storeFailuresSummary(List<Suite> reportFull, File jsonFile) throws IOException {
+    void storeFailuresSummary(List<Suite> reportFull, File jsonFile) throws IOException {
         List<Suite> reportShort = reportFull.stream()
                 .sequential()
                 .map(s -> new Suite(
