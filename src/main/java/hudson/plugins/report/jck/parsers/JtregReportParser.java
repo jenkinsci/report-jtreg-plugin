@@ -54,6 +54,7 @@ import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import org.apache.commons.io.input.CloseShieldInputStream;
 
+import static javax.xml.stream.XMLStreamConstants.CDATA;
 import static javax.xml.stream.XMLStreamConstants.CHARACTERS;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -185,8 +186,13 @@ public class JtregReportParser implements ReportParser {
             if (event == END_ELEMENT && element.equals(in.getLocalName())) {
                 break;
             }
-            if (event == CHARACTERS) {
-                return in.getText();
+            if (event == CDATA || event == CHARACTERS) {
+                StringBuilder outputString = new StringBuilder();
+                do {
+                    outputString.append(in.getText());
+                    event = in.next();
+                } while (event == CDATA || event == CHARACTERS);
+                return outputString.toString().trim();
             }
         }
         return "";
