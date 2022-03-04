@@ -152,7 +152,7 @@ FIXME -->
         <dependency>
             <groupId>com.fasterxml.woodstox</groupId>
             <artifactId>woodstox-core</artifactId>
-            <version>5.0.0</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.sisu</groupId>
