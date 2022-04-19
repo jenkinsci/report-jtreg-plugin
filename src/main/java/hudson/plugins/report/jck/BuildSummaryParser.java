@@ -25,7 +25,10 @@ package hudson.plugins.report.jck;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
 import hudson.model.Job;
 import hudson.model.Result;
 import hudson.model.Run;
@@ -35,6 +38,7 @@ import hudson.plugins.report.jck.model.Suite;
 import hudson.plugins.report.jck.model.SuiteTestChanges;
 import hudson.plugins.report.jck.model.SuiteTests;
 import hudson.plugins.report.jck.model.TestStatus;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -282,16 +286,27 @@ public class BuildSummaryParser {
         return new BuildReport(build.getNumber(), build.getName(), passed, failed, error, suites, total, notRun);
     }
 
+    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
     public BuildReportExtended parseBuildReportExtended(Run<?, ?> build) throws Exception {
-        Run<?, ?> previousNotFailedBuild = build.getPreviousNotFailedBuild();
-        return parseBuildReportExtended(new RunWrapperFromRun(build), new RunWrapperFromRun(previousNotFailedBuild));
+        AbstractProject project = ((AbstractBuild) build).getProject();
+        Run[] builds = (Run[]) project.getBuilds().toArray(new Run[0]);
+        RunWrapperFromRun previousPassedOrUnstable = null;
+        //0 is just finished one
+        for (int i = 1;  i < builds.length; i++) {
+            Run run = builds[i];
+            if (run != null && run.getResult() != null && !run.getResult().isWorseThan(Result.UNSTABLE)) {
+                previousPassedOrUnstable = new RunWrapperFromRun(run);
+                break;
+            }
+        }
+        return parseBuildReportExtended(new RunWrapperFromRun(build), previousPassedOrUnstable);
     }
 
-    public BuildReportExtended parseBuildReportExtended(RunWrapper build, RunWrapper previousNotFailedBuild) throws Exception {
+    public BuildReportExtended parseBuildReportExtended(RunWrapper build, RunWrapper previousPassedOrUnstable) throws Exception {
         List<SuiteTests> currentBuildTestsList = parseSuiteTests(build.getRoot());
         List<SuiteTests> prevBuildTestsList;
-        if (previousNotFailedBuild != null) {
-            prevBuildTestsList = parseSuiteTests(previousNotFailedBuild.getRoot());
+        if (previousPassedOrUnstable != null) {
+            prevBuildTestsList = parseSuiteTests(previousPassedOrUnstable.getRoot());
         } else {
             prevBuildTestsList = new ArrayList<>();
         }
@@ -318,8 +333,8 @@ public class BuildSummaryParser {
 
         List<SuiteTestChanges> result = new ArrayList<>();
         BuildReport currentReport = parseBuildReport(build);
-        if (previousNotFailedBuild != null) {
-            BuildReport previousReport = parseBuildReport(previousNotFailedBuild);
+        if (previousPassedOrUnstable != null) {
+            BuildReport previousReport = parseBuildReport(previousPassedOrUnstable);
             Map<String, Report> prevReportsMap = previousReport.getSuites().stream()
                     .sequential()
                     .collect(Collectors.toMap(s -> s.getName(), s -> s.getReport()));

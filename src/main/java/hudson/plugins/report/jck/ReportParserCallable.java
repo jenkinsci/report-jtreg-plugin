@@ -43,6 +43,8 @@ import java.util.stream.Stream;
 
 public class ReportParserCallable implements FilePath.FileCallable<List<Suite>> {
 
+    public static final Suite FAKE_SUITE = new Suite("Fake suite", new Report(0, 0, 0, 0, 0, null));
+
     private final String reportMatcherGlob;
     private final ReportParser reportParser;
 
@@ -81,6 +83,6 @@ public class ReportParserCallable implements FilePath.FileCallable<List<Suite>> 
     }
 
     private Suite getFakeSuite() {
-        return new Suite("Fake suite", new Report(0, 0, 0, 0, 0, null));
+        return FAKE_SUITE;
     }
 }
