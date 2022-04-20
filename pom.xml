@@ -22,9 +22,9 @@ FIXME -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <jenkins.version>2.235.1</jenkins.version>
+        <jenkins.version>2.319.2</jenkins.version>
         <java.level>8</java.level>
-        <slf.version>1.7.26</slf.version> <!-- We need to keep synced slf with jenkins, otherwise enforcer plugin fails. Not sure from where the older slfs may be arriving-->
+        <slf.version>1.7.32</slf.version> <!-- We need to keep synced slf with jenkins, otherwise enforcer plugin fails. Not sure from where the older slfs may be arriving-->
     </properties>
 
     <developers>
@@ -75,7 +75,7 @@ FIXME -->
                 <dependency>
                     <groupId>org.jenkins-ci.main</groupId>
                     <artifactId>jenkins-core</artifactId>
-                    <version>2.235.1</version>
+                    <version>2.319.2</version>
                 </dependency>
             </dependencies>
 
@@ -153,12 +153,6 @@ FIXME -->
             <groupId>com.fasterxml.woodstox</groupId>
             <artifactId>woodstox-core</artifactId>
             <version>LATEST</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.sisu</groupId>
-            <artifactId>org.eclipse.sisu.plexus</artifactId>
-            <version>0.3.5</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.main</groupId>
