@@ -291,8 +291,19 @@ public class BuildSummaryParser {
         AbstractProject project = ((AbstractBuild) build).getProject();
         Run[] builds = (Run[]) project.getBuilds().toArray(new Run[0]);
         RunWrapperFromRun previousPassedOrUnstable = null;
-        //0 is just finished one
-        for (int i = 1;  i < builds.length; i++) {
+        //0 is latest one eg #115, where [lenght-1] is first  one = #0
+        int thisInArray = -1;
+        for (int i = 0; i < builds.length; i++) {
+            if (builds[i].equals(build)) {
+                thisInArray = i;
+                break;
+            }
+        }
+        //the comparsion would be of latest (see +1 lower) against last stable. Not sure what is worse or better
+        if (thisInArray == -1) {
+            System.err.println("Warning " + build.toString() + " not found in builds of #" + builds.length);
+        }
+        for (int i = thisInArray + 1; i < builds.length; i++) {
             Run run = builds[i];
             if (run != null && run.getResult() != null && !run.getResult().isWorseThan(Result.UNSTABLE)) {
                 previousPassedOrUnstable = new RunWrapperFromRun(run);
