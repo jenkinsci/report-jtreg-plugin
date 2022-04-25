@@ -506,6 +506,10 @@ public class CompareBuilds {
         format().startTitle2();
         format().println("  ***  All tests!  *** ");
         format().reset();
+        format().startTitle3();
+        String nwNra = JobsRecognition.getChangelogsNvr(new File(bre.getBuildName()));
+        format().print(nwNra + " (" + bre.getBuildNumber() + ": " + bre.getBuildName() + ")");
+        format().reset();
         List<SuiteTestsWithResults> all = bre.getAllTests().getAllTestsAndSuites();
         for (SuiteTestsWithResults suiteTest : all) {
             format().startTitle3();

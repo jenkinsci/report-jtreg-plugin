@@ -213,8 +213,14 @@ public class JobsRecognition {
         }
     }
 
+    private static final Map<File, String> nvrCache = new HashMap<>();
+
     public static String getChangelogsNvr(File buildPath) {
         File f = creteChangelogFile(buildPath);
+        String cached = nvrCache.get(f);
+        if (cached != null) {
+            return cached;
+        }
         try {
             String content = new Scanner(f, "UTF-8").useDelimiter("\\Z").next();
             String[] lines = content.split("[<>]");
@@ -226,6 +232,7 @@ public class JobsRecognition {
                     continue;
                 }
                 if (read1 && read2) {
+                    nvrCache.put(f, line);
                     return line;
                 }
                 if (line.equals("rpms")) {
