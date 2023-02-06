@@ -1,0 +1,4 @@
+<?jelly escape-by-default='true'?>
+<div>
+	JUnit/XUnit/jtreg/JCK compatible results processing plugin.
+</div>
