@@ -95,11 +95,12 @@ public class BuildReportExtended extends BuildReport {
         return allTests;
     }
 
-    //generated-part=+-view%3Ddiff-list+++-view%3Ddiff-summary+++-view%3Ddiff-summary-suites+++-view%3Dinfo-problems+++-view%3Dinfo-summary+++-output%3Dhtml++&custom-part=++wycheproof-jp8-ojdk8~upstream~cpu-el6.x86_64-hotspot.release.sdk-el7z.x86_64.beaker-x11.defaultgc.legacy.lnxagent.jfroff+++0+-1
-    private static final String DIFF_URL = SuiteTestsWithResults.DIFF_SERVER + "?generated-part=+-view%3Ddiff-list+++-view%3Ddiff-summary+++-view%3Ddiff-summary-suites+++-view%3Dinfo-problems+++-view%3Dinfo-summary+++-output%3Dhtml++-fill++&custom-part=";//+job+numbers //eg as above;
+    private static String getDiffUrlStub(){
+        return SuiteTestsWithResults.getDiffServer() + "?generated-part=+-view%3Ddiff-list+++-view%3Ddiff-summary+++-view%3Ddiff-summary-suites+++-view%3Dinfo-problems+++-view%3Dinfo-summary+++-output%3Dhtml++-fill++&custom-part=";//+job+numbers //eg as above;
+    }
 
     public String getLinkDiff() {
-        return DIFF_URL + job + "+" + getBuildNumber() + "+" + lowestBuildForFil();
+        return getDiffUrlStub() + job + "+" + getBuildNumber() + "+" + lowestBuildForFil();
     }
 
     private int lowestBuildForFil() {
@@ -110,10 +111,12 @@ public class BuildReportExtended extends BuildReport {
         }
     }
 
-    private static final String TRACES_URL = SuiteTestsWithResults.DIFF_SERVER + "?generated-part=+-view%3Dinfo+++-output%3Dhtml++&custom-part=";//+job+numbers //eg as above;
+    private static String getTracesUrlStub() {
+        return SuiteTestsWithResults.getDiffServer() + "?generated-part=+-view%3Dinfo+++-output%3Dhtml++&custom-part=";//+job+numbers //eg as above;
+    }
 
     public String getLinkTraces() {
-        return TRACES_URL + job + "+" + getBuildNumber();
+        return getTracesUrlStub() + job + "+" + getBuildNumber();
     }
 
 }

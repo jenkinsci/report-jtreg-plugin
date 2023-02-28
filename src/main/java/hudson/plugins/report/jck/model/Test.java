@@ -64,12 +64,12 @@ public class Test implements Comparable<Test>, java.io.Serializable {
                 "outputs=" + outputs + '}';
     }
 
-    //?generated-part=+-view%3Dall-tests+++-output%3Dhtml++-fill++&custom-part=-track%3Dtest%2Freproducers%2F1699068%2FEllipticCurve.java%23EllipticCurve++reproducers%7Eregular-jp8-ojdk8%7Erpms-el8z.x86_64-release.sdk-el8z.x86_64.beaker-x11.defaultgc.legacy.lnxagent.jfroff++0+-365
-    private static final String DIFF_URL = SuiteTestsWithResults.DIFF_SERVER + "?generated-part=+-view%3Dall-tests+++-output%3Dhtml++-fill++";
+    private static String createDiffUrl() {
+        return SuiteTestsWithResults.getDiffServer() + "?generated-part=+-view%3Dall-tests+++-output%3Dhtml++-fill++";
+    }
 
 
     public String getTrackingUrl(String job) {
-        return (DIFF_URL+"&custom-part=-track%3D"+name+"++"+job+"++0+-365").replaceAll("#", "%23");
-
+        return (createDiffUrl()+"&custom-part=-track%3D"+name+"++"+job+"++0+-365").replaceAll("#", "%23");
     }
 }

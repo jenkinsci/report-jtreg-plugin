@@ -24,6 +24,7 @@
 package hudson.plugins.report.jck.model;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import hudson.plugins.report.jck.JenkinsReportJckGlobalConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,13 +32,17 @@ import java.util.List;
 import java.util.Collections;
 
 public class SuiteTestsWithResults implements java.io.Serializable {
-    //fixme pass from build system
-    public static final String DIFF_SERVER = "http://hydra.brq.redhat.com:9090/diff.html";
-    //++wycheproof-jp8-ojdk8~udev~upstream-el6.x86_64-jfrenabled.release.sdk-el7z.x86_64.beaker-x11.defaultgc.legacy.lnxagent.jfroff+3+++jtreg~tier1-jp8-ojdk8~u~upstream-win2012.x86_64-hotspot.release.sdk-win10.x86_64.vagrant-x11.defaultgc.legacy.lnxagent.jfroff++0
-    private static final String DIFF_URL = DIFF_SERVER + "?generated-part=+-view%3Dall-tests+++-view%3Dinfo-summary+++-view%3Dinfo-summary-suites+++-output%3Dhtml++&custom-part=";//+job+number //eg as above;
-    private static final int MAX = 1000;
 
+    public static String getDiffServer() {
+      return JenkinsReportJckGlobalConfig.getInstance().getDiffToolUrl()  + "/diff.html";
+    }
+    private static String getDiffUrlStub() {
+        return getDiffServer() + "?generated-part=+-view%3Dall-tests+++-view%3Dinfo-summary+++-view%3Dinfo-summary-suites+++-output%3Dhtml++&custom-part=";//+job+number //eg as above;
+    }
+
+    private static final int MAX = 1000;
     private final String name;
+
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification =  "should be internal implementation only, and thus ArrayList and that is serialisable")
     private final List<StringWithResult> tests;
     private final String job;
@@ -82,7 +87,7 @@ public class SuiteTestsWithResults implements java.io.Serializable {
     }
 
     public String getLink() {
-        return DIFF_URL + job + "+" + id;
+        return getDiffUrlStub() + job + "+" + id;
     }
 
     public static class StringWithResult {
