@@ -1,7 +1,9 @@
 # jenkins-report-jck
 Jenkins plugin to show unit-test, tesng, jtreg and JCK reports summaries, diffs and details
 
-The plugin reads archived gzipped xml files prdoduced by junit/testng/jtreg/jck suites  ([or anyhow else generated](https://github.com/judovana/OpenJdkBuilder/blob/master/tck/autoruns/jtreg-shell-xml.sh)) runs.
+Plugin is build as `mvn clean install -Phpi`, otherwise [Diff cli tool](#diff-cli-tool) jar with dependecies is built
+
+The plugin reads archived gzipped xml files prdoduced by junit/testng/jtreg/jck suites  ([or anyhow else generated](https://github.com/rh-openjdk/run-folder-as-tests/blob/main/jtreg-shell-xml.sh)) runs.
 
 * [Implementation details](#implementation-details)
 * [Job run details](#job-run-details)
