@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import static hudson.plugins.report.jck.utils.MoreStrings.compareStrings;
 
+import hudson.plugins.report.jck.JenkinsReportJckGlobalConfig;
+
 public class Test implements Comparable<Test>, java.io.Serializable {
 
     private final String name;
@@ -72,4 +74,5 @@ public class Test implements Comparable<Test>, java.io.Serializable {
     public String getTrackingUrl(String job) {
         return (createDiffUrl()+"&custom-part=-track%3D"+name+"++"+job+"++0+-365").replaceAll("#", "%23");
     }
+
 }

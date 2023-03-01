@@ -119,4 +119,8 @@ public class BuildReportExtended extends BuildReport {
         return getTracesUrlStub() + job + "+" + getBuildNumber();
     }
 
+    public boolean isDiffTool() {
+        return JenkinsReportJckGlobalConfig.isGlobalDiffUrl();
+    }
+
 }

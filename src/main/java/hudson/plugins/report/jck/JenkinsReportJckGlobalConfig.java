@@ -22,6 +22,18 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
         return GlobalConfiguration.all().get(JenkinsReportJckGlobalConfig.class);
     }
 
+    public static String getGlobalDiffUrl() {
+        return getInstance().getDiffToolUrl();
+    }
+
+    public static String getGlobalDiffUrlMissing() {
+        return "Difftool url is not set";
+    }
+
+    public static boolean isGlobalDiffUrl() {
+        return getInstance().isDiffToolUrlSet();
+    }
+
     public boolean isDiffToolUrlSet() {
         return diffToolUrl != null && !diffToolUrl.trim().isEmpty();
     }

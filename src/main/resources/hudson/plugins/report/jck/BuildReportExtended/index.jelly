@@ -56,7 +56,9 @@
                                                 document.getElementById('details_${suitesStatus.count}_${testStatus.count}').style.display = 'none';
                                                 document.getElementById('button_expand_${suitesStatus.count}_${testStatus.count}').style.display = 'inline';
                                                 return false;">(collapse)</a>
-                                        <a href="${t.getTrackingUrl(it.job)}" style="font-size: smaller;" >(track)</a>
+                                        <j:if test="${it.isDiffTool()}">
+                                          <a href="${t.getTrackingUrl(it.job)}" style="font-size: smaller;" >(track)</a>
+                                        </j:if>
                                         <div id="details_${suitesStatus.count}_${testStatus.count}" style="display: none">
                                             <ul>
                                                 <li><span style="font-weight: bold">Status:&amp;nbsp;</span>${t.status}</li>
@@ -198,14 +200,28 @@
                             </j:forEach>
                             <small>
                                  <b>
-                                    ${suite.sentence}&amp;nbsp;<a href="${suite.link}">web ui</a>&amp;nbsp;
+                                   <j:choose>
+                                     <j:when test="${it.isDiffTool()}">
+                                        ${suite.sentence}&amp;nbsp;<a href="${suite.link}">web ui</a>&amp;nbsp;
+                                     </j:when>
+                                     <j:otherwise>
+                                        ${suite.sentence}&amp;nbsp; web ui, however diff tool is not configured&amp;nbsp;
+                                     </j:otherwise>
+                                   </j:choose>
                                  </b>
                             </small>
                         </ul>
                     </j:forEach>
                     <small>
                          <b>
-                            you can play with diff cli or in this&amp;nbsp;<a href="${it.linkDiff}">web ui</a>&amp;nbsp;
+                            <j:choose>
+                                <j:when test="${it.isDiffTool()}">
+                                  you can play with diff cli or in this&amp;nbsp;<a href="${it.linkDiff}">web ui</a>&amp;nbsp;
+                                </j:when>
+                                <j:otherwise>
+                                  diff tool is not configured. Set up url in jenkins main config
+                                </j:otherwise>
+                            </j:choose>
                          </b>
                    </small>
                 </div>

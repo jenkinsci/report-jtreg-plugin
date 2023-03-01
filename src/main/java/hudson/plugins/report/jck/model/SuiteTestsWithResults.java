@@ -34,8 +34,9 @@ import java.util.Collections;
 public class SuiteTestsWithResults implements java.io.Serializable {
 
     public static String getDiffServer() {
-      return JenkinsReportJckGlobalConfig.getInstance().getDiffToolUrl()  + "/diff.html";
+      return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + "/diff.html";
     }
+
     private static String getDiffUrlStub() {
         return getDiffServer() + "?generated-part=+-view%3Dall-tests+++-view%3Dinfo-summary+++-view%3Dinfo-summary-suites+++-output%3Dhtml++&custom-part=";//+job+number //eg as above;
     }

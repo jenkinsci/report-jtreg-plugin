@@ -10,7 +10,7 @@
     <li>-Djenkins_home=$jenkins_main_home property is mandatory for cli (and thus indirectly for service)</li>
     <blockquote>so...
         <li>they need all jenkins jars on classpath</li>
-        <li>yuu need shell wrapper around the clis to set up CP and actually start the application</li>
+        <li>you need shell (or other) executbale wrapper around the CLI to set up CP and actually start the application</li>
         <li>the sevice is then consuming this lancher and jsut redirects stdout/err. eg:</li>
         <li>shell.sh: /opt/jdk/bin/java -cp $CP -Djenkins_home=$jenkins_main_home hudson.plugins.report.jck.main.CompareBuilds  $@</li>
         <li>Where the CP contains jars from unpacked jenkins.war and jenkins report pluginwith depndencies</li>
