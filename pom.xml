@@ -10,7 +10,7 @@ mvn clean install -Denforcer.skip=true -Dfindbugs.skip=true
         <version>4.54</version>
     </parent>
     <artifactId>jenkins-report-jck</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <!-- use -P hpi for jenkins plugin build (most common) or jar for assembled diff run by default. See Fakekoji's server package-info-->
     <packaging>${packaging-type}</packaging>
     <name>Jenkins JCK report publisher plugin</name>
