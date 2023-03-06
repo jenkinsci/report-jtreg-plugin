@@ -9,11 +9,12 @@ mvn clean install -Denforcer.skip=true -Dfindbugs.skip=true
         <artifactId>plugin</artifactId>
         <version>4.54</version>
     </parent>
-    <artifactId>jenkins-report-jck</artifactId>
-    <version>1.0</version>
+    <groupId>io.jenkins.plugins</groupId>
+    <artifactId>report-jtreg</artifactId>
+    <version>1.1-SNAPSHOT</version>
     <!-- use -P hpi for jenkins plugin build (most common) or jar for assembled diff run by default. See Fakekoji's server package-info-->
     <packaging>${packaging-type}</packaging>
-    <name>Jenkins JCK report publisher plugin</name>
+    <name>junit/xunit/jtreg/jck compatible publisher targeting huge result bases</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -137,9 +138,9 @@ mvn clean install -Denforcer.skip=true -Dfindbugs.skip=true
             <version>${slf.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.jenkins-ci.plugins</groupId>
+            <groupId>io.jenkins.plugins</groupId>
             <artifactId>chartjs</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
