@@ -21,48 +21,58 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.report.jck.main.web;
+package hudson.plugins.report.jck.main.diff.formatters;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.PrintStream;
 
-/**
- * Class to read and save content of stdout/stderr of process.
- */
-class ContentReader implements Runnable {
+public class PlainFormatter extends BasicFormatter {
 
-    StringBuilder sb = new StringBuilder();
-    private final InputStream is;
-
-    public String getContent() {
-        return sb.toString();
-    }
-
-    public ContentReader(InputStream is) throws IOException {
-        this.is = is;
+    public PlainFormatter(PrintStream stream) {
+        super(stream);
     }
 
     @Override
-    public void run() {
-        try {
-            runImpl();
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+    public void startBold() {
+        //no op
     }
 
-    private void runImpl() throws IOException {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
-            while (true) {
-                String line = br.readLine();
-                if (line == null) {
-                    break;
-                }
-                sb.append(line).append("\n");
-            }
-        }
+    @Override
+    public void startColor(SupportedColors color) {
+        //no op
     }
 
+    @Override
+    public void reset() {
+        //no op
+    }
+
+    @Override
+    public void initDoc() {
+        //no op
+    }
+
+    @Override
+    public void closeDoc() {
+        //no op
+    }
+
+    @Override
+    public void startTitle2() {
+        //no op
+    }
+
+    @Override
+    public void startTitle1() {
+        //no op
+    }
+
+    @Override
+    public void startTitle3() {
+        //no op
+    }
+
+    @Override
+    public void startTitle4() {
+        //no op
+    }
 }

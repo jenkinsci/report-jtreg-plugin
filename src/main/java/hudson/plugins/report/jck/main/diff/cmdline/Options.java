@@ -21,18 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.report.jck.main.cmdline;
+package hudson.plugins.report.jck.main.diff.cmdline;
 
-import hudson.plugins.report.jck.main.formatters.ColorFormatter;
-import hudson.plugins.report.jck.main.formatters.HtmlFormatter;
-import hudson.plugins.report.jck.main.formatters.PlainFormatter;
-import hudson.plugins.report.jck.main.formatters.BasicFormatter;
-import hudson.plugins.report.jck.main.formatters.Formatter;
-import hudson.plugins.report.jck.main.formatters.HtmlFormatter2;
+import hudson.plugins.report.jck.main.diff.formatters.ColorFormatter;
+import hudson.plugins.report.jck.main.diff.formatters.HtmlFormatter;
+import hudson.plugins.report.jck.main.diff.formatters.PlainFormatter;
+import hudson.plugins.report.jck.main.diff.formatters.BasicFormatter;
+import hudson.plugins.report.jck.main.diff.formatters.Formatter;
+import hudson.plugins.report.jck.main.diff.formatters.HtmlFormatter2;
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;

@@ -21,9 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.report.jck.main.cmdline;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+package hudson.plugins.report.jck.main.diff.cmdline;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

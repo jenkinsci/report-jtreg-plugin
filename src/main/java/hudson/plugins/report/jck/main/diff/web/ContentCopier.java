@@ -21,58 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.report.jck.main.formatters;
+package hudson.plugins.report.jck.main.diff.web;
 
-import java.io.PrintStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Writer;
 
-public class PlainFormatter extends BasicFormatter {
+/**
+ * Class to read and resend content of stdout/stderr of process.
+ */
+class ContentCopier implements Runnable {
 
-    public PlainFormatter(PrintStream stream) {
-        super(stream);
+    private final InputStream is;
+    private final Writer w;
+
+    public ContentCopier(InputStream is, Writer target) throws IOException {
+        this.is = is;
+        this.w = target;
     }
 
     @Override
-    public void startBold() {
-        //no op
+    public void run() {
+        try {
+            runImpl();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
-    @Override
-    public void startColor(SupportedColors color) {
-        //no op
+    private void runImpl() throws IOException {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
+            while (true) {
+                String line = br.readLine();
+                if (line == null) {
+                    break;
+                }
+                w.write(line + "\n");
+            }
+        }
     }
 
-    @Override
-    public void reset() {
-        //no op
-    }
-
-    @Override
-    public void initDoc() {
-        //no op
-    }
-
-    @Override
-    public void closeDoc() {
-        //no op
-    }
-
-    @Override
-    public void startTitle2() {
-        //no op
-    }
-
-    @Override
-    public void startTitle1() {
-        //no op
-    }
-
-    @Override
-    public void startTitle3() {
-        //no op
-    }
-
-    @Override
-    public void startTitle4() {
-        //no op
-    }
 }

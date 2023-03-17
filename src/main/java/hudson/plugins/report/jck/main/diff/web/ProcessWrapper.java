@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.report.jck.main.web;
+package hudson.plugins.report.jck.main.diff.web;
 
 import java.io.IOException;
 import java.io.Writer;

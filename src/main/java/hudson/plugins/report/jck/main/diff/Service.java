@@ -24,7 +24,7 @@
 package hudson.plugins.report.jck.main.diff;
 
 import com.sun.net.httpserver.HttpServer;
-import hudson.plugins.report.jck.main.web.ContextExecutingHandler;
+import hudson.plugins.report.jck.main.diff.web.ContextExecutingHandler;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;

@@ -23,13 +23,13 @@
  */
 package hudson.plugins.report.jck.main.diff;
 
-import hudson.plugins.report.jck.main.cmdline.Arguments;
+import hudson.plugins.report.jck.main.diff.cmdline.Arguments;
 import hudson.plugins.report.jck.BuildReportExtended;
 import hudson.plugins.report.jck.BuildSummaryParser;
 import hudson.plugins.report.jck.JckReportPublisher;
-import hudson.plugins.report.jck.main.cmdline.JobsRecognition;
-import hudson.plugins.report.jck.main.cmdline.Options;
-import hudson.plugins.report.jck.main.formatters.Formatter;
+import hudson.plugins.report.jck.main.diff.cmdline.JobsRecognition;
+import hudson.plugins.report.jck.main.diff.cmdline.Options;
+import hudson.plugins.report.jck.main.diff.formatters.Formatter;
 import hudson.plugins.report.jck.model.BuildReport;
 import hudson.plugins.report.jck.model.Report;
 import hudson.plugins.report.jck.model.Suite;

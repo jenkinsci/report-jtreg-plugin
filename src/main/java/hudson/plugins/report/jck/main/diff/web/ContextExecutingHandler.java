@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.report.jck.main.web;
+package hudson.plugins.report.jck.main.diff.web;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import hudson.plugins.report.jck.main.cmdline.Arguments;
-import hudson.plugins.report.jck.main.cmdline.JobsRecognition;
+import hudson.plugins.report.jck.main.diff.cmdline.Arguments;
+import hudson.plugins.report.jck.main.diff.cmdline.JobsRecognition;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;

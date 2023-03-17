@@ -21,26 +21,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.report.jck.main.formatters;
+package hudson.plugins.report.jck.main.diff.formatters;
 
 import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Map;
 
-public abstract class StringMappedFormatter extends BasicFormatter {
+public abstract class BasicFormatter implements Formatter {
 
-    protected final Map<Formatter.SupportedColors, String> colors = new HashMap<>();
+    protected PrintStream o;
 
-    public StringMappedFormatter(PrintStream o) {
-        super(o);
+    public BasicFormatter(PrintStream o) {
+        this.o = o;
     }
 
-    protected String getColor(SupportedColors color) {
-        String sc = colors.get(color);
-        if (sc == null) {
-            throw new RuntimeException("Unknown color " + color);
-        }
-        return sc;
+    @Override
+    public void print(String s) {
+        o.print(s);
     }
+
+    @Override
+    public void println(String s) {
+        o.println(s);
+    }
+
+    @Override
+    public void println() {
+        println("");
+    }
+
+    @Override
+    public void closeBuildsList() {
+        println("");
+        reset();
+    }
+
+    @Override
+    public void small(){
+        
+    }
+
+    @Override
+    public void pre(){
+
+    }
+
+    @Override
+    public void preClose(){
+
+    }
+    
+    
 
 }

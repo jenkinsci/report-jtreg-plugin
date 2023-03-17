@@ -1,6 +1,6 @@
 package hudson.plugins.report.jck.main.comparator;
 
-import hudson.plugins.report.jck.main.cmdline.JobsRecognition;
+import hudson.plugins.report.jck.main.diff.cmdline.JobsRecognition;
 
 import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilder;

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2016 jvanek.
+ * Copyright 2016.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,46 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.report.jck.main.web;
+package hudson.plugins.report.jck.main.diff.formatters;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Writer;
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * Class to read and resend content of stdout/stderr of process.
- */
-class ContentCopier implements Runnable {
+public abstract class StringMappedFormatter extends BasicFormatter {
 
-    private final InputStream is;
-    private final Writer w;
+    protected final Map<Formatter.SupportedColors, String> colors = new HashMap<>();
 
-    public ContentCopier(InputStream is, Writer target) throws IOException {
-        this.is = is;
-        this.w = target;
+    public StringMappedFormatter(PrintStream o) {
+        super(o);
     }
 
-    @Override
-    public void run() {
-        try {
-            runImpl();
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
+    protected String getColor(SupportedColors color) {
+        String sc = colors.get(color);
+        if (sc == null) {
+            throw new RuntimeException("Unknown color " + color);
         }
-    }
-
-    private void runImpl() throws IOException {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
-            while (true) {
-                String line = br.readLine();
-                if (line == null) {
-                    break;
-                }
-                w.write(line + "\n");
-            }
-        }
+        return sc;
     }
 
 }

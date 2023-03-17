@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2016.
+ * Copyright 2016 jvanek.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,54 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.report.jck.main.formatters;
+package hudson.plugins.report.jck.main.diff.formatters;
 
 import java.io.PrintStream;
 
-public abstract class BasicFormatter implements Formatter {
+public class HtmlFormatter2 extends HtmlFormatter {
 
-    protected PrintStream o;
-
-    public BasicFormatter(PrintStream o) {
-        this.o = o;
+    public HtmlFormatter2(PrintStream stream) {
+        super(stream);
     }
 
     @Override
-    public void print(String s) {
-        o.print(s);
-    }
-
-    @Override
-    public void println(String s) {
-        o.println(s);
-    }
-
-    @Override
-    public void println() {
-        println("");
+    public void small() {
+        print("<small>");
+        clossingBuffer.add("</small>");
     }
 
     @Override
     public void closeBuildsList() {
-        println("");
+        reset();
+        small();
+        print(" |x| ");
         reset();
     }
-
-    @Override
-    public void small(){
-        
-    }
-
-    @Override
-    public void pre(){
-
-    }
-
-    @Override
-    public void preClose(){
-
-    }
-    
-    
 
 }

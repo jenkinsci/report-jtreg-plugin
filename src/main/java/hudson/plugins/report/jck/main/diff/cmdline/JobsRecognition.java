@@ -21,16 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.report.jck.main.cmdline;
+package hudson.plugins.report.jck.main.diff.cmdline;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import hudson.plugins.report.jck.main.formatters.Formatter;
-import hudson.plugins.report.jck.main.formatters.HtmlFormatter;
+import hudson.plugins.report.jck.main.diff.formatters.Formatter;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,7 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class JobsRecognition {
