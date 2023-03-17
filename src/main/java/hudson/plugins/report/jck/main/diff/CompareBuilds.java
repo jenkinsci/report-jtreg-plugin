@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.report.jck.main;
+package hudson.plugins.report.jck.main.diff;
 
 import hudson.plugins.report.jck.main.cmdline.Arguments;
 import hudson.plugins.report.jck.BuildReportExtended;

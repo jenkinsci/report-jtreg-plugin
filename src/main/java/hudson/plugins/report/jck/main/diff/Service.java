@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.report.jck.main;
+package hudson.plugins.report.jck.main.diff;
 
 import com.sun.net.httpserver.HttpServer;
 import hudson.plugins.report.jck.main.web.ContextExecutingHandler;
