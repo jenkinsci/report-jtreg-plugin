@@ -1,7 +1,7 @@
 <div>
     Jenkins report jck plugin is designed to work with egtremly huge datasets 100 000 items and up.<br/>
     To do this properly, some <b>queries</b> are not available on project page, but were moved to external <b>cmdline tool/service</b><br/>
-    That are <b>hudson.plugins.report.jck.main.CompareBuilds</b> and <b>hudson.plugins.report.jck.main.Service</b> classes<br/>
+    That are <b>hudson.plugins.report.jck.main.diff.CompareBuilds</b> and <b>hudson.plugins.report.jck.main.diff.Service</b> classes<br/>
     Unluckily, those were never designed with security in mind, were just needed "yesterday", so:<br/>
     <li>They reside in codebase of plugin</li>
     <li>the cli is superpowerful</li>
@@ -12,9 +12,10 @@
         <li>they need all jenkins jars on classpath</li>
         <li>you need shell (or other) executbale wrapper around the CLI to set up CP and actually start the application</li>
         <li>the sevice is then consuming this lancher and jsut redirects stdout/err. eg:</li>
-        <li>shell.sh: /opt/jdk/bin/java -cp $CP -Djenkins_home=$jenkins_main_home hudson.plugins.report.jck.main.CompareBuilds  $@</li>
+        <li>shell.sh: /opt/jdk/bin/java -cp $CP -Djenkins_home=$jenkins_main_home
+            hudson.plugins.report.jck.main.diff.CompareBuilds $@</li>
         <li>Where the CP contains jars from unpacked jenkins.war and jenkins report pluginwith depndencies</li>
-        <li>service.sh: /opt/jdk/bin/java hudson.plugins.report.jck.main.Service /path/to/shel.sh  customPort</li>
+        <li>service.sh: /opt/jdk/bin/java hudson.plugins.report.jck.main.diff.Service /path/to/shel.sh customPort</li>
         <li>this field: some_url:customPort, usually, if it is on same machine, which it usually is, jenkins_url but on 9090 or custom port</li>
     </blockquote>
     <li>There is work in progress ot extract the cli and service properly, and to do new cli</li>
