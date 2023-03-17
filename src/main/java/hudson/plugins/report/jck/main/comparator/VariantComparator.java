@@ -1,11 +1,11 @@
-package hudson.plugins.report.jck.main;
+package hudson.plugins.report.jck.main.comparator;
 
-import hudson.plugins.report.jck.comparer.*;
+import hudson.plugins.report.jck.main.diff.CompareBuilds;
 
 import java.io.File;
 import java.util.ArrayList;
 
-public class VariantComparer {
+public class VariantComparator {
     public static void main(String[] args) {
         Options options = Arguments.parse(args);
         Jobs jobs = new Jobs(options.getJobsPath());

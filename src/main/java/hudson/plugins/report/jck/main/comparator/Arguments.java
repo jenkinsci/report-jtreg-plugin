@@ -1,4 +1,4 @@
-package hudson.plugins.report.jck.comparer;
+package hudson.plugins.report.jck.main.comparator;
 
 public class Arguments {
     // parses the given arguments and returns instance of Options

@@ -1,4 +1,4 @@
-package hudson.plugins.report.jck.comparer;
+package hudson.plugins.report.jck.main.comparator;
 
 public class Options {
     private Operations operation;
