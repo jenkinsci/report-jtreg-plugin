@@ -11,7 +11,21 @@ public class VariantComparator {
         Jobs jobs = new Jobs(options.getJobsPath());
 
         if (options.getOperation() == Options.Operations.List) {
-            jobs.printJobs(options.getQueryString(), options.isShowNvrs());
+            ArrayList<ArrayList<String>> matrix = new ArrayList<>();
+
+            ArrayList<File> jobsToCompare = jobs.getJobsByQuery(options.getQueryString());
+            ArrayList<File> buildsToCompare = new ArrayList<>();
+            for (File job : jobsToCompare) {
+                ArrayList<File> builds = Builds.getBuilds(job, options.isSkipFailed(), options.getNvrQuery());
+                buildsToCompare.addAll(builds);
+            }
+
+            for (File build : buildsToCompare) {
+                ArrayList<String> failed = new ArrayList<>(Tests.getFailedTests(build));
+                matrix.add(failed);
+            }
+
+            Tests.printFailedTable(matrix, buildsToCompare);
         } else if (options.getOperation() == Options.Operations.Enumerate) {
             jobs.printVariants(options.getQueryString());
         } else if (options.getOperation() == Options.Operations.Compare) {
