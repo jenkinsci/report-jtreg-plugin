@@ -5,7 +5,7 @@ public class Arguments {
     public static Options parse(String[] arguments) {
         Options options = new Options();
 
-        if (arguments.length >= 2) {
+        if (arguments.length >= 1) {
             for (int i = 0; i < arguments.length; i++) {
                 switch (arguments[i].toLowerCase()) {
                     case "-h":
