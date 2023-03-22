@@ -110,6 +110,15 @@ public class ContextExecutingHandler implements HttpHandler {
                 }
             }
             parsedParams.add(0, targetProgram.getAbsolutePath());
+            for(String param: parsedParams){
+                if (param.contains(";") || param.contains("&") || param.contains("|") || param.contains("eval")  || param.contains("exec")) {
+                    t.sendResponseHeaders(505, 0);
+                    t.getResponseBody().write("nice try, but if you do better, you will beat me".getBytes("ascii"));
+                    t.getResponseBody().flush();
+                    t.getResponseBody().close();
+                    return;
+                }
+            }
             t.sendResponseHeaders(200, 0);
             try (BufferedWriter wos = new BufferedWriter(new OutputStreamWriter(t.getResponseBody(), "utf-8"))) {
                 wos.write(processTemplate(template));
