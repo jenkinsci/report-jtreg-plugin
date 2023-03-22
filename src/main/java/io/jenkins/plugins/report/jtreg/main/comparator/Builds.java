@@ -122,4 +122,28 @@ public class Builds {
         }
         return listOfBuilds;
     }
+
+    public static String getJobName(File build) {
+        String path = build.getAbsolutePath();
+        String[] split = path.split("/");
+        if (split[split.length - 2].equals("builds")) { // second last should be the "builds" directory
+            return split[split.length - 3]; // third last is the job name
+        } else {
+            throw new RuntimeException("The getJobName() function got invalid build path.");
+        }
+    }
+
+    public static String getBuildNumber(File build) {
+        String path = build.getAbsolutePath();
+        String[] split = path.split("/");
+        if (split[split.length - 2].equals("builds")) { // second last should be the "builds" directory
+            return split[split.length - 1]; // the last is the build number
+        } else {
+            throw new RuntimeException("The getJobName() function got invalid build path.");
+        }
+    }
+
+    public static String getNvr(File build) {
+        return JobsRecognition.getChangelogsNvr(build);
+    }
 }
