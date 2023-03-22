@@ -8,15 +8,17 @@ import hudson.plugins.report.jck.model.Test;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Set;
 
 public class Tests {
-    public static ArrayList<String> getFailedTests(File buildDir) {
+    private static ArrayList<String> getBuildFailedTests(File build) {
         ArrayList<String> failedTests = new ArrayList<>();
 
         JckReportPublisher jcp = new JckReportPublisher("report-{runtime,devtools,compiler}.xml.gz");
         BuildSummaryParser bs = new BuildSummaryParser(Arrays.asList("jck", "jtreg"), jcp);
 
-        BuildReport br = bs.parseJobReports(buildDir);
+        BuildReport br = bs.parseJobReports(build);
 
         for (Test t : br.getSuites().get(0).getReport().getTestProblems()) {
             failedTests.add(t.getName());
@@ -24,47 +26,42 @@ public class Tests {
         return failedTests;
     }
 
-    public static void printFailedTable(ArrayList<ArrayList<String>> failedTestsMatrix, ArrayList<File> builds) {
-        ArrayList<String> totalFailedTests = new ArrayList<>();
-        for (ArrayList<String> l : failedTestsMatrix) {
-            for (String s : l) {
-                if (!totalFailedTests.contains(s)) {
-                    totalFailedTests.add(s);
+    public static HashMap<File, ArrayList<String>> createFailedMap(ArrayList<File> buildsToCompare) {
+        HashMap<File, ArrayList<String>> failedMap = new HashMap<>();
+
+        for (File build : buildsToCompare) {
+            failedMap.put(build, getBuildFailedTests(build));
+        }
+
+        return failedMap;
+    }
+
+    public static void printFailedTable(HashMap<File, ArrayList<String>> failedMap) {
+        ArrayList<String> allFailedTests = new ArrayList<>();
+        for (ArrayList<String> tests : failedMap.values()) {
+            for (String test : tests) {
+                if(!allFailedTests.contains(test)) {
+                    allFailedTests.add(test);
                 }
             }
         }
 
-        for (int i = 0; i < totalFailedTests.size(); i++) {
-            System.out.println(i + ") " + totalFailedTests.get(i));
+        String[][] table = new String[failedMap.size() + 1][allFailedTests.size() + 1];
+        // add first line (header)
+        for (int i = 1; i < allFailedTests.size() + 1; i++) {
+            table[0][i] = allFailedTests.get(i - 1);
+        }
+        // add the builds and tests
+        Set<File> keys = failedMap.keySet();
+        int i = 1;
+        for (File key : keys) {
+            table[i][0] = Builds.getJobName(key) + " - " + Builds.getBuildNumber(key) + " - " + Builds.getNvr(key);
+            for (String test : failedMap.get(key)) {
+                table[i][allFailedTests.indexOf(test) + 1] = "X";
+            }
+            i++;
         }
 
-        int longestLength = 0;
-        for (File build : builds) {
-            if (build.getAbsolutePath().length() > longestLength) {
-                longestLength = build.getAbsolutePath().length();
-            }
-        }
-        for (int i = 0; i < longestLength; i++) {
-            System.out.print(" ");
-        }
-        for (int i = 0; i < totalFailedTests.size(); i++) {
-            System.out.print(" | " + i);
-        }
-        System.out.print(" |\n");
-
-        for (int i = 0; i < builds.size(); i++) {
-            System.out.printf("%s", builds.get(i));
-            for (long j = builds.get(i).getAbsolutePath().length(); j < longestLength; j++) {
-                System.out.print(" ");
-            }
-            for (String test : totalFailedTests) {
-                if(failedTestsMatrix.get(i).contains(test)) {
-                    System.out.print(" | X");
-                } else {
-                    System.out.print(" |  ");
-                }
-            }
-            System.out.print(" |\n");
-        }
+        PrintTable.print(table, failedMap.size() + 1, allFailedTests.size() + 1);
     }
 }
