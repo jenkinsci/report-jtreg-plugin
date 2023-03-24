@@ -34,6 +34,13 @@ public class Arguments {
                         }
                         options.setOperation(Options.Operations.Compare);
                         break;
+                    case "-s":
+                    case "--slim":
+                        if (options.getOperation() != null) {
+                            throw new RuntimeException("Cannot combine --slim with other operations.");
+                        }
+                        options.setOperation(Options.Operations.Slim);
+                        break;
                     case "-p":
                     case "--path":
                         if (i + 1 <= arguments.length) {
@@ -56,6 +63,14 @@ public class Arguments {
                             options.setNvrQuery(arguments[++i]);
                         } else {
                             throw new RuntimeException("Expected NVR after -n.");
+                        }
+                        break;
+                    case "-t":
+                    case "--test":
+                        if (i + 1 <= arguments.length) {
+                            options.setTest(arguments[++i]);
+                        } else {
+                            throw new RuntimeException("Expected test name after -t.");
                         }
                         break;
                     case "--show-nvrs=false":

@@ -5,6 +5,7 @@ public class Options {
     private String jobsPath;
     private String queryString;
     private String nvrQuery;
+    private String test;
     private boolean skipFailed;
     private boolean showNvrs;
 
@@ -47,6 +48,14 @@ public class Options {
         this.nvrQuery = nvr;
     }
 
+    public String getTest() {
+        return test;
+    }
+
+    public void setTest(String test) {
+        this.test = test;
+    }
+
     public boolean isSkipFailed() {
         return skipFailed;
     }
@@ -65,6 +74,6 @@ public class Options {
 
     // enum of all available operations
     public enum Operations {
-        List, Enumerate, Compare
+        List, Enumerate, Compare, Slim
     }
 }
