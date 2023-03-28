@@ -1,15 +1,17 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core">
     <j:set var="jckReports" value="${it.getJckReport(job)}" />
+    <j:set var="chartName" value="${it.generateChartName()}" />
     <td data="${it.getLatestResultFailures(jckReports)}">
         <div>
             <j:if test="${jckReports.isEmpty()}">
                 No JCK results yet
             </j:if>
             <j:if test="${!jckReports.isEmpty()}">
-                <div id="jckChartContainer-${job.name}" style="width: 320px; height: 80px">
-                    <canvas id='jckChart-${job.name}' width='320' height='80' style="display: block"></canvas>
+                <div id="jckChartContainer-${chartName}" style="width: 320px; height: 80px">
+                    <canvas id='jckChart-${chartName}' width='320' height='80' style="display: block"></canvas>
                 </div>
+
                 <script type="text/javascript">
                     // &lt;![CDATA[
                 var dataJckView = {
@@ -23,12 +25,14 @@
                             datasets: [
                             {
                             label: "Error",
-                                    fillColor: "rgba(255,0,255,0.2)",
-                                    strokeColor: "rgba(255,0,255,1)",
-                                    pointColor: "rgba(255,0,255,1)",
-                                    pointStrokeColor: "#fff",
-                                    pointHighlightFill: "#fff",
-                                    pointHighlightStroke: "rgba(255,0,255,1)",
+                            fill: true,
+                            backgroundColor: "rgba(255,0,255,0.2)",
+                            borderColor: "rgba(255,0,255,1)",
+                            pointBackgroundColor: "rgba(255,0,255,1)",
+                            pointBorderColor: "#fff",
+                            pointHoverBackgroundColor: "#fff",
+                            pointHoverBorderColor: "rgba(255,0,255,1)",
+                            pointRadius: 4,
                                     data: [
                     <j:forEach var="build" items="${jckReports}" varStatus="status">
                         ${build.error}<j:if test="${!status.last}">,</j:if>
@@ -37,12 +41,14 @@
                             },
                             {
                             label: "Failed",
-                                    fillColor: "rgba(255,0,0,0.2)",
-                                    strokeColor: "rgba(255,0,0,1)",
-                                    pointColor: "rgba(255,0,0,1)",
-                                    pointStrokeColor: "#fff",
-                                    pointHighlightFill: "#fff",
-                                    pointHighlightStroke: "rgba(255,0,0,1)",
+                            fill: true,
+                            backgroundColor: "rgba(255,0,0,0.2)",
+                            borderColor: "rgba(255,0,0,1)",
+                            pointBackgroundColor: "rgba(255,0,0,1)",
+                            pointBorderColor: "#fff",
+                            pointHoverBackgroundColor: "#fff",
+                            pointHoverBorderColor: "rgba(255,0,0,1)",
+                            pointRadius: 4,
                                     data: [
                     <j:forEach var="build" items="${jckReports}" varStatus="status">
                         ${build.failed}<j:if test="${!status.last}">,</j:if>
@@ -58,15 +64,20 @@
                         interaction: {
                             mode: 'index',
                             intersect: false
-                        }
+                        },
+                        onClick: (e) => {
+                            var activePoints = ${chartName}var.getElementsAtEventForMode(e, 'index', { intersect: false }, true);
+                            var point = activePoints[0]
+                            var datasetIndex = point.datasetIndex //labels are for all data together,  no need to look into exact dataset
+                            var index = point.index
+                            var result = ${chartName}var.config.data.labels[index]
+                            var buildId = result.substring(result.lastIndexOf(":") + 1) //thsi works even without :; fixme, add NVR?
+                            window.open("/${job.url}"+buildId+"/java-reports", "_blank");
+                    }
                     }
                 };
-
-                    var ctx = document.getElementById("jckChart-${job.name}").getContext("2d");
-                    var jckErrorsChart = new Chart(ctx, dataJckView);
-                    document.getElementById("jckChartContainer-${job.name}").onclick = function (evt) {
-                    window.open("/${job.url}", "_blank");
-                    };
+                    var ctx = document.getElementById("jckChart-${chartName}").getContext("2d");
+                    var ${chartName}var = new Chart(ctx, dataJckView);
                     // ]]&gt;
                 </script>
             </j:if>

@@ -7,7 +7,6 @@
     <h3 style="font-family: monospace">Regressions: ${action.displayName}</h3>
     <div id="jckRegressionsChartContainer" style="margin-right: 10pt"><canvas id='jckRegressionsChart' width='600' height='600'></canvas></div>
             <j:set var="jckReports" value="${action.chartData}" />
-    <script type="text/javascript">var buildsMap = {};</script>
     <script type="text/javascript">
         // &lt;![CDATA[
         var allJckFails = {
@@ -21,12 +20,14 @@
                 datasets: [
                 {
                 label: "Error",
-                        fillColor: "rgba(255,0,255,0.2)",
-                        strokeColor: "rgba(255,0,255,1)",
-                        pointColor: "rgba(255,0,255,1)",
-                        pointStrokeColor: "#fff",
-                        pointHighlightFill: "#fff",
-                        pointHighlightStroke: "rgba(255,0,255,1)",
+                fill: true,
+                backgroundColor: "rgba(255,0,255,0.2)",
+                borderColor: "rgba(255,0,255,1)",
+                pointBackgroundColor: "rgba(255,0,255,1)",
+                pointBorderColor: "#fff",
+                pointHoverBackgroundColor: "#fff",
+                pointHoverBorderColor: "rgba(255,0,255,1)",
+                pointRadius: 5,
                         data: [
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
             ${build.error}<j:if test="${!status.last}">,</j:if>
@@ -35,12 +36,14 @@
                 },
                 {
                 label: "Failed",
-                        fillColor: "rgba(255,0,0,0.2)",
-                        strokeColor: "rgba(255,0,0,1)",
-                        pointColor: "rgba(255,0,0,1)",
-                        pointStrokeColor: "#fff",
-                        pointHighlightFill: "#fff",
-                        pointHighlightStroke: "rgba(255,0,0,1)",
+                fill: true,
+                backgroundColor: "rgba(255,0,0,0.2)",
+                borderColor: "rgba(255,0,0,1)",
+                pointBackgroundColor: "rgba(255,0,0,1)",
+                pointBorderColor: "#fff",
+                pointHoverBackgroundColor: "#fff",
+                pointHoverBorderColor: "rgba(255,0,0,1)",
+                pointRadius: 5,
                         data: [
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
             ${build.failed}<j:if test="${!status.last}">,</j:if>
@@ -56,18 +59,20 @@
           interaction: {
             mode: 'index',
             intersect: false
+          },
+          onClick: (e) => {
+                var activePoints = jckErrorsChart.getElementsAtEventForMode(e, 'index', { intersect: false }, true);
+                var point = activePoints[0]
+                var datasetIndex = point.datasetIndex //labels are for all data together,  no need to look into exact dataset
+                var index = point.index
+                var result = jckErrorsChart.config.data.labels[index]
+                var buildId = result.substring(result.lastIndexOf(":") + 1)
+                window.open("" + buildId + "/java-reports", "_blank");
           }
          }
         };
         var ctx = document.getElementById("jckErrorsFailuresChart").getContext("2d");
         var jckErrorsChart = new Chart(ctx, allJckFails);
-        <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
-        buildsMap["${build.buildNameShortened}"] = "${build.buildNumber}";
-        </j:forEach>
-        document.getElementById("jckErrorsFailuresChartContainer").onclick = function (evt) {
-        var activePoints = jckErrorsChart.getPointsAtEvent(evt);
-        window.open(buildsMap[activePoints[0].label] + "/java-reports", "_blank");
-        };
         // ]]&gt;
     </script>
     <script type="text/javascript">
@@ -83,12 +88,14 @@
                 datasets: [
                 {
                 label: "Tests total",
-                        fillColor: "rgba(180,180,180,0.2)",
-                        strokeColor: "rgba(180,180,180,1)",
-                        pointColor: "rgba(180,180,180,1)",
-                        pointStrokeColor: "#fff",
-                        pointHighlightFill: "#fff",
-                        pointHighlightStroke: "rgba(180,180,180,1)",
+                fill: true,
+                backgroundColor: "rgba(180,180,180,0.2)",
+                borderColor: "rgba(180,180,180,1)",
+                pointBackgroundColor: "rgba(180,180,180,1)",
+                pointBorderColor: "#fff",
+                pointHoverBackgroundColor: "#fff",
+                pointHoverBorderColor: "rgba(180,180,180,1)",
+                pointRadius: 5,
                         data: [
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
             ${build.total}<j:if test="${!status.last}">,</j:if>
@@ -97,12 +104,14 @@
                 },
                 {
                 label: "Runned tests",
-                        fillColor: "rgba(180,180,180,0.2)",
-                        strokeColor: "rgba(180,180,180,1)",
-                        pointColor: "rgba(180,180,180,1)",
-                        pointStrokeColor: "#fff",
-                        pointHighlightFill: "#fff",
-                        pointHighlightStroke: "rgba(180,180,180,1)",
+                fill: true,
+                backgroundColor: "rgba(180,180,180,0.2)",
+                borderColor: "rgba(180,180,180,1)",
+                pointBackgroundColor: "rgba(180,180,180,1)",
+                pointBorderColor: "#fff",
+                pointHoverBackgroundColor: "#fff",
+                pointHoverBorderColor: "rgba(180,180,180,1)",
+                pointRadius: 5,
                         data: [
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
             ${build.Run}<j:if test="${!status.last}">,</j:if>
@@ -118,18 +127,20 @@
           interaction: {
             mode: 'index',
             intersect: false
-          }
+          },
+            onClick: (e) => {
+                var activePoints = jckPassedChartTck.getElementsAtEventForMode(e, 'index', { intersect: false }, true);
+                var point = activePoints[0]
+                var datasetIndex = point.datasetIndex //labels are for all data together,  no need to look into exact dataset
+                var index = point.index
+                var result = jckPassedChartTck.config.data.labels[index]
+                var buildId = result.substring(result.lastIndexOf(":") + 1)
+                window.open("" + buildId + "/java-reports", "_blank");
+            }
          }
         };
         var ctx = document.getElementById("jckPassedChart").getContext("2d");
         var jckPassedChartTck = new Chart(ctx, allJck);
-        <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
-        buildsMap["${build.buildNameShortened}"] = "${build.buildNumber}";
-        </j:forEach>
-        document.getElementById("jckPassedChartContainer").onclick = function (evt) {
-        var activePoints = jckPassedChartTck.getPointsAtEvent(evt);
-        window.open(buildsMap[activePoints[0].label] + "/java-reports", "_blank");
-        };
         // ]]&gt;
     </script>
     <script type="text/javascript">
@@ -145,10 +156,12 @@
                 datasets: [
                 {
                 label: "Improvements",
-                        fillColor: "rgba(0,220,0,0.5)",
-                        strokeColor: "rgba(0,220,0,0.8)",
-                        highlightFill: "rgba(0,220,0,0.75)",
-                        highlightStroke: "rgba(0,220,0,1)",
+                backgroundColor: "rgba(0,220,0,0.5)",
+                borderColor: "rgba(0,220,0,0.8)",
+                borderWidth: 2,
+                barThickness: 20,
+                hoverBackgroundColor: "rgba(0,220,0,0.75)",
+                hoverBorderColor: "rgba(0,220,0,1)",
                         data: [
         <j:forEach var="build" items="${jckReports.improvements}" varStatus="status">
             ${build}<j:if test="${!status.last}">,</j:if>
@@ -157,10 +170,12 @@
                 },
                 {
                 label: "Regressions",
-                        fillColor: "rgba(220,0,0,0.5)",
-                        strokeColor: "rgba(220,0,0,0.8)",
-                        highlightFill: "rgba(220,0,0,0.75)",
-                        highlightStroke: "rgba(220,0,0,1)",
+                backgroundColor: "rgba(220,0,0,0.5)",
+                borderColor: "rgba(220,0,0,0.8)",
+                borderWidth: 2,
+                barThickness: 20,
+                hoverBackgroundColor: "rgba(220,0,0,0.75)",
+                hoverBorderColor: "rgba(220,0,0,1)",
                         data: [
         <j:forEach var="build" items="${jckReports.regressions}" varStatus="status">
             ${build}<j:if test="${!status.last}">,</j:if>
@@ -176,18 +191,20 @@
           interaction: {
             mode: 'index',
             intersect: false
-          }
+          },
+           onClick: (e) => {
+                var activePoints = jckRegressions.getElementsAtEventForMode(e, 'index', { intersect: false }, true);
+                var point = activePoints[0]
+                var datasetIndex = point.datasetIndex //labels are for all data together,  no need to look into exact dataset
+                var index = point.index
+                var result = jckRegressions.config.data.labels[index]
+                var buildId = result.substring(result.lastIndexOf(":") + 1)
+                window.open("" + buildId + "/java-reports", "_blank");
+           }
          }
         };
         var ctx = document.getElementById("jckRegressionsChart").getContext("2d");
         var jckRegressions = new Chart(ctx, allJckRegressions);
-        document.getElementById("jckRegressionsChartContainer").onclick = function (evt) {
-        <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
-        buildsMap["${build.buildNameShortened}"] = "${build.buildNumber}";
-        </j:forEach>
-        var activePoints = jckRegressions.getBarsAtEvent(evt);
-        window.open(buildsMap[activePoints[0].label] + "/java-reports", "_blank");
-        };
         // ]]&gt;
     </script>
 </j:jelly>

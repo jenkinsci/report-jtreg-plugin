@@ -31,6 +31,7 @@ import hudson.views.ListViewColumn;
 import hudson.views.ListViewColumnDescriptor;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -58,6 +59,10 @@ public class ReportChartColumn extends ListViewColumn {
             BuildReport lastReport = reports.get(reports.size() - 1);
             return lastReport.getFailed() + lastReport.getError();
         }
+    }
+
+    public String generateChartName() {
+        return "chart"+ UUID.randomUUID().toString().replace("-","");
     }
 
     @Extension
