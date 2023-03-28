@@ -1,28 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-<!-- IN CASE OF ERRORS, RUN:
-mvn clean install -Denforcer.skip=true -Dfindbugs.skip=true
--->
+
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.54</version>
+        <version>4.55</version>
     </parent>
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>report-jtreg</artifactId>
     <version>1.1-SNAPSHOT</version>
-    <!-- use -P hpi for jenkins plugin build (most common) or jar for assembled diff run by default. See Fakekoji's server package-info-->
+    <!-- use -P hpi for jenkins plugin build (default) or -P jar for assembled diff -->
     <packaging>${packaging-type}</packaging>
     <name>junit/xunit/jtreg/jck compatible publisher targeting huge result bases</name>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <jenkins.version>2.375.2</jenkins.version>
-        <java.level>8</java.level>
-        <slf.version>1.7.36</slf.version> <!-- We need to keep synced slf with jenkins, otherwise enforcer plugin fails. Not sure from where the older slfs may be arriving-->
+        <chartjs.version>4.2.1.4</chartjs.version>
+        <jenkins.version>2.361.4</jenkins.version>
     </properties>
 
     <developers>
@@ -45,26 +39,19 @@ mvn clean install -Denforcer.skip=true -Dfindbugs.skip=true
         </license>
     </licenses>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+    <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
+    <scm>
+        <connection>scm:git:https://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
+        <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
+        <tag>HEAD</tag>
+    </scm>
+
 
     <profiles>
         <profile>
+            <!-- To use this profile run command "mvn clean install -P jar" to  service jar-->
             <id>jar</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <properties>
                 <packaging-type>jar</packaging-type>
             </properties>
@@ -73,14 +60,14 @@ mvn clean install -Denforcer.skip=true -Dfindbugs.skip=true
                 <dependency>
                     <groupId>org.jenkins-ci.main</groupId>
                     <artifactId>jenkins-core</artifactId>
-                    <version>2.375.4</version>
+                    <version>${jenkins.version}</version>
                 </dependency>
             </dependencies>
 
             <build>
                 <plugins>
                     <plugin>
-                        <!-- Assembly plugin works only when packaging is JAR. Is ignored for HDPI -->
+                        <!-- Assembly plugin works only when packaging is JAR. Is ignored for HPI -->
                         <artifactId>maven-assembly-plugin</artifactId>
                         <version>2.6</version>
                         <configuration>
@@ -88,15 +75,26 @@ mvn clean install -Denforcer.skip=true -Dfindbugs.skip=true
                                 <descriptorRef>jar-with-dependencies</descriptorRef>
                             </descriptorRefs>
                         </configuration>
+                        <executions>
+                            <execution>
+                                <id>create-services-archive</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
         </profile>
 
         <profile>
-            <!-- To use this profile run command "mvn clean install -P hpi" -->
+            <!-- To use this profile run command "mvn clean install -P hpi" to  build plugin-->
             <id>hpi</id>
-
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <properties>
                 <packaging-type>hpi</packaging-type>
             </properties>
@@ -118,29 +116,9 @@ mvn clean install -Denforcer.skip=true -Dfindbugs.skip=true
 
     <dependencies>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf.version}</version>
-        </dependency>
-        <dependency>
-              <groupId>org.slf4j</groupId>
-              <artifactId>jcl-over-slf4j</artifactId>
-              <version>${slf.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-            <version>${slf.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>${slf.version}</version>
-        </dependency>
-        <dependency>
             <groupId>io.jenkins.plugins</groupId>
-            <artifactId>chartjs</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <artifactId>chartjs-api</artifactId>
+            <version>${chartjs.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -151,13 +129,6 @@ mvn clean install -Denforcer.skip=true -Dfindbugs.skip=true
             <groupId>com.fasterxml.woodstox</groupId>
             <artifactId>woodstox-core</artifactId>
             <version>LATEST</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci.main</groupId>
-            <artifactId>jenkins-war</artifactId>
-            <type>war</type>
-            <version>LATEST</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

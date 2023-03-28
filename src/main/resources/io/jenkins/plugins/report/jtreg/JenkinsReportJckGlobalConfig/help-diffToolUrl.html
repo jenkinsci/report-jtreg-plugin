@@ -1,0 +1,26 @@
+<div>
+    Jenkins report jck plugin is designed to work with egtremly huge datasets 100 000 items and up.<br/>
+    To do this properly, some <b>queries</b> are not available on project page, but were moved to external <b>cmdline tool/service</b><br/>
+    That are <b>io.jenkins.plugins.report.jtreg.main.diff.CompareBuilds</b> and <b>io.jenkins.plugins.report.jtreg.main.diff.Service</b> classes<br/>
+    Unluckily, those were never designed with security in mind, were just needed "yesterday", so:<br/>
+    <li>They reside in codebase of plugin</li>
+    <li>the cli is superpowerful</li>
+    <li>The http service is actually just wrapping the cli (really, it literaly calls the launcher, see lower)</li>
+    <li>default port is 9090</li>
+    <li>-Djenkins_home=$jenkins_main_home property is mandatory for cli (and thus indirectly for service)</li>
+    <blockquote>so...
+        <li>they need all jenkins jars on classpath</li>
+        <li>you need shell (or other) executbale wrapper around the CLI to set up CP and actually start the application</li>
+        <li>the sevice is then consuming this lancher and jsut redirects stdout/err. eg:</li>
+        <li>shell.sh: /opt/jdk/bin/java -cp $CP -Djenkins_home=$jenkins_main_home
+            io.jenkins.plugins.report.jtreg.main.diff.CompareBuilds $@</li>
+        <li>Where the CP contains jars from unpacked jenkins.war and jenkins report pluginwith depndencies</li>
+        <li>service.sh: /opt/jdk/bin/java io.jenkins.plugins.report.jtreg.main.diff.Service /path/to/shel.sh customPort</li>
+        <li>this field: some_url:customPort, usually, if it is on same machine, which it usually is, jenkins_url but on 9090 or custom port</li>
+    </blockquote>
+    <li>There is work in progress ot extract the cli and service properly, and to do new cli</li>
+    <li><b>if you include diff url, new links will appear in the report</b></li>
+    <li><b>Those links will pre-fill service api so you can easily place advanced queries</b></li>
+<i>Note, that jar with dependecies is default target for project. Plugin is built as -Phpi</i>
+<p>See <a href="https://github.com/judovana/jenkins-report-jck/blob/master/README.md#diff-cli-tool">jenkins-report-jck/blob/master/README.md </a></p>
+</div>
