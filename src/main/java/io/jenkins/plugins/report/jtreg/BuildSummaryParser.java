@@ -98,7 +98,11 @@ public class BuildSummaryParser {
         return getList(runs, new ListProvider() {
             @Override
             public String getList() {
-                return settings.getResultsBlackList();
+                if (settings == null) {
+                    return "";
+                } else {
+                    return settings.getResultsBlackList();
+                }
             }
 
             @Override
@@ -112,7 +116,11 @@ public class BuildSummaryParser {
         return getList(runs, new ListProvider() {
             @Override
             public String getList() {
-                return settings.getResultsWhiteList();
+                if (settings == null) {
+                    return "";
+                } else {
+                    return settings.getResultsWhiteList();
+                }
             }
 
             @Override
@@ -224,7 +232,9 @@ public class BuildSummaryParser {
 
             try {
                 BuildReport report = parseBuildReport(run);
-                list.add(report);
+                if (!report.isInvalid()) {
+                    list.add(report);
+                }
             } catch (Exception ignore) {
             }
             if (list.size() == limit) {

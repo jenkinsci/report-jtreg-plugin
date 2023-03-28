@@ -52,11 +52,11 @@ public class ReportChartColumn extends ListViewColumn {
     }
 
     public int getLatestResultFailures(final List<BuildReport> reports) {
-        if (!reports.isEmpty()) {
+        if (reports == null || reports.isEmpty()) {
+            return 0;
+        } else {
             BuildReport lastReport = reports.get(reports.size() - 1);
             return lastReport.getFailed() + lastReport.getError();
-        } else {
-            return 0;
         }
     }
 

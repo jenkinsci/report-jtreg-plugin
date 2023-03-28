@@ -1,5 +1,5 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:local="local">
+<j:jelly xmlns:j="jelly:core">
     <h3 style="font-family: monospace">Number of Failures: ${action.displayName}</h3>
     <div id="jckErrorsFailuresChartContainer" style="margin-right: 10pt"><canvas id='jckErrorsFailuresChart' width='600' height='600'></canvas></div>
     <h3 style="font-family: monospace">Number of Tests total: ${action.displayName}</h3>
@@ -10,8 +10,10 @@
     <script type="text/javascript">var buildsMap = {};</script>
     <script type="text/javascript">
         // &lt;![CDATA[
-        var data = {
-        labels: [
+        var allJckFails = {
+          type: 'line',
+          data: {
+            labels: [
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
         "${build.buildNameShortened}"<j:if test="${!status.last}">,</j:if>
         </j:forEach>
@@ -46,13 +48,19 @@
                         ]
                 }
                 ]
-        };
-        var options = {
-        bezierCurve: false,
-                multiTooltipTemplate: "&lt;%= datasetLabel + \": \" + value %&gt;"
+        },
+        options: {
+          plugins: {
+            legend: { display: false }
+          },
+          interaction: {
+            mode: 'index',
+            intersect: false
+          }
+         }
         };
         var ctx = document.getElementById("jckErrorsFailuresChart").getContext("2d");
-        var jckErrorsChart = new Chart(ctx).Line(data, options);
+        var jckErrorsChart = new Chart(ctx, allJckFails);
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
         buildsMap["${build.buildNameShortened}"] = "${build.buildNumber}";
         </j:forEach>
@@ -64,8 +72,10 @@
     </script>
     <script type="text/javascript">
         // &lt;![CDATA[
-        var data = {
-        labels: [
+        var allJck = {
+          type: 'line',
+          data: {
+            labels: [
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
         "${build.buildNameShortened}"<j:if test="${!status.last}">,</j:if>
         </j:forEach>
@@ -100,13 +110,19 @@
                         ]
                 }
                 ]
-        };
-        var options = {
-        bezierCurve: false,
-                multiTooltipTemplate: "&lt;%= datasetLabel + \": \" + value %&gt;"
+        },
+        options: {
+          plugins: {
+          legend: { display: false }
+          },
+          interaction: {
+            mode: 'index',
+            intersect: false
+          }
+         }
         };
         var ctx = document.getElementById("jckPassedChart").getContext("2d");
-        var jckPassedChartTck = new Chart(ctx).Line(data, options);
+        var jckPassedChartTck = new Chart(ctx, allJck);
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
         buildsMap["${build.buildNameShortened}"] = "${build.buildNumber}";
         </j:forEach>
@@ -118,8 +134,10 @@
     </script>
     <script type="text/javascript">
         // &lt;![CDATA[
-        var data = {
-        labels: [
+        var allJckRegressions = {
+          type: 'bar',
+          data: {
+            labels: [
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
         "${build.buildNameShortened}"<j:if test="${!status.last}">,</j:if>
         </j:forEach>
@@ -150,13 +168,19 @@
                         ]
                 }
                 ]
-        };
-        var options = {
-        bezierCurve: false,
-                multiTooltipTemplate: "&lt;%= datasetLabel + \": \" + value %&gt;"
+        },
+        options: {
+          plugins: {
+            legend: { display: false }
+          },
+          interaction: {
+            mode: 'index',
+            intersect: false
+          }
+         }
         };
         var ctx = document.getElementById("jckRegressionsChart").getContext("2d");
-        var jckRegressions = new Chart(ctx).Bar(data, options);
+        var jckRegressions = new Chart(ctx, allJckRegressions);
         document.getElementById("jckRegressionsChartContainer").onclick = function (evt) {
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
         buildsMap["${build.buildNameShortened}"] = "${build.buildNumber}";

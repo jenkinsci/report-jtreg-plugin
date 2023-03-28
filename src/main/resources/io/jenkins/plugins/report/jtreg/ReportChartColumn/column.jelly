@@ -1,5 +1,5 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+<j:jelly xmlns:j="jelly:core">
     <j:set var="jckReports" value="${it.getJckReport(job)}" />
     <td data="${it.getLatestResultFailures(jckReports)}">
         <div>
@@ -12,7 +12,9 @@
                 </div>
                 <script type="text/javascript">
                     // &lt;![CDATA[
-                    var data = {
+                var dataJckView = {
+                  type: 'line',
+                  data:  {
                     labels: [
                     <j:forEach var="build" items="${jckReports}" varStatus="status">
                     "${build.buildNumber}"<j:if test="${!status.last}">,</j:if>
@@ -48,13 +50,20 @@
                                     ]
                             }
                             ]
-                    };
-                    var options = {
-                    bezierCurve: false,
-                            multiTooltipTemplate: "&lt;%= datasetLabel + \": \" + value %&gt;"
-                    };
+                    },
+                    options: {
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                };
+
                     var ctx = document.getElementById("jckChart-${job.name}").getContext("2d");
-                    var jckErrorsChart = new Chart(ctx).Line(data, options);
+                    var jckErrorsChart = new Chart(ctx, dataJckView);
                     document.getElementById("jckChartContainer-${job.name}").onclick = function (evt) {
                     window.open("/${job.url}", "_blank");
                     };

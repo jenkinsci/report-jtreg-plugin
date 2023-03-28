@@ -1,4 +1,4 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
-    <link rel="stylesheet" href="${resURL}/plugin/jenkins-report-jck/jckstyles.css"/>
+<j:jelly xmlns:j="jelly:core">
+    <link rel="stylesheet" href="${resURL}/plugin/report-jtreg/jckstyles.css"/>
 </j:jelly>

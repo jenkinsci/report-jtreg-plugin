@@ -1,8 +1,13 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
     <f:entry field="reportFileGlob" title="Report files glob">
         <f:textbox />
     </f:entry>
+    <f:entry field="maxBuilds" title="Number of builds to show">
+        <f:textbox />
+    </f:entry>
+<f:section title="blacklist/whitelist">
+  <f:advanced>
     <f:entry field="resultsBlackList" title="Packages blacklisted">
         <f:textbox />
     </f:entry>
@@ -12,7 +17,6 @@
     <f:entry field="rangeAroundWlist" title="Range around whitelisted">
         <f:textbox />
     </f:entry>
-    <f:entry field="maxBuilds" title="Number of builds to show">
-        <f:textbox />
-    </f:entry>
+  </f:advanced>
+</f:section>
 </j:jelly>

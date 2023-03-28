@@ -81,15 +81,20 @@ public class BuildReport implements java.io.Serializable {
         return suites;
     }
 
-    public int getTotal(){
+    public int getTotal() {
         return total;
     }
 
-    public int getNotRun(){
+    public int getNotRun() {
         return notRun;
     }
-    public int getRun(){
+
+    public int getRun() {
         return total - notRun;
+    }
+
+    public boolean isInvalid() {
+        return passed == 0 && failed == 0 && error == 0 && total == 0 && notRun == 0 && run == 0;
     }
 
 }
