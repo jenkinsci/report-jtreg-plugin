@@ -50,8 +50,7 @@ public class Builds {
             if (requireSuccessful) {
                 return result.equals("SUCCESS") || result.equals("UNSTABLE");
             } else {
-                // skipping ABORTED builds anyway
-                return !result.equals("ABORTED");
+                return true;
             }
         } catch (Exception e) {
             e.printStackTrace();
