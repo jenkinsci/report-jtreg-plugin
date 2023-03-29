@@ -1,11 +1,11 @@
-package hudson.plugins.report.jck.main.comparator;
+package io.jenkins.plugins.report.jtreg.main.comparator;
 
-import hudson.plugins.report.jck.BuildReportExtended;
-import hudson.plugins.report.jck.BuildSummaryParser;
-import hudson.plugins.report.jck.Constants;
-import hudson.plugins.report.jck.JckReportPublisher;
-import hudson.plugins.report.jck.model.*;
-import hudson.plugins.report.jck.wrappers.RunWrapperFromDir;
+import io.jenkins.plugins.report.jtreg.BuildReportExtended;
+import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
+import io.jenkins.plugins.report.jtreg.Constants;
+import io.jenkins.plugins.report.jtreg.JckReportPublisher;
+import io.jenkins.plugins.report.jtreg.model.*;
+import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromDir;
 
 import java.io.File;
 import java.util.*;
