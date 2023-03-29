@@ -79,7 +79,7 @@ public class CompareBuilds {
             if (i < options.getDirsToWork().size() - 1) {
                 oldOne = options.getDirsToWork().get(i + 1);
             }
-            JckReportPublisher jcp = new JckReportPublisher("report-{runtime,devtools,compiler}.xml.gz");
+            JckReportPublisher jcp = new JckReportPublisher(Constants.IRRELEVANT_GLOB_STRING); // completely irrelevant string
             BuildSummaryParser bs = new BuildSummaryParser(Arrays.asList("jck", "jtreg"), jcp);
 
             BuildReport br = bs.parseJobReports(newOne);

@@ -2,6 +2,7 @@ package hudson.plugins.report.jck.main.comparator;
 
 import hudson.plugins.report.jck.BuildReportExtended;
 import hudson.plugins.report.jck.BuildSummaryParser;
+import hudson.plugins.report.jck.Constants;
 import hudson.plugins.report.jck.JckReportPublisher;
 import hudson.plugins.report.jck.model.*;
 import hudson.plugins.report.jck.wrappers.RunWrapperFromDir;
@@ -14,7 +15,7 @@ public class Tests {
     private static ArrayList<String> getBuildFailedTests(File build) throws Exception {
         ArrayList<String> failedTests = new ArrayList<>();
 
-        JckReportPublisher jcp = new JckReportPublisher("glob:*.{xml,xml.gz}"); // completely irrelevant string
+        JckReportPublisher jcp = new JckReportPublisher(Constants.IRRELEVANT_GLOB_STRING); // completely irrelevant string
         BuildSummaryParser bs = new BuildSummaryParser(Arrays.asList("jck", "jtreg"), jcp);
 
         BuildReportExtended bex = bs.parseBuildReportExtended(new RunWrapperFromDir(build), null);
