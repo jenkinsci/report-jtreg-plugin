@@ -6,12 +6,14 @@ public class Options {
     private String queryString;
     private String nvrQuery;
     private String test;
+    private int numberOfBuilds;
     private boolean skipFailed;
     private boolean showNvrs;
 
     public Options() {
         this.queryString = "";
         this.nvrQuery = "";
+        this.numberOfBuilds = 1;
         this.skipFailed = true;
         this.showNvrs = false;
     }
@@ -56,6 +58,14 @@ public class Options {
         this.test = test;
     }
 
+    public int getNumberOfBuilds() {
+        return numberOfBuilds;
+    }
+
+    public void setNumberOfBuilds(int numberOfBuilds) {
+        this.numberOfBuilds = numberOfBuilds;
+    }
+
     public boolean isSkipFailed() {
         return skipFailed;
     }
@@ -74,6 +84,6 @@ public class Options {
 
     // enum of all available operations
     public enum Operations {
-        List, Enumerate, Compare, Slim
+        List, Enumerate, Compare
     }
 }
