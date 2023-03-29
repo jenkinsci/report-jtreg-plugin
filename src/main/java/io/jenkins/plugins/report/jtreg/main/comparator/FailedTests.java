@@ -10,7 +10,7 @@ import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromDir;
 import java.io.File;
 import java.util.*;
 
-public class Tests {
+public class FailedTests {
     // function for getting failed tests into an ArrayList
     private static ArrayList<String> getBuildFailedTests(File build) throws Exception {
         ArrayList<String> failedTests = new ArrayList<>();
