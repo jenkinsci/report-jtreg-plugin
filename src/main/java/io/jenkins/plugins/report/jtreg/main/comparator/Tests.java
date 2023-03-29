@@ -21,12 +21,16 @@ public class Tests {
         BuildReportExtended bex = bs.parseBuildReportExtended(new RunWrapperFromDir(build), null);
         SuitesWithResults swr = bex.getAllTests();
 
-        if (swr != null) {
-            for (SuiteTestsWithResults t : swr.getAllTestsAndSuites()) {
-                for (SuiteTestsWithResults.StringWithResult s : t.getTests()) {
-                    if (s.getStatus().isFailed()) {
-                        failedTests.add(s.getTestName());
-                    }
+        // since the exception is already handled elsewhere, it checks for it by this and prints the info message
+        if (swr == null) {
+            System.out.println("The " + Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build) + " is probably missing some files (may be ABORTED).");
+            return failedTests;
+        }
+
+        for (SuiteTestsWithResults t : swr.getAllTestsAndSuites()) {
+            for (SuiteTestsWithResults.StringWithResult s : t.getTests()) {
+                if (s.getStatus().isFailed()) {
+                    failedTests.add(s.getTestName());
                 }
             }
         }
