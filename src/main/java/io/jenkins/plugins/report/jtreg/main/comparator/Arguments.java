@@ -65,11 +65,11 @@ public class Arguments {
                             throw new RuntimeException("Expected test name after --test.");
                         }
                         break;
-                    case "--number":
+                    case "--history":
                         if (i + 1 <= arguments.length) {
                             options.setNumberOfBuilds(Integer.parseInt(arguments[++i]));
                         } else {
-                            throw new RuntimeException("Expected number of builds after --number.");
+                            throw new RuntimeException("Expected number of builds after --history.");
                         }
                         break;
                     case "--show-nvrs=false":
