@@ -34,13 +34,6 @@ public class Arguments {
                         }
                         options.setOperation(Options.Operations.Compare);
                         break;
-                    case "-s":
-                    case "--slim":
-                        if (options.getOperation() != null) {
-                            throw new RuntimeException("Cannot combine --slim with other operations.");
-                        }
-                        options.setOperation(Options.Operations.Slim);
-                        break;
                     case "-p":
                     case "--path":
                         if (i + 1 <= arguments.length) {
@@ -65,12 +58,18 @@ public class Arguments {
                             throw new RuntimeException("Expected NVR after -n.");
                         }
                         break;
-                    case "-t":
                     case "--test":
                         if (i + 1 <= arguments.length) {
                             options.setTest(arguments[++i]);
                         } else {
-                            throw new RuntimeException("Expected test name after -t.");
+                            throw new RuntimeException("Expected test name after --test.");
+                        }
+                        break;
+                    case "--number":
+                        if (i + 1 <= arguments.length) {
+                            options.setNumberOfBuilds(Integer.parseInt(arguments[++i]));
+                        } else {
+                            throw new RuntimeException("Expected number of builds after --number.");
                         }
                         break;
                     case "--show-nvrs=false":
@@ -86,7 +85,7 @@ public class Arguments {
                         }
                         break;
                     default:
-                        throw new RuntimeException("Unknown argument, run with --help for info.");
+                        throw new RuntimeException("Unknown argument " + arguments[i] + ", run with --help for info.");
                 }
             }
         } else {
