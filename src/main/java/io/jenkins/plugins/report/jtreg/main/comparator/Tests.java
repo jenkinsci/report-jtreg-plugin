@@ -59,12 +59,11 @@ public class Tests {
             }
         }
 
-        Set<String> builds = failedMap.keySet();
         for (String test : allFailed) {
             ArrayList<String> testBuilds = new ArrayList<>();
-            for (String build : builds) {
-                if (failedMap.get(build).contains(test)) {
-                    testBuilds.add(build);
+            for (Map.Entry<String, ArrayList<String>> entry : failedMap.entrySet()) {
+                if (entry.getValue().contains(test)) {
+                    testBuilds.add(entry.getKey());
                 }
             }
             reversedMap.put(test, testBuilds);
