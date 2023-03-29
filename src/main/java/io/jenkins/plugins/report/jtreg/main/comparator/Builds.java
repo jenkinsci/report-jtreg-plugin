@@ -33,32 +33,30 @@ public class Builds {
         return nvrs;
     }
 
-
-    // checks if the given build was successful (only if required)
+    // checks if the given build was successful
     private static boolean checkIfCorrect(File build, boolean requireSuccessful) {
-        if (requireSuccessful) {
-            try {
-                File buildXml = new File(build.getAbsolutePath() + "/build.xml");
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                Document doc = builder.parse(buildXml);
-                doc.getDocumentElement().normalize();
+        try {
+            File buildXml = new File(build.getAbsolutePath() + "/build.xml");
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(buildXml);
+            doc.getDocumentElement().normalize();
 
-                String result = doc
-                        .getElementsByTagName("result").item(0)
-                        .getChildNodes().item(0)
-                        .getNodeValue();
+            String result = doc
+                    .getElementsByTagName("result").item(0)
+                    .getChildNodes().item(0)
+                    .getNodeValue();
 
-                if (result.equals("SUCCESS") || result.equals("UNSTABLE")) {
-                    return true;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (requireSuccessful) {
+                return result.equals("SUCCESS") || result.equals("UNSTABLE");
+            } else {
+                // skipping ABORTED builds anyway
+                return !result.equals("ABORTED");
             }
-            return false;
-        } else {
-            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
     // checks if the build has the same NVR as given
@@ -79,7 +77,7 @@ public class Builds {
     }
 
     // gets all the compatible builds with the given parameters and returns them in a list
-    public static ArrayList<File> getBuilds(File job, boolean skipFailed, String nvrQuery) {
+    public static ArrayList<File> getBuilds(File job, boolean skipFailed, String nvrQuery, int numberOfBuilds) {
         ArrayList<File> listOfBuilds = new ArrayList<>();
 
         File buildDir = new File(job.getAbsolutePath() + "/builds/");
@@ -98,25 +96,18 @@ public class Builds {
         Arrays.sort(buildsInDir, Comparator.comparingInt(a -> Integer.parseInt(a.getName())));
         Collections.reverse(Arrays.asList(buildsInDir));
 
-        // when the nvr query has array ({...}), expecting more results
-        boolean moreResults = !nvrQuery.equals("") && nvrQuery.charAt(0) == '{';
-        ArrayList<String> alreadyFoundNvrs = new ArrayList<>(); // to store already found nvrs (to get no duplicates)
-        int expectedSize = nvrQuery.split(",").length; // number of all nvrs in the nvr array
+        HashMap<String, Integer> nvrCount = new HashMap<>();
+        int expectedSize = numberOfBuilds;
+        if (!nvrQuery.equals("") && nvrQuery.charAt(0) == '{') {
+            expectedSize = expectedSize * nvrQuery.split(",").length;
+        }
 
         for (File build : buildsInDir) {
-            if (checkIfCorrect(build, skipFailed) && checkForNvr(build, nvrQuery)) {
-                if (!moreResults) {
+            if (checkIfCorrect(build, skipFailed) && checkForNvr(build, nvrQuery) && listOfBuilds.size() < expectedSize) {
+                nvrCount.putIfAbsent(getNvr(build), 0);
+                if (nvrCount.get(getNvr(build)) < numberOfBuilds) {
                     listOfBuilds.add(build);
-                    break;
-                } else {
-                    String nvr = JobsRecognition.getChangelogsNvr(build);
-                    if (!alreadyFoundNvrs.contains(nvr)) {
-                        listOfBuilds.add(build);
-                        alreadyFoundNvrs.add(nvr);
-                    }
-                    if (alreadyFoundNvrs.size() == expectedSize) {
-                        break;
-                    }
+                    nvrCount.replace(getNvr(build), nvrCount.get(getNvr(build)) + 1);
                 }
             }
         }
@@ -139,7 +130,7 @@ public class Builds {
         if (split[split.length - 2].equals("builds")) { // second last should be the "builds" directory
             return split[split.length - 1]; // the last is the build number
         } else {
-            throw new RuntimeException("The getJobName() function got invalid build path.");
+            throw new RuntimeException("The getBuildNumber() function got invalid build path.");
         }
     }
 
