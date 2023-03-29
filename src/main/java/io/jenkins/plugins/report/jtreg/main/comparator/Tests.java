@@ -1,43 +1,55 @@
 package hudson.plugins.report.jck.main.comparator;
 
+import hudson.plugins.report.jck.BuildReportExtended;
 import hudson.plugins.report.jck.BuildSummaryParser;
 import hudson.plugins.report.jck.JckReportPublisher;
-import hudson.plugins.report.jck.model.BuildReport;
-import hudson.plugins.report.jck.model.Test;
+import hudson.plugins.report.jck.model.*;
+import hudson.plugins.report.jck.wrappers.RunWrapperFromDir;
 
 import java.io.File;
 import java.util.*;
 
 public class Tests {
-    private static ArrayList<String> getBuildFailedTests(File build) {
+    // function for getting failed tests into an ArrayList
+    private static ArrayList<String> getBuildFailedTests(File build) throws Exception {
         ArrayList<String> failedTests = new ArrayList<>();
 
-        JckReportPublisher jcp = new JckReportPublisher("report-{runtime,devtools,compiler}.xml.gz");
+        JckReportPublisher jcp = new JckReportPublisher("glob:*.{xml,xml.gz}"); // completely irrelevant string
         BuildSummaryParser bs = new BuildSummaryParser(Arrays.asList("jck", "jtreg"), jcp);
 
-        BuildReport br = bs.parseJobReports(build);
+        BuildReportExtended bex = bs.parseBuildReportExtended(new RunWrapperFromDir(build), null);
+        SuitesWithResults swr = bex.getAllTests();
 
-        for (Test t : br.getSuites().get(0).getReport().getTestProblems()) {
-            failedTests.add(t.getName());
+        if (swr != null) {
+            for (SuiteTestsWithResults t : swr.getAllTestsAndSuites()) {
+                for (SuiteTestsWithResults.StringWithResult s : t.getTests()) {
+                    if (s.getStatus().isFailed()) {
+                        failedTests.add(s.getTestName());
+                    }
+                }
+            }
         }
+
         return failedTests;
     }
 
-    public static HashMap<String, ArrayList<String>> createFailedMap(ArrayList<File> buildsToCompare) {
+    // function for creating a HashMap of "build info - list of its failed tests" pair
+    public static HashMap<String, ArrayList<String>> createFailedMap(ArrayList<File> buildsToCompare) throws Exception {
         HashMap<String, ArrayList<String>> failedMap = new HashMap<>();
 
         for (File build : buildsToCompare) {
-            failedMap.put(Builds.getJobName(build) + " -=- " + Builds.getBuildNumber(build) + " -=- " + Builds.getNvr(build), getBuildFailedTests(build));
+            failedMap.put(Builds.getJobName(build) + " - " + Builds.getBuildNumber(build) + " - " + Builds.getNvr(build), getBuildFailedTests(build));
         }
 
         return failedMap;
     }
 
+    // function for reversing the HashMap from reverseFailedMap() method
+    // Keys: Failed test names, Values: list of builds where the test failed
     private static HashMap<String, ArrayList<String>> reverseFailedMap(HashMap<String, ArrayList<String>> failedMap) {
         HashMap<String, ArrayList<String>> reversedMap = new HashMap<>();
 
         ArrayList<String> allFailed = new ArrayList<>();
-
         for (ArrayList<String> tests : failedMap.values()) {
             for (String test : tests) {
                 if(!allFailed.contains(test)) {
@@ -60,6 +72,7 @@ public class Tests {
         return reversedMap;
     }
 
+    // function for getting the HashMap of failed tests ready for printing to console
     public static void printFailedTable(HashMap<String, ArrayList<String>> failedMap, Options.Operations operation) {
         if (operation == Options.Operations.Compare) {
             failedMap = reverseFailedMap(failedMap);
@@ -73,6 +86,7 @@ public class Tests {
                 }
             }
         }
+        Collections.sort(allFailedTests);
 
         String[][] table = new String[failedMap.size() + 1][allFailedTests.size() + 1];
         // add first line (header)
@@ -80,7 +94,10 @@ public class Tests {
             table[0][i] = allFailedTests.get(i - 1);
         }
         // add the builds and tests
-        Set<String> keys = failedMap.keySet();
+        ArrayList<String> keys = new ArrayList<>(failedMap.keySet());
+        Collections.sort(keys);
+
+        // add the "X"s to the table
         int i = 1;
         for (String key : keys) {
             table[i][0] = key;
@@ -91,48 +108,5 @@ public class Tests {
         }
 
         PrintTable.print(table, failedMap.size() + 1, allFailedTests.size() + 1);
-    }
-
-    public static void printQueryForTest(String testName, HashMap<String, ArrayList<String>> failedMap) {
-        int size = failedMap.size();
-        failedMap = reverseFailedMap(failedMap);
-
-        ArrayList<String> builds = failedMap.get(testName);
-        ArrayList<String[]> splitBuilds = new ArrayList<>();
-
-        for (String build : builds) {
-            splitBuilds.add(build.split(" -=- ")[0].split("[.-]"));
-        }
-
-        ArrayList<ArrayList<String>> queryList = new ArrayList<>();
-        for (int i = 0; i < splitBuilds.get(0).length; i++) {
-            ArrayList<String> variants = new ArrayList<>();
-            for (String[] build : splitBuilds) {
-                if (!variants.contains(build[i])) {
-                    variants.add(build[i]);
-                }
-            }
-            queryList.add(variants);
-        }
-
-        StringBuilder queryString = new StringBuilder();
-        for (ArrayList<String> v : queryList) {
-            if (v.size() == 1) {
-                queryString.append(v.get(0)).append(" ");
-            } else if(v.size() == size) {
-                queryString.append("* ");
-            } else {
-                queryString.append("{");
-                for (String s : v) {
-                    queryString.append(s);
-                    if(v.indexOf(s) != v.size() - 1) {
-                        queryString.append(",");
-                    }
-                }
-                queryString.append("}").append(" ");
-            }
-        }
-
-        System.out.println(queryString);
     }
 }
