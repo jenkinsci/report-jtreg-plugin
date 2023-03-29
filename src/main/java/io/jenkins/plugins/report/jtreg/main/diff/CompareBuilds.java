@@ -23,6 +23,7 @@
  */
 package io.jenkins.plugins.report.jtreg.main.diff;
 
+import io.jenkins.plugins.report.jtreg.Constants;
 import io.jenkins.plugins.report.jtreg.main.diff.cmdline.Arguments;
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
