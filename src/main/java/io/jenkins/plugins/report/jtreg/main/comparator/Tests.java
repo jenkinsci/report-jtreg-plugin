@@ -39,7 +39,7 @@ public class Tests {
         HashMap<String, ArrayList<String>> failedMap = new HashMap<>();
 
         for (File build : buildsToCompare) {
-            failedMap.put(Builds.getJobName(build) + " - " + Builds.getBuildNumber(build) + " - " + Builds.getNvr(build), getBuildFailedTests(build));
+            failedMap.put(Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build) + " - nvr:" + Builds.getNvr(build), getBuildFailedTests(build));
         }
 
         return failedMap;
