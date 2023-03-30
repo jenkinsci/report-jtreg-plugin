@@ -119,12 +119,28 @@ public class BuildReportExtended extends BuildReport {
         return SuiteTestsWithResults.getDiffServer() + "?generated-part=+-view%3Dinfo+++-output%3Dhtml++&custom-part=";//+job+numbers //eg as above;
     }
 
+    private static String getCompUrlStub() {
+        return SuiteTestsWithResults.getCompServer() + "?generated-part=&custom-part=--compare+";//+job+numbers //eg as above;
+    }
+
     public String getLinkTraces() {
         return getTracesUrlStub() + job + "+" + getBuildNumber();
     }
 
     public boolean isDiffTool() {
         return JenkinsReportJckGlobalConfig.isGlobalDiffUrl();
+    }
+
+    public String getCompareArches() {
+        return getCompUrlStub() + ("--query+" + job.replaceAll("-\\.", "+") + "+--nvr+" + getBuildName()).replace("#","%23");
+    }
+
+    public String getCompareOsses() {
+        return getCompUrlStub() + ("--query+" + job.replaceAll("-\\.", "+") + "+--nvr+" + getBuildName()).replace("#","%23");
+    }
+
+    public String getCompareVariants() {
+        return getCompUrlStub() + ("--query+" + job.replaceAll("-\\.", "+") + "+--nvr+" + getBuildName()).replace("#","%23");
     }
 
 }

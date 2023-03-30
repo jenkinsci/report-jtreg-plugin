@@ -34,7 +34,17 @@
                     <hr/> <a name="problems"/>
                      <small>
                          <b>
-                              <a href="${it.linkTraces}">all traces</a>&amp;nbsp;
+                             <j:choose>
+                                 <j:when test="${it.isDiffTool()}">
+                                     <a href="${it.linkTraces}">all traces</a>&amp;nbsp;
+                                     <a href="${it.compareArches}">compare architectures</a>&amp;nbsp;
+                                     <a href="${it.compareOsses}">comapre OSes</a>&amp;nbsp;
+                                     <a href="${it.compareVariants}">comapre variants</a>&amp;nbsp;
+                                 </j:when>
+                                 <j:otherwise>
+                                     diff tool is not configured. Set up url in jenkins main config
+                                 </j:otherwise>
+                             </j:choose>
                          </b>
                      </small>
                     <h2>Failures and Errors</h2>
