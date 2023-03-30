@@ -15,7 +15,8 @@
         <li>shell.sh: /opt/jdk/bin/java -cp $CP -Djenkins_home=$jenkins_main_home
             io.jenkins.plugins.report.jtreg.main.diff.CompareBuilds $@</li>
         <li>Where the CP contains jars from unpacked jenkins.war and jenkins report pluginwith depndencies</li>
-        <li>service.sh: /opt/jdk/bin/java io.jenkins.plugins.report.jtreg.main.diff.Service /path/to/shel.sh customPort</li>
+        <li>service.sh: /opt/jdk/bin/java io.jenkins.plugins.report.jtreg.main.diff.Service
+            /path/to/shel.sh customPort</li>
         <li>this field: some_url:customPort, usually, if it is on same machine, which it usually is, jenkins_url but on 9090 or custom port</li>
     </blockquote>
     <li>There is work in progress ot extract the cli and service properly, and to do new cli</li>

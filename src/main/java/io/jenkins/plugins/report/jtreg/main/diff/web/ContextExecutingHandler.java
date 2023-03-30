@@ -25,8 +25,7 @@ package io.jenkins.plugins.report.jtreg.main.diff.web;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import io.jenkins.plugins.report.jtreg.main.diff.cmdline.Arguments;
-import io.jenkins.plugins.report.jtreg.main.diff.cmdline.JobsRecognition;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -38,20 +37,23 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.jenkins.plugins.report.jtreg.main.diff.cmdline.Arguments;
+import io.jenkins.plugins.report.jtreg.main.diff.cmdline.JobsRecognition;
+
 /**
  *
  * This class is very simple files providing handler. If it is known file in
  * declared root, then it is returned. If it is directory, listing is returned,
  * otherwise 404.
  */
-public class ContextExecutingHandler implements HttpHandler {
+public abstract class ContextExecutingHandler implements HttpHandler {
 
     private final File targetProgram;
     private final String template;
 
     public ContextExecutingHandler(File targetProgram) throws IOException {
         this.targetProgram = targetProgram;
-        this.template = loadDifTempalte();
+        this.template = loadDifTemplate();
     }
 
     @Override
@@ -61,13 +63,11 @@ public class ContextExecutingHandler implements HttpHandler {
         new Thread(rr).start();
     }
 
-    private String loadDifTempalte() throws IOException {
-        return loadTemplate("/io/jenkins/plugins/report/jtreg/main/web/diff.html");
-    }
+    protected abstract String loadDifTemplate() throws IOException;
 
-    private String loadTemplate(String path) throws IOException {
+    public static String loadTemplate(String path) throws IOException {
         StringBuilder sb = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(path), "utf-8"))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(ContextExecutingHandler.class.getResourceAsStream(path), "utf-8"))) {
             while (true) {
                 String line = br.readLine();
                 if (line == null) {
@@ -138,7 +138,7 @@ public class ContextExecutingHandler implements HttpHandler {
 
         private String processTemplate(final String template) throws UnsupportedEncodingException {
             String r = template;
-            r = r.replaceAll("(?s)<!--help-->.*<!--helpEnd-->", Arguments.printHelp());
+            r = r.replaceAll("(?s)<!--help-->.*<!--helpEnd-->", pritnHelp());
             StringBuilder views = new StringBuilder();
             for (int i = 0; i < Arguments.knownViews.size(); i++) {
                 String string = Arguments.knownViews.get(i);
@@ -198,5 +198,7 @@ public class ContextExecutingHandler implements HttpHandler {
         }
 
     }
+
+    protected abstract String pritnHelp() throws UnsupportedEncodingException;
 
 }
