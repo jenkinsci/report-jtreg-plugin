@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.jenkins.plugins.report.jtreg.main.diff;
+package io.jenkins.plugins.report.jtreg.main;
 
 import com.sun.net.httpserver.HttpServer;
 

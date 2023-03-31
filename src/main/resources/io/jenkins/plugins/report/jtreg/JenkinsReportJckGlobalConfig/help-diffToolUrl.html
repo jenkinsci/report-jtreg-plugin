@@ -1,7 +1,7 @@
 <div>
     Jenkins report jck plugin is designed to work with egtremly huge datasets 100 000 items and up.<br/>
     To do this properly, some <b>queries</b> are not available on project page, but were moved to external <b>cmdline tool/service</b><br/>
-    That are <b>io.jenkins.plugins.report.jtreg.main.diff.CompareBuilds</b> and <b>io.jenkins.plugins.report.jtreg.main.diff.Service</b> classes<br/>
+    That are <b>io.jenkins.plugins.report.jtreg.main.diff.CompareBuilds</b> and <b>io.jenkins.plugins.report.jtreg.main.Service</b> classes<br/>
     Unluckily, those were never designed with security in mind, were just needed "yesterday", so:<br/>
     <li>They reside in codebase of plugin</li>
     <li>the cli is superpowerful</li>
@@ -15,7 +15,7 @@
         <li>shell.sh: /opt/jdk/bin/java -cp $CP -Djenkins_home=$jenkins_main_home
             io.jenkins.plugins.report.jtreg.main.diff.CompareBuilds $@</li>
         <li>Where the CP contains jars from unpacked jenkins.war and jenkins report pluginwith depndencies</li>
-        <li>service.sh: /opt/jdk/bin/java io.jenkins.plugins.report.jtreg.main.diff.Service
+        <li>service.sh: /opt/jdk/bin/java io.jenkins.plugins.report.jtreg.main.Service
             /path/to/shel.sh customPort</li>
         <li>this field: some_url:customPort, usually, if it is on same machine, which it usually is, jenkins_url but on 9090 or custom port</li>
     </blockquote>
