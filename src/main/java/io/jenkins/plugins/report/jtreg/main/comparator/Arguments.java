@@ -7,85 +7,72 @@ public class Arguments {
 
         if (arguments.length >= 1) {
             for (int i = 0; i < arguments.length; i++) {
-                switch (arguments[i].toLowerCase()) {
-                    case "-h":
-                    case "--help":
+                String currentArgument = arguments[i];
+
+                // delete all leading - characters
+                while (currentArgument.charAt(0) == '-') {
+                    currentArgument = currentArgument.substring(1);
+                }
+                switch (currentArgument.toLowerCase()) {
+                    case "h":
+                    case "help":
                         System.out.println("Test Variant Comparer Usage:");
                         System.exit(0);
                         break;
-                    case "-l":
-                    case "--list":
+                    case "list":
                         if (options.getOperation() != null) {
                             throw new RuntimeException("Cannot combine --list with other operations.");
                         }
                         options.setOperation(Options.Operations.List);
                         break;
-                    case "-e":
-                    case "--enumerate":
+                    case "enumerate":
                         if (options.getOperation() != null) {
                             throw new RuntimeException("Cannot combine --enumerate with other operations.");
                         }
                         options.setOperation(Options.Operations.Enumerate);
                         break;
-                    case "-c":
-                    case "--compare":
+                    case "compare":
                         if (options.getOperation() != null) {
                             throw new RuntimeException("Cannot combine --compare with other operations.");
                         }
                         options.setOperation(Options.Operations.Compare);
                         break;
-                    case "-p":
-                    case "--path":
+                    case "path":
                         if (i + 1 <= arguments.length) {
                             options.setJobsPath(arguments[++i]);
                         } else {
                             throw new RuntimeException("Expected path to jobs after -p.");
                         }
                         break;
-                    case "-q":
-                    case "--query":
+                    case "query":
                         if (i + 1 <= arguments.length) {
                             options.setQueryString(arguments[++i]);
                         } else {
                             throw new RuntimeException("Expected query string after -q.");
                         }
                         break;
-                    case "-n":
-                    case "--nvr":
+                    case "nvr":
                         if (i + 1 <= arguments.length) {
                             options.setNvrQuery(arguments[++i]);
                         } else {
                             throw new RuntimeException("Expected NVR after -n.");
                         }
                         break;
-                    case "--test":
-                        if (i + 1 <= arguments.length) {
-                            options.setTest(arguments[++i]);
-                        } else {
-                            throw new RuntimeException("Expected test name after --test.");
-                        }
-                        break;
-                    case "--history":
+                    case "history":
                         if (i + 1 <= arguments.length) {
                             options.setNumberOfBuilds(Integer.parseInt(arguments[++i]));
                         } else {
                             throw new RuntimeException("Expected number of builds after --history.");
                         }
                         break;
-                    case "--show-nvrs=false":
-                    case "--show-nvrs=true":
-                        if (arguments[i].split("=")[1].equals("true")) {
-                            options.setShowNvrs(true);
-                        }
-                        break;
-                    case "--skip-failed=true":
-                    case "--skip-failed=false":
-                        if (arguments[i].split("=")[1].equals("false")) {
+                    case "skip-failed=true":
+                    case "skip-failed=false":
+                        if (currentArgument.split("=")[1].equals("false")) {
                             options.setSkipFailed(false);
                         }
                         break;
                     default:
-                        throw new RuntimeException("Unknown argument " + arguments[i] + ", run with --help for info.");
+                        throw new RuntimeException("Unknown argument " + currentArgument + ", run with --help for info.");
                 }
             }
         } else {
@@ -97,7 +84,7 @@ public class Arguments {
             throw new RuntimeException("Expected some operation (--list, --enumerate or --compare).");
         }
         if (options.getJobsPath() == null) {
-            throw new RuntimeException("Expected path to jobs directory (-p).");
+            throw new RuntimeException("Expected path to jobs directory (--path).");
         }
 
         return options;

@@ -5,17 +5,14 @@ public class Options {
     private String jobsPath;
     private String queryString;
     private String nvrQuery;
-    private String test;
     private int numberOfBuilds;
     private boolean skipFailed;
-    private boolean showNvrs;
 
     public Options() {
         this.queryString = "";
         this.nvrQuery = "";
         this.numberOfBuilds = 1;
         this.skipFailed = true;
-        this.showNvrs = false;
     }
 
     public Operations getOperation() {
@@ -50,14 +47,6 @@ public class Options {
         this.nvrQuery = nvr;
     }
 
-    public String getTest() {
-        return test;
-    }
-
-    public void setTest(String test) {
-        this.test = test;
-    }
-
     public int getNumberOfBuilds() {
         return numberOfBuilds;
     }
@@ -72,14 +61,6 @@ public class Options {
 
     public void setSkipFailed(boolean skipFailed) {
         this.skipFailed = skipFailed;
-    }
-
-    public boolean isShowNvrs() {
-        return showNvrs;
-    }
-
-    public void setShowNvrs(boolean showNvrs) {
-        this.showNvrs = showNvrs;
     }
 
     // enum of all available operations
