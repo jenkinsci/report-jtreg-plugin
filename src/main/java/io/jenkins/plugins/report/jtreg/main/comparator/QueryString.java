@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class QueryString {
     // parses the given query string into a list of string arrays
     private static ArrayList<String[]> parseToList(String queryString) {
-        String[] queryArray = queryString.split(" ");
+        String[] queryArray = queryString.split("\\s+");
         ArrayList<String[]> queryList = new ArrayList<>();
 
         for (String s : queryArray) {
