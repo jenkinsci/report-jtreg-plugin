@@ -58,6 +58,10 @@ public class QueryString {
             }
 
             for (int i = 0; i < cachedQueryList.size(); i++) {
+                if (jobArray.length < i) {
+                    break;
+                }
+
                 String[] qA = cachedQueryList.get(i); // get a single array from the queryList
 
                 boolean reversed = qA[0].charAt(0) == '!'; // check for reversed query
