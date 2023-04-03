@@ -8,11 +8,17 @@ public class Arguments {
         if (arguments.length >= 1) {
             for (int i = 0; i < arguments.length; i++) {
                 String currentArgument = arguments[i];
+                boolean hadHyphen = false; // for enforcing at least one hyphen
 
                 // delete all leading - characters
                 while (currentArgument.charAt(0) == '-') {
+                    hadHyphen = true;
                     currentArgument = currentArgument.substring(1);
                 }
+                if (!hadHyphen) {
+                    throw new RuntimeException("Unknown argument " + currentArgument + ", did you forget the leading hyphens to the argument (--)?");
+                }
+
                 switch (currentArgument.toLowerCase()) {
                     case "h":
                     case "help":
@@ -41,21 +47,21 @@ public class Arguments {
                         if (i + 1 <= arguments.length) {
                             options.setJobsPath(arguments[++i]);
                         } else {
-                            throw new RuntimeException("Expected path to jobs after -p.");
+                            throw new RuntimeException("Expected path to jobs after --path.");
                         }
                         break;
                     case "query":
                         if (i + 1 <= arguments.length) {
                             options.setQueryString(arguments[++i]);
                         } else {
-                            throw new RuntimeException("Expected query string after -q.");
+                            throw new RuntimeException("Expected query string after --query.");
                         }
                         break;
                     case "nvr":
                         if (i + 1 <= arguments.length) {
                             options.setNvrQuery(arguments[++i]);
                         } else {
-                            throw new RuntimeException("Expected NVR after -n.");
+                            throw new RuntimeException("Expected NVR after --nvr.");
                         }
                         break;
                     case "history":
