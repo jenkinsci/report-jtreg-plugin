@@ -65,6 +65,6 @@ public class Options {
 
     // enum of all available operations
     public enum Operations {
-        List, Enumerate, Compare
+        List, Enumerate, Compare, Print
     }
 }

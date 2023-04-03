@@ -22,16 +22,13 @@ public class Jobs {
     }
 
     // prints all jobs that match the query string
-    public void printJobs(String queryString, boolean showNvrs) {
-        for (int i = 0; i < jobsInDir.length; i++) {
-            if (QueryString.checkJobWithQuery(jobsInDir[i], queryString)) {
-                System.out.printf("%d) %s%n", i, jobsInDir[i].getName());
-                if (showNvrs) {
-                    for (String nvr : Builds.getJobNvrs(jobsInDir[i])) {
-                        System.out.print(nvr + ", ");
-                    }
-                    System.out.print("\n\n");
-                }
+    public void printJobs(String queryString, boolean skipFailed, String nvrQuery, int numberOfBuilds) {
+        ArrayList<File> jobs = getJobsByQuery(queryString);
+        for (File job : jobs) {
+            System.out.println(job.getName());
+            ArrayList<File> jobBuilds = Builds.getBuilds(job, skipFailed, nvrQuery, numberOfBuilds);
+            for (File build : jobBuilds) {
+                System.out.println("\t" + "build:" + Builds.getBuildNumber(build) + " nvr:" + Builds.getNvr(build));
             }
         }
     }

@@ -43,6 +43,12 @@ public class Arguments {
                         }
                         options.setOperation(Options.Operations.Compare);
                         break;
+                    case "print":
+                        if (options.getOperation() != null) {
+                            throw new RuntimeException("Cannot combine --print with other operations.");
+                        }
+                        options.setOperation(Options.Operations.Print);
+                        break;
                     case "path":
                         if (i + 1 <= arguments.length) {
                             options.setJobsPath(arguments[++i]);

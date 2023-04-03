@@ -19,6 +19,8 @@ public class VariantComparator {
             FailedTests.printFailedTable(FailedTests.createFailedMap(buildsToCompare), options.getOperation());
         } else if (options.getOperation() == Options.Operations.Enumerate) {
             jobs.printVariants(options.getQueryString());
+        } else if (options.getOperation() == Options.Operations.Print) {
+            jobs.printJobs(options.getQueryString(), options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds());
         }
     }
 }
