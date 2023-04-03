@@ -6,6 +6,9 @@ import java.util.Arrays;
 
 public class QueryString {
     private static ArrayList<String[]> cachedQueryList = null;
+    public static void resetCachedQuery() {
+        cachedQueryList = null;
+    }
 
     // parses the given query string into a list of string arrays
     private static ArrayList<String[]> parseToList(String queryString) {
