@@ -59,7 +59,7 @@ public class Builds {
     }
 
     // checks if the build has the same NVR as given
-    private static boolean checkForNvr(File build, String nvrQuery) {
+    static boolean checkForNvr(File build, String nvrQuery) {
         // nvrQuery has the same syntax as query string
         if (nvrQuery.equals("") || nvrQuery.equals("*")) {
             return true;
@@ -69,9 +69,9 @@ public class Builds {
             }
             String[] nvrs = nvrQuery.substring(1, nvrQuery.length() - 1).split(",");
             String buildNvr = JobsRecognition.getChangelogsNvr(build);
-            return Arrays.asList(nvrs).contains(buildNvr);
+            return Arrays.stream(nvrs).anyMatch(s -> buildNvr.matches(s));
         } else {
-            return nvrQuery.equals(JobsRecognition.getChangelogsNvr(build));
+            return JobsRecognition.getChangelogsNvr(build).matches(nvrQuery);
         }
     }
 

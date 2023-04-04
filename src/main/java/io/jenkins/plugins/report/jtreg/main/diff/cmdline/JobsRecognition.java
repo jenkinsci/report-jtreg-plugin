@@ -110,7 +110,7 @@ public class JobsRecognition {
         return creteChangelogFile(creteBuildDir(jobName, id));
     }
 
-    private static File creteChangelogFile(File dir) {
+    public static File creteChangelogFile(File dir) {
         return new File(dir, "changelog.xml");
     }
 
