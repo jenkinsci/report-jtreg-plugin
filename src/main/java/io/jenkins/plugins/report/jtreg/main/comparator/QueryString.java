@@ -58,7 +58,8 @@ public class QueryString {
             }
 
             for (int i = 0; i < cachedQueryList.size(); i++) {
-                if (jobArray.length < i) {
+                System.out.println(jobArray.length + " " + i);
+                if (jobArray.length <= i) {
                     break;
                 }
 
