@@ -1,5 +1,7 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
+import io.jenkins.plugins.report.jtreg.Constants;
+
 public class Arguments {
     // parses the given arguments and returns instance of Options
     public static Options parse(String[] arguments) {
@@ -83,6 +85,9 @@ public class Arguments {
                             options.setSkipFailed(false);
                         }
                         break;
+                    case "force":
+                        options.setForceVagueQuery(true);
+                        break;
                     default:
                         throw new RuntimeException("Unknown argument " + currentArgument + ", run with --help for info.");
                 }
@@ -93,10 +98,16 @@ public class Arguments {
 
         // check for basic errors
         if (options.getOperation() == null) {
-            throw new RuntimeException("Expected some operation (--list, --enumerate or --compare).");
+            throw new RuntimeException("Expected some operation (--list, --enumerate, --compare or --print).");
         }
         if (options.getJobsPath() == null) {
             throw new RuntimeException("Expected path to jobs directory (--path).");
+        }
+
+        // check if the query string is too vague
+        int numOfAsterisks = options.getQueryString().length() - options.getQueryString().replace("*", "").length();
+        if ((numOfAsterisks > Constants.VAGUE_QUERY_THRESHOLD  || options.getQueryString().equals(""))&& !options.isForceVagueQuery()) {
+            throw new RuntimeException("The query string is too vague (too many *), run with --force to continue anyway.");
         }
 
         return options;

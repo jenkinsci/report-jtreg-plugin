@@ -7,12 +7,14 @@ public class Options {
     private String nvrQuery;
     private int numberOfBuilds;
     private boolean skipFailed;
+    private boolean forceVagueQuery;
 
     public Options() {
         this.queryString = "";
         this.nvrQuery = "";
         this.numberOfBuilds = 1;
         this.skipFailed = true;
+        this.forceVagueQuery = false;
     }
 
     public Operations getOperation() {
@@ -61,6 +63,14 @@ public class Options {
 
     public void setSkipFailed(boolean skipFailed) {
         this.skipFailed = skipFailed;
+    }
+
+    public boolean isForceVagueQuery() {
+        return forceVagueQuery;
+    }
+
+    public void setForceVagueQuery(boolean forceVagueQuery) {
+        this.forceVagueQuery = forceVagueQuery;
     }
 
     // enum of all available operations
