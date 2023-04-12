@@ -9,30 +9,6 @@ import java.io.File;
 import java.util.*;
 
 public class Builds {
-    // gets all NVRs from the given job and returns them as a list
-    public static ArrayList<String> getJobNvrs(File job) {
-        ArrayList<String> nvrs = new ArrayList<>();
-
-        File buildDir = new File(job.getAbsolutePath() + "/builds/");
-        File[] filesInDir = buildDir.listFiles();
-        // no builds => return empty list
-        if (filesInDir == null) {
-            return nvrs;
-        }
-        File[] buildsInDir = Arrays
-                .stream(filesInDir)
-                .filter(File::isDirectory)
-                .toArray(File[]::new);
-
-        for (File build : buildsInDir) {
-            String nvr = JobsRecognition.getChangelogsNvr(build); // method from jenkins-report-jck
-            if (nvr != null && !nvrs.contains(nvr)) {
-                nvrs.add(nvr);
-            }
-        }
-        return nvrs;
-    }
-
     // checks if the given build was successful
     private static boolean checkIfCorrect(File build, boolean requireSuccessful) {
         try {
@@ -63,15 +39,18 @@ public class Builds {
         // nvrQuery has the same syntax as query string
         if (nvrQuery.equals("") || nvrQuery.equals("*")) {
             return true;
+        }
+        String buildNvr = JobsRecognition.getChangelogsNvr(build);
+        if (buildNvr == null) {
+            return false;
         } else if (nvrQuery.charAt(0) == '{') {
             if (nvrQuery.charAt(nvrQuery.length() - 1) != '}') {
                 throw new RuntimeException("Expected closing }.");
             }
             String[] nvrs = nvrQuery.substring(1, nvrQuery.length() - 1).split(",");
-            String buildNvr = JobsRecognition.getChangelogsNvr(build);
             return Arrays.stream(nvrs).anyMatch(s -> buildNvr.matches(s));
         } else {
-            return JobsRecognition.getChangelogsNvr(build).matches(nvrQuery);
+            return buildNvr.matches(nvrQuery);
         }
     }
 
@@ -95,19 +74,15 @@ public class Builds {
         Arrays.sort(buildsInDir, Comparator.comparingInt(a -> Integer.parseInt(a.getName())));
         Collections.reverse(Arrays.asList(buildsInDir));
 
-        HashMap<String, Integer> nvrCount = new HashMap<>();
-        int expectedSize = numberOfBuilds;
-        if (!nvrQuery.equals("") && nvrQuery.charAt(0) == '{') {
-            expectedSize = expectedSize * nvrQuery.split(",").length;
-        }
-
+        int buildsChecked = 0;
         for (File build : buildsInDir) {
-            if (checkIfCorrect(build, skipFailed) && checkForNvr(build, nvrQuery) && listOfBuilds.size() < expectedSize) {
-                nvrCount.putIfAbsent(getNvr(build), 0);
-                if (nvrCount.get(getNvr(build)) < numberOfBuilds) {
-                    listOfBuilds.add(build);
-                    nvrCount.replace(getNvr(build), nvrCount.get(getNvr(build)) + 1);
-                }
+            if (checkIfCorrect(build, skipFailed) && checkForNvr(build, nvrQuery) && buildsChecked < numberOfBuilds) {
+                listOfBuilds.add(build);
+            }
+
+            // only add to the counter when the build was successful, or when we also take unsuccessful builds
+            if (!skipFailed || checkIfCorrect(build, true)) {
+                buildsChecked++;
             }
         }
         return listOfBuilds;
