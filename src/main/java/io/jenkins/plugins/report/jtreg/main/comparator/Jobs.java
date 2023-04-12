@@ -3,6 +3,7 @@ package io.jenkins.plugins.report.jtreg.main.comparator;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class Jobs {
     private final File[] jobsInDir;
@@ -33,8 +34,21 @@ public class Jobs {
         }
     }
 
+    // gets the "length - and how many jobs has this length" pairs
+    private HashMap<Integer, Integer> getJobsLengths(String queryString) {
+        HashMap<Integer, Integer> jobLengths = new HashMap<>();
+        ArrayList<File> jobList = getJobsByQuery(queryString);
+        for (File job : jobList) {
+            Integer length = job.getName().split("[.-]").length;
+            Integer count = jobLengths.get(length) + 1;
+            jobLengths.put(length, count);
+        }
+
+        return jobLengths;
+    }
+
     // gets all different variants from the jobs into 2D list
-    private ArrayList<ArrayList<String>> getVariantsList(String queryString) {
+    private ArrayList<ArrayList<String>> getVariantsList(String queryString, HashMap<Integer, Integer> jobsLengths) {
         ArrayList<ArrayList<String>> variantsLists = new ArrayList<>();
         // splits a job to "variants" by . or - and goes through all of them
         for (int i = 0; i < jobsInDir[0].getName().split("[.-]").length; i++) {
@@ -53,7 +67,7 @@ public class Jobs {
 
     // prints all the variants of jobs
     public void printVariants(String queryString) {
-        ArrayList<ArrayList<String>> variantsLists = getVariantsList(queryString);
+        ArrayList<ArrayList<String>> variantsLists = getVariantsList(queryString, null);
         for (int i = 0; i < variantsLists.size(); i++) {
             System.out.printf("%d) ", i + 1);
             for (String variant : variantsLists.get(i)) {
