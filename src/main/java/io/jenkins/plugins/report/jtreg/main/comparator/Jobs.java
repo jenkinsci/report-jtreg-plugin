@@ -3,6 +3,7 @@ package io.jenkins.plugins.report.jtreg.main.comparator;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class Jobs {
@@ -40,7 +41,13 @@ public class Jobs {
         ArrayList<File> jobList = getJobsByQuery(queryString);
         for (File job : jobList) {
             Integer length = job.getName().split("[.-]").length;
-            Integer count = jobLengths.get(length) + 1;
+            int count;
+            if (jobLengths.get(length) != null) {
+                count = jobLengths.get(length) + 1;
+            } else {
+                count = 1;
+            }
+
             jobLengths.put(length, count);
         }
 
@@ -48,15 +55,19 @@ public class Jobs {
     }
 
     // gets all different variants from the jobs into 2D list
-    private ArrayList<ArrayList<String>> getVariantsList(String queryString, HashMap<Integer, Integer> jobsLengths) {
+    private ArrayList<ArrayList<String>> getVariantsList(String queryString, int maxLength) {
         ArrayList<ArrayList<String>> variantsLists = new ArrayList<>();
+
+        ArrayList<File> jobsList = getJobsByQuery(queryString);
+
         // splits a job to "variants" by . or - and goes through all of them
-        for (int i = 0; i < jobsInDir[0].getName().split("[.-]").length; i++) {
+        for (int i = 0; i < maxLength; i++) {
             ArrayList<String> variantList = new ArrayList<>();
-            for (File job : jobsInDir) {
+            for (File job : jobsList) {
                 String[] jobArray = job.getName().split("[.-]");
+
                 // checks the variant with query string and adds only non-duplicate
-                if (QueryString.checkJobWithQuery(job, queryString) && !variantList.contains(jobArray[i])) {
+                if (jobArray.length > i && !variantList.contains(jobArray[i])) {
                     variantList.add(jobArray[i]);
                 }
             }
@@ -67,7 +78,16 @@ public class Jobs {
 
     // prints all the variants of jobs
     public void printVariants(String queryString) {
-        ArrayList<ArrayList<String>> variantsLists = getVariantsList(queryString, null);
+        HashMap<Integer, Integer> jobsLengths = getJobsLengths(queryString);
+        ArrayList<ArrayList<String>> variantsLists = getVariantsList(queryString, Collections.max(jobsLengths.keySet()));
+
+        ArrayList<Integer> lengths = new ArrayList<>(jobsLengths.keySet());
+        Collections.sort(lengths);
+        System.out.println("There are:");
+        for (Integer length : lengths) {
+            System.out.println(jobsLengths.get(length) + " jobs with " + length + " elements in its name");
+        }
+
         for (int i = 0; i < variantsLists.size(); i++) {
             System.out.printf("%d) ", i + 1);
             for (String variant : variantsLists.get(i)) {
