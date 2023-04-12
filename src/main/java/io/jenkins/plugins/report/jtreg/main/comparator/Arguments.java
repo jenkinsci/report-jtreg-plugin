@@ -24,7 +24,7 @@ public class Arguments {
                 switch (currentArgument.toLowerCase()) {
                     case "h":
                     case "help":
-                        System.out.println("Test Variant Comparer Usage:");
+                        System.out.print(HelpMessage.HELP_MESSAGE);
                         System.exit(0);
                         break;
                     case "list":
