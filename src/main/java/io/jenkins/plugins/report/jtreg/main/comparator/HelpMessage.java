@@ -12,10 +12,10 @@ final public class HelpMessage {
             "\n" +
             "    These two arguments are mandatory:\n" +
             "    --path <path/to/jenkins/jobs>\n" +
-            "                  a system path to a directory with your jenkins jobs\n" +
+            "                  A system path to a directory with your jenkins jobs.\n" +
             "    --query <querystring>\n" +
-            "                  a query string to filter the jobs (The syntax is described\n" +
-            "                  below.)\n" +
+            "                  A query string to filter the jobs (the syntax is described\n" +
+            "                  below).\n" +
             "\n" +
             "    You need to choose ONE operation from these:\n" +
             "    --print       Print all jobs and their builds that match the rest of\n" +
@@ -23,6 +23,20 @@ final public class HelpMessage {
             "                  or tests.\n" +
             "    --enumerate   Print lists of all variants of jobs (that match the rest of\n" +
             "                  arguments).\n" +
-            "    --list\n" +
-            "    --compare\n";
+            "    --list        Print a table of matched jobs with their builds and the tests\n" +
+            "                  that failed in the build.\n" +
+            "    --compare     Print a table of all failed tests (of matched job builds) and\n" +
+            "                  the builds where they failed.\n" +
+            "\n" +
+            "    Other arguments:\n" +
+            "    --help        Print this help message.\n" +
+            "    --skip-failed=<true/false>\n" +
+            "                  Specify whether the comparator should skip failed tests\n" +
+            "                  (only take successful and unstable) or take all. The\n" +
+            "                  default value is true.\n" +
+            "    --nvr <nvrquery>\n" +
+            "                  To specify what builds to take (only builds with specified\n" +
+            "                  NVRs). The syntax is described below\n" +
+            "    --history <number>\n" +
+            "                  To specify the maximum number of builds to look in.\n";
 }
