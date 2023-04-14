@@ -39,6 +39,11 @@ final public class HelpMessage {
             "                  NVRs). The syntax is described below\n" +
             "    --history <number>\n" +
             "                  To specify the maximum number of builds to look in.\n" +
+            "    --exact-length <number>\n" +
+            "                  Since job names can have different lengths and sometimes\n" +
+            "                  we only need to match jobs with exact name length (number\n" +
+            "                  of element in the job name), this specifies the exact\n" +
+            "                  length." +
             "\n" +
             "Query string syntax:\n" +
             "    The tool splits every job name by . or - characters and compares each\n" +
