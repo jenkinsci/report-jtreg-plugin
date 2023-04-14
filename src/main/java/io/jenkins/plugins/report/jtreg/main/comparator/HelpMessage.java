@@ -44,8 +44,8 @@ final public class HelpMessage {
             "    The tool splits every job name by . or - characters and compares each\n" +
             "    split part with the query string. The query string consists of N parts\n" +
             "    separated by spaces (or other whitespace) and each of these parts\n" +
-            "    corresponds with 1st..Nth part of the split job name." +
-            "    Example with explanation:" +
+            "    corresponds with 1st..Nth part of the split job name.\n" +
+            "    Example with explanation:\n" +
             "     \"jtreg~full jp17 * {f37,el8} !aarch64 !{fastdebug,slowdebug} * * *\"\n" +
             "        jtreg~full - specifies that the job's first part should be exactly\n" +
             "                     jtreg~full.\n" +
@@ -55,7 +55,7 @@ final public class HelpMessage {
             "            matter = the tool takes everything on these positions.\n" +
             "            To stop the tool from draining system resources by looking at\n" +
             "            all jobs, if you specify more than 3 asterisks, you must combine\n" +
-            "            it with the switch \"--force\"." +
+            "            it with the switch \"--force\".\n" +
             "        {f37,el8} - this is a set of possible matches, so the jobs's part on\n" +
             "                    4th position can be either f37 or el8. There can me as\n" +
             "                    many elements as you want, but they must be split by\n" +
