@@ -24,8 +24,8 @@ public class Jobs {
     }
 
     // prints all jobs that match the query string
-    public void printJobs(String queryString, boolean skipFailed, String nvrQuery, int numberOfBuilds) {
-        ArrayList<File> jobs = getJobsByQuery(queryString);
+    public void printJobs(String queryString, boolean skipFailed, String nvrQuery, int numberOfBuilds, int exactJobLength) {
+        ArrayList<File> jobs = getJobsByQuery(queryString, exactJobLength);
         for (File job : jobs) {
             System.out.println(job.getName());
             ArrayList<File> jobBuilds = Builds.getBuilds(job, skipFailed, nvrQuery, numberOfBuilds);
@@ -36,9 +36,9 @@ public class Jobs {
     }
 
     // gets the "length - and how many jobs has this length" pairs
-    private HashMap<Integer, Integer> getJobsLengths(String queryString) {
+    private HashMap<Integer, Integer> getJobsLengths(String queryString, int exactJobLength) {
         HashMap<Integer, Integer> jobLengths = new HashMap<>();
-        ArrayList<File> jobList = getJobsByQuery(queryString);
+        ArrayList<File> jobList = getJobsByQuery(queryString, exactJobLength);
         for (File job : jobList) {
             Integer length = job.getName().split("[.-]").length;
             int count;
@@ -55,10 +55,10 @@ public class Jobs {
     }
 
     // gets all different variants from the jobs into 2D list
-    private ArrayList<ArrayList<String>> getVariantsList(String queryString, int maxLength) {
+    private ArrayList<ArrayList<String>> getVariantsList(String queryString, int maxLength, int exactJobLength) {
         ArrayList<ArrayList<String>> variantsLists = new ArrayList<>();
 
-        ArrayList<File> jobsList = getJobsByQuery(queryString);
+        ArrayList<File> jobsList = getJobsByQuery(queryString, exactJobLength);
 
         // splits a job to "variants" by . or - and goes through all of them
         for (int i = 0; i < maxLength; i++) {
@@ -77,9 +77,9 @@ public class Jobs {
     }
 
     // prints all the variants of jobs
-    public void printVariants(String queryString) {
-        HashMap<Integer, Integer> jobsLengths = getJobsLengths(queryString);
-        ArrayList<ArrayList<String>> variantsLists = getVariantsList(queryString, Collections.max(jobsLengths.keySet()));
+    public void printVariants(String queryString, int exactJobLength) {
+        HashMap<Integer, Integer> jobsLengths = getJobsLengths(queryString, exactJobLength);
+        ArrayList<ArrayList<String>> variantsLists = getVariantsList(queryString, Collections.max(jobsLengths.keySet()), exactJobLength);
 
         ArrayList<Integer> lengths = new ArrayList<>(jobsLengths.keySet());
         Collections.sort(lengths);
@@ -98,10 +98,10 @@ public class Jobs {
     }
 
     // returns matched jobs with query string
-    public ArrayList<File> getJobsByQuery(String queryString) {
+    public ArrayList<File> getJobsByQuery(String queryString, int exactJobLength) {
         ArrayList<File> matchedJobsList = new ArrayList<>();
         for (File job : jobsInDir) {
-            if (QueryString.checkJobWithQuery(job, queryString)) {
+            if ((exactJobLength < 0 || job.getName().split("[.-]").length == exactJobLength) && QueryString.checkJobWithQuery(job, queryString)) {
                 matchedJobsList.add(job);
             }
         }

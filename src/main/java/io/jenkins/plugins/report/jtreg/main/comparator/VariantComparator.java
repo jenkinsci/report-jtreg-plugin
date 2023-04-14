@@ -8,7 +8,7 @@ public class VariantComparator {
         Options options = Arguments.parse(args);
         Jobs jobs = new Jobs(options.getJobsPath());
 
-        ArrayList<File> jobsToCompare = jobs.getJobsByQuery(options.getQueryString());
+        ArrayList<File> jobsToCompare = jobs.getJobsByQuery(options.getQueryString(), options.getExactJobLength());
         ArrayList<File> buildsToCompare = new ArrayList<>();
         for (File job : jobsToCompare) {
             ArrayList<File> builds = Builds.getBuilds(job, options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds());
@@ -18,9 +18,9 @@ public class VariantComparator {
         if (options.getOperation() == Options.Operations.List || options.getOperation() == Options.Operations.Compare) {
             FailedTests.printFailedTable(FailedTests.createFailedMap(buildsToCompare), options.getOperation());
         } else if (options.getOperation() == Options.Operations.Enumerate) {
-            jobs.printVariants(options.getQueryString());
+            jobs.printVariants(options.getQueryString(), options.getExactJobLength());
         } else if (options.getOperation() == Options.Operations.Print) {
-            jobs.printJobs(options.getQueryString(), options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds());
+            jobs.printJobs(options.getQueryString(), options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds(), options.getExactJobLength());
         }
     }
 }
