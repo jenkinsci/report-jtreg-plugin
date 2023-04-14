@@ -38,5 +38,34 @@ final public class HelpMessage {
             "                  To specify what builds to take (only builds with specified\n" +
             "                  NVRs). The syntax is described below\n" +
             "    --history <number>\n" +
-            "                  To specify the maximum number of builds to look in.\n";
+            "                  To specify the maximum number of builds to look in.\n" +
+            "\n" +
+            "Query string syntax:\n" +
+            "    The tool splits every job name by . or - characters and compares each\n" +
+            "    split part with the query string. The query string consists of N parts\n" +
+            "    separated by spaces (or other whitespace) and each of these parts\n" +
+            "    corresponds with 1st..Nth part of the split job name." +
+            "    Example with explanation:" +
+            "     \"jtreg~full jp17 * {f37,el8} !aarch64 !{fastdebug,slowdebug} * * *\"\n" +
+            "        jtreg~full - specifies that the job's first part should be exactly\n" +
+            "                     jtreg~full.\n" +
+            "        jp17 - specifies that the job's second part should be exactly jp17.\n" +
+            "        * - asterisk is a powerful wildcard that matches everything, so in\n" +
+            "            this example, the job's parts on the 3rd, 7th, 8th and 9th don't\n" +
+            "            matter = the tool takes everything on these positions.\n" +
+            "            To stop the tool from draining system resources by looking at\n" +
+            "            all jobs, if you specify more than 3 asterisks, you must combine\n" +
+            "            it with the switch \"--force\"." +
+            "        {f37,el8} - this is a set of possible matches, so the jobs's part on\n" +
+            "                    4th position can be either f37 or el8. There can me as\n" +
+            "                    many elements as you want, but they must be split by\n" +
+            "                    commas with no spaces between them.\n" +
+            "        !aarch64 - matches everything, BUT aarch64.\n" +
+            "        !{fastdebug,slowdebug} - matches everything, but the elements in\n" +
+            "                                 the set.\n" +
+            "\n" +
+            "NVR query syntax:\n" +
+            "    The syntax of the NVR query is simple: it either takes an asterisk (*)\n" +
+            "    all NVRs, or it takes a RegEx of a single NVR it should match, or\n" +
+            "    multiple RegExes in a set ({}) with same rules as the query string set.\n";
 }
