@@ -8,6 +8,7 @@ public class Options {
     private int numberOfBuilds;
     private boolean skipFailed;
     private boolean forceVagueQuery;
+    private int exactJobLength;
 
     public Options() {
         this.queryString = "";
@@ -15,6 +16,7 @@ public class Options {
         this.numberOfBuilds = 1;
         this.skipFailed = true;
         this.forceVagueQuery = false;
+        this.exactJobLength = -1; // negative means the length does not matter
     }
 
     public Operations getOperation() {
@@ -71,6 +73,14 @@ public class Options {
 
     public void setForceVagueQuery(boolean forceVagueQuery) {
         this.forceVagueQuery = forceVagueQuery;
+    }
+
+    public int getExactJobLength() {
+        return exactJobLength;
+    }
+
+    public void setExactJobLength(int exactJobLength) {
+        this.exactJobLength = exactJobLength;
     }
 
     // enum of all available operations

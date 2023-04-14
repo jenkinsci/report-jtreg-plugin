@@ -90,6 +90,12 @@ public class Arguments {
                         break;
                     default:
                         throw new RuntimeException("Unknown argument " + currentArgument + ", run with --help for info.");
+                    case "exact-length":
+                        if (i + 1 <= arguments.length) {
+                            options.setExactJobLength(Integer.parseInt(arguments[++i]));
+                        } else {
+                            throw new RuntimeException("Expected the exact job length after --exact-length.");
+                        }
                 }
             }
         } else {
