@@ -6,11 +6,10 @@ import java.util.ArrayList;
 public class VariantComparator {
     public static void main(String[] args) throws Exception {
         Options options = Arguments.parse(args);
-        Jobs jobs = new Jobs(options.getJobsPath());
+        JobsByQuery jobs = new JobsByQuery(options.getQueryString(), options.getJobsPath(), options.getExactJobLength());
 
-        ArrayList<File> jobsToCompare = jobs.getJobsByQuery(options.getQueryString(), options.getExactJobLength());
         ArrayList<File> buildsToCompare = new ArrayList<>();
-        for (File job : jobsToCompare) {
+        for (File job : jobs.getJobs()) {
             ArrayList<File> builds = Builds.getBuilds(job, options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds());
             buildsToCompare.addAll(builds);
         }
@@ -18,9 +17,9 @@ public class VariantComparator {
         if (options.getOperation() == Options.Operations.List || options.getOperation() == Options.Operations.Compare) {
             FailedTests.printFailedTable(FailedTests.createFailedMap(buildsToCompare), options.getOperation());
         } else if (options.getOperation() == Options.Operations.Enumerate) {
-            jobs.printVariants(options.getQueryString(), options.getExactJobLength());
+            jobs.printVariants();
         } else if (options.getOperation() == Options.Operations.Print) {
-            jobs.printJobs(options.getQueryString(), options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds(), options.getExactJobLength());
+            jobs.printJobs(options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds());
         }
     }
 }
