@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class VariantComparator {
     public static void main(String[] args) throws Exception {
         Options options = Arguments.parse(args);
-        JobsByQuery jobs = new JobsByQuery(options.getQueryString(), options.getJobsPath(), options.getExactJobLength());
+        IJobs jobs = new JobsByQuery(options.getQueryString(), options.getJobsPath(), options.getExactJobLength());
 
         ArrayList<File> buildsToCompare = new ArrayList<>();
         for (File job : jobs.getJobs()) {
@@ -23,4 +23,3 @@ public class VariantComparator {
         }
     }
 }
-
