@@ -9,6 +9,7 @@ public class Options {
     private boolean skipFailed;
     private boolean forceVagueQuery;
     private int exactJobLength;
+    private boolean onlyVolatile;
 
     public Options() {
         this.queryString = "";
@@ -17,6 +18,7 @@ public class Options {
         this.skipFailed = true;
         this.forceVagueQuery = false;
         this.exactJobLength = -1; // negative means the length does not matter
+        this.onlyVolatile = false;
     }
 
     public Operations getOperation() {
@@ -81,6 +83,14 @@ public class Options {
 
     public void setExactJobLength(int exactJobLength) {
         this.exactJobLength = exactJobLength;
+    }
+
+    public boolean isOnlyVolatile() {
+        return onlyVolatile;
+    }
+
+    public void setOnlyVolatile(boolean onlyVolatile) {
+        this.onlyVolatile = onlyVolatile;
     }
 
     // enum of all available operations
