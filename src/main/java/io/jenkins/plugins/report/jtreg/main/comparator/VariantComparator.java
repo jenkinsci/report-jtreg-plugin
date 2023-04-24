@@ -15,7 +15,7 @@ public class VariantComparator {
         }
 
         if (options.getOperation() == Options.Operations.List || options.getOperation() == Options.Operations.Compare) {
-            FailedTests.printFailedTable(FailedTests.createFailedMap(buildsToCompare), options.getOperation());
+            FailedTests.printFailedTable(FailedTests.createFailedMap(buildsToCompare, options.isOnlyVolatile()), options.getOperation());
         } else if (options.getOperation() == Options.Operations.Enumerate) {
             jobs.printVariants();
         } else if (options.getOperation() == Options.Operations.Print) {

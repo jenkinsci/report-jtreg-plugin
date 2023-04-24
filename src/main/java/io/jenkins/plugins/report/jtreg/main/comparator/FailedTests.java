@@ -39,11 +39,37 @@ public class FailedTests {
     }
 
     // function for creating a HashMap of "build info - list of its failed tests" pair
-    public static HashMap<String, ArrayList<String>> createFailedMap(ArrayList<File> buildsToCompare) throws Exception {
+    public static HashMap<String, ArrayList<String>> createFailedMap(ArrayList<File> buildsToCompare, boolean onlyVolatile) throws Exception {
         HashMap<String, ArrayList<String>> failedMap = new HashMap<>();
 
         for (File build : buildsToCompare) {
             failedMap.put(Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build) + " - nvr:" + Builds.getNvr(build), getBuildFailedTests(build));
+        }
+
+        if (onlyVolatile) {
+            // get all different tests
+            Set<String> failedTests = new HashSet<>();
+            for (ArrayList<String> tests : failedMap.values()) {
+                failedTests.addAll(tests);
+            }
+
+            ArrayList<String> keysFromMap = new ArrayList<>(failedMap.keySet());
+
+            for (String failedTest : failedTests) {
+                boolean isEverywhere = true;
+                for (String key : keysFromMap) {
+                    if (!failedMap.get(key).contains(failedTest)) {
+                        isEverywhere = false;
+                        break;
+                    }
+                }
+
+                if (isEverywhere) {
+                    for (String key : keysFromMap) {
+                        failedMap.get(key).remove(failedTest);
+                    }
+                }
+            }
         }
 
         return failedMap;
