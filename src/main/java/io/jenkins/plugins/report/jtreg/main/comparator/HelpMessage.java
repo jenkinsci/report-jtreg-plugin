@@ -44,6 +44,10 @@ final public class HelpMessage {
             "                  we only need to match jobs with exact name length (number\n" +
             "                  of element in the job name), this specifies the exact\n" +
             "                  length." +
+            "    --only-volatile=<true/false>\n" +
+            "                  Specify true to show only non stable tests with the arguments\n" +
+            "                  list and compare (shows only tests, that are NOT failed\n" +
+            "                  everywhere). The default value is false." +
             "\n" +
             "Query string syntax:\n" +
             "    The tool splits every job name by . or - characters and compares each\n" +
