@@ -120,7 +120,8 @@ public class Arguments {
         // check if the query string is too vague
         int numOfAsterisks = options.getQueryString().length() - options.getQueryString().replace("*", "").length();
         int lengthOfQuery = options.getQueryString().split("\\s+").length;
-        if ((numOfAsterisks > Constants.VAGUE_QUERY_THRESHOLD || lengthOfQuery < Constants.VAGUE_QUERY_LENGTH_THRESHOLD)
+        if ((lengthOfQuery < Constants.VAGUE_QUERY_LENGTH_THRESHOLD ||
+                (numOfAsterisks != 0 && (double)numOfAsterisks / (double)lengthOfQuery > Constants.VAGUE_QUERY_THRESHOLD))
                 && !options.isForceVagueQuery()) {
             throw new RuntimeException("The query string is too vague (too many * or short query), run with --force to continue anyway.");
         }

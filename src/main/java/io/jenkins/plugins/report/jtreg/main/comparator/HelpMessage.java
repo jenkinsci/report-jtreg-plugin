@@ -63,8 +63,9 @@ final public class HelpMessage {
             "            this example, the job's parts on the 3rd, 7th, 8th and 9th don't\n" +
             "            matter = the tool takes everything on these positions.\n" +
             "            To stop the tool from draining system resources by looking at\n" +
-            "            all jobs, if you specify more than 3 asterisks, you must combine\n" +
-            "            it with the switch \"--force\".\n" +
+            "            all jobs, if more than half of the query elements are asterisks,\n" +
+            "            or the query has less than 4 parts, you must combine it with the\n" +
+            "            \"--force\" switch.\n" +
             "        {f37,el8} - this is a set of possible matches, so the jobs's part on\n" +
             "                    4th position can be either f37 or el8. There can me as\n" +
             "                    many elements as you want, but they must be split by\n" +

@@ -28,7 +28,7 @@ final public class Constants {
     public static final String REPORT_JSON = "report.json";
     public static final String REPORT_TESTS_LIST_JSON = "tests-list.json";
     public static final String IRRELEVANT_GLOB_STRING = "report-{runtime,devtools,compiler}.xml.gz";
-    public static final int VAGUE_QUERY_THRESHOLD = 3;
+    public static final double VAGUE_QUERY_THRESHOLD = 0.5;
 
-    public static final int VAGUE_QUERY_LENGTH_THRESHOLD = 10;
+    public static final int VAGUE_QUERY_LENGTH_THRESHOLD = 4;
 }
