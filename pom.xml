@@ -15,7 +15,7 @@
     <name>junit/xunit/jtreg/jck compatible publisher targeting huge result bases</name>
 
     <properties>
-        <chartjs.version>4.2.1.4</chartjs.version>
+        <chartjs.version>4.2.1.5</chartjs.version>
         <jenkins.version>2.397</jenkins.version>
     </properties>
 
