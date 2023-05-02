@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class JobsByQuery implements IJobs {
+public class JobsByQuery implements JobsProvider {
     private final ArrayList<String[]> queryList;
     private final ArrayList<File> matchedJobs;
     public JobsByQuery(String queryString, String jobsDirectory, int exactLength) {
