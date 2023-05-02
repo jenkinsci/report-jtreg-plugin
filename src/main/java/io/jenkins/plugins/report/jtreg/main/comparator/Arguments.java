@@ -9,94 +9,89 @@ public class Arguments {
 
         if (arguments.length >= 1) {
             for (int i = 0; i < arguments.length; i++) {
-                String currentArgument = arguments[i];
-                boolean hadHyphen = false; // for enforcing at least one hyphen
-
                 // delete all leading - characters
-                while (currentArgument.charAt(0) == '-') {
-                    hadHyphen = true;
-                    currentArgument = currentArgument.substring(1);
-                }
-                if (!hadHyphen) {
-                    throw new RuntimeException("Unknown argument " + currentArgument + ", did you forget the leading hyphens to the argument (--)?");
+                String currentArgument = arguments[i].replaceAll("^-+","--");
+
+                if (!currentArgument.matches("^--.*")) {
+                    throw new RuntimeException("Unknown argument " + arguments[i] + ", did you forget the leading hyphens (--)?");
                 }
 
-                switch (currentArgument.toLowerCase()) {
-                    case "h":
-                    case "help":
+                switch (currentArgument) {
+                    case "--h":
+                    case "--help":
                         System.out.print(HelpMessage.HELP_MESSAGE);
                         System.exit(0);
                         break;
-                    case "list":
+                    case "--list":
                         if (options.getOperation() != null) {
                             throw new RuntimeException("Cannot combine --list with other operations.");
                         }
                         options.setOperation(Options.Operations.List);
                         break;
-                    case "enumerate":
+                    case "--enumerate":
                         if (options.getOperation() != null) {
                             throw new RuntimeException("Cannot combine --enumerate with other operations.");
                         }
                         options.setOperation(Options.Operations.Enumerate);
                         break;
-                    case "compare":
+                    case "--compare":
                         if (options.getOperation() != null) {
                             throw new RuntimeException("Cannot combine --compare with other operations.");
                         }
                         options.setOperation(Options.Operations.Compare);
                         break;
-                    case "print":
+                    case "--print":
                         if (options.getOperation() != null) {
                             throw new RuntimeException("Cannot combine --print with other operations.");
                         }
                         options.setOperation(Options.Operations.Print);
                         break;
-                    case "path":
+                    case "--path":
                         if (i + 1 <= arguments.length) {
                             options.setJobsPath(arguments[++i]);
                         } else {
                             throw new RuntimeException("Expected path to jobs after --path.");
                         }
                         break;
-                    case "query":
+                    case "--query":
                         if (i + 1 <= arguments.length) {
                             options.setQueryString(arguments[++i]);
                         } else {
                             throw new RuntimeException("Expected query string after --query.");
                         }
                         break;
-                    case "nvr":
+                    case "--nvr":
                         if (i + 1 <= arguments.length) {
                             options.setNvrQuery(arguments[++i]);
                         } else {
                             throw new RuntimeException("Expected NVR after --nvr.");
                         }
                         break;
-                    case "history":
+                    case "--history":
                         if (i + 1 <= arguments.length) {
                             options.setNumberOfBuilds(Integer.parseInt(arguments[++i]));
                         } else {
                             throw new RuntimeException("Expected number of builds after --history.");
                         }
                         break;
-                    case "skip-failed=true":
-                    case "skip-failed=false":
+                    case "--skip-failed=true":
+                    case "--skip-failed=false":
                         if (currentArgument.split("=")[1].equals("false")) {
                             options.setSkipFailed(false);
                         }
                         break;
-                    case "force":
+                    case "--force":
                         options.setForceVagueQuery(true);
                         break;
-                    case "exact-length":
+                    case "--exact-length":
                         if (i + 1 <= arguments.length) {
                             options.setExactJobLength(Integer.parseInt(arguments[++i]));
                         } else {
                             throw new RuntimeException("Expected the exact job length after --exact-length.");
                         }
                         break;
-                    case "only-volatile=true":
-                    case "only-volatile=false":
+                    case "---volatile=true":
+                    case "--only-volatile=false":
                         if (currentArgument.split("=")[1].equals("true")) {
                             options.setOnlyVolatile(true);
                         }
