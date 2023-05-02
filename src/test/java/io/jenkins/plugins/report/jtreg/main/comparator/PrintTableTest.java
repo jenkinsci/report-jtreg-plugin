@@ -6,11 +6,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 public class PrintTableTest {
-    private static final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
     private static final PrintStream originalStream = System.out;
+    private ByteArrayOutputStream outStream;
 
-    @BeforeClass
-    public static void setOutputStream() {
+    @Before
+    public void setOutputStream() {
+        outStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outStream));
     }
 
