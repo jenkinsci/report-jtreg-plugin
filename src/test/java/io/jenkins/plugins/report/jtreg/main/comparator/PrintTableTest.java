@@ -1,18 +1,21 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 public class PrintTableTest {
+    private static final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+    private static final PrintStream originalStream = System.out;
+
+    @BeforeClass
+    public static void setOutputStream() {
+        System.setOut(new PrintStream(outStream));
+    }
+
     @Test
     public void testTablePrinting() {
-        final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        final PrintStream originalStream = System.out;
-        System.setOut(new PrintStream(outStream));
-
         String[][] table = {
                 {null, "first item", "second item", "third item"},
                 {"second row", "X", "this is a very long text in a center cell of a table", "X"},
@@ -29,6 +32,10 @@ public class PrintTableTest {
                 "second row | X | this is a very long text in a center cell of a table | X | \n" +
                 "third row  |   |                                                      | X | \n" +
                 "fourth row | X | X                                                    | X | \n", outStream.toString());
+    }
+
+    @AfterClass
+    public static void resetOutputStream() {
         System.setOut(originalStream);
     }
 }
