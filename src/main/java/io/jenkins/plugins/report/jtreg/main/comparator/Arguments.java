@@ -90,7 +90,7 @@ public class Arguments {
                             throw new RuntimeException("Expected the exact job length after --exact-length.");
                         }
                         break;
-                    case "---volatile=true":
+                    case "--only-volatile=true":
                     case "--only-volatile=false":
                         if (currentArgument.split("=")[1].equals("true")) {
                             options.setOnlyVolatile(true);
