@@ -19,40 +19,40 @@ public class ArgumentsParsing {
                 }
 
                 // parsing the arguments:
-                if (currentArg.equals(ArgumentsDeclared.helpArg.getName()) || currentArg.equals("--h")) {
+                if (currentArg.equals(ArgumentsDeclaration.helpArg.getName()) || currentArg.equals("--h")) {
                     // --help
                     System.out.print(HelpMessage.HELP_MESSAGE);
                     System.exit(0);
 
-                } else if (currentArg.equals(ArgumentsDeclared.listArg.getName())) {
+                } else if (currentArg.equals(ArgumentsDeclaration.listArg.getName())) {
                     // --list
                     if (options.getOperation() != null) {
                         throw new RuntimeException("Cannot combine --list with other operations.");
                     }
                     options.setOperation(Options.Operations.List);
 
-                } else if (currentArg.equals(ArgumentsDeclared.enumerateArg.getName())) {
+                } else if (currentArg.equals(ArgumentsDeclaration.enumerateArg.getName())) {
                     // --enumerate
                     if (options.getOperation() != null) {
                         throw new RuntimeException("Cannot combine --enumerate with other operations.");
                     }
                     options.setOperation(Options.Operations.Enumerate);
 
-                } else if (currentArg.equals(ArgumentsDeclared.compareArg.getName())) {
+                } else if (currentArg.equals(ArgumentsDeclaration.compareArg.getName())) {
                     // --compare
                     if (options.getOperation() != null) {
                         throw new RuntimeException("Cannot combine --compare with other operations.");
                     }
                     options.setOperation(Options.Operations.Compare);
 
-                } else if (currentArg.equals(ArgumentsDeclared.printArg.getName())) {
+                } else if (currentArg.equals(ArgumentsDeclaration.printArg.getName())) {
                     // --print
                     if (options.getOperation() != null) {
                         throw new RuntimeException("Cannot combine --print with other operations.");
                     }
                     options.setOperation(Options.Operations.Print);
 
-                } else if (currentArg.equals(ArgumentsDeclared.pathArg.getName())) {
+                } else if (currentArg.equals(ArgumentsDeclaration.pathArg.getName())) {
                     // --path
                     if (i + 1 <= arguments.length) {
                         options.setJobsPath(arguments[++i]);
@@ -60,7 +60,7 @@ public class ArgumentsParsing {
                         throw new RuntimeException("Expected path to jobs after --path.");
                     }
 
-                } else if (currentArg.equals(ArgumentsDeclared.queryArg.getName())) {
+                } else if (currentArg.equals(ArgumentsDeclaration.queryArg.getName())) {
                     // --query
                     if (i + 1 <= arguments.length) {
                         options.setQueryString(arguments[++i]);
@@ -68,7 +68,7 @@ public class ArgumentsParsing {
                         throw new RuntimeException("Expected query string after --query.");
                     }
 
-                } else if (currentArg.equals(ArgumentsDeclared.nvrArg.getName())) {
+                } else if (currentArg.equals(ArgumentsDeclaration.nvrArg.getName())) {
                     // --nvr
                     if (i + 1 <= arguments.length) {
                         options.setNvrQuery(arguments[++i]);
@@ -76,7 +76,7 @@ public class ArgumentsParsing {
                         throw new RuntimeException("Expected NVR after --nvr.");
                     }
 
-                } else if (currentArg.equals(ArgumentsDeclared.historyArg.getName())) {
+                } else if (currentArg.equals(ArgumentsDeclaration.historyArg.getName())) {
                     // --history
                     if (i + 1 <= arguments.length) {
                         options.setNumberOfBuilds(Integer.parseInt(arguments[++i]));
@@ -84,17 +84,17 @@ public class ArgumentsParsing {
                         throw new RuntimeException("Expected number of builds after --history.");
                     }
 
-                } else if (currentArg.equals(ArgumentsDeclared.skipFailedArg.getName())) {
+                } else if (currentArg.equals(ArgumentsDeclaration.skipFailedArg.getName())) {
                     // --skip-failed
                     if (splitArg.length == 2 && splitArg[1].equals("false")) {
                         options.setSkipFailed(false);
                     }
 
-                } else if (currentArg.equals(ArgumentsDeclared.forceArg.getName())) {
+                } else if (currentArg.equals(ArgumentsDeclaration.forceArg.getName())) {
                     // --force
                     options.setForceVagueQuery(true);
 
-                } else if (currentArg.equals(ArgumentsDeclared.exactLengthArg.getName())) {
+                } else if (currentArg.equals(ArgumentsDeclaration.exactLengthArg.getName())) {
                     // --exact-length
                     if (i + 1 <= arguments.length) {
                         options.setExactJobLength(Integer.parseInt(arguments[++i]));
@@ -102,7 +102,7 @@ public class ArgumentsParsing {
                         throw new RuntimeException("Expected the exact job length after --exact-length.");
                     }
 
-                } else if (currentArg.equals(ArgumentsDeclared.onlyVolatileArg.getName())) {
+                } else if (currentArg.equals(ArgumentsDeclaration.onlyVolatileArg.getName())) {
                     // --only-volatile
                     if (splitArg.length == 2 && splitArg[1].equals("true")) {
                         options.setOnlyVolatile(true);

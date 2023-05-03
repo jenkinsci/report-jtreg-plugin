@@ -11,34 +11,36 @@ final public class HelpMessage {
             "And arguments include:\n" +
             "\n" +
             "    These two arguments are mandatory:\n" +
-            "    " + ArgumentsDeclared.pathArg.getName() + ArgumentsDeclared.pathArg.getUsage() + "\n" +
-            "                  " + ArgumentsDeclared.pathArg.getHelp() + "\n" +
-            "    " + ArgumentsDeclared.queryArg.getName() + ArgumentsDeclared.queryArg.getUsage() + "\n" +
-            "                  " + ArgumentsDeclared.queryArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.pathArg.getName() + ArgumentsDeclaration.pathArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.pathArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.queryArg.getName() + ArgumentsDeclaration.queryArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.queryArg.getHelp() + "\n" +
             "\n" +
             "    You need to choose ONE operation from these:\n" +
-            "    " + ArgumentsDeclared.printArg.getName() + "\n" +
-            "                  " + ArgumentsDeclared.printArg.getHelp() + "\n" +
-            "    " + ArgumentsDeclared.enumerateArg.getName() + "\n" +
-            "                  " + ArgumentsDeclared.enumerateArg.getHelp() + "\n" +
-            "    " + ArgumentsDeclared.listArg.getName() + "\n" +
-            "                  " + ArgumentsDeclared.listArg.getHelp() + "\n" +
-            "    " + ArgumentsDeclared.compareArg.getName() + "\n" +
-            "                  " + ArgumentsDeclared.compareArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.printArg.getName() + "\n" +
+            "                  " + ArgumentsDeclaration.printArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.enumerateArg.getName() + "\n" +
+            "                  " + ArgumentsDeclaration.enumerateArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.listArg.getName() + "\n" +
+            "                  " + ArgumentsDeclaration.listArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.compareArg.getName() + "\n" +
+            "                  " + ArgumentsDeclaration.compareArg.getHelp() + "\n" +
             "\n" +
             "    Other arguments:\n" +
-            "    " + ArgumentsDeclared.helpArg.getName() + "\n" +
-            "                  " + ArgumentsDeclared.helpArg.getHelp() + "\n" +
-            "    " + ArgumentsDeclared.skipFailedArg.getName() + ArgumentsDeclared.skipFailedArg.getUsage() + "\n" +
-            "                  " + ArgumentsDeclared.skipFailedArg.getHelp() + "\n" +
-            "    " + ArgumentsDeclared.nvrArg.getName() + ArgumentsDeclared.nvrArg.getUsage() + "\n" +
-            "                  " + ArgumentsDeclared.nvrArg.getHelp() + "\n" +
-            "    " + ArgumentsDeclared.historyArg.getName() + ArgumentsDeclared.historyArg.getUsage() + "\n" +
-            "                  " + ArgumentsDeclared.historyArg.getHelp() + "\n" +
-            "    " + ArgumentsDeclared.exactLengthArg.getName() + ArgumentsDeclared.exactLengthArg.getUsage() + "\n" +
-            "                  " + ArgumentsDeclared.exactLengthArg.getHelp() + "\n" +
-            "    " + ArgumentsDeclared.onlyVolatileArg.getName() + ArgumentsDeclared.onlyVolatileArg.getUsage() + "\n" +
-            "                  " + ArgumentsDeclared.onlyVolatileArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.helpArg.getName() + "\n" +
+            "                  " + ArgumentsDeclaration.helpArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.skipFailedArg.getName() + ArgumentsDeclaration.skipFailedArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.skipFailedArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.nvrArg.getName() + ArgumentsDeclaration.nvrArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.nvrArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.historyArg.getName() + ArgumentsDeclaration.historyArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.historyArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.exactLengthArg.getName() + ArgumentsDeclaration.exactLengthArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.exactLengthArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.onlyVolatileArg.getName() + ArgumentsDeclaration.onlyVolatileArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.onlyVolatileArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.forceArg.getName() + "\n" +
+            "                  " + ArgumentsDeclaration.forceArg.getHelp() + "\n" +
             "\n" +
             "Query string syntax:\n" +
             "    The tool splits every job name by . or - characters and compares each\n" +
@@ -56,7 +58,7 @@ final public class HelpMessage {
             "            To stop the tool from draining system resources by looking at\n" +
             "            all jobs, if more than half of the query elements are asterisks,\n" +
             "            or the query has less than 4 parts, you must combine it with the\n" +
-            "            \"" + ArgumentsDeclared.forceArg.getName() + "\" switch.\n" +
+            "            \"" + ArgumentsDeclaration.forceArg.getName() + "\" switch.\n" +
             "        {f37,el8} - this is a set of possible matches, so the jobs's part on\n" +
             "                    4th position can be either f37 or el8. There can me as\n" +
             "                    many elements as you want, but they must be split by\n" +
