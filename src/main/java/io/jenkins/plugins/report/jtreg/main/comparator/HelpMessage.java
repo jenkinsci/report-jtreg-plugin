@@ -11,43 +11,34 @@ final public class HelpMessage {
             "And arguments include:\n" +
             "\n" +
             "    These two arguments are mandatory:\n" +
-            "    --path <path/to/jenkins/jobs>\n" +
-            "                  A system path to a directory with your jenkins jobs.\n" +
-            "    --query <querystring>\n" +
-            "                  A query string to filter the jobs (the syntax is described\n" +
-            "                  below).\n" +
+            "    " + ArgumentsDeclared.pathArg.getName() + ArgumentsDeclared.pathArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclared.pathArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclared.queryArg.getName() + ArgumentsDeclared.queryArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclared.queryArg.getHelp() + "\n" +
             "\n" +
             "    You need to choose ONE operation from these:\n" +
-            "    --print       Print all jobs and their builds that match the rest of\n" +
-            "                  arguments, without actually doing any operation on the builds\n" +
-            "                  or tests.\n" +
-            "    --enumerate   Print lists of all variants of jobs (that match the rest of\n" +
-            "                  arguments).\n" +
-            "    --list        Print a table of matched jobs with their builds and the tests\n" +
-            "                  that failed in the build.\n" +
-            "    --compare     Print a table of all failed tests (of matched job builds) and\n" +
-            "                  the builds where they failed.\n" +
+            "    " + ArgumentsDeclared.printArg.getName() + "\n" +
+            "                  " + ArgumentsDeclared.printArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclared.enumerateArg.getName() + "\n" +
+            "                  " + ArgumentsDeclared.enumerateArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclared.listArg.getName() + "\n" +
+            "                  " + ArgumentsDeclared.listArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclared.compareArg.getName() + "\n" +
+            "                  " + ArgumentsDeclared.compareArg.getHelp() + "\n" +
             "\n" +
             "    Other arguments:\n" +
-            "    --help        Print this help message.\n" +
-            "    --skip-failed=<true/false>\n" +
-            "                  Specify whether the comparator should skip failed tests\n" +
-            "                  (only take successful and unstable) or take all. The\n" +
-            "                  default value is true.\n" +
-            "    --nvr <nvrquery>\n" +
-            "                  To specify what builds to take (only builds with specified\n" +
-            "                  NVRs). The syntax is described below\n" +
-            "    --history <number>\n" +
-            "                  To specify the maximum number of builds to look in.\n" +
-            "    --exact-length <number>\n" +
-            "                  Since job names can have different lengths and sometimes\n" +
-            "                  we only need to match jobs with exact name length (number\n" +
-            "                  of element in the job name), this specifies the exact\n" +
-            "                  length." +
-            "    --only-volatile=<true/false>\n" +
-            "                  Specify true to show only non stable tests with the arguments\n" +
-            "                  list and compare (shows only tests, that are NOT failed\n" +
-            "                  everywhere). The default value is false." +
+            "    " + ArgumentsDeclared.helpArg.getName() + "\n" +
+            "                  " + ArgumentsDeclared.helpArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclared.skipFailedArg.getName() + ArgumentsDeclared.skipFailedArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclared.skipFailedArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclared.nvrArg.getName() + ArgumentsDeclared.nvrArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclared.nvrArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclared.historyArg.getName() + ArgumentsDeclared.historyArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclared.historyArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclared.exactLengthArg.getName() + ArgumentsDeclared.exactLengthArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclared.exactLengthArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclared.onlyVolatileArg.getName() + ArgumentsDeclared.onlyVolatileArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclared.onlyVolatileArg.getHelp() + "\n" +
             "\n" +
             "Query string syntax:\n" +
             "    The tool splits every job name by . or - characters and compares each\n" +
@@ -65,7 +56,7 @@ final public class HelpMessage {
             "            To stop the tool from draining system resources by looking at\n" +
             "            all jobs, if more than half of the query elements are asterisks,\n" +
             "            or the query has less than 4 parts, you must combine it with the\n" +
-            "            \"--force\" switch.\n" +
+            "            \"" + ArgumentsDeclared.forceArg.getName() + "\" switch.\n" +
             "        {f37,el8} - this is a set of possible matches, so the jobs's part on\n" +
             "                    4th position can be either f37 or el8. There can me as\n" +
             "                    many elements as you want, but they must be split by\n" +
