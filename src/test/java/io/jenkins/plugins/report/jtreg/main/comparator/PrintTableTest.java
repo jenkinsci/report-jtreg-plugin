@@ -1,6 +1,9 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
-import org.junit.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -9,7 +12,7 @@ public class PrintTableTest {
     private static final PrintStream originalStream = System.out;
     private ByteArrayOutputStream outStream;
 
-    @Before
+    @BeforeEach
     public void setOutputStream() {
         outStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outStream));
@@ -26,7 +29,7 @@ public class PrintTableTest {
 
         PrintTable.print(table, 4, 4);
 
-        Assert.assertEquals("1) first item\n" +
+        Assertions.assertEquals("1) first item\n" +
                 "2) second item\n" +
                 "3) third item\n" +
                 "           | 1 | 2                                                    | 3 | \n" +
@@ -35,7 +38,7 @@ public class PrintTableTest {
                 "fourth row | X | X                                                    | X | \n", outStream.toString());
     }
 
-    @AfterClass
+    @AfterAll
     public static void resetOutputStream() {
         System.setOut(originalStream);
     }
