@@ -7,22 +7,13 @@ import java.util.Arrays;
 public class JobsByQuery implements JobsProvider {
     private final ArrayList<String[]> queryList;
     private final ArrayList<File> matchedJobs;
-    public JobsByQuery(String queryString, String jobsDirectory, int exactLength) {
+    public JobsByQuery(String queryString, ArrayList<File> jobsInDir, int exactLength) {
         this.queryList = parseToList(queryString);
-
-        File[] filesInDir = new File(jobsDirectory).listFiles();
-        if (filesInDir == null) {
-            throw new RuntimeException("The job directory is empty.");
-        }
-        File[] jobsInDir = Arrays
-                .stream(filesInDir)
-                .filter(File::isDirectory)
-                .toArray(File[]::new);
 
         this.matchedJobs = new ArrayList<>();
         for (File job : jobsInDir) {
             if (checkJobWithQuery(job, exactLength)) {
-                matchedJobs.add(job);
+                this.matchedJobs.add(job);
             }
         }
     }

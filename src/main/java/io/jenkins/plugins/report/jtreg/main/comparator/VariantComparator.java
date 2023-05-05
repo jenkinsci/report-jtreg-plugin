@@ -6,7 +6,10 @@ import java.util.ArrayList;
 public class VariantComparator {
     public static void main(String[] args) throws Exception {
         Options options = ArgumentsParsing.parse(args);
-        JobsProvider jobs = new JobsByQuery(options.getQueryString(), options.getJobsPath(), options.getExactJobLength());
+
+        DirListing dl = new FsDirListing(options.getJobsPath());
+
+        JobsProvider jobs = new JobsByQuery(options.getQueryString(), dl.getJobsInDir(), options.getExactJobLength());
 
         ArrayList<File> buildsToCompare = new ArrayList<>();
         for (File job : jobs.getJobs()) {
