@@ -12,7 +12,7 @@ import java.util.*;
 
 public class FailedTests {
     // function for getting failed tests into an ArrayList
-    private static ArrayList<String> getBuildFailedTests(File build) throws Exception {
+    private static ArrayList<String> getBuildFailedTests(File build, String exactTestsRegex) throws Exception {
         ArrayList<String> failedTests = new ArrayList<>();
 
         JckReportPublisher jcp = new JckReportPublisher(Constants.IRRELEVANT_GLOB_STRING); // completely irrelevant string
@@ -29,7 +29,7 @@ public class FailedTests {
 
         for (SuiteTestsWithResults t : swr.getAllTestsAndSuites()) {
             for (SuiteTestsWithResults.StringWithResult s : t.getTests()) {
-                if (s.getStatus().isFailed()) {
+                if (s.getStatus().isFailed() && s.getTestName().matches(exactTestsRegex)) {
                     failedTests.add(s.getTestName());
                 }
             }
@@ -39,11 +39,14 @@ public class FailedTests {
     }
 
     // function for creating a HashMap of "build info - list of its failed tests" pair
-    public static HashMap<String, ArrayList<String>> createFailedMap(ArrayList<File> buildsToCompare, boolean onlyVolatile) throws Exception {
+    public static HashMap<String, ArrayList<String>> createFailedMap(ArrayList<File> buildsToCompare, boolean onlyVolatile, String exactTestsRegex) throws Exception {
         HashMap<String, ArrayList<String>> failedMap = new HashMap<>();
 
         for (File build : buildsToCompare) {
-            failedMap.put(Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build) + " - nvr:" + Builds.getNvr(build), getBuildFailedTests(build));
+            failedMap.put(Builds.getJobName(build)
+                    + " - build:" + Builds.getBuildNumber(build)
+                    + " - nvr:" + Builds.getNvr(build),
+                    getBuildFailedTests(build, exactTestsRegex));
         }
 
         if (onlyVolatile) {

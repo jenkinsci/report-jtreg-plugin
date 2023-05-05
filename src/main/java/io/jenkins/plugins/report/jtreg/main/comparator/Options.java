@@ -10,6 +10,7 @@ public class Options {
     private boolean forceVagueQuery;
     private int exactJobLength;
     private boolean onlyVolatile;
+    private String exactTestsRegex;
 
     public Options() {
         this.queryString = "";
@@ -19,6 +20,7 @@ public class Options {
         this.forceVagueQuery = false;
         this.exactJobLength = -1; // negative means the length does not matter
         this.onlyVolatile = false;
+        this.exactTestsRegex = ".*";
     }
 
     public Operations getOperation() {
@@ -91,6 +93,14 @@ public class Options {
 
     public void setOnlyVolatile(boolean onlyVolatile) {
         this.onlyVolatile = onlyVolatile;
+    }
+
+    public String getExactTestsRegex() {
+        return exactTestsRegex;
+    }
+
+    public void setExactTestsRegex(String exactTestsRegex) {
+        this.exactTestsRegex = exactTestsRegex;
     }
 
     // enum of all available operations

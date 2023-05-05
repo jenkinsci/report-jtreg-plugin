@@ -110,6 +110,14 @@ public class ArgumentsParsing {
                         options.setOnlyVolatile(true);
                     }
 
+                } else if (currentArg.equals(ArgumentsDeclaration.exactTestsArg.getName())) {
+                    // --exact-tests
+                    if (i + 1 <= arguments.length) {
+                        options.setExactTestsRegex(arguments[++i]);
+                    } else {
+                        throw new RuntimeException("Expected the exact tests regex after --exact-tests.");
+                    }
+
                 } else {
                     throw new RuntimeException("Unknown argument " + currentArg + ", run with --help for info.");
                 }
