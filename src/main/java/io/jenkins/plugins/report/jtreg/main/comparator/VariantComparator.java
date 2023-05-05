@@ -1,5 +1,11 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
+import io.jenkins.plugins.report.jtreg.main.comparator.arguments.ArgumentsParsing;
+import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsByQuery;
+import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsProvider;
+import io.jenkins.plugins.report.jtreg.main.comparator.listing.DirListing;
+import io.jenkins.plugins.report.jtreg.main.comparator.listing.FsDirListing;
+
 import java.io.File;
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package io.jenkins.plugins.report.jtreg.main.comparator;
+package io.jenkins.plugins.report.jtreg.main.comparator.arguments;
 
 public final class ArgumentsDeclaration {
   //public static final Argument exampleArg = new Argument("--argument-name", "The help message of this argument that will be shown with --help.", "<format/usage of argument showed with --help>")

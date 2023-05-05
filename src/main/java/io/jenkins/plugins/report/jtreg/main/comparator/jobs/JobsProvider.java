@@ -1,4 +1,4 @@
-package io.jenkins.plugins.report.jtreg.main.comparator;
+package io.jenkins.plugins.report.jtreg.main.comparator.jobs;
 
 import java.io.File;
 import java.util.ArrayList;

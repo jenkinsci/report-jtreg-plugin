@@ -1,6 +1,8 @@
-package io.jenkins.plugins.report.jtreg.main.comparator;
+package io.jenkins.plugins.report.jtreg.main.comparator.arguments;
 
 import io.jenkins.plugins.report.jtreg.Constants;
+import io.jenkins.plugins.report.jtreg.main.comparator.HelpMessage;
+import io.jenkins.plugins.report.jtreg.main.comparator.Options;
 
 public class ArgumentsParsing {
     // parses the given arguments and returns instance of Options

@@ -1,5 +1,8 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
+import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsByQuery;
+import io.jenkins.plugins.report.jtreg.main.comparator.listing.DirListing;
+import io.jenkins.plugins.report.jtreg.main.comparator.listing.ListDirListing;
 import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayOutputStream;

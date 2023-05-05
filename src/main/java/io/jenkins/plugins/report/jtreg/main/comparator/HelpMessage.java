@@ -1,5 +1,7 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
+import io.jenkins.plugins.report.jtreg.main.comparator.arguments.ArgumentsDeclaration;
+
 final public class HelpMessage {
     public static final String HELP_MESSAGE =
            //80-characters-long-comment------------------------------------------------------
