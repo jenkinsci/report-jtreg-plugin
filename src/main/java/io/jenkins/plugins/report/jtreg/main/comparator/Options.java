@@ -1,5 +1,8 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
+import io.jenkins.plugins.report.jtreg.main.comparator.formatters.Formatters;
+import io.jenkins.plugins.report.jtreg.main.comparator.formatters.PlainFormatter;
+
 public class Options {
     private Operations operation;
     private String jobsPath;
@@ -11,6 +14,7 @@ public class Options {
     private int exactJobLength;
     private boolean onlyVolatile;
     private String exactTestsRegex;
+    private Formatters formatter;
 
     public Options() {
         this.queryString = "";
@@ -21,6 +25,7 @@ public class Options {
         this.exactJobLength = -1; // negative means the length does not matter
         this.onlyVolatile = false;
         this.exactTestsRegex = ".*";
+        this.formatter = new PlainFormatter(System.out);
     }
 
     public Operations getOperation() {
@@ -101,6 +106,14 @@ public class Options {
 
     public void setExactTestsRegex(String exactTestsRegex) {
         this.exactTestsRegex = exactTestsRegex;
+    }
+
+    public Formatters getFormatter() {
+        return formatter;
+    }
+
+    public void setFormatter(Formatters formatter) {
+        this.formatter = formatter;
     }
 
     // enum of all available operations

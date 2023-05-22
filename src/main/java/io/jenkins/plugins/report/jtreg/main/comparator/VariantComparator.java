@@ -26,11 +26,11 @@ public class VariantComparator {
         if (options.getOperation() == Options.Operations.List || options.getOperation() == Options.Operations.Compare) {
             FailedTests.printFailedTable(
                     FailedTests.createFailedMap(buildsToCompare, options.isOnlyVolatile(), options.getExactTestsRegex()),
-                    options.getOperation());
+                    options.getOperation(), options.getFormatter());
         } else if (options.getOperation() == Options.Operations.Enumerate) {
-            jobs.printVariants();
+            jobs.printVariants(options.getFormatter());
         } else if (options.getOperation() == Options.Operations.Print) {
-            jobs.printJobs(options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds());
+            jobs.printJobs(options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds(), options.getFormatter());
         }
     }
 }

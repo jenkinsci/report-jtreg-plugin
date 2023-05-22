@@ -43,6 +43,8 @@ final public class HelpMessage {
             "                  " + ArgumentsDeclaration.onlyVolatileArg.getHelp() + "\n" +
             "    " + ArgumentsDeclaration.forceArg.getName() + "\n" +
             "                  " + ArgumentsDeclaration.forceArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.formattingArg.getName() + ArgumentsDeclaration.formattingArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.formattingArg.getHelp() + "\n" +
             "\n" +
             "Query string syntax:\n" +
             "    The tool splits every job name by . or - characters and compares each\n" +

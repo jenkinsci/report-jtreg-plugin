@@ -118,6 +118,12 @@ public class ArgumentsParsing {
                         throw new RuntimeException("Expected the exact tests regex after --exact-tests.");
                     }
 
+                } else if (currentArg.equals(ArgumentsDeclaration.formattingArg.getName())) {
+                    // --formatting
+                    if (splitArg.length == 2 && !splitArg[1].equals("plain")) {
+                        throw new RuntimeException("Unexpected formatting specified.");
+                    }
+
                 } else {
                     throw new RuntimeException("Unknown argument " + currentArg + ", run with --help for info.");
                 }

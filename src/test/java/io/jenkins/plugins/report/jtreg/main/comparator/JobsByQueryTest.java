@@ -1,5 +1,7 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
+import io.jenkins.plugins.report.jtreg.main.comparator.formatters.Formatters;
+import io.jenkins.plugins.report.jtreg.main.comparator.formatters.PlainFormatter;
 import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsByQuery;
 import io.jenkins.plugins.report.jtreg.main.comparator.listing.DirListing;
 import io.jenkins.plugins.report.jtreg.main.comparator.listing.ListDirListing;
@@ -32,12 +34,6 @@ public class JobsByQueryTest {
         
         DirListing dl = new ListDirListing(dummyJobsStrings);
         dummyJobs = dl.getJobsInDir();
-    }
-
-    @BeforeEach
-    public void setOutputStream() {
-        outStream = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outStream));
     }
 
     private static ArrayList<String> convertJobsListToNamesList(ArrayList<File> jobsList) {
@@ -167,25 +163,27 @@ public class JobsByQueryTest {
 
     @Test
     public void testPrintJobs() {
-        final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        final PrintStream originalStream = System.out;
-        System.setOut(new PrintStream(outStream));
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(outStream);
+        Formatters formatter = new PlainFormatter(printStream);
 
         String queryString = "!{jtreg~full,jtreg~tier1} {jp11,jp17} {ojdk11~rpms,ojdk17~rpms} f36 x86_64 fastdebug sdk f36 x86_64 vagrant x11 !shenandoah * *";
         JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);
-        jbq.printJobs(false, "", 0);
+        jbq.printJobs(false, "", 0, formatter);
 
-        Assertions.assertEquals("crypto~tests-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.fips.lnxagent.jfroff\n" +
-                "reproducers~regular-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.defaultcp.lnxagent.jfroff\n", outStream.toString());
-
-        System.setOut(originalStream);
+        Assertions.assertEquals("crypto~tests-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.fips.lnxagent.jfroff:\n" +
+                "reproducers~regular-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.defaultcp.lnxagent.jfroff:\n", outStream.toString());
     }
 
     @Test
     public void testPrintVariants() {
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(outStream);
+        Formatters formatter = new PlainFormatter(printStream);
+
         String queryString = "!{crypto~tests,reproducers~regular} * * f36 * !slowdebug sdk f36 x86_64 {testfarm,vagrant} * * * * *";
         JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);
-        jbq.printVariants();
+        jbq.printVariants(formatter);
 
         Assertions.assertEquals("1) jtreg~full, jtreg~tier1, \n" +
                 "2) jp11, jp17, \n" +
@@ -202,10 +200,5 @@ public class JobsByQueryTest {
                 "13) ignorecp, \n" +
                 "14) lnxagent, \n" +
                 "15) jfroff, jfron, \n", outStream.toString());
-    }
-
-    @AfterAll
-    public static void deleteDummyJobs() {
-        System.setOut(originalStream);
     }
 }

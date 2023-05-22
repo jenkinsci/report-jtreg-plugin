@@ -1,6 +1,7 @@
 package io.jenkins.plugins.report.jtreg.main.comparator.jobs;
 
 import io.jenkins.plugins.report.jtreg.main.comparator.Builds;
+import io.jenkins.plugins.report.jtreg.main.comparator.formatters.Formatters;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -95,17 +96,22 @@ public class JobsByQuery implements JobsProvider {
     }
 
     // prints all jobs that match the query string
-    public void printJobs(boolean skipFailed, String nvrQuery, int numberOfBuilds) {
+    public void printJobs(boolean skipFailed, String nvrQuery, int numberOfBuilds, Formatters formatter) {
         for (File job : matchedJobs) {
-            System.out.println(job.getName());
+            formatter.printBold(job.getName());
+            formatter.println(":");
             ArrayList<File> jobBuilds = Builds.getBuilds(job, skipFailed, nvrQuery, numberOfBuilds);
             for (File build : jobBuilds) {
-                System.out.println("\t" + "build:" + Builds.getBuildNumber(build) + " nvr:" + Builds.getNvr(build));
+                formatter.print("\t");
+                formatter.printItalics("build: ");
+                formatter.print(Builds.getBuildNumber(build));
+                formatter.printItalics("nvr: ");
+                formatter.println(Builds.getNvr(build));
             }
         }
     }
 
-    public void printVariants() {
+    public void printVariants(Formatters formatter) {
         int maxLength = 0;
         ArrayList<String[]> splitJobs = new ArrayList<>();
 
@@ -126,11 +132,11 @@ public class JobsByQuery implements JobsProvider {
                     variantList.add(job[i]);
                 }
             }
-            System.out.printf("%d) ", i + 1);
+            formatter.printBold(i + 1 + ") ");
             for (String variant : variantList) {
-                System.out.print(variant + ", ");
+                formatter.print(variant + ", ");
             }
-            System.out.print("\n");
+            formatter.println("");
         }
     }
 }

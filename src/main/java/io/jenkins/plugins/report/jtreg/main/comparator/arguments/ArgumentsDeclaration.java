@@ -16,4 +16,5 @@ public final class ArgumentsDeclaration {
     public static final Argument exactLengthArg = new Argument("--exact-length", "Since job names can have different lengths and sometimes we only need to match jobs with exact name length (number of element in the job name), this specifies the exact length.", " <number>");
     public static final Argument onlyVolatileArg = new Argument("--only-volatile", "Specify true to show only non stable tests with the arguments list and compare (shows only tests, that are NOT failed everywhere). The default value is false.", "=<true/false>");
     public static final Argument exactTestsArg = new Argument("--exact-tests", "Specify (with regex) the exact tests to show only. The rest of tests will be ignored.", " <regex>");
+   public static final Argument formattingArg = new Argument("--formatting", "Specify the output formatting. The default is plain", "=<plain>");
 }
