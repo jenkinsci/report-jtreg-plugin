@@ -105,6 +105,7 @@ public class JobsByQuery implements JobsProvider {
                 formatter.print("\t");
                 formatter.printItalics("build: ");
                 formatter.print(Builds.getBuildNumber(build));
+                formatter.print(" - ");
                 formatter.printItalics("nvr: ");
                 formatter.println(Builds.getNvr(build));
             }

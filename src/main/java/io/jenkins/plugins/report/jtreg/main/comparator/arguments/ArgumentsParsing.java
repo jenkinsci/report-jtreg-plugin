@@ -3,6 +3,8 @@ package io.jenkins.plugins.report.jtreg.main.comparator.arguments;
 import io.jenkins.plugins.report.jtreg.Constants;
 import io.jenkins.plugins.report.jtreg.main.comparator.HelpMessage;
 import io.jenkins.plugins.report.jtreg.main.comparator.Options;
+import io.jenkins.plugins.report.jtreg.main.comparator.formatters.ColorFormatter;
+import io.jenkins.plugins.report.jtreg.main.comparator.formatters.HtmlFormatter;
 
 public class ArgumentsParsing {
     // parses the given arguments and returns instance of Options
@@ -120,7 +122,11 @@ public class ArgumentsParsing {
 
                 } else if (currentArg.equals(ArgumentsDeclaration.formattingArg.getName())) {
                     // --formatting
-                    if (splitArg.length == 2 && !splitArg[1].equals("plain")) {
+                    if (splitArg.length == 2 && splitArg[1].equals("color")) {
+                        options.setFormatter(new ColorFormatter(System.out));
+                    } else if (splitArg.length == 2 && splitArg[1].equals("html")) {
+                        options.setFormatter(new HtmlFormatter(System.out));
+                    } else if (splitArg.length == 2 && !splitArg[1].equals("plain")) {
                         throw new RuntimeException("Unexpected formatting specified.");
                     }
 
