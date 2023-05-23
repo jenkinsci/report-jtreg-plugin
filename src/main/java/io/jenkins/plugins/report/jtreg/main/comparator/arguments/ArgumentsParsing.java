@@ -73,10 +73,24 @@ public class ArgumentsParsing {
 
                 } else if (currentArg.equals(ArgumentsDeclaration.queryArg.getName())) {
                     // --query
+                    if (!options.getRegexString().equals("")) {
+                        throw new RuntimeException("Cannot combine --query with --regex.");
+                    }
                     if (i + 1 <= arguments.length) {
                         options.setQueryString(arguments[++i]);
                     } else {
                         throw new RuntimeException("Expected query string after --query.");
+                    }
+
+                } else if (currentArg.equals(ArgumentsDeclaration.regexArg.getName())) {
+                    // --regex
+                    if (!options.getQueryString().equals("")) {
+                        throw new RuntimeException("Cannot combine --regex with --query.");
+                    }
+                    if (i + 1 <= arguments.length) {
+                        options.setRegexString(arguments[++i]);
+                    } else {
+                        throw new RuntimeException("Expected regular expression after --regex.");
                     }
 
                 } else if (currentArg.equals(ArgumentsDeclaration.nvrArg.getName())) {
@@ -150,17 +164,29 @@ public class ArgumentsParsing {
         if (options.getOperation() == null) {
             throw new RuntimeException("Expected some operation (--list, --enumerate, --compare or --print).");
         }
+        if (options.getQueryString().equals("") && options.getRegexString().equals("")) {
+            throw new RuntimeException("Expected some job filtering (--query or --regex).");
+        }
         if (options.getJobsPath() == null) {
             throw new RuntimeException("Expected path to jobs directory (--path).");
         }
 
         // check if the query string is too vague
-        int numOfAsterisks = options.getQueryString().length() - options.getQueryString().replace("*", "").length();
-        int lengthOfQuery = options.getQueryString().split("\\s+").length;
-        if ((lengthOfQuery < Constants.VAGUE_QUERY_LENGTH_THRESHOLD ||
-                (numOfAsterisks != 0 && (double)numOfAsterisks / (double)lengthOfQuery > Constants.VAGUE_QUERY_THRESHOLD))
-                && !options.isForceVagueQuery()) {
-            throw new RuntimeException("The query string is too vague (too many * or short query), run with --force to continue anyway.");
+        if (!options.getQueryString().equals("")) {
+            int numOfAsterisks = options.getQueryString().length() - options.getQueryString().replace("*", "").length();
+            int lengthOfQuery = options.getQueryString().split("\\s+").length;
+            if ((lengthOfQuery < Constants.VAGUE_QUERY_LENGTH_THRESHOLD ||
+                    (numOfAsterisks != 0 && (double)numOfAsterisks / (double)lengthOfQuery > Constants.VAGUE_QUERY_THRESHOLD))
+                    && !options.isForceVagueQuery()) {
+                throw new RuntimeException("The query string is too vague (too many * or short query), run with --force to continue anyway.");
+            }
+        }
+
+        // check if the regex string is too vague
+        if (!options.getRegexString().equals("")) {
+            if (options.getRegexString().matches("^(\\.\\*)*$") && !options.isForceVagueQuery()) {
+                throw new RuntimeException("The regular expression is too vague (contains only .*), run with --force to continue anyway.");
+            }
         }
 
         return options;

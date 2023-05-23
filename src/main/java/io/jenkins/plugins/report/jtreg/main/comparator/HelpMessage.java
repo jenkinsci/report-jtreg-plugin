@@ -12,11 +12,14 @@ final public class HelpMessage {
             "\n" +
             "And arguments include:\n" +
             "\n" +
-            "    These two arguments are mandatory:\n" +
             "    " + ArgumentsDeclaration.pathArg.getName() + ArgumentsDeclaration.pathArg.getUsage() + "\n" +
             "                  " + ArgumentsDeclaration.pathArg.getHelp() + "\n" +
+            "\n" +
+            "    You can choose one of these to filter the jobs by their name:\n" +
             "    " + ArgumentsDeclaration.queryArg.getName() + ArgumentsDeclaration.queryArg.getUsage() + "\n" +
             "                  " + ArgumentsDeclaration.queryArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.regexArg.getName() + ArgumentsDeclaration.regexArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.regexArg.getHelp() + "\n" +
             "\n" +
             "    You need to choose ONE operation from these:\n" +
             "    " + ArgumentsDeclaration.printArg.getName() + "\n" +

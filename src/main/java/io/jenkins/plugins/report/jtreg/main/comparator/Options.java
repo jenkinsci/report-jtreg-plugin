@@ -7,6 +7,7 @@ public class Options {
     private Operations operation;
     private String jobsPath;
     private String queryString;
+    private String regexString;
     private String nvrQuery;
     private int numberOfBuilds;
     private boolean skipFailed;
@@ -18,6 +19,7 @@ public class Options {
 
     public Options() {
         this.queryString = "";
+        this.regexString = "";
         this.nvrQuery = "";
         this.numberOfBuilds = 1;
         this.skipFailed = true;
@@ -50,6 +52,14 @@ public class Options {
 
     public void setQueryString(String queryString) {
         this.queryString = queryString;
+    }
+
+    public String getRegexString() {
+        return regexString;
+    }
+
+    public void setRegexString(String queryString) {
+        this.regexString = queryString;
     }
 
     public String getNvrQuery() {
