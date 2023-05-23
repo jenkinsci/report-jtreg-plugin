@@ -28,9 +28,9 @@ public class VariantComparator {
                     FailedTests.createFailedMap(buildsToCompare, options.isOnlyVolatile(), options.getExactTestsRegex()),
                     options.getOperation(), options.getFormatter());
         } else if (options.getOperation() == Options.Operations.Enumerate) {
-            jobs.printVariants(options.getFormatter());
+            JobsPrinting.printVariants(jobs.getJobs(), options.getFormatter());
         } else if (options.getOperation() == Options.Operations.Print) {
-            jobs.printJobs(options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds(), options.getFormatter());
+            JobsPrinting.printJobs(jobs.getJobs(), options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds(), options.getFormatter());
         } else if (options.getOperation() == Options.Operations.Virtual) {
             VirtualJobsResults.printVirtualTable(buildsToCompare, options.getFormatter());
         }

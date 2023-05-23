@@ -169,7 +169,7 @@ public class JobsByQueryTest {
 
         String queryString = "!{jtreg~full,jtreg~tier1} {jp11,jp17} {ojdk11~rpms,ojdk17~rpms} f36 x86_64 fastdebug sdk f36 x86_64 vagrant x11 !shenandoah * *";
         JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);
-        jbq.printJobs(false, "", 0, formatter);
+        JobsPrinting.printJobs(jbq.getJobs(), false, "", 0, formatter);
 
         Assertions.assertEquals("crypto~tests-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.fips.lnxagent.jfroff:\n" +
                 "reproducers~regular-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.defaultcp.lnxagent.jfroff:\n", outStream.toString());
@@ -183,7 +183,7 @@ public class JobsByQueryTest {
 
         String queryString = "!{crypto~tests,reproducers~regular} * * f36 * !slowdebug sdk f36 x86_64 {testfarm,vagrant} * * * * *";
         JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);
-        jbq.printVariants(formatter);
+        JobsPrinting.printVariants(jbq.getJobs(), formatter);
 
         Assertions.assertEquals("1) jtreg~full, jtreg~tier1, \n" +
                 "2) jp11, jp17, \n" +
