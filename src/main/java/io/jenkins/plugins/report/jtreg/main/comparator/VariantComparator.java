@@ -31,6 +31,8 @@ public class VariantComparator {
             jobs.printVariants(options.getFormatter());
         } else if (options.getOperation() == Options.Operations.Print) {
             jobs.printJobs(options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds(), options.getFormatter());
+        } else if (options.getOperation() == Options.Operations.Virtual) {
+            VirtualJobsResults.printVirtualTable(buildsToCompare, options.getFormatter());
         }
     }
 }

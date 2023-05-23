@@ -27,6 +27,8 @@ final public class HelpMessage {
             "                  " + ArgumentsDeclaration.listArg.getHelp() + "\n" +
             "    " + ArgumentsDeclaration.compareArg.getName() + "\n" +
             "                  " + ArgumentsDeclaration.compareArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.virtualArg.getName() + "\n" +
+            "                  " + ArgumentsDeclaration.virtualArg.getHelp() + "\n" +
             "\n" +
             "    Other arguments:\n" +
             "    " + ArgumentsDeclaration.helpArg.getName() + "\n" +

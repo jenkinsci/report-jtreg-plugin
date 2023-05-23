@@ -118,6 +118,6 @@ public class Options {
 
     // enum of all available operations
     public enum Operations {
-        List, Enumerate, Compare, Print
+        List, Enumerate, Compare, Print, Virtual
     }
 }

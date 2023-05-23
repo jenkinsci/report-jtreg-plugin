@@ -11,27 +11,27 @@ import java.util.*;
 public class Builds {
     // checks if the given build was successful
     private static boolean checkIfCorrect(File build, boolean requireSuccessful) {
-        try {
-            File buildXml = new File(build.getAbsolutePath() + "/build.xml");
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(buildXml);
-            doc.getDocumentElement().normalize();
+        if (requireSuccessful) {
+            try {
+                File buildXml = new File(build.getAbsolutePath() + "/build.xml");
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                Document doc = builder.parse(buildXml);
+                doc.getDocumentElement().normalize();
 
-            String result = doc
-                    .getElementsByTagName("result").item(0)
-                    .getChildNodes().item(0)
-                    .getNodeValue();
+                String result = doc
+                        .getElementsByTagName("result").item(0)
+                        .getChildNodes().item(0)
+                        .getNodeValue();
 
-            if (requireSuccessful) {
                 return result.equals("SUCCESS") || result.equals("UNSTABLE");
-            } else {
-                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            return false;
+        } else {
+            return true;
         }
-        return false;
     }
 
     // checks if the build has the same NVR as given

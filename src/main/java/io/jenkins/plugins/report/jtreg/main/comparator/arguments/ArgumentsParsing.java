@@ -56,6 +56,13 @@ public class ArgumentsParsing {
                     }
                     options.setOperation(Options.Operations.Print);
 
+                } else if (currentArg.equals(ArgumentsDeclaration.virtualArg.getName())) {
+                    // --virtual
+                    if (options.getOperation() != null) {
+                        throw new RuntimeException("Cannot combine --virtual with other operations.");
+                    }
+                    options.setOperation(Options.Operations.Virtual);
+
                 } else if (currentArg.equals(ArgumentsDeclaration.pathArg.getName())) {
                     // --path
                     if (i + 1 <= arguments.length) {
