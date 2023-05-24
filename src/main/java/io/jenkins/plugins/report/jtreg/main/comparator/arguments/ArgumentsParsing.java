@@ -3,8 +3,10 @@ package io.jenkins.plugins.report.jtreg.main.comparator.arguments;
 import io.jenkins.plugins.report.jtreg.Constants;
 import io.jenkins.plugins.report.jtreg.main.comparator.HelpMessage;
 import io.jenkins.plugins.report.jtreg.main.comparator.Options;
-import io.jenkins.plugins.report.jtreg.main.comparator.formatters.ColorFormatter;
-import io.jenkins.plugins.report.jtreg.main.comparator.formatters.HtmlFormatter;
+import io.jenkins.plugins.report.jtreg.main.comparator.formatters.ColorTable;
+import io.jenkins.plugins.report.jtreg.main.comparator.formatters.HtmlTable;
+import io.jenkins.plugins.report.jtreg.main.diff.formatters.ColorFormatter;
+import io.jenkins.plugins.report.jtreg.main.diff.formatters.HtmlFormatter;
 
 public class ArgumentsParsing {
     // parses the given arguments and returns instance of Options
@@ -145,8 +147,10 @@ public class ArgumentsParsing {
                     // --formatting
                     if (splitArg.length == 2 && splitArg[1].equals("color")) {
                         options.setFormatter(new ColorFormatter(System.out));
+                        options.setTablePrinter(new ColorTable(System.out));
                     } else if (splitArg.length == 2 && splitArg[1].equals("html")) {
                         options.setFormatter(new HtmlFormatter(System.out));
+                        options.setTablePrinter(new HtmlTable(System.out));
                     } else if (splitArg.length == 2 && !splitArg[1].equals("plain")) {
                         throw new RuntimeException("Unexpected formatting specified.");
                     }
@@ -162,7 +166,7 @@ public class ArgumentsParsing {
 
         // check for basic errors
         if (options.getOperation() == null) {
-            throw new RuntimeException("Expected some operation (--list, --enumerate, --compare or --print).");
+            throw new RuntimeException("Expected some operation (--list, --enumerate, --compare, --print or --virtual).");
         }
         if (options.getQueryString().equals("") && options.getRegexString().equals("")) {
             throw new RuntimeException("Expected some job filtering (--query or --regex).");

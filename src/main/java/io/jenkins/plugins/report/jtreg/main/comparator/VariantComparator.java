@@ -36,13 +36,13 @@ public class VariantComparator {
         if (options.getOperation() == Options.Operations.List || options.getOperation() == Options.Operations.Compare) {
             FailedTests.printFailedTable(
                     FailedTests.createFailedMap(buildsToCompare, options.isOnlyVolatile(), options.getExactTestsRegex()),
-                    options.getOperation(), options.getFormatter());
+                    options.getOperation(), options.getTablePrinter());
         } else if (options.getOperation() == Options.Operations.Enumerate) {
             JobsPrinting.printVariants(jobs.getJobs(), options.getFormatter());
         } else if (options.getOperation() == Options.Operations.Print) {
             JobsPrinting.printJobs(jobs.getJobs(), options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds(), options.getFormatter());
         } else if (options.getOperation() == Options.Operations.Virtual) {
-            VirtualJobsResults.printVirtualTable(buildsToCompare, options.getFormatter());
+            VirtualJobsResults.printVirtualTable(buildsToCompare, options.getTablePrinter());
         }
     }
 }

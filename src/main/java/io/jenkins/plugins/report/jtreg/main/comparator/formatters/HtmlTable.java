@@ -3,47 +3,15 @@ package io.jenkins.plugins.report.jtreg.main.comparator.formatters;
 
 import java.io.PrintStream;
 
-public class HtmlFormatter implements Formatters {
+public class HtmlTable implements TablePrinter {
     private final PrintStream ps;
     private static final String RED = "Red";
     private static final String YELLOW = "Yellow";
     private static final String BLUE = "Blue";
     private static final String GREEN = "Green";
 
-    public HtmlFormatter(PrintStream printStream) {
+    public HtmlTable(PrintStream printStream) {
         this.ps = printStream;
-    }
-
-    public void print(String s) {
-        ps.println("<span>" + s + "</span>");
-    }
-
-    public void println(String s) {
-        ps.println("<span>" + s + "</span><br>");
-    }
-
-    public void printBold(String s) {
-        ps.println("<b>" + s + "</b>");
-    }
-
-    public void printItalics(String s) {
-        ps.println("<i>" + s + "</i>");
-    }
-
-    public void printRed(String s) {
-        ps.println("<span style=\"color:" + RED + "\">" + s + "</span>");
-    }
-
-    public void printYellow(String s) {
-        ps.println("<span style=\"color:" + YELLOW + "\">" + s + "</span>");
-    }
-
-    public void printBlue(String s) {
-        ps.println("<span style=\"color:" + BLUE + "\">" + s + "</span>");
-    }
-
-    public void printGreen(String s) {
-        ps.println("<span style=\"color:" + GREEN + "\">" + s + "</span>");
     }
 
     public void printTable(String[][] table, int rowSize, int columnSize) {

@@ -1,7 +1,10 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
-import io.jenkins.plugins.report.jtreg.main.comparator.formatters.Formatters;
-import io.jenkins.plugins.report.jtreg.main.comparator.formatters.PlainFormatter;
+import com.google.common.collect.Table;
+import io.jenkins.plugins.report.jtreg.main.comparator.formatters.PlainTable;
+import io.jenkins.plugins.report.jtreg.main.comparator.formatters.TablePrinter;
+import io.jenkins.plugins.report.jtreg.main.diff.formatters.Formatter;
+import io.jenkins.plugins.report.jtreg.main.diff.formatters.PlainFormatter;
 
 public class Options {
     private Operations operation;
@@ -15,7 +18,8 @@ public class Options {
     private int exactJobLength;
     private boolean onlyVolatile;
     private String exactTestsRegex;
-    private Formatters formatter;
+    private Formatter formatter;
+    private TablePrinter tablePrinter;
 
     public Options() {
         this.queryString = "";
@@ -28,6 +32,7 @@ public class Options {
         this.onlyVolatile = false;
         this.exactTestsRegex = ".*";
         this.formatter = new PlainFormatter(System.out);
+        this.tablePrinter = new PlainTable(System.out);
     }
 
     public Operations getOperation() {
@@ -118,12 +123,20 @@ public class Options {
         this.exactTestsRegex = exactTestsRegex;
     }
 
-    public Formatters getFormatter() {
+    public Formatter getFormatter() {
         return formatter;
     }
 
-    public void setFormatter(Formatters formatter) {
+    public void setFormatter(Formatter formatter) {
         this.formatter = formatter;
+    }
+
+    public TablePrinter getTablePrinter() {
+        return tablePrinter;
+    }
+
+    public void setTablePrinter(TablePrinter tablePrinter) {
+        this.tablePrinter = tablePrinter;
     }
 
     // enum of all available operations

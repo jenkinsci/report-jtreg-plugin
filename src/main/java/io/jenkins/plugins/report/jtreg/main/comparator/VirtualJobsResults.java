@@ -1,6 +1,6 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
-import io.jenkins.plugins.report.jtreg.main.comparator.formatters.Formatters;
+import io.jenkins.plugins.report.jtreg.main.comparator.formatters.TablePrinter;
 import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -37,7 +37,7 @@ public class VirtualJobsResults {
         }
     }
 
-    public static void printVirtualTable(ArrayList<File> buildsToCompare, Formatters formatter) {
+    public static void printVirtualTable(ArrayList<File> buildsToCompare, TablePrinter tablePrinter) {
         String[][] table = new String[buildsToCompare.size() + 1][results.size() + 1];
 
         // first row - definitions
@@ -55,6 +55,6 @@ public class VirtualJobsResults {
             table[i][results.indexOf(result) + 1] = "X";
         }
 
-        formatter.printTable(table, buildsToCompare.size() + 1, results.size() + 1);
+        tablePrinter.printTable(table, buildsToCompare.size() + 1, results.size() + 1);
     }
 }

@@ -4,7 +4,7 @@ package io.jenkins.plugins.report.jtreg.main.comparator.formatters;
 import java.io.PrintStream;
 import java.util.Arrays;
 
-public class ColorFormatter implements Formatters {
+public class ColorTable implements TablePrinter {
     private final PrintStream ps;
     private static final String BOLD = "[1m";
     private static final String ITALICS = "[3m";
@@ -14,40 +14,8 @@ public class ColorFormatter implements Formatters {
     private static final String GREEN = "[32m";
     private static final String END = "[0m";
 
-    public ColorFormatter(PrintStream printStream) {
+    public ColorTable(PrintStream printStream) {
         this.ps = printStream;
-    }
-
-    public void print(String s) {
-        ps.print(s);
-    }
-
-    public void println(String s) {
-        ps.println(s);
-    }
-
-    public void printBold(String s) {
-        ps.print(BOLD + s + END);
-    }
-
-    public void printItalics(String s) {
-        ps.print(ITALICS + s + END);
-    }
-
-    public void printRed(String s) {
-        ps.print(RED + s + END);
-    }
-
-    public void printYellow(String s) {
-        ps.print(YELLOW + s + END);
-    }
-
-    public void printBlue(String s) {
-        ps.print(BLUE + s + END);
-    }
-
-    public void printGreen(String s) {
-        ps.print(GREEN + s + END);
     }
 
     public void printTable(String[][] table, int rowSize, int columnSize) {

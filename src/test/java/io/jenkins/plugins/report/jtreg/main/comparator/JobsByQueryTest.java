@@ -1,10 +1,10 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
-import io.jenkins.plugins.report.jtreg.main.comparator.formatters.Formatters;
-import io.jenkins.plugins.report.jtreg.main.comparator.formatters.PlainFormatter;
 import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsByQuery;
 import io.jenkins.plugins.report.jtreg.main.comparator.listing.DirListing;
 import io.jenkins.plugins.report.jtreg.main.comparator.listing.ListDirListing;
+import io.jenkins.plugins.report.jtreg.main.diff.formatters.Formatter;
+import io.jenkins.plugins.report.jtreg.main.diff.formatters.PlainFormatter;
 import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayOutputStream;
@@ -13,8 +13,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 
 public class JobsByQueryTest {
-    private static final PrintStream originalStream = System.out;
-    private ByteArrayOutputStream outStream;
     private static ArrayList<File> dummyJobs;
 
     @BeforeAll
@@ -165,7 +163,7 @@ public class JobsByQueryTest {
     public void testPrintJobs() {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(outStream);
-        Formatters formatter = new PlainFormatter(printStream);
+        Formatter formatter = new PlainFormatter(printStream);
 
         String queryString = "!{jtreg~full,jtreg~tier1} {jp11,jp17} {ojdk11~rpms,ojdk17~rpms} f36 x86_64 fastdebug sdk f36 x86_64 vagrant x11 !shenandoah * *";
         JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);
@@ -179,7 +177,7 @@ public class JobsByQueryTest {
     public void testPrintVariants() {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(outStream);
-        Formatters formatter = new PlainFormatter(printStream);
+        Formatter formatter = new PlainFormatter(printStream);
 
         String queryString = "!{crypto~tests,reproducers~regular} * * f36 * !slowdebug sdk f36 x86_64 {testfarm,vagrant} * * * * *";
         JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);

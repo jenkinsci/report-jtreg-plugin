@@ -4,43 +4,11 @@ package io.jenkins.plugins.report.jtreg.main.comparator.formatters;
 import java.io.PrintStream;
 import java.util.Arrays;
 
-public class PlainFormatter implements Formatters {
+public class PlainTable implements TablePrinter {
     private final PrintStream ps;
 
-    public PlainFormatter(PrintStream printStream) {
+    public PlainTable(PrintStream printStream) {
         this.ps = printStream;
-    }
-
-    public void print(String s) {
-        ps.print(s);
-    }
-
-    public void println(String s) {
-        ps.println(s);
-    }
-
-    public void printBold(String s) {
-        ps.print(s);
-    }
-
-    public void printItalics(String s) {
-        ps.print(s);
-    }
-
-    public void printRed(String s) {
-        ps.print(s);
-    }
-
-    public void printYellow(String s) {
-        ps.print(s);
-    }
-
-    public void printBlue(String s) {
-        ps.print(s);
-    }
-
-    public void printGreen(String s) {
-        ps.print(s);
     }
 
     public void printTable(String[][] table, int rowSize, int columnSize) {

@@ -4,7 +4,7 @@ import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
 import io.jenkins.plugins.report.jtreg.Constants;
 import io.jenkins.plugins.report.jtreg.JckReportPublisher;
-import io.jenkins.plugins.report.jtreg.main.comparator.formatters.Formatters;
+import io.jenkins.plugins.report.jtreg.main.comparator.formatters.TablePrinter;
 import io.jenkins.plugins.report.jtreg.model.*;
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromDir;
 
@@ -107,7 +107,7 @@ public class FailedTests {
     }
 
     // function for getting the HashMap of failed tests ready for printing to console
-    public static void printFailedTable(HashMap<String, ArrayList<String>> failedMap, Options.Operations operation, Formatters formatter) {
+    public static void printFailedTable(HashMap<String, ArrayList<String>> failedMap, Options.Operations operation, TablePrinter tablePrinter) {
         if (operation == Options.Operations.Compare) {
             failedMap = reverseFailedMap(failedMap);
         }
@@ -141,6 +141,6 @@ public class FailedTests {
             i++;
         }
 
-        formatter.printTable(table, failedMap.size() + 1, allFailedTests.size() + 1);
+        tablePrinter.printTable(table, failedMap.size() + 1, allFailedTests.size() + 1);
     }
 }
