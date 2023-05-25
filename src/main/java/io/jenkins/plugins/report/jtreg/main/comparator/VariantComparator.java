@@ -1,9 +1,6 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
 import io.jenkins.plugins.report.jtreg.main.comparator.arguments.ArgumentsParsing;
-import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsByQuery;
-import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsByRegex;
-import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsProvider;
 import io.jenkins.plugins.report.jtreg.main.comparator.listing.DirListing;
 import io.jenkins.plugins.report.jtreg.main.comparator.listing.FsDirListing;
 
@@ -16,19 +13,12 @@ public class VariantComparator {
 
         DirListing dl = new FsDirListing(options.getJobsPath());
 
-        // filter jobs by name (either using the query or regex)
-        JobsProvider jobs;
-        if (!options.getQueryString().equals("")) {
-            jobs = new JobsByQuery(options.getQueryString(), dl.getJobsInDir(), options.getExactJobLength());
-        }
-        else if (!options.getRegexString().equals("")) {
-            jobs = new JobsByRegex(options.getRegexString(), dl.getJobsInDir());
-        } else {
-            throw new RuntimeException("No jobs filtering specified.");
-        }
+        // add the jobs to the provider and filter them
+        options.getJobsProvider().addJobs(dl.getJobsInDir());
+        options.getJobsProvider().filterJobs();
 
         ArrayList<File> buildsToCompare = new ArrayList<>();
-        for (File job : jobs.getJobs()) {
+        for (File job : options.getJobsProvider().getJobs()) {
             ArrayList<File> builds = Builds.getBuilds(job, options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds());
             buildsToCompare.addAll(builds);
         }
@@ -38,9 +28,9 @@ public class VariantComparator {
                     FailedTests.createFailedMap(buildsToCompare, options.isOnlyVolatile(), options.getExactTestsRegex()),
                     options.getOperation(), options.getTablePrinter());
         } else if (options.getOperation() == Options.Operations.Enumerate) {
-            JobsPrinting.printVariants(jobs.getJobs(), options.getFormatter());
+            JobsPrinting.printVariants(options.getJobsProvider().getJobs(), options.getFormatter());
         } else if (options.getOperation() == Options.Operations.Print) {
-            JobsPrinting.printJobs(jobs.getJobs(), options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds(), options.getFormatter());
+            JobsPrinting.printJobs(options.getJobsProvider().getJobs(), options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds(), options.getFormatter());
         } else if (options.getOperation() == Options.Operations.Virtual) {
             VirtualJobsResults.printVirtualTable(buildsToCompare, options.getTablePrinter());
         }

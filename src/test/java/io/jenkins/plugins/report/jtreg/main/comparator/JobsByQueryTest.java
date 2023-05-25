@@ -29,7 +29,7 @@ public class JobsByQueryTest {
         dummyJobsStrings.add("jtreg~tier1-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.shenandoah.ignorecp.lnxagent.jfroff");
         dummyJobsStrings.add("reproducers~regular-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.defaultcp.lnxagent.jfroff");
         dummyJobsStrings.add("rhqe-jp11-ojdk11~rpms-f36.x86_64-slowdebug.sdk");
-        
+
         DirListing dl = new ListDirListing(dummyJobsStrings);
         dummyJobs = dl.getJobsInDir();
     }
@@ -45,7 +45,11 @@ public class JobsByQueryTest {
     @Test
     public void testFullCorrectQueryWithJob() {
         String queryString = "jtreg~full jp17 ojdk17~rpms f36 x86_64 fastdebug sdk f36 x86_64 testfarm x11 shenandoah ignorecp lnxagent jfroff";
-        JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);
+        JobsByQuery jbq = new JobsByQuery();
+        jbq.parseArguments("--query", queryString);
+        jbq.addJobs(dummyJobs);
+        jbq.filterJobs();
+
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
 
         Assertions.assertEquals(1, containsJobs.size());
@@ -55,7 +59,11 @@ public class JobsByQueryTest {
     @Test
     public void testFullWrongQueryWithJob() {
         String queryString = "jtreg~tier1 jp17 ojdk17~rpms f36 x86_64 fastdebug sdk f36 x86_64 testfarm x11 shenandoah ignorecp lnxagent jfroff";
-        JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);
+        JobsByQuery jbq = new JobsByQuery();
+        jbq.parseArguments("--query", queryString);
+        jbq.addJobs(dummyJobs);
+        jbq.filterJobs();
+
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
 
         Assertions.assertFalse(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.shenandoah.ignorecp.lnxagent.jfroff"));
@@ -65,7 +73,12 @@ public class JobsByQueryTest {
     public void testQueryWithAsterisks() {
         String queryString = "jtreg~full * * * * * * * * * * defaultgc * * jfroff";
 
-        JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);
+        JobsByQuery jbq = new JobsByQuery();
+        jbq.parseArguments("--query", queryString);
+        jbq.parseArguments("--force", null);
+        jbq.addJobs(dummyJobs);
+        jbq.filterJobs();
+
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
 
         Assertions.assertEquals(3, containsJobs.size());
@@ -78,7 +91,11 @@ public class JobsByQueryTest {
     public void testQueryWithSets() {
         String queryString = "jtreg~full jp17 ojdk17~rpms f36 x86_64 {fastdebug,release} sdk f36 x86_64 {testfarm,vagrant} {x11,wayland} defaultgc ignorecp lnxagent {jfroff,jfron}";
 
-        JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);
+        JobsByQuery jbq = new JobsByQuery();
+        jbq.parseArguments("--query", queryString);
+        jbq.addJobs(dummyJobs);
+        jbq.filterJobs();
+
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
 
         Assertions.assertEquals(3, containsJobs.size());
@@ -92,7 +109,11 @@ public class JobsByQueryTest {
         // should throw en exception
         String queryString = "jtreg~full jp17 ojdk17~rpms f36 x86_64 fastdebug sdk f36 x86_64 testfarm x11 {defaultgc,shenandoah ignorecp lnxagent jfroff";
         try {
-            JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);
+            JobsByQuery jbq = new JobsByQuery();
+            jbq.parseArguments("--query", queryString);
+            jbq.addJobs(dummyJobs);
+            jbq.filterJobs();
+
             Assertions.fail("The test did not threw an exception.");
         } catch (Exception e) {
             // expected
@@ -103,7 +124,11 @@ public class JobsByQueryTest {
     public void testQueryWithExclamationMarks() {
         String queryString = "jtreg~full !jp8 !ojdk8~rpms f36 x86_64 fastdebug sdk f36 x86_64 testfarm x11 !shenandoah ignorecp lnxagent jfroff";
 
-        JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);
+        JobsByQuery jbq = new JobsByQuery();
+        jbq.parseArguments("--query", queryString);
+        jbq.addJobs(dummyJobs);
+        jbq.filterJobs();
+
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
 
         Assertions.assertEquals(2, containsJobs.size());
@@ -115,7 +140,11 @@ public class JobsByQueryTest {
     public void testQueryWithExclamationMarksWithSets() {
         String queryString = "!{reproducers~regular,crypto~tests} jp17 ojdk17~rpms f36 x86_64 fastdebug sdk f36 x86_64 testfarm x11 defaultgc !{defaultcp,fips} lnxagent jfroff";
 
-        JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);
+        JobsByQuery jbq = new JobsByQuery();
+        jbq.parseArguments("--query", queryString);
+        jbq.addJobs(dummyJobs);
+        jbq.filterJobs();
+
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
 
         Assertions.assertEquals(2, containsJobs.size());
@@ -127,7 +156,11 @@ public class JobsByQueryTest {
     public void testShorterQueryWithLongerJob() {
         String queryString = "jtreg~full jp17 ojdk17~rpms f36 x86_64 fastdebug sdk";
 
-        JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);
+        JobsByQuery jbq = new JobsByQuery();
+        jbq.parseArguments("--query", queryString);
+        jbq.addJobs(dummyJobs);
+        jbq.filterJobs();
+
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
 
         Assertions.assertEquals(2, containsJobs.size());
@@ -139,7 +172,11 @@ public class JobsByQueryTest {
     public void testQueryWithShorterJob() {
         String queryString = "rhqe jp11 ojdk11~rpms f36 x86_64 slowdebug sdk f36 x86_64 vagrant x11 defaultgc legacy lnxagent jfroff";
 
-        JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);
+        JobsByQuery jbq = new JobsByQuery();
+        jbq.parseArguments("--query", queryString);
+        jbq.addJobs(dummyJobs);
+        jbq.filterJobs();
+
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
 
         Assertions.assertEquals(1, containsJobs.size());
@@ -150,7 +187,11 @@ public class JobsByQueryTest {
     public void testQueryWithCombinationOfAll() {
         String queryString = "!{jtreg~full,jtreg~tier1} {jp11,jp17} {ojdk11~rpms,ojdk17~rpms} f36 x86_64 fastdebug sdk f36 x86_64 vagrant x11 !shenandoah * *";
 
-        JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);
+        JobsByQuery jbq = new JobsByQuery();
+        jbq.parseArguments("--query", queryString);
+        jbq.addJobs(dummyJobs);
+        jbq.filterJobs();
+
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
         System.out.println(containsJobs);
 
@@ -166,7 +207,11 @@ public class JobsByQueryTest {
         Formatter formatter = new PlainFormatter(printStream);
 
         String queryString = "!{jtreg~full,jtreg~tier1} {jp11,jp17} {ojdk11~rpms,ojdk17~rpms} f36 x86_64 fastdebug sdk f36 x86_64 vagrant x11 !shenandoah * *";
-        JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);
+        JobsByQuery jbq = new JobsByQuery();
+        jbq.parseArguments("--query", queryString);
+        jbq.addJobs(dummyJobs);
+        jbq.filterJobs();
+
         JobsPrinting.printJobs(jbq.getJobs(), false, "", 0, formatter);
 
         Assertions.assertEquals("crypto~tests-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.fips.lnxagent.jfroff:\n" +
@@ -180,7 +225,12 @@ public class JobsByQueryTest {
         Formatter formatter = new PlainFormatter(printStream);
 
         String queryString = "!{crypto~tests,reproducers~regular} * * f36 * !slowdebug sdk f36 x86_64 {testfarm,vagrant} * * * * *";
-        JobsByQuery jbq = new JobsByQuery(queryString, dummyJobs, -1);
+        JobsByQuery jbq = new JobsByQuery();
+        jbq.parseArguments("--query", queryString);
+        jbq.parseArguments("--force", null);
+        jbq.addJobs(dummyJobs);
+        jbq.filterJobs();
+
         JobsPrinting.printVariants(jbq.getJobs(), formatter);
 
         Assertions.assertEquals("1) jtreg~full, jtreg~tier1, \n" +

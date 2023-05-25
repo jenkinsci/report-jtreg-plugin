@@ -1,38 +1,34 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
-import com.google.common.collect.Table;
 import io.jenkins.plugins.report.jtreg.main.comparator.formatters.PlainTable;
 import io.jenkins.plugins.report.jtreg.main.comparator.formatters.TablePrinter;
+import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsProvider;
 import io.jenkins.plugins.report.jtreg.main.diff.formatters.Formatter;
 import io.jenkins.plugins.report.jtreg.main.diff.formatters.PlainFormatter;
 
 public class Options {
     private Operations operation;
     private String jobsPath;
-    private String queryString;
-    private String regexString;
     private String nvrQuery;
     private int numberOfBuilds;
     private boolean skipFailed;
-    private boolean forceVagueQuery;
-    private int exactJobLength;
+    private boolean forceVague;
     private boolean onlyVolatile;
     private String exactTestsRegex;
     private Formatter formatter;
     private TablePrinter tablePrinter;
+    private JobsProvider jobsProvider;
 
     public Options() {
-        this.queryString = "";
-        this.regexString = "";
         this.nvrQuery = "";
         this.numberOfBuilds = 1;
         this.skipFailed = true;
-        this.forceVagueQuery = false;
-        this.exactJobLength = -1; // negative means the length does not matter
+        this.forceVague = false;
         this.onlyVolatile = false;
         this.exactTestsRegex = ".*";
         this.formatter = new PlainFormatter(System.out);
         this.tablePrinter = new PlainTable(System.out);
+        this.jobsProvider = null;
     }
 
     public Operations getOperation() {
@@ -49,22 +45,6 @@ public class Options {
 
     public void setJobsPath(String jobsPath) {
         this.jobsPath = jobsPath;
-    }
-
-    public String getQueryString() {
-        return queryString;
-    }
-
-    public void setQueryString(String queryString) {
-        this.queryString = queryString;
-    }
-
-    public String getRegexString() {
-        return regexString;
-    }
-
-    public void setRegexString(String queryString) {
-        this.regexString = queryString;
     }
 
     public String getNvrQuery() {
@@ -91,20 +71,12 @@ public class Options {
         this.skipFailed = skipFailed;
     }
 
-    public boolean isForceVagueQuery() {
-        return forceVagueQuery;
+    public boolean isForceVague() {
+        return forceVague;
     }
 
-    public void setForceVagueQuery(boolean forceVagueQuery) {
-        this.forceVagueQuery = forceVagueQuery;
-    }
-
-    public int getExactJobLength() {
-        return exactJobLength;
-    }
-
-    public void setExactJobLength(int exactJobLength) {
-        this.exactJobLength = exactJobLength;
+    public void setForceVague(boolean forceVagueQuery) {
+        this.forceVague = forceVagueQuery;
     }
 
     public boolean isOnlyVolatile() {
@@ -137,6 +109,14 @@ public class Options {
 
     public void setTablePrinter(TablePrinter tablePrinter) {
         this.tablePrinter = tablePrinter;
+    }
+
+    public JobsProvider getJobsProvider() {
+        return jobsProvider;
+    }
+
+    public void setJobsProvider(JobsProvider jobsProvider) {
+        this.jobsProvider = jobsProvider;
     }
 
     // enum of all available operations

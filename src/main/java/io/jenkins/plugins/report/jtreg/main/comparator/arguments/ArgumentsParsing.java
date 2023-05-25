@@ -1,10 +1,11 @@
 package io.jenkins.plugins.report.jtreg.main.comparator.arguments;
 
-import io.jenkins.plugins.report.jtreg.Constants;
 import io.jenkins.plugins.report.jtreg.main.comparator.HelpMessage;
 import io.jenkins.plugins.report.jtreg.main.comparator.Options;
 import io.jenkins.plugins.report.jtreg.main.comparator.formatters.ColorTable;
 import io.jenkins.plugins.report.jtreg.main.comparator.formatters.HtmlTable;
+import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsByQuery;
+import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsByRegex;
 import io.jenkins.plugins.report.jtreg.main.diff.formatters.ColorFormatter;
 import io.jenkins.plugins.report.jtreg.main.diff.formatters.HtmlFormatter;
 
@@ -14,9 +15,12 @@ public class ArgumentsParsing {
         Options options = new Options();
 
         if (arguments.length >= 1) {
+            // setting up the available jobs providers
+            JobsByQuery jobsByQuery = new JobsByQuery();
+            JobsByRegex jobsByRegex = new JobsByRegex();
+
             for (int i = 0; i < arguments.length; i++) {
                 String[] splitArg = arguments[i].split("=");
-
                 // delete all leading - characters
                 String currentArg = splitArg[0].replaceAll("^-+", "--");
 
@@ -73,28 +77,6 @@ public class ArgumentsParsing {
                         throw new RuntimeException("Expected path to jobs after --path.");
                     }
 
-                } else if (currentArg.equals(ArgumentsDeclaration.queryArg.getName())) {
-                    // --query
-                    if (!options.getRegexString().equals("")) {
-                        throw new RuntimeException("Cannot combine --query with --regex.");
-                    }
-                    if (i + 1 <= arguments.length) {
-                        options.setQueryString(arguments[++i]);
-                    } else {
-                        throw new RuntimeException("Expected query string after --query.");
-                    }
-
-                } else if (currentArg.equals(ArgumentsDeclaration.regexArg.getName())) {
-                    // --regex
-                    if (!options.getQueryString().equals("")) {
-                        throw new RuntimeException("Cannot combine --regex with --query.");
-                    }
-                    if (i + 1 <= arguments.length) {
-                        options.setRegexString(arguments[++i]);
-                    } else {
-                        throw new RuntimeException("Expected regular expression after --regex.");
-                    }
-
                 } else if (currentArg.equals(ArgumentsDeclaration.nvrArg.getName())) {
                     // --nvr
                     if (i + 1 <= arguments.length) {
@@ -119,15 +101,7 @@ public class ArgumentsParsing {
 
                 } else if (currentArg.equals(ArgumentsDeclaration.forceArg.getName())) {
                     // --force
-                    options.setForceVagueQuery(true);
-
-                } else if (currentArg.equals(ArgumentsDeclaration.exactLengthArg.getName())) {
-                    // --exact-length
-                    if (i + 1 <= arguments.length) {
-                        options.setExactJobLength(Integer.parseInt(arguments[++i]));
-                    } else {
-                        throw new RuntimeException("Expected the exact job length after --exact-length.");
-                    }
+                    options.setForceVague(true);
 
                 } else if (currentArg.equals(ArgumentsDeclaration.onlyVolatileArg.getName())) {
                     // --only-volatile
@@ -155,6 +129,28 @@ public class ArgumentsParsing {
                         throw new RuntimeException("Unexpected formatting specified.");
                     }
 
+                // parsing arguments of the jobs providers
+                } else if (jobsByQuery.getSupportedArgs().contains(currentArg) || jobsByRegex.getSupportedArgs().contains(currentArg)) {
+                    // add a jobs provider to options, if there is none
+                    if (options.getJobsProvider() == null) {
+                        if (jobsByQuery.getSupportedArgs().contains(currentArg)) {
+                            options.setJobsProvider(jobsByQuery);
+                        } else if (jobsByRegex.getSupportedArgs().contains(currentArg)){
+                            options.setJobsProvider(jobsByRegex);
+                        }
+                    }
+                    // check if the argument is compatible with current jobs provider
+                    if (options.getJobsProvider().getSupportedArgs().contains(currentArg)) {
+                        if (i + 1 <= arguments.length) {
+                            options.getJobsProvider().parseArguments(currentArg, arguments[++i]);
+                        } else {
+                            throw new RuntimeException("Expected a value after " + currentArg + ".");
+                        }
+                    } else {
+                        throw new RuntimeException("Cannot combine arguments from multiple job providers.");
+                    }
+
+                // unknown argument
                 } else {
                     throw new RuntimeException("Unknown argument " + currentArg + ", run with --help for info.");
                 }
@@ -168,29 +164,13 @@ public class ArgumentsParsing {
         if (options.getOperation() == null) {
             throw new RuntimeException("Expected some operation (--list, --enumerate, --compare, --print or --virtual).");
         }
-        if (options.getQueryString().equals("") && options.getRegexString().equals("")) {
-            throw new RuntimeException("Expected some job filtering (--query or --regex).");
-        }
         if (options.getJobsPath() == null) {
             throw new RuntimeException("Expected path to jobs directory (--path).");
         }
 
-        // check if the query string is too vague
-        if (!options.getQueryString().equals("")) {
-            int numOfAsterisks = options.getQueryString().length() - options.getQueryString().replace("*", "").length();
-            int lengthOfQuery = options.getQueryString().split("\\s+").length;
-            if ((lengthOfQuery < Constants.VAGUE_QUERY_LENGTH_THRESHOLD ||
-                    (numOfAsterisks != 0 && (double)numOfAsterisks / (double)lengthOfQuery > Constants.VAGUE_QUERY_THRESHOLD))
-                    && !options.isForceVagueQuery()) {
-                throw new RuntimeException("The query string is too vague (too many * or short query), run with --force to continue anyway.");
-            }
-        }
-
-        // check if the regex string is too vague
-        if (!options.getRegexString().equals("")) {
-            if (options.getRegexString().matches("^(\\.\\*)*$") && !options.isForceVagueQuery()) {
-                throw new RuntimeException("The regular expression is too vague (contains only .*), run with --force to continue anyway.");
-            }
+        // add the info about forcing vague queries to the current jobs provider
+        if (options.isForceVague()) {
+            options.getJobsProvider().parseArguments(ArgumentsDeclaration.forceArg.getName(), null);
         }
 
         return options;
