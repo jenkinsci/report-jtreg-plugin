@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import io.jenkins.plugins.report.jtreg.main.comparator.HelpMessage;
+
 public class ComapreContextExecutingHandler extends ContextExecutingHandler {
 
     public ComapreContextExecutingHandler(File targetProgram) throws IOException {
@@ -40,7 +42,7 @@ public class ComapreContextExecutingHandler extends ContextExecutingHandler {
 
     @Override
     protected String pritnHelp() throws UnsupportedEncodingException {
-        return "note:\n"
+        return sanitizeHtml(HelpMessage.HELP_MESSAGE) + "\n" + "note:\n"
                 + "--path path_to_the_jenkins_jobs_directory is already preset, no need to  set it\n"
                 + "examples:\n"
                 + "--compare --query  \"tck jp19 ojdkLatest~rpms * * release sdk * aarch64 beaker x11 defaultgc ignorecp lnxagent *\" --history 5  --nvr \"java-latest-openjdk-19.0.2.0.7-1.rolling"
@@ -48,5 +50,15 @@ public class ComapreContextExecutingHandler extends ContextExecutingHandler {
                 + "--compare --query  \"tck jp19 ojdkLatest~rpms * * release sdk * aarch64 beaker x11 defaultgc ignorecp lnxagent *\" --history 1\n"
                 + "When launched from here, web, the  `\" or * or { or } you have to use \\\" and \\* and \\{ and \\}` is NOT CORRECT\n"
                 + "html wrapper not yet finished, you ust check SOURCE (ctrl+u) for anyviable thing\n";
+    }
+
+    private String sanitizeHtml(String helpMessage) {
+        return helpMessage
+                .replace("&", "&amp;")
+                .replace("\"", "&quot;")
+                .replace("'", "&apos;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;");
+
     }
 }
