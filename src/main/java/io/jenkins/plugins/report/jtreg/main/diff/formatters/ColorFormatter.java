@@ -24,6 +24,7 @@
 package io.jenkins.plugins.report.jtreg.main.diff.formatters;
 
 import java.io.PrintStream;
+import java.util.Arrays;
 
 public class ColorFormatter extends StringMappedFormatter {
 //those are NOT spaces but bash \e
@@ -120,6 +121,53 @@ public class ColorFormatter extends StringMappedFormatter {
     @Override
     public void startTitle4() {
         startColor(SupportedColors.Blue);
+    }
+
+    @Override
+    public void printTable(String[][] table, int rowSize, int columnSize) {
+        // first print the first row definitions
+        for (int i = 1; i < table[0].length; i++) {
+            super.println(Bold + i + ") " + ResetAll + table[0][i]);
+            table[0][i] = Integer.toString(i); // replace the item with its definition (number)
+        }
+
+        // get the length of the longest item in each column
+        int[] lengths = new int[table[0].length];
+        Arrays.fill(lengths, 0);
+        for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < columnSize; j++) {
+                if (table[i][j] != null && table[i][j].length() > lengths[j]) {
+                    lengths[j] = table[i][j].length();
+                }
+            }
+        }
+
+        // print the table
+        for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < columnSize; j++) {
+                int len = 0;
+                if (table[i][j] != null) {
+                    // print the first row (the numbers) bold
+                    if (i == 0) {
+                        super.print(Bold + table[i][j] + ResetAll + " ");
+                        // Xs will be red
+                    } else if (table[i][j].equals("X")) {
+                        super.print(Red + table[i][j] + ResetAll + " ");
+                    } else {
+                        super.print(table[i][j] + " ");
+                    }
+                    len = table[i][j].length();
+                } else {
+                    super.print(" ");
+                }
+                // printing spaces to make the table look better
+                for (int k = len; k < lengths[j]; k++) {
+                    super.print(" ");
+                }
+                super.print("| ");
+            }
+            super.print("\n");
+        }
     }
 
 }

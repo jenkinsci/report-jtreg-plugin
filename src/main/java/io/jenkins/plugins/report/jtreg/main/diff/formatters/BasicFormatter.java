@@ -68,7 +68,9 @@ public abstract class BasicFormatter implements Formatter {
     public void preClose(){
 
     }
-    
-    
 
+    @Override
+    public void printTable(String[][] table, int rowSize, int columnSize) {
+
+    }
 }

@@ -1,9 +1,9 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
-import io.jenkins.plugins.report.jtreg.main.comparator.formatters.HtmlTable;
-import io.jenkins.plugins.report.jtreg.main.comparator.formatters.PlainTable;
-import io.jenkins.plugins.report.jtreg.main.comparator.formatters.ColorTable;
-import io.jenkins.plugins.report.jtreg.main.comparator.formatters.TablePrinter;
+import io.jenkins.plugins.report.jtreg.main.diff.formatters.ColorFormatter;
+import io.jenkins.plugins.report.jtreg.main.diff.formatters.Formatter;
+import io.jenkins.plugins.report.jtreg.main.diff.formatters.HtmlFormatter;
+import io.jenkins.plugins.report.jtreg.main.diff.formatters.PlainFormatter;
 import org.junit.jupiter.api.*;
 
 
@@ -27,11 +27,11 @@ public class PrintTableTest {
     public void testPlainTablePrinting() {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(outStream);
-        TablePrinter tp = new PlainTable(printStream);
+        Formatter f = new PlainFormatter(printStream);
 
         String[][] newTable = table;
 
-        tp.printTable(newTable, 4, 4);
+        f.printTable(newTable, 4, 4);
 
         Assertions.assertEquals("1) first item\n" +
                 "2) second item\n" +
@@ -46,9 +46,9 @@ public class PrintTableTest {
     public void testColorTablePrinting() {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(outStream);
-        TablePrinter tp = new ColorTable(printStream);
+        Formatter f = new ColorFormatter(printStream);
 
-        tp.printTable(table, 4, 4);
+        f.printTable(table, 4, 4);
 
         Assertions.assertEquals("\u001B[1m1) \u001B[0mfirst item\n" +
                 "\u001B[1m2) \u001B[0msecond item\n" +
@@ -63,9 +63,9 @@ public class PrintTableTest {
     public void testHtmlTablePrinting() {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(outStream);
-        TablePrinter tp = new HtmlTable(printStream);
+        Formatter f = new HtmlFormatter(printStream);
 
-        tp.printTable(table, 4, 4);
+        f.printTable(table, 4, 4);
 
         Assertions.assertEquals("<style>table, td { border: 1px solid black; border-collapse: collapse; padding: 0.5em; }</style>\n" +
                 "<ul>\n" +

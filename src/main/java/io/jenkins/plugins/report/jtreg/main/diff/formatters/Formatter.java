@@ -72,4 +72,5 @@ public interface Formatter {
     public void pre();
     public void preClose();
 
+    public void printTable(String[][] table, int rowSize, int columnSize);
 }

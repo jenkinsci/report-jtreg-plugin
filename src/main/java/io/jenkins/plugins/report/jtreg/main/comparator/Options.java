@@ -1,7 +1,5 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
-import io.jenkins.plugins.report.jtreg.main.comparator.formatters.PlainTable;
-import io.jenkins.plugins.report.jtreg.main.comparator.formatters.TablePrinter;
 import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsProvider;
 import io.jenkins.plugins.report.jtreg.main.diff.formatters.Formatter;
 import io.jenkins.plugins.report.jtreg.main.diff.formatters.PlainFormatter;
@@ -16,7 +14,6 @@ public class Options {
     private boolean onlyVolatile;
     private String exactTestsRegex;
     private Formatter formatter;
-    private TablePrinter tablePrinter;
     private JobsProvider jobsProvider;
 
     public Options() {
@@ -27,7 +24,6 @@ public class Options {
         this.onlyVolatile = false;
         this.exactTestsRegex = ".*";
         this.formatter = new PlainFormatter(System.out);
-        this.tablePrinter = new PlainTable(System.out);
         this.jobsProvider = null;
     }
 
@@ -101,14 +97,6 @@ public class Options {
 
     public void setFormatter(Formatter formatter) {
         this.formatter = formatter;
-    }
-
-    public TablePrinter getTablePrinter() {
-        return tablePrinter;
-    }
-
-    public void setTablePrinter(TablePrinter tablePrinter) {
-        this.tablePrinter = tablePrinter;
     }
 
     public JobsProvider getJobsProvider() {

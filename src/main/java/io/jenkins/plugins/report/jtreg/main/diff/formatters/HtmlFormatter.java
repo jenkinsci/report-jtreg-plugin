@@ -136,4 +136,35 @@ public class HtmlFormatter extends StringMappedFormatter {
         print("</pre>");
     }
 
+    @Override
+    public void printTable(String[][] table, int rowSize, int columnSize) {
+        super.println("<style>table, td { border: 1px solid black; border-collapse: collapse; padding: 0.5em; }</style>");
+
+        // first print the first row definitions
+        super.println("<ul>");
+        for (int i = 1; i < table[0].length; i++) {
+            super.println("<li><b>" + i + ":</b> " + table[0][i] + "</li>");
+            table[0][i] = "<b>" + i + "</b>"; // replace the item with its definition (number)
+        }
+        super.println("</ul>");
+
+        // print the table
+        super.println("<table>");
+        for (int i = 0; i < rowSize; i++) {
+            super.println("<tr>");
+            for (int j = 0; j < columnSize; j++) {
+                if (table[i][j] != null) {
+                    if (table[i][j].equals("X")) {
+                        super.println("<td style=\"color:Red\">" + table[i][j] + "</td>");
+                    } else {
+                        super.println("<td>" + table[i][j] + "</td>");
+                    }
+                } else {
+                    super.println("<td></td>");
+                }
+            }
+            super.println("</tr>");
+        }
+        super.println("</table>");
+    }
 }
