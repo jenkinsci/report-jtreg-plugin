@@ -25,7 +25,7 @@ public class VariantComparator {
 
         if (options.getOperation() == Options.Operations.List || options.getOperation() == Options.Operations.Compare) {
             FailedTests.printFailedTable(
-                    FailedTests.createFailedMap(buildsToCompare, options.isOnlyVolatile(), options.getExactTestsRegex()),
+                    FailedTests.createFailedMap(buildsToCompare, options.isOnlyVolatile(), options.getExactTestsRegex(), options.getFormatter()),
                     options.getOperation(), options.getFormatter());
         } else if (options.getOperation() == Options.Operations.Enumerate) {
             JobsPrinting.printVariants(options.getJobsProvider().getJobs(), options.getFormatter());

@@ -13,7 +13,7 @@ import java.util.*;
 
 public class FailedTests {
     // function for getting failed tests into an ArrayList
-    private static ArrayList<String> getBuildFailedTests(File build, String exactTestsRegex) throws Exception {
+    private static ArrayList<String> getBuildFailedTests(File build, String exactTestsRegex, Formatter formatter) throws Exception {
         ArrayList<String> failedTests = new ArrayList<>();
 
         JckReportPublisher jcp = new JckReportPublisher(Constants.IRRELEVANT_GLOB_STRING); // completely irrelevant string
@@ -24,7 +24,9 @@ public class FailedTests {
 
         // since the exception is already handled elsewhere, it checks for it by this and prints the info message
         if (swr == null) {
-            System.out.println("The " + Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build) + " is probably missing some files (may be ABORTED).");
+            formatter.startColor(Formatter.SupportedColors.Yellow);
+            formatter.println("The " + Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build) + " is probably missing some files (may be ABORTED).");
+            formatter.reset();
             return failedTests;
         }
 
@@ -40,14 +42,16 @@ public class FailedTests {
     }
 
     // function for creating a HashMap of "build info - list of its failed tests" pair
-    public static HashMap<String, ArrayList<String>> createFailedMap(ArrayList<File> buildsToCompare, boolean onlyVolatile, String exactTestsRegex) throws Exception {
+    public static HashMap<String, ArrayList<String>> createFailedMap(
+            ArrayList<File> buildsToCompare, boolean onlyVolatile, String exactTestsRegex, Formatter formatter) throws Exception {
+
         HashMap<String, ArrayList<String>> failedMap = new HashMap<>();
 
         for (File build : buildsToCompare) {
             failedMap.put(Builds.getJobName(build)
                     + " - build:" + Builds.getBuildNumber(build)
                     + " - nvr:" + Builds.getNvr(build),
-                    getBuildFailedTests(build, exactTestsRegex));
+                    getBuildFailedTests(build, exactTestsRegex, formatter));
         }
 
         if (onlyVolatile) {
