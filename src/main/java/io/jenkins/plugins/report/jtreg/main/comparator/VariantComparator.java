@@ -19,7 +19,8 @@ public class VariantComparator {
 
         ArrayList<File> buildsToCompare = new ArrayList<>();
         for (File job : options.getJobsProvider().getJobs()) {
-            ArrayList<File> builds = Builds.getBuilds(job, options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds());
+            ArrayList<File> builds = Builds.getBuilds(job, options.isSkipFailed(), options.getNvrQuery(),
+                    options.getNumberOfBuilds(), options.isUseDefaultBuild(), options.getFormatter());
             buildsToCompare.addAll(builds);
         }
 
@@ -30,7 +31,8 @@ public class VariantComparator {
         } else if (options.getOperation() == Options.Operations.Enumerate) {
             JobsPrinting.printVariants(options.getJobsProvider().getJobs(), options.getFormatter());
         } else if (options.getOperation() == Options.Operations.Print) {
-            JobsPrinting.printJobs(options.getJobsProvider().getJobs(), options.isSkipFailed(), options.getNvrQuery(), options.getNumberOfBuilds(), options.getFormatter());
+            JobsPrinting.printJobs(options.getJobsProvider().getJobs(), options.isSkipFailed(), options.getNvrQuery(),
+                    options.getNumberOfBuilds(), options.getFormatter(), options.isUseDefaultBuild());
         } else if (options.getOperation() == Options.Operations.Virtual) {
             VirtualJobsResults.printVirtualTable(buildsToCompare, options.getFormatter());
         }

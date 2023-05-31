@@ -2,6 +2,7 @@ package io.jenkins.plugins.report.jtreg.main.comparator;
 
 import io.jenkins.plugins.report.jtreg.main.diff.cmdline.JobsRecognition;
 
+import io.jenkins.plugins.report.jtreg.main.diff.formatters.Formatter;
 import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -55,7 +56,9 @@ public class Builds {
     }
 
     // gets all the compatible builds with the given parameters and returns them in a list
-    public static ArrayList<File> getBuilds(File job, boolean skipFailed, String nvrQuery, int numberOfBuilds) {
+    public static ArrayList<File> getBuilds(
+            File job, boolean skipFailed, String nvrQuery, int numberOfBuilds, boolean useDefaultBuild, Formatter formatter) {
+
         ArrayList<File> listOfBuilds = new ArrayList<>();
 
         File buildDir = new File(job.getAbsolutePath() + "/builds/");
@@ -85,6 +88,20 @@ public class Builds {
                 buildsChecked++;
             }
         }
+
+        if (!nvrQuery.equals("") && listOfBuilds.size() == 0 && useDefaultBuild) {
+            for (File build : buildsInDir) {
+                if (checkIfCorrect(build, skipFailed)) {
+                    listOfBuilds.add(build);
+                    formatter.startColor(Formatter.SupportedColors.Yellow);
+                    formatter.println("Cannot find job " + getJobName(build) + " which matches " + nvrQuery +
+                            ", instead using build " + getBuildNumber(build) + " with nvr " + getNvr(build) + ".");
+                    formatter.reset();
+                    break;
+                }
+            }
+        }
+
         return listOfBuilds;
     }
 

@@ -212,7 +212,7 @@ public class JobsByQueryTest {
         jbq.addJobs(dummyJobs);
         jbq.filterJobs();
 
-        JobsPrinting.printJobs(jbq.getJobs(), false, "", 0, formatter);
+        JobsPrinting.printJobs(jbq.getJobs(), false, "", 0, formatter, false);
 
         Assertions.assertEquals("crypto~tests-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.fips.lnxagent.jfroff:\n" +
                 "reproducers~regular-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.defaultcp.lnxagent.jfroff:\n", outStream.toString());

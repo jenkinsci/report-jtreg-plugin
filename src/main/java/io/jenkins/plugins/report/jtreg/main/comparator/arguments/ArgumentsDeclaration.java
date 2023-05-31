@@ -15,5 +15,6 @@ public final class ArgumentsDeclaration {
     public static final Argument forceArg = new Argument("--force", "Used for forcing vague requests, that could potentially take a long time.", "");
     public static final Argument onlyVolatileArg = new Argument("--only-volatile", "Specify true to show only non stable tests with the arguments list and compare (shows only tests, that are NOT failed everywhere). The default value is false.", "=<true/false>");
     public static final Argument exactTestsArg = new Argument("--exact-tests", "Specify (with regex) the exact tests to show only. The rest of tests will be ignored.", " <regex>");
-   public static final Argument formattingArg = new Argument("--formatting", "Specify the output formatting (plain, color or html). The default is plain", "=<plain/color/html>");
+    public static final Argument formattingArg = new Argument("--formatting", "Specify the output formatting (plain, color or html). The default is plain.", "=<plain/color/html>");
+    public static final Argument useDefaultBuildArg = new Argument("--use-default-build", "If set to true and no matching build with given NVR was found, the tool will use the latest (default) build instead. Default value is false.", "=<true/false>");
 }

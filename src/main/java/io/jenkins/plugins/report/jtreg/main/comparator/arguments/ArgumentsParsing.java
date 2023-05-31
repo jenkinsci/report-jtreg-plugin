@@ -125,6 +125,12 @@ public class ArgumentsParsing {
                         throw new RuntimeException("Unexpected formatting specified.");
                     }
 
+                } else if (currentArg.equals(ArgumentsDeclaration.useDefaultBuildArg.getName())) {
+                    // --use-default-build
+                    if (splitArg.length == 2 && splitArg[1].equals("true")) {
+                        options.setUseDefaultBuild(true);
+                    }
+
                 // parsing arguments of the jobs providers
                 } else if (jobsByQuery.getSupportedArgs().contains(currentArg) || jobsByRegex.getSupportedArgs().contains(currentArg)) {
                     // add a jobs provider to options, if there is none

@@ -14,6 +14,7 @@ public class Options {
     private boolean onlyVolatile;
     private String exactTestsRegex;
     private Formatter formatter;
+    private boolean useDefaultBuild;
     private JobsProvider jobsProvider;
 
     public Options() {
@@ -24,6 +25,7 @@ public class Options {
         this.onlyVolatile = false;
         this.exactTestsRegex = ".*";
         this.formatter = new PlainFormatter(System.out);
+        this.useDefaultBuild = false;
         this.jobsProvider = null;
     }
 
@@ -105,6 +107,14 @@ public class Options {
 
     public void setJobsProvider(JobsProvider jobsProvider) {
         this.jobsProvider = jobsProvider;
+    }
+
+    public boolean isUseDefaultBuild() {
+        return useDefaultBuild;
+    }
+
+    public void setUseDefaultBuild(boolean useDefaultBuild) {
+        this.useDefaultBuild = useDefaultBuild;
     }
 
     // enum of all available operations
