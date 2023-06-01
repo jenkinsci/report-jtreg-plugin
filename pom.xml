@@ -69,7 +69,7 @@
                     <plugin>
                         <!-- Assembly plugin works only when packaging is JAR. Is ignored for HPI -->
                         <artifactId>maven-assembly-plugin</artifactId>
-                        <version>3.5.0</version>
+                        <version>3.6.0</version>
                         <configuration>
                             <descriptorRefs>
                                 <descriptorRef>jar-with-dependencies</descriptorRef>
