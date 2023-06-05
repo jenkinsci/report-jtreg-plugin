@@ -34,6 +34,8 @@ final public class HelpMessage {
             "                  " + ArgumentsDeclaration.listArg.getHelp() + "\n" +
             "    " + ArgumentsDeclaration.compareArg.getName() + "\n" +
             "                  " + ArgumentsDeclaration.compareArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.virtualArg.getName() + "\n" +
+            "                  " + ArgumentsDeclaration.virtualArg.getHelp() + "\n" +
             "\n" +
             "    Other arguments:\n" +
             "    " + ArgumentsDeclaration.helpArg.getName() + "\n" +
@@ -50,8 +52,6 @@ final public class HelpMessage {
             "                  " + ArgumentsDeclaration.forceArg.getHelp() + "\n" +
             "    " + ArgumentsDeclaration.formattingArg.getName() + ArgumentsDeclaration.formattingArg.getUsage() + "\n" +
             "                  " + ArgumentsDeclaration.formattingArg.getHelp() + "\n" +
-            "    " + ArgumentsDeclaration.virtualArg.getName() + "\n" +
-            "                  " + ArgumentsDeclaration.virtualArg.getHelp() + "\n" +
             "\n" +
             "Query string syntax:\n" +
             JobsByQuery.queryStringUsage +

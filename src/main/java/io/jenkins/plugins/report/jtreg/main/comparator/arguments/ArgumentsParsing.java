@@ -160,7 +160,7 @@ public class ArgumentsParsing {
         }
 
         // check for basic errors
-        if (options.getOperation() == null) {
+        if (options.getOperation() == null && !options.isPrintVirtual()) {
             throw new RuntimeException("Expected some operation (--list, --enumerate, --compare, --print or --virtual).");
         }
         if (options.getJobsPath() == null) {
