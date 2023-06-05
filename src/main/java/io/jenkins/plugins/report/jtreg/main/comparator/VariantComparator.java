@@ -24,6 +24,7 @@ public class VariantComparator {
             buildsToCompare.addAll(builds);
         }
 
+        // do the chosen operation
         if (options.getOperation() == Options.Operations.List || options.getOperation() == Options.Operations.Compare) {
             FailedTests.printFailedTable(
                     FailedTests.createFailedMap(buildsToCompare, options.isOnlyVolatile(), options.getExactTestsRegex(), options.getFormatter()),
@@ -33,7 +34,11 @@ public class VariantComparator {
         } else if (options.getOperation() == Options.Operations.Print) {
             JobsPrinting.printJobs(options.getJobsProvider().getJobs(), options.isSkipFailed(), options.getNvrQuery(),
                     options.getNumberOfBuilds(), options.getFormatter(), options.isUseDefaultBuild());
-        } else if (options.getOperation() == Options.Operations.Virtual) {
+        }
+
+        // print virtual table
+        if (options.isPrintVirtual()) {
+            options.getFormatter().println();
             VirtualJobsResults.printVirtualTable(buildsToCompare, options.getFormatter());
         }
     }

@@ -62,10 +62,7 @@ public class ArgumentsParsing {
 
                 } else if (currentArg.equals(ArgumentsDeclaration.virtualArg.getName())) {
                     // --virtual
-                    if (options.getOperation() != null) {
-                        throw new RuntimeException("Cannot combine --virtual with other operations.");
-                    }
-                    options.setOperation(Options.Operations.Virtual);
+                    options.setPrintVirtual(true);
 
                 } else if (currentArg.equals(ArgumentsDeclaration.pathArg.getName())) {
                     // --path

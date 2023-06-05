@@ -38,6 +38,11 @@ public class VirtualJobsResults {
     }
 
     public static void printVirtualTable(ArrayList<File> buildsToCompare, Formatter formatter) {
+        formatter.startBold();
+        formatter.println("Virtual builds' results table:");
+        formatter.println();
+        formatter.reset();
+
         String[][] table = new String[results.size() + 1][buildsToCompare.size() + 1];
 
         // first column definitions

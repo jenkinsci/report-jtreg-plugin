@@ -7,7 +7,7 @@ public final class ArgumentsDeclaration {
     public static final Argument enumerateArg = new Argument("--enumerate", "Print lists of all variants of jobs (that match the rest of arguments).", "");
     public static final Argument compareArg = new Argument("--compare", "Print a table of all failed tests (of matched job builds) and the builds where they failed.", "");
     public static final Argument printArg = new Argument("--print", "Print all jobs and their builds that match the rest of arguments, without actually doing any operation on the builds or tests.", "");
-    public static final Argument virtualArg = new Argument("--virtual", "Print a table of all matched jobs' builds and their result (e.g. SUCCESS, UNSTABLE, etc.). Recommended to be combined with --skip-failed=false.", "");
+    public static final Argument virtualArg = new Argument("--virtual", "Print a table of all matched jobs' builds and their result (e.g. SUCCESS, UNSTABLE, etc.). Can be combined with any operation, recommended to be combined with --skip-failed=false.", "");
     public static final Argument pathArg = new Argument("--path", "A system path to a directory with your jenkins jobs. This argument is mandatory", " <path/to/jenkins/jobs>");
     public static final Argument nvrArg = new Argument("--nvr", "To specify what builds to take (only builds with specified NVRs). The syntax is described below.", " <nvrquery>");
     public static final Argument historyArg = new Argument("--history", "To specify the maximum number of builds to look in.", " <number>");

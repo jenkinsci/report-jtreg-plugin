@@ -16,6 +16,7 @@ public class Options {
     private Formatter formatter;
     private boolean useDefaultBuild;
     private JobsProvider jobsProvider;
+    private boolean printVirtual;
 
     public Options() {
         this.nvrQuery = "";
@@ -27,6 +28,7 @@ public class Options {
         this.formatter = new PlainFormatter(System.out);
         this.useDefaultBuild = false;
         this.jobsProvider = null;
+        this.printVirtual = false;
     }
 
     public Operations getOperation() {
@@ -117,8 +119,16 @@ public class Options {
         this.useDefaultBuild = useDefaultBuild;
     }
 
+    public boolean isPrintVirtual() {
+        return printVirtual;
+    }
+
+    public void setPrintVirtual(boolean printVirtual) {
+        this.printVirtual = printVirtual;
+    }
+
     // enum of all available operations
     public enum Operations {
-        List, Enumerate, Compare, Print, Virtual
+        List, Enumerate, Compare, Print
     }
 }
