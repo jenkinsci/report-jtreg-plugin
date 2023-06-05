@@ -38,23 +38,23 @@ public class VirtualJobsResults {
     }
 
     public static void printVirtualTable(ArrayList<File> buildsToCompare, Formatter formatter) {
-        String[][] table = new String[buildsToCompare.size() + 1][results.size() + 1];
+        String[][] table = new String[results.size() + 1][buildsToCompare.size() + 1];
 
-        // first row - definitions
+        // first column definitions
         for (int i = 1; i <= results.size(); i++) {
-            table[0][i] = results.get(i - 1);
+            table[i][0] = results.get(i - 1);
         }
 
-        for (int i = 1; i  <= buildsToCompare.size(); i++) {
+        for (int i = 1; i <= buildsToCompare.size(); i++) {
             File build = buildsToCompare.get(i - 1);
-            table[i][0] = Builds.getJobName(build)
+            table[0][i] = Builds.getJobName(build)
                     + " - build:" + Builds.getBuildNumber(build)
                     + " - nvr:" + Builds.getNvr(build);
 
             String result = getBuildResult(build);
-            table[i][results.indexOf(result) + 1] = "X";
+            table[results.indexOf(result) + 1][i] = "X";
         }
 
-        formatter.printTable(table, buildsToCompare.size() + 1, results.size() + 1);
+        formatter.printTable(table, results.size() + 1, buildsToCompare.size() + 1);
     }
 }
