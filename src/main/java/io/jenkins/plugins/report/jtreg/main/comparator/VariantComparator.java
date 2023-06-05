@@ -24,22 +24,24 @@ public class VariantComparator {
             buildsToCompare.addAll(builds);
         }
 
-        // do the chosen operation
-        if (options.getOperation() == Options.Operations.List || options.getOperation() == Options.Operations.Compare) {
-            FailedTests.printFailedTable(
-                    FailedTests.createFailedMap(buildsToCompare, options.isOnlyVolatile(), options.getExactTestsRegex(), options.getFormatter()),
-                    options.getOperation(), options.getFormatter());
-        } else if (options.getOperation() == Options.Operations.Enumerate) {
-            JobsPrinting.printVariants(options.getJobsProvider().getJobs(), options.getFormatter());
-        } else if (options.getOperation() == Options.Operations.Print) {
-            JobsPrinting.printJobs(options.getJobsProvider().getJobs(), options.isSkipFailed(), options.getNvrQuery(),
-                    options.getNumberOfBuilds(), options.getFormatter(), options.isUseDefaultBuild());
-        }
+        if (buildsToCompare.size() != 0) {
+            // do the chosen operation
+            if (options.getOperation() == Options.Operations.List || options.getOperation() == Options.Operations.Compare) {
+                FailedTests.printFailedTable(
+                        FailedTests.createFailedMap(buildsToCompare, options.isOnlyVolatile(), options.getExactTestsRegex(), options.getFormatter()),
+                        options.getOperation(), options.getFormatter());
+            } else if (options.getOperation() == Options.Operations.Enumerate) {
+                JobsPrinting.printVariants(options.getJobsProvider().getJobs(), options.getFormatter());
+            } else if (options.getOperation() == Options.Operations.Print) {
+                JobsPrinting.printJobs(options.getJobsProvider().getJobs(), options.isSkipFailed(), options.getNvrQuery(),
+                        options.getNumberOfBuilds(), options.getFormatter(), options.isUseDefaultBuild());
+            }
 
-        // print virtual table
-        if (options.isPrintVirtual()) {
-            options.getFormatter().println();
-            VirtualJobsResults.printVirtualTable(buildsToCompare, options.getFormatter());
+            // print virtual table
+            if (options.isPrintVirtual()) {
+                options.getFormatter().println();
+                VirtualJobsResults.printVirtualTable(buildsToCompare, options.getFormatter());
+            }
         }
     }
 }
