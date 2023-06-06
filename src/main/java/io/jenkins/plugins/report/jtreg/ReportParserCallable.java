@@ -29,6 +29,7 @@ import io.jenkins.plugins.report.jtreg.model.Report;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.parsers.ReportParser;
 import hudson.remoting.VirtualChannel;
+import jenkins.MasterToSlaveFileCallable;
 import org.jenkinsci.remoting.RoleChecker;
 
 import java.io.File;
@@ -41,7 +42,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ReportParserCallable implements FilePath.FileCallable<List<Suite>> {
+public class ReportParserCallable extends MasterToSlaveFileCallable<List<Suite>> implements FilePath.FileCallable<List<Suite>> {
 
     public static final Suite FAKE_SUITE = new Suite("Fake suite", new Report(0, 0, 0, 0, 0, null));
 
@@ -76,10 +77,6 @@ public class ReportParserCallable implements FilePath.FileCallable<List<Suite>> 
             }
             return result;
         }
-    }
-
-    @Override
-    public void checkRoles(RoleChecker rc) throws SecurityException {
     }
 
     private Suite getFakeSuite() {
