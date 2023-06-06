@@ -30,8 +30,9 @@ public class ArgumentsParsing {
                 if (currentArg.equals(ArgumentsDeclaration.helpArg.getName()) || currentArg.equals("--h")) {
                     // --help
                     System.out.print(HelpMessage.HELP_MESSAGE);
-                    System.exit(0);
-
+                    Options tmpO = new Options();
+                    tmpO.setDie(true);
+                    return tmpO;
                 } else if (currentArg.equals(ArgumentsDeclaration.listArg.getName())) {
                     // --list
                     if (options.getOperation() != null) {

@@ -17,6 +17,7 @@ public class Options {
     private boolean useDefaultBuild;
     private JobsProvider jobsProvider;
     private boolean printVirtual;
+    private boolean die;
 
     public Options() {
         this.nvrQuery = "";
@@ -29,6 +30,15 @@ public class Options {
         this.useDefaultBuild = false;
         this.jobsProvider = null;
         this.printVirtual = false;
+        this.die = false;
+    }
+
+    public void setDie(boolean die) {
+        this.die = die;
+    }
+
+    public boolean isDie() {
+        return die;
     }
 
     public Operations getOperation() {

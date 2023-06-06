@@ -10,6 +10,9 @@ import java.util.ArrayList;
 public class VariantComparator {
     public static void main(String[] args) throws Exception {
         Options options = ArgumentsParsing.parse(args);
+        if(options.isDie()) {
+            return;
+        }
 
         DirListing dl = new FsDirListing(options.getJobsPath());
 
