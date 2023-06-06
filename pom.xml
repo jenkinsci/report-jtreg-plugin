@@ -9,7 +9,7 @@
     </parent>
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>report-jtreg</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
     <!-- use -P hpi for jenkins plugin build (default) or -P jar for assembled diff -->
     <packaging>${packaging-type}</packaging>
     <name>junit/xunit/jtreg/jck compatible publisher targeting huge result bases</name>
