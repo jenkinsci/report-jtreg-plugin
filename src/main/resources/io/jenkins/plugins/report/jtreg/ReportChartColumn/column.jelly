@@ -1,5 +1,9 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
+        <!-- adjuncts are always loaded jsut once.
+        So even if this snippet is inserted as many times as there are charts
+        the <script src=adjuncts...js>  element is included jsut once-->
+    <st:adjunct includes="io.jenkins.plugins.report.jtreg.ReportChartColumn.chartLogicColumn"/>
     <j:set var="jckReports" value="${it.getJckReport(job)}" />
     <j:set var="chartName" value="${it.generateChartName()}" />
     <td data="${it.getLatestResultFailures(jckReports)}">
@@ -8,82 +12,35 @@
                 No JCK results yet
             </j:if>
             <j:if test="${!jckReports.isEmpty()}">
+                <span class="jckChart-names"  jckChart_processed="false" style="visibility:hidden">
+                    ${chartName}
+                </span>
+
                 <div id="jckChartContainer-${chartName}" style="width: 320px; height: 80px">
                     <canvas id='jckChart-${chartName}' width='320' height='80' style="display: block"></canvas>
                 </div>
+                <span id="jckChart-url-${chartName}" style="visibility:hidden">
+                    ${job.url}
+                </span>
 
-                <script type="text/javascript">
-                // &lt;![CDATA[
-                if (typeof jckChartNameVar == 'undefined') {
-                  var jckChartNameVar = {};
-                }
-                var dataJckView = {
-                  type: 'line',
-                  data:  {
-                    labels: [
+                <span id="jckChart-buildNumber-${chartName}" style="visibility:hidden">
                     <j:forEach var="build" items="${jckReports}" varStatus="status">
-                    "${build.buildNumber}"<j:if test="${!status.last}">,</j:if>
+                    ${build.buildNumber}<j:if test="${!status.last}">,</j:if>
                     </j:forEach>
-                    ],
-                            datasets: [
-                            {
-                            label: "Error",
-                            fill: true,
-                            backgroundColor: "rgba(255,0,255,0.2)",
-                            borderColor: "rgba(255,0,255,1)",
-                            pointBackgroundColor: "rgba(255,0,255,1)",
-                            pointBorderColor: "#fff",
-                            pointHoverBackgroundColor: "#fff",
-                            pointHoverBorderColor: "rgba(255,0,255,1)",
-                            pointRadius: 4,
-                                    data: [
+                </span>
+
+                <span id="jckChart-error-${chartName}" style="visibility:hidden">
                     <j:forEach var="build" items="${jckReports}" varStatus="status">
                         ${build.error}<j:if test="${!status.last}">,</j:if>
                     </j:forEach>
-                                    ]
-                            },
-                            {
-                            label: "Failed",
-                            fill: true,
-                            backgroundColor: "rgba(255,0,0,0.2)",
-                            borderColor: "rgba(255,0,0,1)",
-                            pointBackgroundColor: "rgba(255,0,0,1)",
-                            pointBorderColor: "#fff",
-                            pointHoverBackgroundColor: "#fff",
-                            pointHoverBorderColor: "rgba(255,0,0,1)",
-                            pointRadius: 4,
-                                    data: [
+                </span>
+
+                <span id="jckChart-failed-${chartName}" style="visibility:hidden">
                     <j:forEach var="build" items="${jckReports}" varStatus="status">
                         ${build.failed}<j:if test="${!status.last}">,</j:if>
                     </j:forEach>
-                                    ]
-                            }
-                            ]
-                    },
-                    options: {
-                        plugins: {
-                            legend: { display: false }
-                        },
-                        interaction: {
-                            mode: 'index',
-                            intersect: false
-                        },
-                        onClick: (e) => {
-                            var activePoints = jckChartNameVar["${chartName}"].getElementsAtEventForMode(e, 'index', { intersect: false }, true);
-                            var point = activePoints[0]
-                            var datasetIndex = point.datasetIndex //labels are for all data together,  no need to look into exact dataset
-                            var index = point.index
-                            var result = jckChartNameVar["${chartName}"].config.data.labels[index]
-                            var buildId = result.substring(result.lastIndexOf(":") + 1) //thsi works even without :; fixme, add NVR?
-                            window.open("/${job.url}"+buildId+"/java-reports", "_blank");
-                    }
-                    }
-                };
-                    var ctx = document.getElementById("jckChart-${chartName}").getContext("2d");
-                    jckChartNameVar["${chartName}"]  = new Chart(ctx, dataJckView);
-                    // ]]&gt;
-                </script>
-            </j:if>
+                </span>
+              </j:if>
         </div>
     </td>
 </j:jelly>
