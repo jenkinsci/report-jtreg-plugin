@@ -13,7 +13,10 @@
                 </div>
 
                 <script type="text/javascript">
-                    // &lt;![CDATA[
+                // &lt;![CDATA[
+                if (typeof jckChartNameVar == 'undefined') {
+                  var jckChartNameVar = {};
+                }
                 var dataJckView = {
                   type: 'line',
                   data:  {
@@ -66,18 +69,18 @@
                             intersect: false
                         },
                         onClick: (e) => {
-                            var activePoints = ${chartName}var.getElementsAtEventForMode(e, 'index', { intersect: false }, true);
+                            var activePoints = jckChartNameVar["${chartName}"].getElementsAtEventForMode(e, 'index', { intersect: false }, true);
                             var point = activePoints[0]
                             var datasetIndex = point.datasetIndex //labels are for all data together,  no need to look into exact dataset
                             var index = point.index
-                            var result = ${chartName}var.config.data.labels[index]
+                            var result = jckChartNameVar["${chartName}"].config.data.labels[index]
                             var buildId = result.substring(result.lastIndexOf(":") + 1) //thsi works even without :; fixme, add NVR?
                             window.open("/${job.url}"+buildId+"/java-reports", "_blank");
                     }
                     }
                 };
                     var ctx = document.getElementById("jckChart-${chartName}").getContext("2d");
-                    var ${chartName}var = new Chart(ctx, dataJckView);
+                    jckChartNameVar["${chartName}"]  = new Chart(ctx, dataJckView);
                     // ]]&gt;
                 </script>
             </j:if>
