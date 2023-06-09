@@ -1,5 +1,5 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
     <h3 style="font-family: monospace">Number of Failures: ${action.displayName}</h3>
     <div id="jckErrorsFailuresChartContainer" style="margin-right: 10pt"><canvas id='jckErrorsFailuresChart' width='600' height='600'></canvas></div>
     <h3 style="font-family: monospace">Number of Tests total: ${action.displayName}</h3>
@@ -7,204 +7,41 @@
     <h3 style="font-family: monospace">Regressions: ${action.displayName}</h3>
     <div id="jckRegressionsChartContainer" style="margin-right: 10pt"><canvas id='jckRegressionsChart' width='600' height='600'></canvas></div>
             <j:set var="jckReports" value="${action.chartData}" />
-    <script type="text/javascript">
-        // &lt;![CDATA[
-        var allJckFails = {
-          type: 'line',
-          data: {
-            labels: [
+
+    <span id="jckdata_builds" style="visibility:hidden">
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
-        "${build.buildNameShortened}"<j:if test="${!status.last}">,</j:if>
+        ${build.buildNameShortened}<j:if test="${!status.last}">,</j:if>
         </j:forEach>
-        ],
-                datasets: [
-                {
-                label: "Error",
-                fill: true,
-                backgroundColor: "rgba(255,0,255,0.2)",
-                borderColor: "rgba(255,0,255,1)",
-                pointBackgroundColor: "rgba(255,0,255,1)",
-                pointBorderColor: "#fff",
-                pointHoverBackgroundColor: "#fff",
-                pointHoverBorderColor: "rgba(255,0,255,1)",
-                pointRadius: 5,
-                        data: [
+    </span>
+    <span id="jckdata_errors" style="visibility:hidden">
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
             ${build.error}<j:if test="${!status.last}">,</j:if>
         </j:forEach>
-                        ]
-                },
-                {
-                label: "Failed",
-                fill: true,
-                backgroundColor: "rgba(255,0,0,0.2)",
-                borderColor: "rgba(255,0,0,1)",
-                pointBackgroundColor: "rgba(255,0,0,1)",
-                pointBorderColor: "#fff",
-                pointHoverBackgroundColor: "#fff",
-                pointHoverBorderColor: "rgba(255,0,0,1)",
-                pointRadius: 5,
-                        data: [
+    </span>
+    <span id="jckdata_failed" style="visibility:hidden">
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
             ${build.failed}<j:if test="${!status.last}">,</j:if>
         </j:forEach>
-                        ]
-                }
-                ]
-        },
-        options: {
-          plugins: {
-            legend: { display: false }
-          },
-          interaction: {
-            mode: 'index',
-            intersect: false
-          },
-          onClick: (e) => {
-                var activePoints = jckErrorsChart.getElementsAtEventForMode(e, 'index', { intersect: false }, true);
-                var point = activePoints[0]
-                var datasetIndex = point.datasetIndex //labels are for all data together,  no need to look into exact dataset
-                var index = point.index
-                var result = jckErrorsChart.config.data.labels[index]
-                var buildId = result.substring(result.lastIndexOf(":") + 1)
-                window.open("" + buildId + "/java-reports", "_blank");
-          }
-         }
-        };
-        var ctx = document.getElementById("jckErrorsFailuresChart").getContext("2d");
-        var jckErrorsChart = new Chart(ctx, allJckFails);
-        // ]]&gt;
-    </script>
-    <script type="text/javascript">
-        // &lt;![CDATA[
-        var allJck = {
-          type: 'line',
-          data: {
-            labels: [
-        <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
-        "${build.buildNameShortened}"<j:if test="${!status.last}">,</j:if>
-        </j:forEach>
-        ],
-                datasets: [
-                {
-                label: "Tests total",
-                fill: true,
-                backgroundColor: "rgba(180,180,180,0.2)",
-                borderColor: "rgba(180,180,180,1)",
-                pointBackgroundColor: "rgba(180,180,180,1)",
-                pointBorderColor: "#fff",
-                pointHoverBackgroundColor: "#fff",
-                pointHoverBorderColor: "rgba(180,180,180,1)",
-                pointRadius: 5,
-                        data: [
+    </span>
+    <span id="jckdata_total" style="visibility:hidden">
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
             ${build.total}<j:if test="${!status.last}">,</j:if>
         </j:forEach>
-                        ]
-                },
-                {
-                label: "Runned tests",
-                fill: true,
-                backgroundColor: "rgba(180,180,180,0.2)",
-                borderColor: "rgba(180,180,180,1)",
-                pointBackgroundColor: "rgba(180,180,180,1)",
-                pointBorderColor: "#fff",
-                pointHoverBackgroundColor: "#fff",
-                pointHoverBorderColor: "rgba(180,180,180,1)",
-                pointRadius: 5,
-                        data: [
+    </span>
+    <span id="jckdata_runned" style="visibility:hidden">
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
             ${build.Run}<j:if test="${!status.last}">,</j:if>
         </j:forEach>
-                        ]
-                }
-                ]
-        },
-        options: {
-          plugins: {
-          legend: { display: false }
-          },
-          interaction: {
-            mode: 'index',
-            intersect: false
-          },
-            onClick: (e) => {
-                var activePoints = jckPassedChartTck.getElementsAtEventForMode(e, 'index', { intersect: false }, true);
-                var point = activePoints[0]
-                var datasetIndex = point.datasetIndex //labels are for all data together,  no need to look into exact dataset
-                var index = point.index
-                var result = jckPassedChartTck.config.data.labels[index]
-                var buildId = result.substring(result.lastIndexOf(":") + 1)
-                window.open("" + buildId + "/java-reports", "_blank");
-            }
-         }
-        };
-        var ctx = document.getElementById("jckPassedChart").getContext("2d");
-        var jckPassedChartTck = new Chart(ctx, allJck);
-        // ]]&gt;
-    </script>
-    <script type="text/javascript">
-        // &lt;![CDATA[
-        var allJckRegressions = {
-          type: 'bar',
-          data: {
-            labels: [
-        <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
-        "${build.buildNameShortened}"<j:if test="${!status.last}">,</j:if>
-        </j:forEach>
-        ],
-                datasets: [
-                {
-                label: "Improvements",
-                backgroundColor: "rgba(0,220,0,0.5)",
-                borderColor: "rgba(0,220,0,0.8)",
-                borderWidth: 2,
-                barThickness: 20,
-                hoverBackgroundColor: "rgba(0,220,0,0.75)",
-                hoverBorderColor: "rgba(0,220,0,1)",
-                        data: [
+    </span>
+    <span id="jckdata_imps" style="visibility:hidden">
         <j:forEach var="build" items="${jckReports.improvements}" varStatus="status">
             ${build}<j:if test="${!status.last}">,</j:if>
         </j:forEach>
-                        ]
-                },
-                {
-                label: "Regressions",
-                backgroundColor: "rgba(220,0,0,0.5)",
-                borderColor: "rgba(220,0,0,0.8)",
-                borderWidth: 2,
-                barThickness: 20,
-                hoverBackgroundColor: "rgba(220,0,0,0.75)",
-                hoverBorderColor: "rgba(220,0,0,1)",
-                        data: [
+    </span>
+    <span id="jckdata_regs" style="visibility:hidden">
         <j:forEach var="build" items="${jckReports.regressions}" varStatus="status">
             ${build}<j:if test="${!status.last}">,</j:if>
         </j:forEach>
-                        ]
-                }
-                ]
-        },
-        options: {
-          plugins: {
-            legend: { display: false }
-          },
-          interaction: {
-            mode: 'index',
-            intersect: false
-          },
-           onClick: (e) => {
-                var activePoints = jckRegressions.getElementsAtEventForMode(e, 'index', { intersect: false }, true);
-                var point = activePoints[0]
-                var datasetIndex = point.datasetIndex //labels are for all data together,  no need to look into exact dataset
-                var index = point.index
-                var result = jckRegressions.config.data.labels[index]
-                var buildId = result.substring(result.lastIndexOf(":") + 1)
-                window.open("" + buildId + "/java-reports", "_blank");
-           }
-         }
-        };
-        var ctx = document.getElementById("jckRegressionsChart").getContext("2d");
-        var jckRegressions = new Chart(ctx, allJckRegressions);
-        // ]]&gt;
-    </script>
+    </span>
+    <st:adjunct includes="io.jenkins.plugins.report.jtreg.ReportProjectAction.chartLogicBox"/>
 </j:jelly>
