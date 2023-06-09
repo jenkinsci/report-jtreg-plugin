@@ -16,7 +16,7 @@
 
     <properties>
         <chartjs.version>4.2.1.5</chartjs.version>
-        <jenkins.version>2.407</jenkins.version>
+        <jenkins.version>2.400</jenkins.version>
     </properties>
 
     <developers>
