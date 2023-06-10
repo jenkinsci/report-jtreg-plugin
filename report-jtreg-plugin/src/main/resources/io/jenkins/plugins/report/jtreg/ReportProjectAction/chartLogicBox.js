@@ -51,120 +51,95 @@
 
 
         var allJckFails = {
-          type: 'line',
-          data: {
             labels: jckdata_builds,
                 datasets: [
                 {
                 label: "Error",
-                fill: true,
-                backgroundColor: "rgba(255,0,255,0.2)",
-                borderColor: "rgba(255,0,255,1)",
-                pointBackgroundColor: "rgba(255,0,255,1)",
-                pointBorderColor: "#fff",
-                pointHoverBackgroundColor: "#fff",
-                pointHoverBorderColor: "rgba(255,0,255,1)",
-                pointRadius: 5,
+                fillColor: "rgba(255,0,255,0.2)",
+                strokeColor: "rgba(255,0,255,1)",
+                pointColor: "rgba(255,0,255,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(255,0,255,1)",
                         data: jckdata_errors
                 },
                 {
                 label: "Failed",
-                fill: true,
-                backgroundColor: "rgba(255,0,0,0.2)",
-                borderColor: "rgba(255,0,0,1)",
-                pointBackgroundColor: "rgba(255,0,0,1)",
-                pointBorderColor: "#fff",
-                pointHoverBackgroundColor: "#fff",
-                pointHoverBorderColor: "rgba(255,0,0,1)",
-                pointRadius: 5,
+                fillColor: "rgba(255,0,0,0.2)",
+                strokeColor: "rgba(255,0,0,1)",
+                pointColor: "rgba(255,0,0,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(255,0,0,1)",
                         data: jckdata_failed
                 }
                 ]
-        },
-        options: {
-          plugins: {
-            legend: { display: false }
-          },
-          interaction: {
-            mode: 'index',
-            intersect: false
-          },
-          onClick: (e) => {
-                var activePoints = jckErrorsChart.getElementsAtEventForMode(e, 'index', { intersect: false }, true);
-                var point = activePoints[0]
-                var datasetIndex = point.datasetIndex //labels are for all data together,  no need to look into exact dataset
-                var index = point.index
-                var result = jckErrorsChart.config.data.labels[index]
-                var buildId = result.substring(result.lastIndexOf(":") + 1)
-                window.open("" + buildId + "/java-reports", "_blank");
-          }
-         }
         };
+        var options = {
+            bezierCurve: false,
+            multiTooltipTemplate: "<%= datasetLabel + \": \" + value %>"
+         }
+
         var ctx = document.getElementById("jckErrorsFailuresChart").getContext("2d");
-        var jckErrorsChart = new Chart(ctx, allJckFails);
+        var jckErrorsChart = new Chart(ctx).Line(allJckFails, options);
+        document.getElementById("jckErrorsFailuresChartContainer").onclick = function (evt) {
+            var activePoints = jckErrorsChart.getPointsAtEvent(evt);
+            var point = activePoints[0]
+            var datasetIndex = point.datasetIndex //labels are for all data together,  no need to look into exact dataset
+            var index = point.index
+            var result = point.label
+            var buildId = result.substring(result.lastIndexOf(":") + 1)
+            window.open("" + buildId + "/java-reports", "_blank");
+        };
 
         var allJck = {
-          type: 'line',
-          data: {
             labels: jckdata_builds,
                 datasets: [
                 {
                 label: "Tests total",
-                fill: true,
-                backgroundColor: "rgba(180,180,180,0.2)",
-                borderColor: "rgba(180,180,180,1)",
-                pointBackgroundColor: "rgba(180,180,180,1)",
-                pointBorderColor: "#fff",
-                pointHoverBackgroundColor: "#fff",
-                pointHoverBorderColor: "rgba(180,180,180,1)",
-                pointRadius: 5,
+                fillColor: "rgba(180,180,180,0.2)",
+                strokeColor: "rgba(180,180,180,1)",
+                pointColor: "rgba(180,180,180,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(180,180,180,1)",
                         data: jckdata_total
                 },
                 {
                 label: "Runned tests",
-                fill: true,
-                backgroundColor: "rgba(180,180,180,0.2)",
-                borderColor: "rgba(180,180,180,1)",
-                pointBackgroundColor: "rgba(180,180,180,1)",
-                pointBorderColor: "#fff",
-                pointHoverBackgroundColor: "#fff",
-                pointHoverBorderColor: "rgba(180,180,180,1)",
-                pointRadius: 5,
+                fillColor: "rgba(180,180,180,0.2)",
+                strokeColor: "rgba(180,180,180,1)",
+                pointColor: "rgba(180,180,180,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(180,180,180,1)",
                         data: jckdata_runned
                 }
                 ]
-        },
-        options: {
-          plugins: {
-          legend: { display: false }
-          },
-          interaction: {
-            mode: 'index',
-            intersect: false
-          },
-            onClick: (e) => {
-                var activePoints = jckPassedChartTck.getElementsAtEventForMode(e, 'index', { intersect: false }, true);
-                var point = activePoints[0]
-                var datasetIndex = point.datasetIndex //labels are for all data together,  no need to look into exact dataset
-                var index = point.index
-                var result = jckPassedChartTck.config.data.labels[index]
-                var buildId = result.substring(result.lastIndexOf(":") + 1)
-                window.open("" + buildId + "/java-reports", "_blank");
-            }
-         }
         };
+        var options = {
+            bezierCurve: false,
+            multiTooltipTemplate: "<%= datasetLabel + \": \" + value %>"
+         }
         var ctx = document.getElementById("jckPassedChart").getContext("2d");
-        var jckPassedChartTck = new Chart(ctx, allJck);
+        var jckPassedChartTck = new Chart(ctx).Line(allJck, options);
+        document.getElementById("jckPassedChartContainer").onclick = function (evt) {
+            var activePoints = jckPassedChartTck.getPointsAtEvent(evt);
+            var point = activePoints[0]
+            var datasetIndex = point.datasetIndex //labels are for all data together,  no need to look into exact dataset
+            var index = point.index
+            var result = point.label
+            var buildId = result.substring(result.lastIndexOf(":") + 1)
+            window.open("" + buildId + "/java-reports", "_blank");
+        };
 
         var allJckRegressions = {
-          type: 'bar',
-          data: {
             labels: jckdata_builds,
                 datasets: [
                 {
                 label: "Improvements",
-                backgroundColor: "rgba(0,220,0,0.5)",
-                borderColor: "rgba(0,220,0,0.8)",
+                fillColor: "rgba(0,220,0,0.5)",
+                strokeColor: "rgba(0,220,0,0.8)",
                 borderWidth: 2,
                 barThickness: 20,
                 hoverBackgroundColor: "rgba(0,220,0,0.75)",
@@ -173,8 +148,8 @@
                 },
                 {
                 label: "Regressions",
-                backgroundColor: "rgba(220,0,0,0.5)",
-                borderColor: "rgba(220,0,0,0.8)",
+                fillColor: "rgba(220,0,0,0.5)",
+                strokeColor: "rgba(220,0,0,0.8)",
                 borderWidth: 2,
                 barThickness: 20,
                 hoverBackgroundColor: "rgba(220,0,0,0.75)",
@@ -182,28 +157,22 @@
                         data: jckdata_regs
                 }
                 ]
-        },
-        options: {
-          plugins: {
-            legend: { display: false }
-          },
-          interaction: {
-            mode: 'index',
-            intersect: false
-          },
-           onClick: (e) => {
-                var activePoints = jckRegressions.getElementsAtEventForMode(e, 'index', { intersect: false }, true);
-                var point = activePoints[0]
-                var datasetIndex = point.datasetIndex //labels are for all data together,  no need to look into exact dataset
-                var index = point.index
-                var result = jckRegressions.config.data.labels[index]
-                var buildId = result.substring(result.lastIndexOf(":") + 1)
-                window.open("" + buildId + "/java-reports", "_blank");
-           }
-         }
         };
+        var options = {
+            bezierCurve: false,
+            multiTooltipTemplate: "<%= datasetLabel + \": \" + value %>"
+         }
         var ctx = document.getElementById("jckRegressionsChart").getContext("2d");
-        var jckRegressions = new Chart(ctx, allJckRegressions);
+        var jckRegressions = new Chart(ctx).Bar(allJckRegressions, options);
+        document.getElementById("jckRegressionsChartContainer").onclick = function (evt) {
+            var activePoints = jckRegressions.getBarsAtEvent(evt);
+            var point = activePoints[0]
+            var datasetIndex = point.datasetIndex //labels are for all data together,  no need to look into exact dataset
+            var index = point.index
+            var result = point.label
+            var buildId = result.substring(result.lastIndexOf(":") + 1)
+            window.open("" + buildId + "/java-reports", "_blank");
+        };
 
         //hopefully temporary workaround to weird sizes
         var jc1 = document.getElementById('jckErrorsFailuresChartContainer')
