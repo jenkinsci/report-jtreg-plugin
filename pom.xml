@@ -28,8 +28,8 @@
         <revision>2.4</revision>
         <changelist>-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/report-jtreg</gitHubRepo>
-        <chartjs.version>4.2.1.5</chartjs.version>
-        <jenkins.version>2.400</jenkins.version>
+        <chartjs.version>1.0.2.6</chartjs.version>
+        <jenkins.version>2.361.4</jenkins.version>
     </properties>
 
     <developers>
