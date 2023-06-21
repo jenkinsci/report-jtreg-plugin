@@ -1,12 +1,54 @@
         // <![CDATA[
 
-        var jckdata_builds = document.getElementById('jckdata_builds').textContent.split(/\s*,\s*/).flatMap((s) => (s.trim()));
-        var jckdata_errors = document.getElementById('jckdata_errors').textContent.split(/\s*,\s*/).flatMap((s) => (s.trim()));
-        var jckdata_failed = document.getElementById('jckdata_failed').textContent.split(/\s*,\s*/).flatMap((s) => (s.trim()));
-        var jckdata_total = document.getElementById('jckdata_total').textContent.split(/\s*,\s*/).flatMap((s) => (s.trim()));
-        var jckdata_runned = document.getElementById('jckdata_runned').textContent.split(/\s*,\s*/).flatMap((s) => (s.trim()));
-        var jckdata_imps = document.getElementById('jckdata_imps').textContent.split(/\s*,\s*/).flatMap((s) => (s.trim()));
-        var jckdata_regs = document.getElementById('jckdata_regs').textContent.split(/\s*,\s*/).flatMap((s) => (s.trim()));
+        var jckdata_builds_element = document.getElementById('jckdata_builds');
+        if (jckdata_builds_element == null) {
+                var jckdata_builds = ["missing labels"]
+        } else {
+                var jckdata_builds = jckdata_builds_element.textContent.split(/\s*,\s*/).flatMap((s) => (s.trim()));
+        }
+
+        var jckdata_errors_element = document.getElementById('jckdata_errors');
+        if (jckdata_errors_element == null) {
+                var jckdata_errors = ["0"]
+        } else {
+                var jckdata_errors = jckdata_errors_element.textContent.split(/\s*,\s*/).flatMap((s) => (s.trim()));
+        }
+
+        var jckdata_failed_element = document.getElementById('jckdata_failed');
+        if (jckdata_failed_element == null) {
+                var jckdata_failed = ["0"]
+        } else {
+                var jckdata_failed = jckdata_failed_element.textContent.split(/\s*,\s*/).flatMap((s) => (s.trim()));
+        }
+
+        var jckdata_total_element = document.getElementById('jckdata_total');
+        if (jckdata_total_element == null) {
+                var jckdata_total = ["0"]
+        } else {
+                var jckdata_total = jckdata_total_element.textContent.split(/\s*,\s*/).flatMap((s) => (s.trim()));
+        }
+
+        var jckdata_runned_element = document.getElementById('jckdata_runned');
+        if (jckdata_runned_element == null) {
+                var jckdata_runned = ["0"]
+        } else {
+                var jckdata_runned = jckdata_runned_element.textContent.split(/\s*,\s*/).flatMap((s) => (s.trim()));
+        }
+
+        var jckdata_imps_element = document.getElementById('jckdata_imps');
+        if (jckdata_imps_element == null) {
+                var jckdata_imps = ["0"]
+        } else {
+                var jckdata_imps = jckdata_imps_element.textContent.split(/\s*,\s*/).flatMap((s) => (s.trim()));
+        }
+
+        var jckdata_regs_element = document.getElementById('jckdata_regs');
+        if (jckdata_regs_element == null) {
+                var jckdata_regs = ["0"]
+        } else {
+                var jckdata_regs = jckdata_regs_element.textContent.split(/\s*,\s*/).flatMap((s) => (s.trim()));
+        }
+
 
         var allJckFails = {
           type: 'line',
