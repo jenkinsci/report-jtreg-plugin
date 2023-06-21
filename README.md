@@ -1,4 +1,4 @@
-# jenkins-report-jck
+# jenkins-report-jtreg
 Jenkins plugin to show unit-test, tesng, jtreg and JCK reports summaries, diffs and details
 
 Plugin is build as `mvn clean install -Phpi`, otherwise [Diff cli tool](#diff-cli-tool) jar with dependecies is built
