@@ -6,15 +6,15 @@
     <f:entry field="maxBuilds" title="Number of builds to show">
         <f:textbox />
     </f:entry>
-<f:section title="blacklist/whitelist">
+<f:section title="denylist/allowlist">
   <f:advanced>
-    <f:entry field="resultsBlackList" title="Packages blacklisted">
+    <f:entry field="resultsDenyList" title="Packages denylisted">
         <f:textbox />
     </f:entry>
-    <f:entry field="resultsWhiteList" title="Packages whitelisted">
+    <f:entry field="resultsAllowList" title="Packages allowlisted">
         <f:textbox />
     </f:entry>
-    <f:entry field="rangeAroundWlist" title="Range around whitelisted">
+    <f:entry field="rangeAroundAlist" title="Range around allowlisted">
         <f:textbox />
     </f:entry>
   </f:advanced>

@@ -81,27 +81,27 @@ public class BuildSummaryParser {
         this.settings = settings;
     }
 
-    List<String> getBlacklisted(Job<?, ?> job) {
-        return getBlacklisted(job.getBuilds());
+    List<String> getDenylisted(Job<?, ?> job) {
+        return getDenylisted(job.getBuilds());
 
     }
 
-    List<String> getWhitelisted(Job<?, ?> job) {
-        return getWhitelisted(job.getBuilds());
+    List<String> getAllowlisted(Job<?, ?> job) {
+        return getAllowlisted(job.getBuilds());
     }
 
-    int getWhiteListSizeWithoutSurroundings(Job<?, ?> job) {
-        return getWhiteListSizeWithoutSurroundings(job.getBuilds()).size();
+    int getAllowListSizeWithoutSurroundings(Job<?, ?> job) {
+        return getAllowListSizeWithoutSurroundings(job.getBuilds()).size();
     }
 
-    List<String> getBlacklisted(RunList<?> runs) {
+    List<String> getDenylisted(RunList<?> runs) {
         return getList(runs, new ListProvider() {
             @Override
             public String getList() {
                 if (settings == null) {
                     return "";
                 } else {
-                    return settings.getResultsBlackList();
+                    return settings.getResultsDenyList();
                 }
             }
 
@@ -112,29 +112,29 @@ public class BuildSummaryParser {
         });
     }
 
-    List<String> getWhitelisted(RunList<?> runs) {
+    List<String> getAllowlisted(RunList<?> runs) {
         return getList(runs, new ListProvider() {
             @Override
             public String getList() {
                 if (settings == null) {
                     return "";
                 } else {
-                    return settings.getResultsWhiteList();
+                    return settings.getResultsAllowList();
                 }
             }
 
             @Override
             public int getSurrounding() {
-                return settings.getRangeAroundWlist();
+                return settings.getRangeAroundAlist();
             }
         });
     }
 
-    List<String> getWhiteListSizeWithoutSurroundings(RunList<?> runs) {
+    List<String> getAllowListSizeWithoutSurroundings(RunList<?> runs) {
         return getList(runs, new ListProvider() {
             @Override
             public String getList() {
-                return settings.getResultsWhiteList();
+                return settings.getResultsAllowList();
             }
 
             @Override
@@ -186,12 +186,12 @@ public class BuildSummaryParser {
             if (crashed) {
                 return true;
             }
-            /*Preventing duplicates in whitelist. Not because of the graph, there is
+            /*Preventing duplicates in allowlist. Not because of the graph, there is
             already chunk of code preventing from showing duplicity in the graph.
             (The final list are recreated again with help of these lists)
-            Its because lenght of whitelist which is shown over the graph.
+            Its because lenght of allowlist which is shown over the graph.
             BUG
-            We have some point(a) which is in range around whitelist and point(b) which
+            We have some point(a) which is in range around allowlist and point(b) which
             have same name but its not in range. Bug is that both points are shown in result
             its caused by generating second array(graph points) from names contained in this array*/
             if (!result.contains(builds[position].getDisplayName())) {
@@ -217,16 +217,16 @@ public class BuildSummaryParser {
     public List<BuildReport> parseJobReports(RunList<?> runs) {
         int limit = getMaxItems();
         List<BuildReport> list = new ArrayList<>();
-        List<String> blacklisted = getBlacklisted(runs);
-        List<String> whitelisted = getWhitelisted(runs);
+        List<String> denylisted = getDenylisted(runs);
+        List<String> allowlisted = getAllowlisted(runs);
         for (Run run : runs) {
             if (run.getResult() == null || run.getResult().isWorseThan(Result.UNSTABLE)) {
                 continue;
             }
-            if (blacklisted.contains(run.getDisplayName())) {
+            if (denylisted.contains(run.getDisplayName())) {
                 continue;
             }
-            if (!whitelisted.contains(run.getDisplayName()) && !whitelisted.isEmpty()) {
+            if (!allowlisted.contains(run.getDisplayName()) && !allowlisted.isEmpty()) {
                 continue;
             }
 

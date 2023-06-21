@@ -54,10 +54,10 @@ import java.util.Arrays;
 abstract public class AbstractReportPublisher extends Recorder {
 
     private String reportFileGlob;
-    private String resultsBlackList;
-    private String resultsWhiteList;
+    private String resultsDenyList;
+    private String resultsAllowList;
     private String maxBuilds;
-    private int rangeAroundWlist;
+    private int rangeAroundAlist;
 
     public AbstractReportPublisher(String reportFileGlob) {
         this.reportFileGlob = reportFileGlob;
@@ -181,12 +181,12 @@ abstract public class AbstractReportPublisher extends Recorder {
     }
 
     @DataBoundSetter
-    public void setResultsBlackList(String resultsBlackList) {
-        this.resultsBlackList = resultsBlackList;
+    public void setResultsDenyList(String resultsDenyList) {
+        this.resultsDenyList = resultsDenyList;
     }
 
-    public String getResultsBlackList() {
-        return resultsBlackList;
+    public String getResultsDenyList() {
+        return resultsDenyList;
     }
 
     @DataBoundSetter
@@ -209,22 +209,22 @@ abstract public class AbstractReportPublisher extends Recorder {
         }
     }
 
-    public String getResultsWhiteList() {
-        return resultsWhiteList;
+    public String getResultsAllowList() {
+        return resultsAllowList;
     }
 
     @DataBoundSetter
-    public void setResultsWhiteList(String resultsWhiteList) {
-        this.resultsWhiteList = resultsWhiteList;
+    public void setResultsAllowList(String resultsAllowList) {
+        this.resultsAllowList = resultsAllowList;
     }
 
-    public int getRangeAroundWlist() {
-        return rangeAroundWlist;
+    public int getRangeAroundAlist() {
+        return rangeAroundAlist;
     }
 
     @DataBoundSetter
-    public void setRangeAroundWlist(int rangeAroundWlist) {
-        this.rangeAroundWlist = rangeAroundWlist;
+    public void setRangeAroundAlist(int rangeAroundAlist) {
+        this.rangeAroundAlist = rangeAroundAlist;
     }
 
 }

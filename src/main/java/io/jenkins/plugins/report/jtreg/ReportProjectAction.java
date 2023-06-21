@@ -68,16 +68,16 @@ public class ReportProjectAction implements Action {
     @Override
     public String getDisplayName() {
         AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(((Project)job).getPublishersList());
-        List<String> blisted = new BuildSummaryParser(prefixes, settings).getBlacklisted(job);
-        List<String> wlisted = new BuildSummaryParser(prefixes, settings).getWhitelisted(job);
-        int whiteListSizeWithoutSurroundings = new BuildSummaryParser(prefixes, settings).getWhiteListSizeWithoutSurroundings(job);
+        List<String> blisted = new BuildSummaryParser(prefixes, settings).getDenylisted(job);
+        List<String> wlisted = new BuildSummaryParser(prefixes, settings).getAllowlisted(job);
+        int allowListSizeWithoutSurroundings = new BuildSummaryParser(prefixes, settings).getAllowListSizeWithoutSurroundings(job);
         String appendix = "";
         if (blisted.size() > 0 && wlisted.size() > 0) {
-            appendix = " (blacklisted " + blisted.size() + ")" + " (whitelisted " + whiteListSizeWithoutSurroundings + "/" + Integer.toString(wlisted.size()-whiteListSizeWithoutSurroundings) + ")";
+            appendix = " (denylisted " + blisted.size() + ")" + " (allowlisted " + allowListSizeWithoutSurroundings + "/" + Integer.toString(wlisted.size()-allowListSizeWithoutSurroundings) + ")";
         } else if (blisted.size() > 0) {
-            appendix = " (blacklisted " + blisted.size() + ")";
+            appendix = " (denylisted " + blisted.size() + ")";
         } else if (wlisted.size() > 0) {
-            appendix = " (whitelisted " + whiteListSizeWithoutSurroundings + "/" + Integer.toString(wlisted.size()-whiteListSizeWithoutSurroundings) + ")";
+            appendix = " (allowlisted " + allowListSizeWithoutSurroundings + "/" + Integer.toString(wlisted.size()-allowListSizeWithoutSurroundings) + ")";
         }
         return prefixes.stream()
                 .sequential()

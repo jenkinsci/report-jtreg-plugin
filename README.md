@@ -11,7 +11,7 @@ The plugin reads archived gzipped xml files prdoduced by junit/testng/jtreg/jck 
     * [details page](#details-page)
 * [Project details](#project-details)
 * [View](#view-summary)
-* [Blacklist and Whitelist](#blacklist-and-whitelist)
+* [Denylist and Allowlist](#denylist-and-allowlist)
 * [Project Settings](#project-settings)
 * [View Settings](#view-settings)
 * [Limitations](#limitations)
@@ -55,8 +55,8 @@ You can place jtreg charts also to jenkins view, so you can eyball all your test
 ![view summ](https://user-images.githubusercontent.com/2904395/43015875-21c739fc-8c51-11e8-9026-c84127628634.png)
 Here the jtreg plugin is the left most graph. The two right most graphs are [charts from properties](https://github.com/judovana/jenkins-report-generic-chart-column)
 
-## Blacklist and Whitelist
-You could have noted, that the graphs are scaled. Sometimes it happens that fails 100x more tests then usually. This is killing the scale, and you can miss the regression. Such a build deserves  to be blacklisted once the issue is solved. On contrary, whitelist is here to allow you to comapre just some selected runs. Both lists are space separated list of regexes against job name (usually #NUMBER or some_custom_name). The lists are shared betwen project and view.
+## Denylist and Allowlist
+You could have noted, that the graphs are scaled. Sometimes it happens that fails 100x more tests then usually. This is killing the scale, and you can miss the regression. Such a build deserves  to be denylisted once the issue is solved. On contrary, allowlist is here to allow you to comapre just some selected runs. Both lists are space separated list of regexes against job name (usually #NUMBER or some_custom_name). The lists are shared betwen project and view.
 
 ## Project Settings
 ![jtreg-project-settings](https://user-images.githubusercontent.com/2904395/43445509-dadbf3da-94a6-11e8-869b-44242a5a20fb.png)
