@@ -1,4 +1,4 @@
 <?jelly escape-by-default='true'?>
 <div>
-	JUnit/XUnit/jtreg/JCK compatible results processing plugin.
+	JUnit/XUnit/jtreg/JCK compatible results publisher plugin targeting huge result bases
 </div>
