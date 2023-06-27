@@ -9,7 +9,7 @@
     </parent>
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>report-jtreg</artifactId>
-    <version>${revision}${changelist}</version>
+    <version>2.1</version>
     <!-- use -P hpi for jenkins plugin build (default) or -P jar for assembled diff -->
     <packaging>${packaging-type}</packaging>
     <name>JTReg Plugin</name>
@@ -47,7 +47,7 @@
         <connection>scm:git:https://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
-        <tag>HEAD</tag>
+        <tag>report-jtreg-2.1</tag>
     </scm>
 
 
