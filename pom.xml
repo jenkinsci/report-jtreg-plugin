@@ -10,9 +10,16 @@
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>report-jtreg</artifactId>
     <version>${revision}${changelist}</version>
-    <!-- use -P hpi for jenkins plugin build (default) or -P jar for assembled diff -->
-    <packaging>${packaging-type}</packaging>
+
+    <packaging>pom</packaging>
     <name>JTReg Plugin</name>
+    <modules>
+        <module>report-jtreg-plugin</module>
+        <module>report-jtreg-comparator</module>
+        <module>report-jtreg-diff</module>
+        <module>report-jtreg-lib</module>
+        <module>report-jtreg-service</module>
+    </modules>
 
     <properties>
         <revision>2.0</revision>
@@ -50,60 +57,6 @@
         <tag>${scmTag}</tag>
     </scm>
 
-
-    <profiles>
-        <profile>
-            <!-- To use this profile run command "mvn clean install -P jar" to  service jar-->
-            <id>jar</id>
-            <properties>
-                <packaging-type>jar</packaging-type>
-            </properties>
-
-            <dependencies>
-                <dependency>
-                    <groupId>org.jenkins-ci.main</groupId>
-                    <artifactId>jenkins-core</artifactId>
-                    <version>${jenkins.version}</version>
-                </dependency>
-            </dependencies>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <!-- Assembly plugin works only when packaging is JAR. Is ignored for HPI -->
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <version>3.6.0</version>
-                        <configuration>
-                            <descriptorRefs>
-                                <descriptorRef>jar-with-dependencies</descriptorRef>
-                            </descriptorRefs>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>create-services-archive</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <!-- To use this profile run command "mvn clean install -P hpi" to  build plugin-->
-            <id>hpi</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <packaging-type>hpi</packaging-type>
-            </properties>
-        </profile>
-    </profiles>
-
     <repositories>
         <repository>
             <id>repo.jenkins-ci.org</id>
@@ -116,22 +69,4 @@
             <url>https://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
     </pluginRepositories>
-
-    <dependencies>
-        <dependency>
-            <groupId>io.jenkins.plugins</groupId>
-            <artifactId>chartjs-api</artifactId>
-            <version>${chartjs.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.10.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.woodstox</groupId>
-            <artifactId>woodstox-core</artifactId>
-            <version>5.4.0</version>
-        </dependency>
-    </dependencies>
 </project>
