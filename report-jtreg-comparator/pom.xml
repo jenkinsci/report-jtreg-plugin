@@ -15,11 +15,6 @@
     <dependencies>
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
-            <artifactId>report-jtreg-plugin</artifactId>
-            <version>${revision}${changelist}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jenkins.plugins</groupId>
             <artifactId>report-jtreg-lib</artifactId>
             <version>${revision}${changelist}</version>
         </dependency>
