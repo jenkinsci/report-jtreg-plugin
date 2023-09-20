@@ -1,5 +1,6 @@
 package io.jenkins.plugins.report.jtreg;
 
+import io.jenkins.plugins.report.jtreg.model.Test;
 import io.jenkins.plugins.report.jtreg.model.TestOutput;
 import org.junit.Assert;
 
@@ -12,7 +13,6 @@ import java.util.stream.Collectors;
 
 
 import io.jenkins.plugins.report.jtreg.model.Suite;
-import io.jenkins.plugins.report.jtreg.model.Test;
 import io.jenkins.plugins.report.jtreg.parsers.JtregReportParser;
 
 public class JtregReportParserTest {

@@ -29,10 +29,7 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.Result;
-import io.jenkins.plugins.report.jtreg.model.Report;
-import io.jenkins.plugins.report.jtreg.model.ReportFull;
-import io.jenkins.plugins.report.jtreg.model.Suite;
-import io.jenkins.plugins.report.jtreg.model.SuiteTests;
+import io.jenkins.plugins.report.jtreg.model.*;
 import io.jenkins.plugins.report.jtreg.parsers.ReportParser;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
@@ -46,7 +43,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import java.util.Arrays;
