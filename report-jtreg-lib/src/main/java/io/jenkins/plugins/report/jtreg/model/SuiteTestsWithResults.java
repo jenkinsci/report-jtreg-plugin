@@ -24,7 +24,7 @@
 package io.jenkins.plugins.report.jtreg.model;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig;
+//import io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,16 +33,18 @@ import java.util.Collections;
 
 public class SuiteTestsWithResults implements java.io.Serializable {
 
-    public static String getDiffServer() {
-      return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + "/diff.html";
-    }
-    public static String getCompServer() {
-        return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + "/comp.html";
-    }
+//    TODO - commented hyperlink stuff, it is not accessible in lib
 
-    private static String getDiffUrlStub() {
-        return getDiffServer() + "?generated-part=+-view%3Dall-tests+++-view%3Dinfo-summary+++-view%3Dinfo-summary-suites+++-output%3Dhtml++&custom-part=";//+job+number //eg as above;
-    }
+//    public static String getDiffServer() {
+//        return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + "/diff.html";
+//    }
+//    public static String getCompServer() {
+//        return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + "/comp.html";
+//    }
+
+//    private static String getDiffUrlStub() {
+//        return getDiffServer() + "?generated-part=+-view%3Dall-tests+++-view%3Dinfo-summary+++-view%3Dinfo-summary-suites+++-output%3Dhtml++&custom-part=";//+job+number //eg as above;
+//    }
 
     private static final int MAX = 1000;
     private final String name;
@@ -90,9 +92,9 @@ public class SuiteTestsWithResults implements java.io.Serializable {
         }
     }
 
-    public String getLink() {
-        return getDiffUrlStub() + job + "+" + id;
-    }
+//    public String getLink() {
+//        return getDiffUrlStub() + job + "+" + id;
+//    }
 
     public static class StringWithResult {
 
