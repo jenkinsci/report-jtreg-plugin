@@ -65,7 +65,7 @@ public class Test implements Comparable<Test>, java.io.Serializable {
     }
 
     private static String createDiffUrl() {
-        return SuiteTestsWithResults.getDiffServer() + "?generated-part=+-view%3Dall-tests+++-output%3Dhtml++-fill++";
+        return SuiteTestsWithResultsPlugin.getDiffServer() + "?generated-part=+-view%3Dall-tests+++-output%3Dhtml++-fill++";
     }
 
 
