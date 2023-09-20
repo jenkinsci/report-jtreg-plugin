@@ -68,9 +68,9 @@ public class ReportProjectAction implements Action {
     @Override
     public String getDisplayName() {
         AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(((Project)job).getPublishersList());
-        List<String> blisted = new BuildSummaryParser(prefixes, settings).getDenylisted(job);
-        List<String> wlisted = new BuildSummaryParser(prefixes, settings).getAllowlisted(job);
-        int allowListSizeWithoutSurroundings = new BuildSummaryParser(prefixes, settings).getAllowListSizeWithoutSurroundings(job);
+        List<String> blisted = new BuildSummaryParserPlugin(prefixes, settings).getDenylisted(job);
+        List<String> wlisted = new BuildSummaryParserPlugin(prefixes, settings).getAllowlisted(job);
+        int allowListSizeWithoutSurroundings = new BuildSummaryParserPlugin(prefixes, settings).getAllowListSizeWithoutSurroundings(job);
         String appendix = "";
         if (blisted.size() > 0 && wlisted.size() > 0) {
             appendix = " (denylisted " + blisted.size() + ")" + " (allowlisted " + allowListSizeWithoutSurroundings + "/" + Integer.toString(wlisted.size()-allowListSizeWithoutSurroundings) + ")";
@@ -92,7 +92,7 @@ public class ReportProjectAction implements Action {
 
     public ProjectReport getChartData() {
         AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(((Project) job).getPublishersList());
-        List<BuildReport> reports = new BuildSummaryParser(prefixes, settings).parseJobReports(job);
+        List<BuildReport> reports = new BuildSummaryParserPlugin(prefixes, settings).parseJobReports(job);
         ProjectReport report = new ProjectReport(
                 reports,
                 collectImprovements(reports),

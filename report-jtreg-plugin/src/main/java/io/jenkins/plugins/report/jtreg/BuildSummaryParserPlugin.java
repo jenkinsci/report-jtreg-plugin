@@ -32,12 +32,7 @@ import hudson.model.AbstractProject;
 import hudson.model.Job;
 import hudson.model.Result;
 import hudson.model.Run;
-import io.jenkins.plugins.report.jtreg.model.BuildReport;
-import io.jenkins.plugins.report.jtreg.model.Report;
-import io.jenkins.plugins.report.jtreg.model.Suite;
-import io.jenkins.plugins.report.jtreg.model.SuiteTestChanges;
-import io.jenkins.plugins.report.jtreg.model.SuiteTests;
-import io.jenkins.plugins.report.jtreg.model.TestStatus;
+import io.jenkins.plugins.report.jtreg.model.*;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -55,13 +50,12 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.jenkins.plugins.report.jtreg.model.SuitesWithResults;
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapper;
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromDir;
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromRun;
 import hudson.util.RunList;
 
-public class BuildSummaryParser {
+public class BuildSummaryParserPlugin {
 
     private static interface ListProvider {
 
@@ -73,7 +67,7 @@ public class BuildSummaryParser {
     private final Set<String> prefixes = new HashSet<>();
     private final AbstractReportPublisher settings;
 
-    public BuildSummaryParser(Collection<String> prefixes, AbstractReportPublisher settings) {
+    public BuildSummaryParserPlugin(Collection<String> prefixes, AbstractReportPublisher settings) {
         if (prefixes == null || prefixes.isEmpty()) {
             throw new IllegalArgumentException("Prefixes cannot be null or empty");
         }
@@ -294,7 +288,7 @@ public class BuildSummaryParser {
     }
 
     @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
-    public BuildReportExtended parseBuildReportExtended(Run<?, ?> build) throws Exception {
+    public BuildReportExtendedPlugin parseBuildReportExtended(Run<?, ?> build) throws Exception {
         AbstractProject project = ((AbstractBuild) build).getProject();
         Run[] builds = (Run[]) project.getBuilds().toArray(new Run[0]);
         RunWrapperFromRun previousPassedOrUnstable = null;
@@ -320,7 +314,7 @@ public class BuildSummaryParser {
         return parseBuildReportExtended(new RunWrapperFromRun(build), previousPassedOrUnstable);
     }
 
-    public BuildReportExtended parseBuildReportExtended(RunWrapper build, RunWrapper previousPassedOrUnstable) throws Exception {
+    public BuildReportExtendedPlugin parseBuildReportExtended(RunWrapper build, RunWrapper previousPassedOrUnstable) throws Exception {
         List<SuiteTests> currentBuildTestsList = parseSuiteTests(build.getRoot());
         List<SuiteTests> prevBuildTestsList;
         if (previousPassedOrUnstable != null) {
@@ -450,7 +444,7 @@ public class BuildSummaryParser {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return new BuildReportExtended(
+        return new BuildReportExtendedPlugin(
                 currentReport.getBuildNumber(),
                 currentReport.getBuildName(),
                 currentReport.getPassed(),

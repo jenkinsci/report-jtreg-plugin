@@ -26,13 +26,13 @@ package io.jenkins.plugins.report.jtreg;
 import hudson.Extension;
 import hudson.model.Job;
 import hudson.model.Project;
-import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import hudson.views.ListViewColumn;
 import hudson.views.ListViewColumnDescriptor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 public class ReportChartColumn extends ListViewColumn {
@@ -43,7 +43,7 @@ public class ReportChartColumn extends ListViewColumn {
 
     public List<BuildReport> getJckReport(Job<?, ?> job) {
         AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(((Project) job).getPublishersList());
-        List<BuildReport> r = new BuildSummaryParser(Arrays.asList("jck", "jtreg"), settings).parseJobReports(job);
+        List<BuildReport> r = new BuildSummaryParserPlugin(Arrays.asList("jck", "jtreg"), settings).parseJobReports(job);
         try {
             ReportProjectAction.cacheSumms(job.getRootDir(), r);
         } catch (Exception ex) {
