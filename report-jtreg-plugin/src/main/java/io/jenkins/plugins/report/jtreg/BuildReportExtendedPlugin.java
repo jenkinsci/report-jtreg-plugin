@@ -23,7 +23,6 @@
  */
 package io.jenkins.plugins.report.jtreg;
 
-import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.model.SuiteTestChanges;
 import io.jenkins.plugins.report.jtreg.model.SuiteTestsWithResultsPlugin;
@@ -31,72 +30,13 @@ import io.jenkins.plugins.report.jtreg.model.SuitesWithResults;
 
 import java.util.List;
 
-public class BuildReportExtendedPlugin extends BuildReport {
-
-    private final List<String> addedSuites;
-    private final List<String> removedSuites;
-    private final List<SuiteTestChanges> testChanges;
-    private final int total;
-    private final int notRun;
-    private final SuitesWithResults allTests;
+public class BuildReportExtendedPlugin extends BuildReportExtended {
     private final String job;
 
     public BuildReportExtendedPlugin(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites,
                                List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges, int total, int notRun, SuitesWithResults allTests, String job) {
-        super(buildNumber, buildName, passed, failed, error, suites, total, notRun);
+        super(buildNumber, buildName, passed, failed, error, suites, addedSuites, removedSuites, testChanges, total, notRun, allTests, job);
         this.job = job;
-        this.addedSuites = addedSuites;
-        this.removedSuites = removedSuites;
-        this.testChanges = testChanges;
-        this.total = total;
-        this.notRun = notRun;
-        this.allTests = allTests;
-    }
-
-    public String getPreviousLink() {
-        return "../../" + (getBuildNumber() - 1) + "/java-reports";
-    }
-
-    public String getPreviousLinkName() {
-        return " << " + (getBuildNumber() - 1) + " << ";
-    }
-
-    public String getNextLink() {
-        return "../../" + (getBuildNumber() + 1) + "/java-reports";
-    }
-
-    public String getNextLinkName() {
-        return " >> " + (getBuildNumber() + 1) + " >> ";
-    }
-
-    public List<String> getAddedSuites() {
-        return addedSuites;
-    }
-
-    public List<String> getRemovedSuites() {
-        return removedSuites;
-    }
-
-    public List<SuiteTestChanges> getTestChanges() {
-        return testChanges;
-    }
-
-    public String getJob() {
-        return job;
-    }
-
-    @Override
-    public int getTotal() {
-        return total;
-    }
-
-    @Override
-    public int getNotRun() {
-        return notRun;
-    }
-
-    public SuitesWithResults getAllTests() {
-        return allTests;
     }
 
     private static String getDiffUrlStub(){
@@ -142,5 +82,4 @@ public class BuildReportExtendedPlugin extends BuildReport {
     public String getCompareVariants() {
         return getCompUrlStub() + ("--query+" + job.replaceAll("-\\.", "+") + "+--nvr+" + getBuildName()).replace("#","%23");
     }
-
 }
