@@ -55,7 +55,7 @@ import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromDir;
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromRun;
 import hudson.util.RunList;
 
-public class BuildSummaryParserPlugin {
+public class BuildSummaryParserPlugin extends BuildSummaryParser {
 
     private static interface ListProvider {
 
@@ -68,9 +68,7 @@ public class BuildSummaryParserPlugin {
     private final AbstractReportPublisher settings;
 
     public BuildSummaryParserPlugin(Collection<String> prefixes, AbstractReportPublisher settings) {
-        if (prefixes == null || prefixes.isEmpty()) {
-            throw new IllegalArgumentException("Prefixes cannot be null or empty");
-        }
+        super(prefixes);
         this.prefixes.addAll(prefixes);
         this.settings = settings;
     }
