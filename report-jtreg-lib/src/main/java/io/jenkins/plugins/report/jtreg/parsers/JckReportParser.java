@@ -42,7 +42,7 @@ public class JckReportParser implements ReportParser {
         return null;
     }
 
-    private InputStream streamPath(Path path) throws IOException {
+    protected InputStream streamPath(Path path) throws IOException {
         InputStream stream = new BufferedInputStream(Files.newInputStream(path));
         if (path.toString().endsWith(".gz")) {
             return new GZIPInputStream(stream);
@@ -51,7 +51,7 @@ public class JckReportParser implements ReportParser {
     }
 
     @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "We desrve to die")
-    private String suiteName(Path path) {
+    protected String suiteName(Path path) {
         String fullName = path.getFileName().toString();
         if (fullName.endsWith(".xml.gz")) {
             return fullName.substring(0, fullName.length() - 7);
@@ -69,7 +69,7 @@ public class JckReportParser implements ReportParser {
         }
     }
 
-    private ReportFull parseReport(Reader reader) throws Exception {
+    protected ReportFull parseReport(Reader reader) throws Exception {
         XMLInputFactory factory = XMLInputFactory.newInstance();
         factory.setProperty("http://java.sun.com/xml/stream/properties/report-cdata-event", Boolean.TRUE);
         factory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
@@ -81,7 +81,7 @@ public class JckReportParser implements ReportParser {
     }
 
     @SuppressWarnings("empty-statement")
-    private boolean fastForwardToElement(XMLStreamReader reader, String element) throws Exception {
+    protected boolean fastForwardToElement(XMLStreamReader reader, String element) throws Exception {
         while (reader.hasNext()) {
             if (reader.next() == START_ELEMENT && element.equals(reader.getLocalName())) {
                 return true;
@@ -90,7 +90,7 @@ public class JckReportParser implements ReportParser {
         return false;
     }
 
-    private ReportFull processTestResults(XMLStreamReader in) throws Exception {
+    protected ReportFull processTestResults(XMLStreamReader in) throws Exception {
         Map<String, AtomicInteger> countersMap = createCountersMap();
         List<Test> testProblemsList = new ArrayList<>();
         List<String> fullTestsList = new ArrayList<>();
@@ -123,7 +123,7 @@ public class JckReportParser implements ReportParser {
                 fullTestsList);
     }
 
-    private Test parseTest(XMLStreamReader in) throws Exception {
+    protected Test parseTest(XMLStreamReader in) throws Exception {
         String url = findAttributeValue(in, "url");
         String status = findAttributeValue(in, "status");
         List<TestOutput> testOutputs = Collections.emptyList();
@@ -146,7 +146,7 @@ public class JckReportParser implements ReportParser {
         return new Test(url, TestStatus.valueOf(status.toUpperCase()), statusLine, testOutputs);
     }
 
-    private String processStatusLine(XMLStreamReader in) throws Exception {
+    protected String processStatusLine(XMLStreamReader in) throws Exception {
         String line = "";
         while (in.hasNext()) {
             int event = in.next();
@@ -162,7 +162,7 @@ public class JckReportParser implements ReportParser {
         return line;
     }
 
-    private List<TestOutput> processTestOutputs(XMLStreamReader in) throws Exception {
+    protected List<TestOutput> processTestOutputs(XMLStreamReader in) throws Exception {
         List<TestOutput> list = new ArrayList<>();
         while (in.hasNext()) {
             int event = in.next();
@@ -177,7 +177,7 @@ public class JckReportParser implements ReportParser {
         return list;
     }
 
-    private List<TestOutput> processOutputSection(XMLStreamReader in) throws Exception {
+    protected List<TestOutput> processOutputSection(XMLStreamReader in) throws Exception {
         String title = findAttributeValue(in, "title");
         List<TestOutput> list = new ArrayList<>();
         while (in.hasNext()) {
@@ -192,7 +192,7 @@ public class JckReportParser implements ReportParser {
         return list;
     }
 
-    private TestOutput processTestOutput(String sectionTitle, XMLStreamReader in) throws Exception {
+    protected TestOutput processTestOutput(String sectionTitle, XMLStreamReader in) throws Exception {
         String title = findAttributeValue(in, "title");
         String resultTitle = sectionTitle + " / " + title;
         while (in.hasNext()) {
@@ -212,7 +212,7 @@ public class JckReportParser implements ReportParser {
         return new TestOutput(resultTitle, "");
     }
 
-    private void incrementCounters(String testStatus, Map<String, AtomicInteger> countersMap) throws Exception {
+    protected void incrementCounters(String testStatus, Map<String, AtomicInteger> countersMap) throws Exception {
         AtomicInteger aInt = countersMap.get(testStatus);
         if (aInt == null) {
             throw new Exception("Invalid 'status' attribute value: " + testStatus);
@@ -221,7 +221,7 @@ public class JckReportParser implements ReportParser {
         countersMap.get("TOTAL").incrementAndGet();
     }
 
-    private boolean isProblematic(String testStatus) {
+    protected boolean isProblematic(String testStatus) {
         switch (testStatus) {
             case "FAILED":
             case "ERROR":
@@ -231,7 +231,7 @@ public class JckReportParser implements ReportParser {
         }
     }
 
-    private String findAttributeValue(XMLStreamReader in, String name) {
+    protected String findAttributeValue(XMLStreamReader in, String name) {
         int count = in.getAttributeCount();
         for (int i = 0; i < count; i++) {
             if (name.equals(in.getAttributeLocalName(i))) {
@@ -241,7 +241,7 @@ public class JckReportParser implements ReportParser {
         return null;
     }
 
-    private Map<String, AtomicInteger> createCountersMap() {
+    protected Map<String, AtomicInteger> createCountersMap() {
         Map<String, AtomicInteger> map = new HashMap<>();
         map.put("NOT_RUN", new AtomicInteger());
         map.put("PASSED", new AtomicInteger());

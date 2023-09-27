@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?><Report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Report.xsd" formatVersion="v1" generatedTime="2018-03-20T04:30:31+00:00">
+<TestResults>
+        <TestResult url="java2schema/CustomizedMapping/classes/XmlTransient/XmlTransient002.html#testCase0002" status="PASSED" workDirID="1">
+            <DescriptionData>
+                <Property name="$root" value="/jck/10/JCK-devtools-10/tests"/>
+                <Property name="$file" value="/jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlTransient/XmlTransient002.html"/>
+                <Property name="Item" value="Value"/>
+                <Property name="executeArgs" value="-j package-info.java:XmlTransient002c.java:XmlTransient002d.java -n -d XmlTransient002a.n.xml -TestURL $testURL"/>
+                <Property name="executeClass" value="javasoft.sqe.tests.api.javax.xml.bind.SchemaGenTest"/>
+                <Property name="id" value="testCase0002"/>
+                <Property name="name" value="testCase0002"/>
+                <Property name="selectIf" value="toTestOptionalSchemagen"/>
+                <Property name="source" value="package-info.java XmlTransient002c.java XmlTransient002d.java package-info.java XmlTransient002c.java XmlTransient002d.java XmlTransient002a.n.xml"/>
+                <Property name="title" value="testCase0002 - XmlTransient"/>
+                <Keywords>
+                    <Item value="java_to_schema"/>
+                    <Item value="jaxb"/>
+                    <Item value="positive"/>
+                    <Item value="runtime"/>
+                </Keywords>
+            </DescriptionData>
+            <TestEnvironment>
+                <Property name="xjc_default_operation_mode" value="true"/>
+                <Property name="ref_java_other_opt" value="--add-modules=ALL-SYSTEM"/>
+                <Property name="jxc_cmd" value="/bin/sh /jck/10/JCK-devtools-10/linux/bin/schemagen.sh"/>
+                <Property name="pathTo.refjava" value="/jck/10/jdk/bin/java"/>
+                <Property name="platform.multiJVM" value="true"/>
+                <Property name="command.execute" value="com.sun.javatest.lib.ExecStdTestOtherJVMCmd CLASSPATH=${testSuiteRootDir}/classes:${testSuiteRootDir}/lib/javatest.jar:${testSuiteRootDir}/lib/jtjck.jar:$testClassDirs:$outDir $pathTo.refjava -Djava.security.policy=${testSuiteRootDir}/lib/jck.policy $ref_java_other_opt $testExecuteClass $testExecuteArgs"/>
+                <Property name="platform.groupMode" value="false"/>
+                <Property name="command.schemagen.jxc" value="com.sun.javatest.lib.ProcessCommand JAVA_HOME=/jck/10/jdk $jxc_cmd -cp &quot;${testSuiteRootDir}/classes:${jaxbClasses}:${testSuiteRootDir}/lib/jtjck.jar:${testSuiteRootDir}/lib/javatest.jar&quot; -d $outDir $java_source_files"/>
+            </TestEnvironment>
+            <ResultProperties endTime="2018-03-19T22:45:39+00:00">
+                <Property name="description" value="file:/jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlTransient/XmlTransient002.html#testCase0002"/>
+                <Property name="environment" value="jck_devtools_linux"/>
+                <Property name="execStatus" value="Passed. test cases: 1; all passed"/>
+                <Property name="harnessLoaderMode" value="Classpath Loader"/>
+                <Property name="harnessVariety" value="Full Bundle"/>
+                <Property name="javatestOS" value="Linux 3.10.0-693.17.1.el7.x86_64 (amd64)"/>
+                <Property name="javatestVersion" value="5.0"/>
+                <Property name="script" value="com.sun.jck.lib.JaxbTckScript"/>
+                <Property name="sections" value="script_messages schemagen.jxc execute"/>
+                <Property name="start" value="Mon Mar 19 22:45:27 UTC 2018"/>
+                <Property name="test" value="java2schema/CustomizedMapping/classes/XmlTransient/XmlTransient002.html#testCase0002"/>
+                <Property name="timeoutSeconds" value="600"/>
+                <Property name="totalTime" value="11438"/>
+                <Property name="work" value="/jck/10/JCK-devtools-10-work/java2schema/CustomizedMapping/classes/XmlTransient"/>
+            </ResultProperties>
+            <Sections>
+                <Section title="script_messages">
+                    <Output title="messages"/>
+                </Section>
+                <Section title="schemagen.jxc" status="PASSED">
+                    <Output title="messages">
+                        <![CDATA[command: com.sun.javatest.lib.ProcessCommand JAVA_HOME=/jck/10/jdk /bin/sh /jck/10/JCK-devtools-10/linux/bin/schemagen.sh -cp /jck/10/JCK-devtools-10/classes::/jck/10/JCK-devtools-10/lib/jtjck.jar:/jck/10/JCK-devtools-10/lib/javatest.jar -d /jck/10/JCK-devtools-10-work/schemas/CustomizedMapping/classes/XmlTransient/XmlTransient002_testCase0002 /jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlTransient/package-info.java /jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlTransient/XmlTransient002c.java /jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlTransient/XmlTransient002d.java
+]]>
+                    </Output>
+                    <Output title="out1">
+                        <![CDATA[com.sun.tools.internal.jxc.SchemaGenerator started with args:
+-d /jck/10/JCK-devtools-10-work/schemas/CustomizedMapping/classes/XmlTransient/XmlTransient002_testCase0002 /jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlTransient/package-info.java /jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlTransient/XmlTransient002c.java /jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlTransient/XmlTransient002d.java
+]]>
+                    </Output>
+                    <Output title="out2">
+                        <![CDATA[eval "/jck/10/jdk/bin/java"  --add-modules jdk.xml.ws,jdk.xml.bind --add-exports jdk.xml.bind/com.sun.tools.internal.xjc=ALL-UNNAMED --add-exports jdk.xml.bind/com.sun.tools.internal.jxc=ALL-UNNAMED --add-exports jdk.xml.ws/com.sun.tools.internal.ws=ALL-UNNAMED  -cp /jck/10/JCK-devtools-10/classes::/jck/10/JCK-devtools-10/lib/jtjck.jar:/jck/10/JCK-devtools-10/lib/javatest.jar:/jck/10/jdk/lib/tools.jar com.sun.jck.lib.JaxbCommand  --add-modules jdk.xml.ws,jdk.xml.bind --add-exports jdk.xml.bind/com.sun.tools.internal.xjc=ALL-UNNAMED --add-exports jdk.xml.bind/com.sun.tools.internal.jxc=ALL-UNNAMED --add-exports jdk.xml.ws/com.sun.tools.internal.ws=ALL-UNNAMED  -jxc com.sun.jck.lib.SchemaGen -  "-d" "/jck/10/JCK-devtools-10-work/schemas/CustomizedMapping/classes/XmlTransient/XmlTransient002_testCase0002" "/jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlTransient/package-info.java" "/jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlTransient/XmlTransient002c.java" "/jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlTransient/XmlTransient002d.java"
+warning: Supported source version 'RELEASE_7' from annotation processor 'com.sun.tools.internal.jxc.ap.SchemaGenerator' less than -source '10'
+Note: Writing /jck/10/schema1.xsd
+]]>
+                    </Output>
+                </Section>
+                <Section title="execute" status="PASSED">
+                    <Output title="messages">
+                        <![CDATA[command: com.sun.javatest.lib.ExecStdTestOtherJVMCmd CLASSPATH=/jck/10/JCK-devtools-10/classes:/jck/10/JCK-devtools-10/lib/javatest.jar:/jck/10/JCK-devtools-10/lib/jtjck.jar::/jck/10/JCK-devtools-10-work/schemas/CustomizedMapping/classes/XmlTransient/XmlTransient002_testCase0002 /jck/10/jdk/bin/java -Djava.security.policy=/jck/10/JCK-devtools-10/lib/jck.policy --add-modules=ALL-SYSTEM javasoft.sqe.tests.api.javax.xml.bind.SchemaGenTest -n -d XmlTransient002a.n.xml -TestURL file:/jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlTransient/XmlTransient002.html#testCase0002 -schemas /jck/10/JCK-devtools-10-work/schemas/CustomizedMapping/classes/XmlTransient/XmlTransient002_testCase0002/schema1.xsd
+]]>
+                    </Output>
+                    <Output title="out1">
+                        <![CDATA[WARNING: Using incubator modules: jdk.incubator.httpclient
+compileSchema: Passed. OK. The negative testcase failed as expected with Document Validation: 1 error(s), 0 warning(s) found.
+STATUS:Passed.test cases: 1; all passed
+]]>
+                    </Output>
+                    <Output title="out2">
+                        <![CDATA[Error: file:/jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlTransient/XmlTransient002a.n.xml(10,15): cvc-complex-type.2.4.d: Invalid content was found starting with element 'byte002c'. No child element is expected at this point.
+]]>
+                    </Output>
+                </Section>
+            </Sections>
+        </TestResult>
+<TestResult url="java2schema/CustomizedMapping/classes/XmlType/constraints/Constraint001.html" status="PASSED" workDirID="1">
+            <DescriptionData>
+                <Property name="$root" value="/jck/10/JCK-devtools-10/tests"/>
+                <Property name="$file" value="/jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlType/constraints/Constraint001.html"/>
+                <Property name="Item" value="Value"/>
+                <Property name="executeArgs" value="-j package-info.java:Constraint001.java -TestURL $testURL"/>
+                <Property name="executeClass" value="javasoft.sqe.tests.api.javax.xml.bind.SchemaGenTest"/>
+                <Property name="name" value="Constraint001"/>
+                <Property name="selectIf" value="toTestOptionalSchemagen"/>
+                <Property name="source" value="package-info.java Constraint001.java package-info.java Constraint001.java"/>
+                <Property name="title" value="Constraint001 - XmlElement"/>
+                <Keywords>
+                    <Item value="java_to_schema"/>
+                    <Item value="jaxb"/>
+                    <Item value="negative"/>
+                    <Item value="runtime"/>
+                </Keywords>
+            </DescriptionData>
+            <TestEnvironment>
+                <Property name="xjc_default_operation_mode" value="true"/>
+                <Property name="jxc_cmd" value="/bin/sh /jck/10/JCK-devtools-10/linux/bin/schemagen.sh"/>
+                <Property name="platform.multiJVM" value="true"/>
+                <Property name="platform.groupMode" value="false"/>
+                <Property name="command.schemagen.jxc" value="com.sun.javatest.lib.ProcessCommand JAVA_HOME=/jck/10/jdk $jxc_cmd -cp &quot;${testSuiteRootDir}/classes:${jaxbClasses}:${testSuiteRootDir}/lib/jtjck.jar:${testSuiteRootDir}/lib/javatest.jar&quot; -d $outDir $java_source_files"/>
+            </TestEnvironment>
+            <ResultProperties endTime="2018-03-19T22:46:06+00:00">
+                <Property name="description" value="file:/jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlType/constraints/Constraint001.html"/>
+                <Property name="environment" value="jck_devtools_linux"/>
+                <Property name="execStatus" value="Passed. compilation failed as expected"/>
+                <Property name="harnessLoaderMode" value="Classpath Loader"/>
+                <Property name="harnessVariety" value="Full Bundle"/>
+                <Property name="javatestOS" value="Linux 3.10.0-693.17.1.el7.x86_64 (amd64)"/>
+                <Property name="javatestVersion" value="5.0"/>
+                <Property name="script" value="com.sun.jck.lib.JaxbTckScript"/>
+                <Property name="sections" value="script_messages schemagen.jxc"/>
+                <Property name="start" value="Mon Mar 19 22:45:58 UTC 2018"/>
+                <Property name="test" value="java2schema/CustomizedMapping/classes/XmlType/constraints/Constraint001.html"/>
+                <Property name="timeoutSeconds" value="600"/>
+                <Property name="totalTime" value="7446"/>
+                <Property name="work" value="/jck/10/JCK-devtools-10-work/java2schema/CustomizedMapping/classes/XmlType/constraints"/>
+            </ResultProperties>
+            <Sections>
+                <Section title="script_messages">
+                    <Output title="messages"/>
+                </Section>
+                <Section title="schemagen.jxc" status="FAILED">
+                    <Output title="messages">
+                        <![CDATA[command: com.sun.javatest.lib.ProcessCommand JAVA_HOME=/jck/10/jdk /bin/sh /jck/10/JCK-devtools-10/linux/bin/schemagen.sh -cp /jck/10/JCK-devtools-10/classes::/jck/10/JCK-devtools-10/lib/jtjck.jar:/jck/10/JCK-devtools-10/lib/javatest.jar -d /jck/10/JCK-devtools-10-work/schemas/CustomizedMapping/classes/XmlType/constraints/Constraint001 /jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlType/constraints/package-info.java /jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlType/constraints/Constraint001.java
+]]>
+                    </Output>
+                    <Output title="out1">
+                        <![CDATA[com.sun.tools.internal.jxc.SchemaGenerator started with args:
+-d /jck/10/JCK-devtools-10-work/schemas/CustomizedMapping/classes/XmlType/constraints/Constraint001 /jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlType/constraints/package-info.java /jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlType/constraints/Constraint001.java
+]]>
+                    </Output>
+                    <Output title="out2">
+                        <![CDATA[eval "/jck/10/jdk/bin/java"  --add-modules jdk.xml.ws,jdk.xml.bind --add-exports jdk.xml.bind/com.sun.tools.internal.xjc=ALL-UNNAMED --add-exports jdk.xml.bind/com.sun.tools.internal.jxc=ALL-UNNAMED --add-exports jdk.xml.ws/com.sun.tools.internal.ws=ALL-UNNAMED  -cp /jck/10/JCK-devtools-10/classes::/jck/10/JCK-devtools-10/lib/jtjck.jar:/jck/10/JCK-devtools-10/lib/javatest.jar:/jck/10/jdk/lib/tools.jar com.sun.jck.lib.JaxbCommand  --add-modules jdk.xml.ws,jdk.xml.bind --add-exports jdk.xml.bind/com.sun.tools.internal.xjc=ALL-UNNAMED --add-exports jdk.xml.bind/com.sun.tools.internal.jxc=ALL-UNNAMED --add-exports jdk.xml.ws/com.sun.tools.internal.ws=ALL-UNNAMED  -jxc com.sun.jck.lib.SchemaGen -  "-d" "/jck/10/JCK-devtools-10-work/schemas/CustomizedMapping/classes/XmlType/constraints/Constraint001" "/jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlType/constraints/package-info.java" "/jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlType/constraints/Constraint001.java"
+javasoft.sqe.tests.java2schema.CustomizedMapping.classes.XmlType.constraints.Constraint001 is a non-static inner class, and JAXB can't handle those.
+        this problem is related to the following location:
+                at javasoft.sqe.tests.java2schema.CustomizedMapping.classes.XmlType.constraints.Constraint001(/jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlType/constraints/Constraint001.java:19)
+warning: Supported source version 'RELEASE_7' from annotation processor 'com.sun.tools.internal.jxc.ap.SchemaGenerator' less than -source '10'
+error: javasoft.sqe.tests.java2schema.CustomizedMapping.classes.XmlType.constraints.Constraint001 is a non-static inner class, and JAXB can't handle those.
+        this problem is related to the following location:
+                at javasoft.sqe.tests.java2schema.CustomizedMapping.classes.XmlType.constraints.Constraint001(/jck/10/JCK-devtools-10/tests/java2schema/CustomizedMapping/classes/XmlType/constraints/Constraint001.java:19)
+Schema Generator returned 1.
+]]>
+                    </Output>
+                </Section>
+            </Sections>
+        </TestResult>
+        <TestResult url="jaxws/mapping/w2jmapping/document/literal/annotations/HandlerChainAnnotationsTest.html#HandlerChainAnnotationsTest" status="FAILED" workDirID="1">
+            <DescriptionData>
+                <Property name="$root" value="/jck/10/JCK-devtools-10/tests"/>
+                <Property name="$file" value="/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/HandlerChainAnnotationsTest.html"/>
+                <Property name="Item" value="Value"/>
+                <Property name="executeArgs" value="-t HandlerChainAnnotationsTest -testSuiteRootDir $testSuiteRootDir -dplatform.mode=standalone -vehicle jck -djck.TestURL=$testURL -msgSwitch $testMsgSwitch"/>
+                <Property name="executeClass" value="com.sun.ts.tests.jaxws.mapping.w2jmapping.document.literal.annotations.Client"/>
+                <Property name="executeLocks" value="jaxws"/>
+                <Property name="id" value="HandlerChainAnnotationsTest"/>
+                <Property name="name" value="HandlerChainAnnotationsTest"/>
+                <Property name="source" value="W2JDLAnnotations.wsdl customfile.xml Client.java Handler.java"/>
+                <Property name="title" value="HandlerChainAnnotationsTest - Client_HandlerChainAnnotationsTest_from_standalone"/>
+                <Keywords>
+                    <Item value="jaxws"/>
+                    <Item value="positive"/>
+                </Keywords>
+            </DescriptionData>
+            <TestEnvironment>
+                <Property name="xjc_default_operation_mode" value="true"/>
+                <Property name="command.compile.java" value="com.sun.javatest.lib.ProcessCommand CLASSPATH=${testSuiteRootDir}/classes:${testSuiteRootDir}/lib/javatest.jar:$testClassDirs:$outDir $javac_path  -d ${wsdlLocation} $testSource"/>
+                <Property name="javac_path" value="/jck/10/jdk/bin/javac"/>
+                <Property name="command.wsimport" value="com.sun.javatest.lib.ProcessCommand JAVA_HOME=/jck/10/jdk ${wsdl.import.cmd} ${w2jcmd_other_opts}  -d ${wsdlLocation} ${xml_files} ${wsdl_files}"/>
+                <Property name="wsdl.import.cmd" value="/bin/sh /jck/10/JCK-devtools-10/linux/bin/wsimport.sh"/>
+                <Property name="platform.multiJVM" value="true"/>
+                <Property name="platform.groupMode" value="false"/>
+            </TestEnvironment>
+            <ResultProperties endTime="2018-03-20T04:27:49+00:00">
+                <Property name="description" value="file:/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/HandlerChainAnnotationsTest.html#HandlerChainAnnotationsTest"/>
+                <Property name="environment" value="jck_devtools_linux"/>
+                <Property name="execStatus" value="Failed. exit code 1"/>
+                <Property name="harnessLoaderMode" value="Classpath Loader"/>
+                <Property name="harnessVariety" value="Full Bundle"/>
+                <Property name="javatestOS" value="Linux 3.10.0-693.17.1.el7.x86_64 (amd64)"/>
+                <Property name="javatestVersion" value="5.0"/>
+                <Property name="script" value="com.sun.jck.lib.JaxbTckScript"/>
+                <Property name="sections" value="script_messages wsimport compile.java"/>
+                <Property name="start" value="Tue Mar 20 04:27:44 UTC 2018"/>
+                <Property name="test" value="jaxws/mapping/w2jmapping/document/literal/annotations/HandlerChainAnnotationsTest.html#HandlerChainAnnotationsTest"/>
+                <Property name="timeoutSeconds" value="600"/>
+                <Property name="totalTime" value="4329"/>
+                <Property name="work" value="/jck/10/JCK-devtools-10-work/jaxws/mapping/w2jmapping/document/literal/annotations"/>
+            </ResultProperties>
+            <Sections>
+                <Section title="script_messages">
+                    <Output title="messages"/>
+                </Section>
+                <Section title="wsimport" status="PASSED">
+                    <Output title="messages">
+                        <![CDATA[command: com.sun.javatest.lib.ProcessCommand JAVA_HOME=/jck/10/jdk /bin/sh /jck/10/JCK-devtools-10/linux/bin/wsimport.sh -d /jck/10/JCK-devtools-10-work/mapping/w2jmapping/document/literal/annotations -b file:/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/customfile.xml file:/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/W2JDLAnnotations.wsdl
+]]>
+                    </Output>
+                    <Output title="out1"/>
+                    <Output title="out2">
+                        <![CDATA[eval "/jck/10/jdk/bin/wsimport" -keep -d /jck/10/JCK-devtools-10-work/mapping/w2jmapping/document/literal/annotations -b "file:/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/customfile.xml"  "file:/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/W2JDLAnnotations.wsdl"
+parsing WSDL...
+
+
+
+Generating code...
+
+
+Compiling code...
+
+]]>
+                    </Output>
+                </Section>
+                <Section title="compile.java" status="FAILED">
+                    <Output title="messages">
+                        <![CDATA[command: com.sun.javatest.lib.ProcessCommand CLASSPATH=/jck/10/JCK-devtools-10/classes:/jck/10/JCK-devtools-10/lib/javatest.jar::/jck/10/JCK-devtools-10-work/mapping/w2jmapping/document/literal/annotations /jck/10/jdk/bin/javac -d /jck/10/JCK-devtools-10-work/mapping/w2jmapping/document/literal/annotations /jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Client.java /jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Handler.java
+]]>
+                    </Output>
+                    <Output title="out1">
+                        <![CDATA[/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Handler.java:10: error: package javax.xml.soap is not visible
+import javax.xml.soap.*;
+                ^
+  (package javax.xml.soap is declared in module java.xml.ws, which is not in the module graph)
+/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Handler.java:11: error: package javax.xml.ws.soap is not visible
+import javax.xml.ws.soap.*;
+                   ^
+  (package javax.xml.ws.soap is declared in module java.xml.ws, which is not in the module graph)
+/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Handler.java:12: error: package javax.xml.ws.handler is not visible
+import javax.xml.ws.handler.*;
+                   ^
+  (package javax.xml.ws.handler is declared in module java.xml.ws, which is not in the module graph)
+/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Handler.java:13: error: package javax.xml.ws is not visible
+import javax.xml.ws.LogicalMessage;
+                ^
+  (package javax.xml.ws is declared in module java.xml.ws, which is not in the module graph)
+/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Handler.java:15: error: package javax.annotation is not visible
+import javax.annotation.PreDestroy;
+            ^
+  (package javax.annotation is declared in module java.xml.ws.annotation, which is not in the module graph)
+/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Handler.java:16: error: package javax.annotation is not visible
+import javax.annotation.PostConstruct;
+            ^
+  (package javax.annotation is declared in module java.xml.ws.annotation, which is not in the module graph)
+/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Handler.java:19: error: package javax.xml.ws.handler is not visible
+public class Handler implements javax.xml.ws.handler.LogicalHandler<LogicalMessageContext>
+                                            ^
+  (package javax.xml.ws.handler is declared in module java.xml.ws, which is not in the module graph)
+7 errors
+]]>
+                    </Output>
+                    <Output title="out2"/>
+                </Section>
+            </Sections>
+        </TestResult>
+        <TestResult url="jaxws/mapping/w2jmapping/document/literal/annotations/HelloOperationAnnotationsTest.html#HelloOperationAnnotationsTest" status="FAILED" workDirID="1">
+            <DescriptionData>
+                <Property name="$root" value="/jck/10/JCK-devtools-10/tests"/>
+                <Property name="$file" value="/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/HelloOperationAnnotationsTest.html"/>
+                <Property name="Item" value="Value"/>
+                <Property name="executeArgs" value="-t HelloOperationAnnotationsTest -testSuiteRootDir $testSuiteRootDir -dplatform.mode=standalone -vehicle jck -djck.TestURL=$testURL -msgSwitch $testMsgSwitch"/>
+                <Property name="executeClass" value="com.sun.ts.tests.jaxws.mapping.w2jmapping.document.literal.annotations.Client"/>
+                <Property name="executeLocks" value="jaxws"/>
+                <Property name="id" value="HelloOperationAnnotationsTest"/>
+                <Property name="name" value="HelloOperationAnnotationsTest"/>
+                <Property name="source" value="W2JDLAnnotations.wsdl customfile.xml Client.java Handler.java"/>
+                <Property name="title" value="HelloOperationAnnotationsTest - Client_HelloOperationAnnotationsTest_from_standalone"/>
+                <Keywords>
+                    <Item value="jaxws"/>
+                    <Item value="positive"/>
+                </Keywords>
+            </DescriptionData>
+            <TestEnvironment>
+                <Property name="xjc_default_operation_mode" value="true"/>
+                <Property name="command.compile.java" value="com.sun.javatest.lib.ProcessCommand CLASSPATH=${testSuiteRootDir}/classes:${testSuiteRootDir}/lib/javatest.jar:$testClassDirs:$outDir $javac_path  -d ${wsdlLocation} $testSource"/>
+                <Property name="javac_path" value="/jck/10/jdk/bin/javac"/>
+                <Property name="command.wsimport" value="com.sun.javatest.lib.ProcessCommand JAVA_HOME=/jck/10/jdk ${wsdl.import.cmd} ${w2jcmd_other_opts}  -d ${wsdlLocation} ${xml_files} ${wsdl_files}"/>
+                <Property name="wsdl.import.cmd" value="/bin/sh /jck/10/JCK-devtools-10/linux/bin/wsimport.sh"/>
+                <Property name="platform.multiJVM" value="true"/>
+                <Property name="platform.groupMode" value="false"/>
+            </TestEnvironment>
+            <ResultProperties endTime="2018-03-20T04:27:53+00:00">
+                <Property name="description" value="file:/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/HelloOperationAnnotationsTest.html#HelloOperationAnnotationsTest"/>
+                <Property name="environment" value="jck_devtools_linux"/>
+                <Property name="execStatus" value="Failed. exit code 1"/>
+                <Property name="harnessLoaderMode" value="Classpath Loader"/>
+                <Property name="harnessVariety" value="Full Bundle"/>
+                <Property name="javatestOS" value="Linux 3.10.0-693.17.1.el7.x86_64 (amd64)"/>
+                <Property name="javatestVersion" value="5.0"/>
+                <Property name="script" value="com.sun.jck.lib.JaxbTckScript"/>
+                <Property name="sections" value="script_messages wsimport compile.java"/>
+                <Property name="start" value="Tue Mar 20 04:27:49 UTC 2018"/>
+                <Property name="test" value="jaxws/mapping/w2jmapping/document/literal/annotations/HelloOperationAnnotationsTest.html#HelloOperationAnnotationsTest"/>
+                <Property name="timeoutSeconds" value="600"/>
+                <Property name="totalTime" value="4361"/>
+                <Property name="work" value="/jck/10/JCK-devtools-10-work/jaxws/mapping/w2jmapping/document/literal/annotations"/>
+            </ResultProperties>
+            <Sections>
+                <Section title="script_messages">
+                    <Output title="messages"/>
+                </Section>
+                <Section title="wsimport" status="PASSED">
+                    <Output title="messages">
+                        <![CDATA[command: com.sun.javatest.lib.ProcessCommand JAVA_HOME=/jck/10/jdk /bin/sh /jck/10/JCK-devtools-10/linux/bin/wsimport.sh -d /jck/10/JCK-devtools-10-work/mapping/w2jmapping/document/literal/annotations -b file:/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/customfile.xml file:/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/W2JDLAnnotations.wsdl
+]]>
+                    </Output>
+                    <Output title="out1"/>
+                    <Output title="out2">
+                        <![CDATA[eval "/jck/10/jdk/bin/wsimport" -keep -d /jck/10/JCK-devtools-10-work/mapping/w2jmapping/document/literal/annotations -b "file:/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/customfile.xml"  "file:/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/W2JDLAnnotations.wsdl"
+parsing WSDL...
+
+
+
+Generating code...
+
+
+Compiling code...
+
+]]>
+                    </Output>
+</Section>
+                <Section title="compile.java" status="FAILED">
+                    <Output title="messages">
+                        <![CDATA[command: com.sun.javatest.lib.ProcessCommand CLASSPATH=/jck/10/JCK-devtools-10/classes:/jck/10/JCK-devtools-10/lib/javatest.jar::/jck/10/JCK-devtools-10-work/mapping/w2jmapping/document/literal/annotations /jck/10/jdk/bin/javac -d /jck/10/JCK-devtools-10-work/mapping/w2jmapping/document/literal/annotations /jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Client.java /jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Handler.java
+]]>
+                    </Output>
+                    <Output title="out1">
+                        <![CDATA[/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Handler.java:10: error: package javax.xml.soap is not visible
+import javax.xml.soap.*;
+                ^
+  (package javax.xml.soap is declared in module java.xml.ws, which is not in the module graph)
+/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Handler.java:11: error: package javax.xml.ws.soap is not visible
+import javax.xml.ws.soap.*;
+                   ^
+  (package javax.xml.ws.soap is declared in module java.xml.ws, which is not in the module graph)
+/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Handler.java:12: error: package javax.xml.ws.handler is not visible
+import javax.xml.ws.handler.*;
+                   ^
+  (package javax.xml.ws.handler is declared in module java.xml.ws, which is not in the module graph)
+/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Handler.java:13: error: package javax.xml.ws is not visible
+import javax.xml.ws.LogicalMessage;
+                ^
+  (package javax.xml.ws is declared in module java.xml.ws, which is not in the module graph)
+/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Handler.java:15: error: package javax.annotation is not visible
+import javax.annotation.PreDestroy;
+            ^
+  (package javax.annotation is declared in module java.xml.ws.annotation, which is not in the module graph)
+/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Handler.java:16: error: package javax.annotation is not visible
+import javax.annotation.PostConstruct;
+            ^
+  (package javax.annotation is declared in module java.xml.ws.annotation, which is not in the module graph)
+/jck/10/JCK-devtools-10/tests/jaxws/mapping/w2jmapping/document/literal/annotations/Handler.java:19: error: package javax.xml.ws.handler is not visible
+public class Handler implements javax.xml.ws.handler.LogicalHandler<LogicalMessageContext>
+                                            ^
+  (package javax.xml.ws.handler is declared in module java.xml.ws, which is not in the module graph)
+7 errors
+]]>
+                    </Output>
+                    <Output title="out2"/>
+                </Section>
+            </Sections>
+        </TestResult>
+</TestResults>

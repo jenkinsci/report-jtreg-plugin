@@ -25,7 +25,7 @@ package io.jenkins.plugins.report.jtreg;
 
 import hudson.Extension;
 import hudson.model.AbstractProject;
-import io.jenkins.plugins.report.jtreg.parsers.JckReportParser;
+import io.jenkins.plugins.report.jtreg.parsers.JckReportParserPlugin;
 import io.jenkins.plugins.report.jtreg.parsers.ReportParser;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
@@ -50,7 +50,7 @@ public class JckReportPublisher extends AbstractReportPublisher {
 
     @Override
     protected ReportParser createReportParser() {
-        return new JckReportParser();
+        return new JckReportParserPlugin();
     }
 
     @Override
