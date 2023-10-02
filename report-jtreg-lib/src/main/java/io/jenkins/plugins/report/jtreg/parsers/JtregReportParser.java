@@ -24,11 +24,8 @@
 package io.jenkins.plugins.report.jtreg.parsers;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.jenkins.plugins.report.jtreg.model.ReportFull;
-import io.jenkins.plugins.report.jtreg.model.Suite;
-import io.jenkins.plugins.report.jtreg.model.Test;
-import io.jenkins.plugins.report.jtreg.model.TestOutput;
-import io.jenkins.plugins.report.jtreg.model.TestStatus;
+import io.jenkins.plugins.report.jtreg.model.*;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,7 +58,12 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 
-public class JtregReportParser implements ReportParser {
+public class  JtregReportParser implements ReportParser {
+
+    protected TestFactory testFactory;
+    public JtregReportParser() {
+        this.testFactory = new TestFactory();
+    }
 
     private static final Map<String, ArchiveFactory> SUPPORTED_ARCHIVE_TYPES_MAP = createSupportedArchiveTypesMap();
 
@@ -236,7 +238,7 @@ public class JtregReportParser implements ReportParser {
         final int total = tryParseString(totalStr);
         final int skipped = tryParseString(totalSkip);
 
-        JtregBackwardCompatibileSuite suite = new JtregBackwardCompatibileSuite(name, failures, errors, total, skipped);
+        JtregBackwardCompatibileSuite suite = new JtregBackwardCompatibileSuite(name, failures, errors, total, skipped, testFactory);
 
         String statusLine = "";
         String stdOutput = "";
@@ -377,6 +379,7 @@ public class JtregReportParser implements ReportParser {
         private List<Test> revalidatedCopyOfTests;
         private String statusLine;
         private boolean validated = false;
+        private TestFactory testFactory;
 
         /**
          * This method is handling backward compatibility by converting JtregBackwardCompatibleTest to Test
@@ -438,12 +441,13 @@ public class JtregReportParser implements ReportParser {
             validated = true;
         }
 
-        private JtregBackwardCompatibileSuite(String name, int failures, int errors, int totals, int skipped) {
+        private JtregBackwardCompatibileSuite(String name, int failures, int errors, int totals, int skipped, TestFactory testFactory) {
             this.name = name;
             this.failures = failures;
             this.errors = errors;
             this.total = totals;
             this.skipped = skipped;
+            this.testFactory = testFactory;
         }
 
         private Collection<? extends Test> getTests() {
@@ -482,7 +486,7 @@ public class JtregReportParser implements ReportParser {
                 }
                 nwStatus = statusLine + del + testcase.getStatusLine();
             }
-            return new Test(nwName, st, nwStatus, newOutputs);
+            return testFactory.createTest(nwName, st, nwStatus, newOutputs);
 
         }
 
