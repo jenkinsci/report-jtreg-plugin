@@ -31,12 +31,11 @@ import io.jenkins.plugins.report.jtreg.model.SuitesWithResults;
 import java.util.List;
 
 public class BuildReportExtendedPlugin extends BuildReportExtended {
-    private final String job;
 
     public BuildReportExtendedPlugin(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites,
                                List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges, int total, int notRun, SuitesWithResults allTests, String job) {
         super(buildNumber, buildName, passed, failed, error, suites, addedSuites, removedSuites, testChanges, total, notRun, allTests, job);
-        this.job = job;
+
     }
 
     private static String getDiffUrlStub(){
@@ -44,7 +43,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
     }
 
     public String getLinkDiff() {
-        return getDiffUrlStub() + job + "+" + getBuildNumber() + "+" + lowestBuildForFil();
+        return getDiffUrlStub() + getJob() + "+" + getBuildNumber() + "+" + lowestBuildForFil();
     }
 
     private int lowestBuildForFil() {
@@ -64,7 +63,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
     }
 
     public String getLinkTraces() {
-        return getTracesUrlStub() + job + "+" + getBuildNumber();
+        return getTracesUrlStub() + getJob() + "+" + getBuildNumber();
     }
 
     public boolean isDiffTool() {
@@ -72,14 +71,14 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
     }
 
     public String getCompareArches() {
-        return getCompUrlStub() + ("--query+" + job.replaceAll("-\\.", "+") + "+--nvr+" + getBuildName()).replace("#","%23");
+        return getCompUrlStub() + ("--query+" + getJob().replaceAll("-\\.", "+") + "+--nvr+" + getBuildName()).replace("#","%23");
     }
 
     public String getCompareOsses() {
-        return getCompUrlStub() + ("--query+" + job.replaceAll("-\\.", "+") + "+--nvr+" + getBuildName()).replace("#","%23");
+        return getCompUrlStub() + ("--query+" + getJob().replaceAll("-\\.", "+") + "+--nvr+" + getBuildName()).replace("#","%23");
     }
 
     public String getCompareVariants() {
-        return getCompUrlStub() + ("--query+" + job.replaceAll("-\\.", "+") + "+--nvr+" + getBuildName()).replace("#","%23");
+        return getCompUrlStub() + ("--query+" + getJob().replaceAll("-\\.", "+") + "+--nvr+" + getBuildName()).replace("#","%23");
     }
 }
