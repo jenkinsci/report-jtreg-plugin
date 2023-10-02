@@ -64,15 +64,8 @@ public class Test implements Comparable<Test>, java.io.Serializable {
                 "outputs=" + outputs + '}';
     }
 
-//    TODO - commented this, as it is not accessible in diff
-
-//    private static String createDiffUrl() {
-//        return SuiteTestsWithResults.getDiffServer() + "?generated-part=+-view%3Dall-tests+++-output%3Dhtml++-fill++";
-//    }
-
-
-//    public String getTrackingUrl(String job) {
-//        return (createDiffUrl()+"&custom-part=-track%3D"+name+"++"+job+"++0+-365").replaceAll("#", "%23");
-//    }
+    public String getTrackingUrl(String job) {
+        return ("no url for lib");
+    }
 
 }
