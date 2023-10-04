@@ -33,9 +33,9 @@ public class Report implements java.io.Serializable {
     private final int testsFailed;
     private final int testsError;
     private final int testsTotal;
-    private final List<? extends Test> testProblems;
+    private final List<Test> testProblems;
 
-    public Report(int testsPassed, int testsNotRun, int testsFailed, int testsError, int testsTotal, List<? extends Test> testProblems) {
+    public Report(int testsPassed, int testsNotRun, int testsFailed, int testsError, int testsTotal, List<Test> testProblems) {
         this.testsPassed = testsPassed;
         this.testsNotRun = testsNotRun;
         this.testsFailed = testsFailed;
@@ -64,7 +64,7 @@ public class Report implements java.io.Serializable {
         return testsTotal;
     }
 
-    public List<? extends Test> getTestProblems() {
+    public List<Test> getTestProblems() {
         return testProblems;
     }
 
