@@ -75,10 +75,10 @@ public class ReportAction implements Action, StaplerProxy, SimpleBuildStep.LastB
     }
 
     @Override
-    public BuildReportExtendedPlugin getTarget() {
+    public BuildReportExtended getTarget() {
         try {
             AbstractReportPublisher settings = getAbstractReportPublisher(build.getProject().getPublishersList());
-            BuildReportExtendedPlugin report = new BuildSummaryParserPlugin(prefixes, settings).parseBuildReportExtended(build);
+            BuildReportExtended report = new BuildSummaryParserPlugin(prefixes, settings).parseBuildReportExtended(build);
             return report;
         } catch (Exception ex) {
             ex.printStackTrace();

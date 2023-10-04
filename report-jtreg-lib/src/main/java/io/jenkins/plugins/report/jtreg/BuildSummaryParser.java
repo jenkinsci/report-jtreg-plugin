@@ -47,13 +47,15 @@ import io.jenkins.plugins.report.jtreg.wrappers.RunWrapper;
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromDir;
 
 public class BuildSummaryParser {
-    private final Set<String> prefixes = new HashSet<>();
+    protected final Set<String> prefixes = new HashSet<>();
+    protected BuildReportExtendedFactory buildReportExtendedFactory;
 
     public BuildSummaryParser(Collection<String> prefixes) {
         if (prefixes == null || prefixes.isEmpty()) {
             throw new IllegalArgumentException("Prefixes cannot be null or empty");
         }
         this.prefixes.addAll(prefixes);
+        this.buildReportExtendedFactory = new BuildReportExtendedFactory();
     }
 
     public BuildReport parseJobReports(File dir1) {
@@ -230,7 +232,7 @@ public class BuildSummaryParser {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return new BuildReportExtended(
+        return buildReportExtendedFactory.createBuildReportExtended(
                 currentReport.getBuildNumber(),
                 currentReport.getBuildName(),
                 currentReport.getPassed(),
@@ -246,7 +248,7 @@ public class BuildSummaryParser {
                 job);
     }
 
-    private List<Suite> parseBuildSummary(File rootDir) throws Exception {
+    protected List<Suite> parseBuildSummary(File rootDir) throws Exception {
         List<Suite> result = new ArrayList<>();
         for (String prefix : prefixes) {
             File reportFile = new File(rootDir, prefix + "-" + Constants.REPORT_JSON);
@@ -285,10 +287,10 @@ public class BuildSummaryParser {
         return result;
     }
 
-    private static class TestDescriptor {
+    protected static class TestDescriptor {
 
-        private final String name;
-        private final TestStatus status;
+        protected final String name;
+        protected final TestStatus status;
 
         public TestDescriptor(String name, TestStatus status) {
             this.name = name;
