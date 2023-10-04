@@ -2,7 +2,6 @@ package io.jenkins.plugins.report.jtreg;
 
 import io.jenkins.plugins.report.jtreg.model.Test;
 import io.jenkins.plugins.report.jtreg.model.TestOutput;
-import io.jenkins.plugins.report.jtreg.parsers.JtregReportParserPlugin;
 import org.junit.Assert;
 
 import java.io.File;
@@ -14,6 +13,7 @@ import java.util.stream.Collectors;
 
 
 import io.jenkins.plugins.report.jtreg.model.Suite;
+import io.jenkins.plugins.report.jtreg.parsers.JtregReportParser;
 
 public class JtregReportParserTest {
 
@@ -22,7 +22,7 @@ public class JtregReportParserTest {
     @org.junit.Test
     public void parseRhqeTest() throws IOException {
         String tarball = "src/test/resources/" + rhqeFileName; //jtreg arser currently depends on file, and that file have to be tarball with named xmls
-        final JtregReportParserPlugin parser = new JtregReportParserPlugin();
+        final JtregReportParser parser = new JtregReportParser();
         Suite actualReport = parser.parsePath(new File(tarball).toPath());
         List<? extends Test> failures = actualReport.getReport().getTestProblems();
         Assert.assertEquals(2, failures.size());

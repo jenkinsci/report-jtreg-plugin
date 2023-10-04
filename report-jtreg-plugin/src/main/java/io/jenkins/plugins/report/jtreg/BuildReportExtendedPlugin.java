@@ -23,10 +23,7 @@
  */
 package io.jenkins.plugins.report.jtreg;
 
-import io.jenkins.plugins.report.jtreg.model.Suite;
-import io.jenkins.plugins.report.jtreg.model.SuiteTestChanges;
-import io.jenkins.plugins.report.jtreg.model.SuiteTestsWithResultsPlugin;
-import io.jenkins.plugins.report.jtreg.model.SuitesWithResults;
+import io.jenkins.plugins.report.jtreg.model.*;
 
 import java.util.List;
 
@@ -80,5 +77,13 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
 
     public String getCompareVariants() {
         return getCompUrlStub() + ("--query+" + getJob().replaceAll("-\\.", "+") + "+--nvr+" + getBuildName()).replace("#","%23");
+    }
+
+    private static String createDiffUrl() {
+        return SuiteTestsWithResultsPlugin.getDiffServer() + "?generated-part=+-view%3Dall-tests+++-output%3Dhtml++-fill++";
+    }
+
+    public String getTrackingUrl(Test test) {
+        return (createDiffUrl()+"&custom-part=-track%3D"+test.getName()+"++"+getJob()+"++0+-365").replaceAll("#", "%23");
     }
 }

@@ -25,7 +25,7 @@ package io.jenkins.plugins.report.jtreg;
 
 import hudson.Extension;
 import hudson.model.AbstractProject;
-import io.jenkins.plugins.report.jtreg.parsers.JtregReportParserPlugin;
+import io.jenkins.plugins.report.jtreg.parsers.JtregReportParser;
 import io.jenkins.plugins.report.jtreg.parsers.ReportParser;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
@@ -57,7 +57,7 @@ public class JtregReportPublisher extends AbstractReportPublisher {
 
     @Override
     protected ReportParser createReportParser() {
-        return new JtregReportParserPlugin();
+        return new JtregReportParser();
     }
 
     @Override

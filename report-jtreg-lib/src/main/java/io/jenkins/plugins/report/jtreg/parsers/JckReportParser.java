@@ -26,11 +26,6 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 public class JckReportParser implements ReportParser {
-    protected TestFactory testFactory;
-    public JckReportParser() {
-        this.testFactory = new TestFactory();
-    }
-
     @Override
     public Suite parsePath(Path path) {
         try (InputStream in = streamPath(path)) {
@@ -143,7 +138,7 @@ public class JckReportParser implements ReportParser {
                 testOutputs = processTestOutputs(in);
             }
         }
-        return testFactory.createTest(url, TestStatus.valueOf(status.toUpperCase()), statusLine, testOutputs);
+        return new Test(url, TestStatus.valueOf(status.toUpperCase()), statusLine, testOutputs);
     }
 
     protected String processStatusLine(XMLStreamReader in) throws Exception {
