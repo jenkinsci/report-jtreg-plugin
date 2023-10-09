@@ -24,7 +24,7 @@ public class JtregReportParserTest {
         String tarball = "src/test/resources/" + rhqeFileName; //jtreg arser currently depends on file, and that file have to be tarball with named xmls
         final JtregReportParser parser = new JtregReportParser();
         Suite actualReport = parser.parsePath(new File(tarball).toPath());
-        List<? extends Test> failures = actualReport.getReport().getTestProblems();
+        List<Test> failures = actualReport.getReport().getTestProblems();
         Assert.assertEquals(2, failures.size());
         List<TestOutput> outputs1 = failures.get(0).getOutputs();
         Assert.assertEquals(2, outputs1.size());
