@@ -23,14 +23,12 @@
  */
 package io.jenkins.plugins.report.jtreg.model;
 
-//import io.jenkins.plugins.chartjs.Chartjs; TODO - not accessible in lib
 import java.util.List;
 
 public class BuildReport implements java.io.Serializable {
 
     private final int buildNumber;
     private final String buildName;
-//    private final String buildNameShortened; TODO - not accessible in lib
     private final int passed;
     private final int failed;
     private final int error;
@@ -49,13 +47,7 @@ public class BuildReport implements java.io.Serializable {
         this.total = total;
         this.notRun = notRun;
         this.run = 0;
-//        this.buildNameShortened=Chartjs.getShortName(buildName, buildNumber); TODO - not accessible in lib
     }
-
-//    public String getBuildNameShortened() { TODO - not accessible in lib
-//        return buildNameShortened;
-//    }
-
 
     public int getBuildNumber() {
         return buildNumber;
