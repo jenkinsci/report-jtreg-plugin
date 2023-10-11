@@ -141,7 +141,7 @@ abstract public class AbstractReportPublisher extends Recorder {
             }
             File buildDir = jsonFile.getParentFile();
             int buildNumber = Integer.parseInt(buildDir.getName());
-            BuildReport br = new BuildReport(buildNumber, nameb.toString().trim(), passedSumm, failedSumm, errorSumm, reportShort, totalSumm, notRunSumm);
+            BuildReport br = new BuildReportPlugin(buildNumber, nameb.toString().trim(), passedSumm, failedSumm, errorSumm, reportShort, totalSumm, notRunSumm);
             ReportProjectAction.cacheSumms(buildDir.getParentFile().getParentFile(), Arrays.asList(new BuildReport[]{br}));
         } catch (Exception ex) {
             ex.printStackTrace();

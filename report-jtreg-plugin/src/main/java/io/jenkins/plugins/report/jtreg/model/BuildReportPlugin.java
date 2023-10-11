@@ -26,75 +26,16 @@ package io.jenkins.plugins.report.jtreg.model;
 import io.jenkins.plugins.chartjs.Chartjs;
 import java.util.List;
 
-public class BuildReport implements java.io.Serializable {
-
-    private final int buildNumber;
-    private final String buildName;
+public class BuildReportPlugin extends BuildReport {
     private final String buildNameShortened;
-    private final int passed;
-    private final int failed;
-    private final int error;
-    private final int total;
-    private final int notRun;
-    private final int run;
-    private final List<Suite> suites;
 
-    public BuildReport(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites, int total, int notRun) {
-        this.buildNumber = buildNumber;
-        this.buildName = buildName;
-        this.passed = passed;
-        this.failed = failed;
-        this.error = error;
-        this.suites = suites;
-        this.total = total;
-        this.notRun = notRun;
-        this.run = 0;
+    public BuildReportPlugin(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites, int total, int notRun) {
+        super(buildNumber, buildName, passed, failed, error, suites, total, notRun);
         this.buildNameShortened=Chartjs.getShortName(buildName, buildNumber);
     }
 
     public String getBuildNameShortened() {
         return buildNameShortened;
-    }
-    
-
-    public int getBuildNumber() {
-        return buildNumber;
-    }
-
-    public String getBuildName() {
-        return buildName;
-    }
-
-    public int getPassed() {
-        return passed;
-    }
-
-    public int getFailed() {
-        return failed;
-    }
-
-    public int getError() {
-        return error;
-    }
-
-    public List<Suite> getSuites() {
-        return suites;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public int getNotRun() {
-        return notRun;
-    }
-
-    public int getRun() {
-        return total - notRun;
-    }
-
-    public boolean isInvalid() {
-        return passed == 0 && failed == 0 && error == 0 && total == 0 && notRun == 0 && run == 0;
     }
 
 }
