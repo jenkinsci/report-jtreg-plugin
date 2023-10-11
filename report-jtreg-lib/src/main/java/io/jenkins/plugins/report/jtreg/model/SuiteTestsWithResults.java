@@ -32,20 +32,6 @@ import java.util.List;
 import java.util.Collections;
 
 public class SuiteTestsWithResults implements java.io.Serializable {
-
-//    TODO - commented hyperlink stuff, it is not accessible in lib
-
-//    public static String getDiffServer() {
-//        return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + "/diff.html";
-//    }
-//    public static String getCompServer() {
-//        return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + "/comp.html";
-//    }
-
-//    private static String getDiffUrlStub() {
-//        return getDiffServer() + "?generated-part=+-view%3Dall-tests+++-view%3Dinfo-summary+++-view%3Dinfo-summary-suites+++-output%3Dhtml++&custom-part=";//+job+number //eg as above;
-//    }
-
     private static final int MAX = 1000;
     private final String name;
 
@@ -91,10 +77,6 @@ public class SuiteTestsWithResults implements java.io.Serializable {
             return "... Shown " + MAX + " from " + tests.size() + " tests. To see remaining " + (tests.size() - 1000) + " use our cmdline diff tool or ";
         }
     }
-
-//    public String getLink() {
-//        return getDiffUrlStub() + job + "+" + id;
-//    }
 
     public static class StringWithResult {
 
