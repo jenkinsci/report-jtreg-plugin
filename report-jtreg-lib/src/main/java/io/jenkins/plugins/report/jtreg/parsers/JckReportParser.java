@@ -1,11 +1,7 @@
 package io.jenkins.plugins.report.jtreg.parsers;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.jenkins.plugins.report.jtreg.model.ReportFull;
-import io.jenkins.plugins.report.jtreg.model.Suite;
-import io.jenkins.plugins.report.jtreg.model.Test;
-import io.jenkins.plugins.report.jtreg.model.TestOutput;
-import io.jenkins.plugins.report.jtreg.model.TestStatus;
+import io.jenkins.plugins.report.jtreg.model.*;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -30,7 +26,6 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 public class JckReportParser implements ReportParser {
-
     @Override
     public Suite parsePath(Path path) {
         try (InputStream in = streamPath(path)) {

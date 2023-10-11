@@ -23,11 +23,9 @@
  */
 package io.jenkins.plugins.report.jtreg.main.diff;
 
-import io.jenkins.plugins.report.jtreg.Constants;
 import io.jenkins.plugins.report.jtreg.main.diff.cmdline.Arguments;
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
-import io.jenkins.plugins.report.jtreg.JckReportPublisher;
 import io.jenkins.plugins.report.jtreg.main.diff.cmdline.JobsRecognition;
 import io.jenkins.plugins.report.jtreg.main.diff.cmdline.Options;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
@@ -80,8 +78,7 @@ public class CompareBuilds {
             if (i < options.getDirsToWork().size() - 1) {
                 oldOne = options.getDirsToWork().get(i + 1);
             }
-            JckReportPublisher jcp = new JckReportPublisher(Constants.IRRELEVANT_GLOB_STRING); // completely irrelevant string
-            BuildSummaryParser bs = new BuildSummaryParser(Arrays.asList("jck", "jtreg"), jcp);
+            BuildSummaryParser bs = new BuildSummaryParser(Arrays.asList("jck", "jtreg"));
 
             BuildReport br = bs.parseJobReports(newOne);
             if (options.isInfo()) {

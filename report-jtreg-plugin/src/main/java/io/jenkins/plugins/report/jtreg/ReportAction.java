@@ -78,7 +78,7 @@ public class ReportAction implements Action, StaplerProxy, SimpleBuildStep.LastB
     public BuildReportExtended getTarget() {
         try {
             AbstractReportPublisher settings = getAbstractReportPublisher(build.getProject().getPublishersList());
-            BuildReportExtended report = new BuildSummaryParser(prefixes, settings).parseBuildReportExtended(build);
+            BuildReportExtended report = new BuildSummaryParserPlugin(prefixes, settings).parseBuildReportExtended(build);
             return report;
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -40,7 +40,6 @@ import java.util.stream.Stream;
 
 import static io.jenkins.plugins.report.jtreg.Constants.REPORT_JSON;
 import static io.jenkins.plugins.report.jtreg.Constants.REPORT_TESTS_LIST_JSON;
-import io.jenkins.plugins.report.jtreg.JtregReportPublisher;
 import io.jenkins.plugins.report.jtreg.parsers.JtregReportParser;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -66,6 +65,18 @@ public class RecreateJtregReportSummaries {
         }
     }
 
+    private static final String sfxs = "zip,tar,tar.gz,tar.bz2,tar.xz";
+
+    private static boolean isJtregArchive(String s){
+        String[] ss = sfxs.split(",");
+        for (String s1 : ss) {
+            if (s.endsWith(s1)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     @SuppressFBWarnings(value = {"REC_CATCH_EXCEPTION", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
     private void recreateJtregReportSummaryForBuild(Path buildPath) {
         Path tckReportsArchive = buildPath.resolve("archive");
@@ -82,7 +93,7 @@ public class RecreateJtregReportSummaries {
 
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    if (JtregReportPublisher.isJtregArchive(file.toString())) {
+                    if (isJtregArchive(file.toString())) {
                         archives.add(file);
                     }
                     return FileVisitResult.CONTINUE;

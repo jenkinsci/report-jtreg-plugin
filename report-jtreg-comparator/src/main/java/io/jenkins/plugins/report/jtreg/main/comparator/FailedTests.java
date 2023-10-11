@@ -2,8 +2,6 @@ package io.jenkins.plugins.report.jtreg.main.comparator;
 
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
-import io.jenkins.plugins.report.jtreg.Constants;
-import io.jenkins.plugins.report.jtreg.JckReportPublisher;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 import io.jenkins.plugins.report.jtreg.model.*;
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromDir;
@@ -16,8 +14,7 @@ public class FailedTests {
     private static ArrayList<String> getBuildFailedTests(File build, String exactTestsRegex, Formatter formatter) throws Exception {
         ArrayList<String> failedTests = new ArrayList<>();
 
-        JckReportPublisher jcp = new JckReportPublisher(Constants.IRRELEVANT_GLOB_STRING); // completely irrelevant string
-        BuildSummaryParser bs = new BuildSummaryParser(Arrays.asList("jck", "jtreg"), jcp);
+        BuildSummaryParser bs = new BuildSummaryParser(Arrays.asList("jck", "jtreg"));
 
         BuildReportExtended bex = bs.parseBuildReportExtended(new RunWrapperFromDir(build), null);
         SuitesWithResults swr = bex.getAllTests();

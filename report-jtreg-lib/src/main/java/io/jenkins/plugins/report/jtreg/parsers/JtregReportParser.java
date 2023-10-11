@@ -24,11 +24,8 @@
 package io.jenkins.plugins.report.jtreg.parsers;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.jenkins.plugins.report.jtreg.model.ReportFull;
-import io.jenkins.plugins.report.jtreg.model.Suite;
-import io.jenkins.plugins.report.jtreg.model.Test;
-import io.jenkins.plugins.report.jtreg.model.TestOutput;
-import io.jenkins.plugins.report.jtreg.model.TestStatus;
+import io.jenkins.plugins.report.jtreg.model.*;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,8 +58,7 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 
-public class JtregReportParser implements ReportParser {
-
+public class  JtregReportParser implements ReportParser {
     private static final Map<String, ArchiveFactory> SUPPORTED_ARCHIVE_TYPES_MAP = createSupportedArchiveTypesMap();
 
     @Override

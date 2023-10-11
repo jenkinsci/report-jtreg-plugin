@@ -67,7 +67,7 @@
                                                 document.getElementById('button_expand_${suitesStatus.count}_${testStatus.count}').style.display = 'inline';
                                                 return false;">(collapse)</a>
                                         <j:if test="${it.isDiffTool()}">
-                                          <a target="_blank" href="${t.getTrackingUrl(it.job)}" style="font-size: smaller;" >(track)</a>
+                                          <a target="_blank" href="${it.getTrackingUrl(t)}" style="font-size: smaller;" >(track)</a>
                                         </j:if>
                                         <div id="details_${suitesStatus.count}_${testStatus.count}" style="display: none">
                                             <ul>
