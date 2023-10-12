@@ -1,6 +1,3 @@
-## Temporary workaround to run the plugin
-Please use this argument when running Jenkins `-Dhudson.remoting.ClassFilter=io.jenkins.plugins.report.jtreg.model.Report,io.jenkins.plugins.report.jtreg.model.ReportFull,io.jenkins.plugins.report.jtreg.model.Suite,io.jenkins.plugins.report.jtreg.model.Test,io.jenkins.plugins.report.jtreg.model.TestOutput`. This the consequence of the recent refactoring and it's actively being worked on.
-
 # jenkins-report-jtreg
 Jenkins plugin to show unit-test, tesng, jtreg and JCK reports summaries, diffs and details
 
