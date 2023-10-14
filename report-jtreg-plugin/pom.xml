@@ -45,7 +45,7 @@
                 </os>
             </activation>
             <properties>
-                <script.extension>.sh</script.extension>
+                <script.execution>./script.sh</script.execution>
             </properties>
         </profile>
         <profile>
@@ -56,7 +56,7 @@
                 </os>
             </activation>
             <properties>
-                <script.extension>.bat</script.extension>
+                <script.execution>.\script.bat</script.execution>
             </properties>
         </profile>
     </profiles>
@@ -75,7 +75,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>./script${script.extension}</executable>
+                            <executable>${script.execution}</executable>
                         </configuration>
                     </execution>
                 </executions>
