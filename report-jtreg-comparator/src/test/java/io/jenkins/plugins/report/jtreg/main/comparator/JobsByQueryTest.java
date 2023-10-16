@@ -200,6 +200,12 @@ public class JobsByQueryTest {
         Assertions.assertTrue(containsJobs.contains("reproducers~regular-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.defaultcp.lnxagent.jfroff"));
     }
 
+    private String crlfToLf(String s) {
+        // replaces windows CRLF newline to unix LF newline
+        // needed for the tests to pass both on linux and windows
+        return s.replace("\r\n", "\n");
+    }
+
     @Test
     public void testPrintJobs() {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -215,7 +221,7 @@ public class JobsByQueryTest {
         JobsPrinting.printJobs(jbq.getJobs(), false, "", 0, formatter, false);
 
         Assertions.assertEquals("crypto~tests-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.fips.lnxagent.jfroff:\n" +
-                "reproducers~regular-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.defaultcp.lnxagent.jfroff:\n", outStream.toString());
+                "reproducers~regular-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.defaultcp.lnxagent.jfroff:\n", crlfToLf(outStream.toString()));
     }
 
     @Test
@@ -247,6 +253,6 @@ public class JobsByQueryTest {
                 "12) defaultgc, shenandoah, \n" +
                 "13) ignorecp, \n" +
                 "14) lnxagent, \n" +
-                "15) jfroff, jfron, \n", outStream.toString());
+                "15) jfroff, jfron, \n", crlfToLf(outStream.toString()));
     }
 }
