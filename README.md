@@ -1,6 +1,3 @@
-## Temporary workaround to run the plugin
-Please use this argument when running Jenkins `-Dhudson.remoting.ClassFilter=io.jenkins.plugins.report.jtreg.model.Report,io.jenkins.plugins.report.jtreg.model.ReportFull,io.jenkins.plugins.report.jtreg.model.Suite,io.jenkins.plugins.report.jtreg.model.Test,io.jenkins.plugins.report.jtreg.model.TestOutput`. This the consequence of the recent refactoring and it's actively being worked on.
-
 # jenkins-report-jtreg
 Jenkins plugin to show unit-test, tesng, jtreg and JCK reports summaries, diffs and details
 
@@ -20,6 +17,7 @@ The plugin reads archived gzipped xml files prdoduced by junit/testng/jtreg/jck 
 * [Limitations](#limitations)
 * [Diff cli tool](#diff-cli-tool)
 * [Future work](#future-work)
+* [For developers](#for-developers)
 
 ## Implementation details
 The xml reports you recieve, should be post processed a bit, and compressed.  Compressed, as plugin is used with reports hundrets of megabytes large. And postprocessed as various engines generates various reports. Thus the xml files should be gathered into archives, which are later considered as suites:
@@ -131,3 +129,9 @@ Html output is much more clumsy, but the listing of switches and jobs is live, a
 * make cli more user friendly
 
 This plugin depends on https://github.com/judovana/jenkins-chartjs-plugin
+
+## For developers
+In the compile phase of the `report-jtreg-plugin` module a `script.sh/.bat` is run. The script copies the `target` directory of the already compiled `jtreg-report-lib` module into the `target` directory of the plugin module.
+This is done because of the Jenkins security hardening (https://www.jenkins.io/blog/2018/03/15/jep-200-lts/). The plugin can't load classes from external modules, and it throws a class filter exception.
+
+The plugin should work correctly with this "workaround", however, if it doesn't, run Jenkins with this switch, it should solve the problem: `-Dhudson.remoting.ClassFilter=io.jenkins.plugins.report.jtreg.model.Report,io.jenkins.plugins.report.jtreg.model.ReportFull,io.jenkins.plugins.report.jtreg.model.Suite,io.jenkins.plugins.report.jtreg.model.Test,io.jenkins.plugins.report.jtreg.model.TestOutput`
