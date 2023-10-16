@@ -6,7 +6,6 @@ import io.jenkins.plugins.report.jtreg.formatters.HtmlFormatter;
 import io.jenkins.plugins.report.jtreg.formatters.PlainFormatter;
 import org.junit.jupiter.api.*;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
@@ -21,6 +20,12 @@ public class PrintTableTest {
                 {"third row", null, "", "X"},
                 {"fourth row", "X", "X", "X", "this is out of range and it won't be shown"}
         };
+    }
+
+    private String crlfToLf(String s) {
+        // replaces windows CRLF newline to unix LF newline
+        // needed for the tests to pass both on linux and windows
+        return s.replace("\r\n", "\n");
     }
 
     @Test
@@ -39,7 +44,8 @@ public class PrintTableTest {
                 "           | 1 | 2                                                    | 3 | \n" +
                 "second row | X | this is a very long text in a center cell of a table | X | \n" +
                 "third row  |   |                                                      | X | \n" +
-                "fourth row | X | X                                                    | X | \n", outStream.toString());
+                "fourth row | X | X                                                    | X | \n",
+                crlfToLf(outStream.toString()));
     }
 
     @Test
@@ -56,7 +62,8 @@ public class PrintTableTest {
                 "           | \u001B[1m1\u001B[0m | \u001B[1m2\u001B[0m                                                    | \u001B[1m3\u001B[0m | \n" +
                 "second row | \u001B[31mX\u001B[0m | this is a very long text in a center cell of a table | \u001B[31mX\u001B[0m | \n" +
                 "third row  |   |                                                      | \u001B[31mX\u001B[0m | \n" +
-                "fourth row | \u001B[31mX\u001B[0m | \u001B[31mX\u001B[0m                                                    | \u001B[31mX\u001B[0m | \n", outStream.toString());
+                "fourth row | \u001B[31mX\u001B[0m | \u001B[31mX\u001B[0m                                                    | \u001B[31mX\u001B[0m | \n",
+                crlfToLf(outStream.toString()));
     }
 
     @Test
@@ -98,6 +105,7 @@ public class PrintTableTest {
                 "<td style=\"color:Red\">X</td>\n" +
                 "<td style=\"color:Red\">X</td>\n" +
                 "</tr>\n" +
-                "</table>\n", outStream.toString());
+                "</table>\n",
+                crlfToLf(outStream.toString()));
     }
 }
