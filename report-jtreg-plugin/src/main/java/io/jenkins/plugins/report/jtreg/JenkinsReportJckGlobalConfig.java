@@ -7,6 +7,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import hudson.Extension;
@@ -17,6 +18,7 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
     private static Logger logger = Logger.getLogger(JenkinsReportJckGlobalConfig.class.getName());
 
     String diffToolUrl;
+    List<ComparatorLinks> comparatorLinks;
 
     public static JenkinsReportJckGlobalConfig getInstance() {
         return GlobalConfiguration.all().get(JenkinsReportJckGlobalConfig.class);
@@ -47,9 +49,23 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
         this.diffToolUrl = diffToolUrl;
     }
 
+    public static List<ComparatorLinks> getGlobalComparatorLinks() {
+        return getInstance().getComparatorLinks();
+    }
+
+    public List<ComparatorLinks> getComparatorLinks() {
+        return comparatorLinks;
+    }
+
+    @DataBoundSetter
+    public void setComparatorLinks(List<ComparatorLinks> comparatorLinks) {
+        this.comparatorLinks = comparatorLinks;
+    }
+
     @DataBoundConstructor
-    public JenkinsReportJckGlobalConfig(String diffToolUrl) {
+    public JenkinsReportJckGlobalConfig(String diffToolUrl, List<ComparatorLinks> comparatorLinks) {
         this.diffToolUrl = diffToolUrl;
+        this.comparatorLinks = comparatorLinks;
     }
 
     public JenkinsReportJckGlobalConfig() {

@@ -36,10 +36,13 @@
                          <b>
                              <j:choose>
                                  <j:when test="${it.isDiffTool()}">
-                                     <a href="${it.linkTraces}">all traces</a>&amp;nbsp;
-                                     <a href="${it.compareArches}">compare architectures</a>&amp;nbsp;
-                                     <a href="${it.compareOsses}">comapre OSes</a>&amp;nbsp;
-                                     <a href="${it.compareVariants}">comapre variants</a>&amp;nbsp;
+                                     <j:forEach var="comparatorLinks" items="${it.matchedComparatorLinks}">
+                                         <div>
+                                             <j:forEach var="link" items="${comparatorLinks.getLinks()}">
+                                                 <a href="${it.createComparatorLinkUrl(link)}">${link.label}</a>&amp;nbsp;
+                                             </j:forEach>
+                                         </div>
+                                     </j:forEach>
                                  </j:when>
                                  <j:otherwise>
                                      diff tool is not configured. Set up url in jenkins main config
