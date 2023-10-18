@@ -5,4 +5,27 @@
             <f:textbox/>
         </f:entry>
     </f:section>
+    <f:section title="Comparator links">
+        <f:repeatable field="comparatorLinks">
+            <f:entry field="jobMatchRegex" title="Regex for matching jobs">
+                <f:textbox />
+            </f:entry>
+            <f:repeatable field="links">
+                <f:entry field="label" title="Link label">
+                    <f:textbox />
+                </f:entry>
+                <f:entry field="spliterator" title="Regex to split the job names by">
+                    <f:textbox />
+                </f:entry>
+                <f:entry field="comparatorArguments" title="Comparator tool arguments (one on each line)">
+                    <f:textarea />
+                </f:entry>
+                <f:entry field="query" title="Regex query">
+                    <f:textbox />
+                </f:entry>
+                <f:repeatableDeleteButton/>
+            </f:repeatable>
+            <f:repeatableDeleteButton/>
+        </f:repeatable>
+    </f:section>
 </j:jelly>

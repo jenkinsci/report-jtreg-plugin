@@ -25,14 +25,71 @@ package io.jenkins.plugins.report.jtreg;
 
 import io.jenkins.plugins.report.jtreg.model.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BuildReportExtendedPlugin extends BuildReportExtended {
+    private final String job;
+    private final List<ComparatorLinks> matchedComparatorLinks;
 
     public BuildReportExtendedPlugin(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites,
                                List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges, int total, int notRun, SuitesWithResults allTests, String job) {
         super(buildNumber, buildName, passed, failed, error, suites, addedSuites, removedSuites, testChanges, total, notRun, allTests, job);
+        this.job = job;
 
+        this.matchedComparatorLinks = new ArrayList<>();
+        for (ComparatorLinks link : JenkinsReportJckGlobalConfig.getGlobalComparatorLinks()) {
+            if (job.matches(link.getJobMatchRegex())) {
+                this.matchedComparatorLinks.add(link);
+            }
+        }
+    }
+
+    public List<ComparatorLinks> getMatchedComparatorLinks() {
+        return matchedComparatorLinks;
+    }
+
+    public String createComparatorLinkUrl(LinkToComparator ltc) {
+        StringBuilder url = new StringBuilder(getCompUrlStub());
+
+        for (String arg : ltc.getComparatorArguments().split("\n")) {
+            url.append("+");
+            url.append(arg.replace(" ", "+").replace("#", "%23"));
+        }
+
+        url.append("+--regex+");
+        url.append(parseToRegex(ltc.getSpliterator(), ltc.getQuery()));
+
+        return url.toString();
+    }
+
+    private String parseToRegex(String spliterator, String query) {
+        String[] splitJob = job.split(spliterator);
+
+        String converted = query;
+
+        Pattern p = Pattern.compile("%-?[0-9]+");
+        Matcher m = p.matcher(converted);
+
+        while (m.find()) {
+            int number = Integer.parseInt(converted.substring(m.start() + 1, m.end()));
+
+            String replacement;
+            if (number > 0) {
+                replacement = splitJob[number - 1];
+            } else if (number < 0) {
+                replacement = splitJob[splitJob.length + number];
+            } else {
+                throw new RuntimeException("The number in query cannot be zero, only positive or negative whole numbers!");
+            }
+
+            converted = converted.replaceFirst("%-?[0-9]+", replacement);
+            m = p.matcher(converted);
+        }
+
+        return converted;
     }
 
     private static String getDiffUrlStub(){
@@ -56,7 +113,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
     }
 
     private static String getCompUrlStub() {
-        return SuiteTestsWithResultsPlugin.getCompServer() + "?generated-part=&custom-part=--compare+";//+job+numbers //eg as above;
+        return SuiteTestsWithResultsPlugin.getCompServer() + "?generated-part=&custom-part=--compare";//+job+numbers //eg as above;
     }
 
     public String getLinkTraces() {
@@ -65,18 +122,6 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
 
     public boolean isDiffTool() {
         return JenkinsReportJckGlobalConfig.isGlobalDiffUrl();
-    }
-
-    public String getCompareArches() {
-        return getCompUrlStub() + ("--query+" + getJob().replaceAll("-\\.", "+") + "+--nvr+" + getBuildName()).replace("#","%23");
-    }
-
-    public String getCompareOsses() {
-        return getCompUrlStub() + ("--query+" + getJob().replaceAll("-\\.", "+") + "+--nvr+" + getBuildName()).replace("#","%23");
-    }
-
-    public String getCompareVariants() {
-        return getCompUrlStub() + ("--query+" + getJob().replaceAll("-\\.", "+") + "+--nvr+" + getBuildName()).replace("#","%23");
     }
 
     private static String createDiffUrl() {
