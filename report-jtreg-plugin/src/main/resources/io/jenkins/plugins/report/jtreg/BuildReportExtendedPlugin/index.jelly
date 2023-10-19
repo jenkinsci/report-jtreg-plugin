@@ -36,7 +36,7 @@
                          <b>
                              <j:choose>
                                  <j:when test="${it.isDiffTool()}">
-                                     <j:forEach var="comparatorLinks" items="${it.matchedComparatorLinks}">
+                                     <j:forEach var="comparatorLinks" items="${it.getMatchedComparatorLinks()}">
                                          <div>
                                              <j:forEach var="link" items="${comparatorLinks.getLinks()}">
                                                  <a href="${it.createComparatorLinkUrl(link)}">${link.label}</a>&amp;nbsp;

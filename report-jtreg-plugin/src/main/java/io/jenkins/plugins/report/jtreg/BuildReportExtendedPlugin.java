@@ -32,22 +32,21 @@ import java.util.regex.Pattern;
 
 public class BuildReportExtendedPlugin extends BuildReportExtended {
     private final String job;
-    private final List<ComparatorLinks> matchedComparatorLinks;
 
     public BuildReportExtendedPlugin(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites,
                                List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges, int total, int notRun, SuitesWithResults allTests, String job) {
         super(buildNumber, buildName, passed, failed, error, suites, addedSuites, removedSuites, testChanges, total, notRun, allTests, job);
         this.job = job;
-
-        this.matchedComparatorLinks = new ArrayList<>();
-        for (ComparatorLinks link : JenkinsReportJckGlobalConfig.getGlobalComparatorLinks()) {
-            if (job.matches(link.getJobMatchRegex())) {
-                this.matchedComparatorLinks.add(link);
-            }
-        }
     }
 
     public List<ComparatorLinks> getMatchedComparatorLinks() {
+        List<ComparatorLinks> matchedComparatorLinks = new ArrayList<>();
+        for (ComparatorLinks link : JenkinsReportJckGlobalConfig.getGlobalComparatorLinks()) {
+            if (job.matches(link.getJobMatchRegex())) {
+                matchedComparatorLinks.add(link);
+            }
+        }
+
         return matchedComparatorLinks;
     }
 
@@ -55,14 +54,17 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         StringBuilder url = new StringBuilder(getCompUrlStub());
 
         for (String arg : ltc.getComparatorArguments().split("\n")) {
+            url.append(arg);
             url.append("+");
-            url.append(arg.replace(" ", "+").replace("#", "%23"));
         }
 
-        url.append("+--regex+");
+        url.append("--regex+");
         url.append(parseToRegex(ltc.getSpliterator(), ltc.getQuery()));
 
-        return url.toString();
+        return url.toString()
+                .replace(" ", "+")
+                .replace("#", "%23")
+                .replace(".", "%2E");
     }
 
     private String parseToRegex(String spliterator, String query) {
@@ -70,6 +72,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
 
         String converted = query;
 
+        // finds %N in the query from Jenkins config and replaces it with corresponding part of job name
         Pattern p = Pattern.compile("%-?[0-9]+");
         Matcher m = p.matcher(converted);
 
@@ -113,7 +116,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
     }
 
     private static String getCompUrlStub() {
-        return SuiteTestsWithResultsPlugin.getCompServer() + "?generated-part=&custom-part=--compare";//+job+numbers //eg as above;
+        return SuiteTestsWithResultsPlugin.getCompServer() + "?generated-part=&custom-part=";
     }
 
     public String getLinkTraces() {
