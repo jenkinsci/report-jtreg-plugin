@@ -10,14 +10,12 @@ public class LinkToComparator extends AbstractDescribableImpl<LinkToComparator> 
     private String label;
     private String spliterator;
     private String comparatorArguments;
-    private String query;
 
     @DataBoundConstructor
-    public LinkToComparator(String label, String spliterator, String comparatorArguments, String query) {
+    public LinkToComparator(String label, String spliterator, String comparatorArguments) {
         this.label = label;
         this.spliterator = spliterator;
         this.comparatorArguments = comparatorArguments;
-        this.query = query;
     }
 
     public String getLabel() {
@@ -45,14 +43,6 @@ public class LinkToComparator extends AbstractDescribableImpl<LinkToComparator> 
     @DataBoundSetter
     public void setComparatorArguments(String comparatorArguments) {
         this.comparatorArguments = comparatorArguments;
-    }
-
-    public String getQuery() {
-        return query;
-    }
-    @DataBoundSetter
-    public void setQuery(String query) {
-        this.query = query;
     }
 
     @Extension

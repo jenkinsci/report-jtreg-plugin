@@ -6,7 +6,7 @@
         </f:entry>
     </f:section>
     <f:section title="Comparator links">
-        <f:repeatable field="comparatorLinkGroups">
+        <f:repeatable field="comparatorLinksGroups">
             <f:entry field="jobMatchRegex" title="Regex for matching jobs">
                 <f:textbox />
             </f:entry>
@@ -19,9 +19,6 @@
                 </f:entry>
                 <f:entry field="comparatorArguments" title="Comparator tool arguments (one on each line)">
                     <f:textarea />
-                </f:entry>
-                <f:entry field="query" title="Regex query">
-                    <f:textbox />
                 </f:entry>
                 <f:repeatableDeleteButton/>
             </f:repeatable>
