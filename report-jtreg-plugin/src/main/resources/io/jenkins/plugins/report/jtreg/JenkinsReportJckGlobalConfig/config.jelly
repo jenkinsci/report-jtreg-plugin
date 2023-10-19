@@ -6,7 +6,7 @@
         </f:entry>
     </f:section>
     <f:section title="Comparator links">
-        <f:repeatable field="comparatorLinks">
+        <f:repeatable field="comparatorLinkGroups">
             <f:entry field="jobMatchRegex" title="Regex for matching jobs">
                 <f:textbox />
             </f:entry>
