@@ -54,12 +54,14 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         StringBuilder url = new StringBuilder(getCompUrlStub());
 
         for (String arg : ltc.getComparatorArguments().split("\n")) {
-            url.append(arg);
-            url.append("+");
+            if (arg.matches("^-+regex.*")) {
+                url.append("--regex+");
+                url.append(parseToRegex(ltc.getSpliterator(), arg.split(" ")[1])); // split the arg my space and give it the second part
+            } else {
+                url.append(arg);
+                url.append("+");
+            }
         }
-
-        url.append("--regex+");
-        url.append(parseToRegex(ltc.getSpliterator(), ltc.getQuery()));
 
         return url.toString()
                 .replace(" ", "+")
@@ -73,22 +75,27 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         String converted = query;
 
         // finds %N in the query from Jenkins config and replaces it with corresponding part of job name
-        Pattern p = Pattern.compile("%-?[0-9]+");
+        Pattern p = Pattern.compile("%\\{((N\\+|N-)?[0-9]+|S|SPLIT)\\}");
         Matcher m = p.matcher(converted);
 
         while (m.find()) {
-            int number = Integer.parseInt(converted.substring(m.start() + 1, m.end()));
+            String insideBrackets = converted.substring(m.start() + 1 + 1, m.end() - 1); // get just the inside of the brackets
 
             String replacement;
-            if (number > 0) {
-                replacement = splitJob[number - 1];
-            } else if (number < 0) {
-                replacement = splitJob[splitJob.length + number];
+            if (insideBrackets.equals("S") || insideBrackets.equals("SPLIT")) {
+                replacement = spliterator;
             } else {
-                throw new RuntimeException("The number in query cannot be zero, only positive or negative whole numbers!");
+                int number;
+                if (insideBrackets.charAt(0) == 'N') {
+                    number = splitJob.length + Integer.parseInt(insideBrackets.substring(1));
+                } else {
+                    number = Integer.parseInt(insideBrackets) - 1;
+                }
+
+                replacement = splitJob[number];
             }
 
-            converted = converted.replaceFirst("%-?[0-9]+", replacement);
+            converted = converted.replaceFirst("%\\{((N\\+|N-)?[0-9]+|S|SPLIT)\\}", replacement);
             m = p.matcher(converted);
         }
 
