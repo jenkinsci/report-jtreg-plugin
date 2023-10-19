@@ -22,7 +22,7 @@
     </modules>
 
     <properties>
-        <revision>2.0</revision>
+        <revision>2.2</revision>
         <changelist>-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/report-jtreg-plugin</gitHubRepo>
         <chartjs.version>4.2.1.5</chartjs.version>
