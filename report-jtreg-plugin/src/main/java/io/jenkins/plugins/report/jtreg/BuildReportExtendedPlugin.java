@@ -75,7 +75,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         String converted = query;
 
         // finds %N in the query from Jenkins config and replaces it with corresponding part of job name
-        Pattern p = Pattern.compile("%\\{((N\\+|N-)?[0-9]+|S|SPLIT)\\}");
+        Pattern p = Pattern.compile("%\\{((N-)?[0-9]+|S|SPLIT)\\}");
         Matcher m = p.matcher(converted);
 
         while (m.find()) {
@@ -92,10 +92,15 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
                     number = Integer.parseInt(insideBrackets) - 1;
                 }
 
+                if (number < 0 || number >= splitJob.length) {
+                    System.err.println("WARNING: The number given in the --regex argument of \"Comparator links\" section is out of range of the job name!");
+                    return "The number given is out of range of the job name!";
+                }
+
                 replacement = splitJob[number];
             }
 
-            converted = converted.replaceFirst("%\\{((N\\+|N-)?[0-9]+|S|SPLIT)\\}", replacement);
+            converted = converted.replaceFirst("%\\{((N-)?[0-9]+|S|SPLIT)\\}", replacement);
             m = p.matcher(converted);
         }
 
