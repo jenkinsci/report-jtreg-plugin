@@ -18,7 +18,7 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
     private static Logger logger = Logger.getLogger(JenkinsReportJckGlobalConfig.class.getName());
 
     String diffToolUrl;
-    List<ComparatorLinks> comparatorLinks;
+    List<ComparatorLinksGroup> comparatorLinkGroups;
 
     public static JenkinsReportJckGlobalConfig getInstance() {
         return GlobalConfiguration.all().get(JenkinsReportJckGlobalConfig.class);
@@ -49,23 +49,23 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
         this.diffToolUrl = diffToolUrl;
     }
 
-    public static List<ComparatorLinks> getGlobalComparatorLinks() {
-        return getInstance().getComparatorLinks();
+    public static List<ComparatorLinksGroup> getGlobalComparatorLinksGroups() {
+        return getInstance().getComparatorLinksGroups();
     }
 
-    public List<ComparatorLinks> getComparatorLinks() {
-        return comparatorLinks;
+    public List<ComparatorLinksGroup> getComparatorLinksGroups() {
+        return comparatorLinkGroups;
     }
 
     @DataBoundSetter
-    public void setComparatorLinks(List<ComparatorLinks> comparatorLinks) {
-        this.comparatorLinks = comparatorLinks;
+    public void setComparatorLinksGroups(List<ComparatorLinksGroup> comparatorLinkGroups) {
+        this.comparatorLinkGroups = comparatorLinkGroups;
     }
 
     @DataBoundConstructor
-    public JenkinsReportJckGlobalConfig(String diffToolUrl, List<ComparatorLinks> comparatorLinks) {
+    public JenkinsReportJckGlobalConfig(String diffToolUrl, List<ComparatorLinksGroup> comparatorLinkGroups) {
         this.diffToolUrl = diffToolUrl;
-        this.comparatorLinks = comparatorLinks;
+        this.comparatorLinkGroups = comparatorLinkGroups;
     }
 
     public JenkinsReportJckGlobalConfig() {

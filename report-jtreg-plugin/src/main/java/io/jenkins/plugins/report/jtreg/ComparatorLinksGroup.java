@@ -8,12 +8,12 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 import java.util.List;
 
-public class ComparatorLinks extends AbstractDescribableImpl<ComparatorLinks> {
+public class ComparatorLinksGroup extends AbstractDescribableImpl<ComparatorLinksGroup> {
     private String jobMatchRegex;
     private List<LinkToComparator> links;
 
     @DataBoundConstructor
-    public ComparatorLinks(String jobMatchRegex, List<LinkToComparator> links) {
+    public ComparatorLinksGroup(String jobMatchRegex, List<LinkToComparator> links) {
         this.jobMatchRegex = jobMatchRegex;
         this.links = links;
     }
@@ -35,7 +35,7 @@ public class ComparatorLinks extends AbstractDescribableImpl<ComparatorLinks> {
     }
 
     @Extension
-    public static class DescriptorImpl extends Descriptor<ComparatorLinks> {
+    public static class DescriptorImpl extends Descriptor<ComparatorLinksGroup> {
         public String getDisplayName() { return "Comparator links"; }
     }
 

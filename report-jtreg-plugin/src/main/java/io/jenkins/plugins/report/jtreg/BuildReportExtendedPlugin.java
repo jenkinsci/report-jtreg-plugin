@@ -39,15 +39,15 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         this.job = job;
     }
 
-    public List<ComparatorLinks> getMatchedComparatorLinks() {
-        List<ComparatorLinks> matchedComparatorLinks = new ArrayList<>();
-        for (ComparatorLinks link : JenkinsReportJckGlobalConfig.getGlobalComparatorLinks()) {
+    public List<ComparatorLinksGroup> getMatchedComparatorLinksGroups() {
+        List<ComparatorLinksGroup> matchedComparatorLinksGroup = new ArrayList<>();
+        for (ComparatorLinksGroup link : JenkinsReportJckGlobalConfig.getGlobalComparatorLinksGroups()) {
             if (job.matches(link.getJobMatchRegex())) {
-                matchedComparatorLinks.add(link);
+                matchedComparatorLinksGroup.add(link);
             }
         }
 
-        return matchedComparatorLinks;
+        return matchedComparatorLinksGroup;
     }
 
     public String createComparatorLinkUrl(LinkToComparator ltc) {
