@@ -54,13 +54,8 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         StringBuilder url = new StringBuilder(getCompUrlStub());
 
         for (String arg : ltc.getComparatorArguments().split("\n")) {
-            if (arg.matches("^-+regex.*")) {
-                url.append("--regex+");
-                url.append(parseToRegex(ltc.getSpliterator(), arg.split(" ")[1])); // split the arg my space and give it the second part
-            } else {
-                url.append(arg);
-                url.append("+");
-            }
+            url.append(parseQueryToText(ltc.getSpliterator(), arg));
+            url.append(" ");
         }
 
         return url.toString()
@@ -69,7 +64,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
                 .replace(".", "%2E");
     }
 
-    private String parseToRegex(String spliterator, String query) {
+    private String parseQueryToText(String spliterator, String query) {
         String[] splitJob = job.split(spliterator);
 
         String converted = query;
@@ -100,7 +95,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
                 replacement = splitJob[number];
             }
 
-            converted = converted.replaceFirst("%\\{((N-)?[0-9]+|S|SPLIT)\\}", replacement);
+            converted = m.replaceFirst(replacement);
             m = p.matcher(converted);
         }
 
