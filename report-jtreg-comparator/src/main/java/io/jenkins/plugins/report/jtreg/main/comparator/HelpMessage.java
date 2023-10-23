@@ -52,6 +52,10 @@ final public class HelpMessage {
             "                  " + ArgumentsDeclaration.forceArg.getHelp() + "\n" +
             "    " + ArgumentsDeclaration.formattingArg.getName() + ArgumentsDeclaration.formattingArg.getUsage() + "\n" +
             "                  " + ArgumentsDeclaration.formattingArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.exactTestsArg.getName() + ArgumentsDeclaration.exactTestsArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.exactTestsArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.useDefaultBuildArg.getName() + ArgumentsDeclaration.useDefaultBuildArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.useDefaultBuildArg.getHelp() + "\n" +
             "\n" +
             "Query string syntax:\n" +
             JobsByQuery.queryStringUsage +

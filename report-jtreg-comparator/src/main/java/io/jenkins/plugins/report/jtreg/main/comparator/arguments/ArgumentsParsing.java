@@ -18,9 +18,8 @@ public class ArgumentsParsing {
             JobsByRegex jobsByRegex = new JobsByRegex();
 
             for (int i = 0; i < arguments.length; i++) {
-                String[] splitArg = arguments[i].split("=");
                 // delete all leading - characters
-                String currentArg = splitArg[0].replaceAll("^-+", "--");
+                String currentArg = arguments[i].replaceAll("^-+", "--");
 
                 if (!currentArg.matches("^--.*")) {
                     throw new RuntimeException("Unknown argument " + arguments[i] + ", did you forget the leading hyphens (--)?");
@@ -67,33 +66,19 @@ public class ArgumentsParsing {
 
                 } else if (currentArg.equals(ArgumentsDeclaration.pathArg.getName())) {
                     // --path
-                    if (i + 1 <= arguments.length) {
-                        options.setJobsPath(arguments[++i]);
-                    } else {
-                        throw new RuntimeException("Expected path to jobs after --path.");
-                    }
+                    options.setJobsPath(getArgumentValue(arguments, i++));
 
                 } else if (currentArg.equals(ArgumentsDeclaration.nvrArg.getName())) {
                     // --nvr
-                    if (i + 1 <= arguments.length) {
-                        options.setNvrQuery(arguments[++i]);
-                    } else {
-                        throw new RuntimeException("Expected NVR after --nvr.");
-                    }
+                    options.setNvrQuery(getArgumentValue(arguments, i++));
 
                 } else if (currentArg.equals(ArgumentsDeclaration.historyArg.getName())) {
                     // --history
-                    if (i + 1 <= arguments.length) {
-                        options.setNumberOfBuilds(Integer.parseInt(arguments[++i]));
-                    } else {
-                        throw new RuntimeException("Expected number of builds after --history.");
-                    }
+                    options.setNumberOfBuilds(Integer.parseInt(getArgumentValue(arguments, i++)));
 
                 } else if (currentArg.equals(ArgumentsDeclaration.skipFailedArg.getName())) {
                     // --skip-failed
-                    if (splitArg.length == 2 && splitArg[1].equals("false")) {
-                        options.setSkipFailed(false);
-                    }
+                    options.setSkipFailed(Boolean.parseBoolean(getArgumentValue(arguments, i++)));
 
                 } else if (currentArg.equals(ArgumentsDeclaration.forceArg.getName())) {
                     // --force
@@ -101,35 +86,28 @@ public class ArgumentsParsing {
 
                 } else if (currentArg.equals(ArgumentsDeclaration.onlyVolatileArg.getName())) {
                     // --only-volatile
-                    if (splitArg.length == 2 && splitArg[1].equals("true")) {
-                        options.setOnlyVolatile(true);
-                    }
+                    options.setOnlyVolatile(Boolean.parseBoolean(getArgumentValue(arguments, i++)));
 
                 } else if (currentArg.equals(ArgumentsDeclaration.exactTestsArg.getName())) {
                     // --exact-tests
-                    if (i + 1 <= arguments.length) {
-                        options.setExactTestsRegex(arguments[++i]);
-                    } else {
-                        throw new RuntimeException("Expected the exact tests regex after --exact-tests.");
-                    }
+                    options.setExactTestsRegex(getArgumentValue(arguments, i++));
 
                 } else if (currentArg.equals(ArgumentsDeclaration.formattingArg.getName())) {
                     // --formatting
-                    if (splitArg.length == 2 && splitArg[1].equals("color")) {
+                    String formatting = getArgumentValue(arguments, i++);
+                    if (formatting.equals("color") || formatting.equals("colour")) {
                         options.setFormatter(new ColorFormatter(System.out));
-                    } else if (splitArg.length == 2 && splitArg[1].equals("html")) {
+                    } else if (formatting.equals("html")) {
                         options.setFormatter(new HtmlFormatter(System.out));
-                    } else if (splitArg.length == 2 && !splitArg[1].equals("plain")) {
+                    } else if (!formatting.equals("plain")) {
                         throw new RuntimeException("Unexpected formatting specified.");
                     }
 
                 } else if (currentArg.equals(ArgumentsDeclaration.useDefaultBuildArg.getName())) {
                     // --use-default-build
-                    if (splitArg.length == 2 && splitArg[1].equals("true")) {
-                        options.setUseDefaultBuild(true);
-                    }
+                    options.setUseDefaultBuild(Boolean.parseBoolean(getArgumentValue(arguments, i++)));
 
-                // parsing arguments of the jobs providers
+                    // parsing arguments of the jobs providers
                 } else if (jobsByQuery.getSupportedArgs().contains(currentArg) || jobsByRegex.getSupportedArgs().contains(currentArg)) {
                     // add a jobs provider to options, if there is none
                     if (options.getJobsProvider() == null) {
@@ -141,16 +119,13 @@ public class ArgumentsParsing {
                     }
                     // check if the argument is compatible with current jobs provider
                     if (options.getJobsProvider().getSupportedArgs().contains(currentArg)) {
-                        if (i + 1 <= arguments.length) {
-                            options.getJobsProvider().parseArguments(currentArg, arguments[++i]);
-                        } else {
-                            throw new RuntimeException("Expected a value after " + currentArg + ".");
-                        }
+                        options.getJobsProvider().parseArguments(currentArg, getArgumentValue(arguments, i++));
+
                     } else {
                         throw new RuntimeException("Cannot combine arguments from multiple job providers.");
                     }
 
-                // unknown argument
+                    // unknown argument
                 } else {
                     throw new RuntimeException("Unknown argument " + currentArg + ", run with --help for info.");
                 }
@@ -174,5 +149,13 @@ public class ArgumentsParsing {
         }
 
         return options;
+    }
+
+    private static String getArgumentValue(String[] arguments, int i) {
+        if (i + 1 < arguments.length) {
+            return arguments[i + 1];
+        } else {
+            throw new RuntimeException("Expected some value after " + arguments[i] + " argument.");
+        }
     }
 }
