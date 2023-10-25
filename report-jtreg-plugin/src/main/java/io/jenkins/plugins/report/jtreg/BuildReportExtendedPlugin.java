@@ -25,6 +25,8 @@ package io.jenkins.plugins.report.jtreg;
 
 import io.jenkins.plugins.report.jtreg.model.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -51,17 +53,14 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
     }
 
     public String createComparatorLinkUrl(LinkToComparator ltc) {
-        StringBuilder url = new StringBuilder(getCompUrlStub());
+        StringBuilder url = new StringBuilder();
 
         for (String arg : ltc.getComparatorArguments().split("\n")) {
             url.append(parseQueryToText(ltc.getSpliterator(), arg));
             url.append(" ");
         }
 
-        return url.toString()
-                .replace(" ", "+")
-                .replace("#", "%23")
-                .replace(".", "%2E");
+        return getCompUrlStub() + URLEncoder.encode(url.toString(), StandardCharsets.UTF_8);
     }
 
     private String parseQueryToText(String spliterator, String query) {
@@ -69,7 +68,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
 
         String converted = query;
 
-        // finds %N in the query from Jenkins config and replaces it with corresponding part of job name
+        // finds %{X} in the query from Jenkins config and replaces it with corresponding part of job name
         Pattern p = Pattern.compile("%\\{((N-)?[0-9]+|S|SPLIT)\\}");
         Matcher m = p.matcher(converted);
 
