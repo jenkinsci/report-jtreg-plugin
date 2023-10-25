@@ -69,7 +69,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         String converted = query;
 
         // finds %{X} in the query from Jenkins config and replaces it with corresponding part of job name
-        Pattern p = Pattern.compile("%\\{((N-)?[0-9]+|S|SPLIT)\\}");
+        Pattern p = Pattern.compile("%\\{(N?[+-]?[0-9]+|N|S|SPLIT)\\}");
         Matcher m = p.matcher(converted);
 
         while (m.find()) {
@@ -80,8 +80,10 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
                 replacement = spliterator;
             } else {
                 int number;
-                if (insideBrackets.charAt(0) == 'N') {
+                if (insideBrackets.charAt(0) == 'N' && insideBrackets.length() > 1) {
                     number = splitJob.length + Integer.parseInt(insideBrackets.substring(1));
+                } else if (insideBrackets.charAt(0) == 'N') {
+                    number = splitJob.length;
                 } else {
                     number = Integer.parseInt(insideBrackets) - 1;
                 }
