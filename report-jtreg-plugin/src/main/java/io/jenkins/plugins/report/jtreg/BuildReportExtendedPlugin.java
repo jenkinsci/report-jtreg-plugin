@@ -55,7 +55,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
     public String createComparatorLinkUrl(String comparatorUrl, LinkToComparator ltc) {
         StringBuilder url = new StringBuilder();
 
-        for (String arg : ltc.getComparatorArguments().split(System.lineSeparator())) {
+        for (String arg : ltc.getComparatorArguments().split("(\\n|\\r\\n)")) {
             url.append(parseQueryToText(ltc.getSpliterator(), arg));
             url.append(" ");
         }
