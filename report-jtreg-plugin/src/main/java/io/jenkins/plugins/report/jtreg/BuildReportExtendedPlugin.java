@@ -52,15 +52,15 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         return matchedComparatorLinksGroup;
     }
 
-    public String createComparatorLinkUrl(LinkToComparator ltc) {
+    public String createComparatorLinkUrl(String comparatorUrl, LinkToComparator ltc) {
         StringBuilder url = new StringBuilder();
 
-        for (String arg : ltc.getComparatorArguments().split("\n")) {
+        for (String arg : ltc.getComparatorArguments().split(System.lineSeparator())) {
             url.append(parseQueryToText(ltc.getSpliterator(), arg));
             url.append(" ");
         }
 
-        return getCompUrlStub() + URLEncoder.encode(url.toString(), StandardCharsets.UTF_8);
+        return comparatorUrl + URLEncoder.encode(url.toString(), StandardCharsets.UTF_8);
     }
 
     private String parseQueryToText(String spliterator, String query) {
@@ -121,7 +121,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         return SuiteTestsWithResultsPlugin.getDiffServer() + "?generated-part=+-view%3Dinfo+++-output%3Dhtml++&custom-part=";//+job+numbers //eg as above;
     }
 
-    private static String getCompUrlStub() {
+    public static String getCompUrlStub() {
         return SuiteTestsWithResultsPlugin.getCompServer() + "?generated-part=&custom-part=";
     }
 
