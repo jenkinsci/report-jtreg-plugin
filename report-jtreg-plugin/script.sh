@@ -14,5 +14,30 @@
 # report-jtreg-lib dependency has the "provided" scope, the classes do not clash and the plugin works as intended with
 # the lib classes in the plugin jar/hpi.
 #
+#
 
-cp -arv ../report-jtreg-lib/target/* target
+set -x
+set -e
+set -o pipefail
+
+## resolve folder of this script, following all symlinks,
+## http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in
+SCRIPT_SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SCRIPT_SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  SCRIPT_DIR="$( cd -P "$( dirname "$SCRIPT_SOURCE" )" && pwd )"
+  SCRIPT_SOURCE="$(readlink "$SCRIPT_SOURCE")"
+  # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+  [[ $SCRIPT_SOURCE != /* ]] && SCRIPT_SOURCE="$SCRIPT_DIR/$SCRIPT_SOURCE"
+done
+readonly SCRIPT_DIR="$( cd -P "$( dirname "$SCRIPT_SOURCE" )" && pwd )"
+
+# the absolute path is necessary, as PWD is different for mvn clean install, and mvn release:prepare/perform
+if [ ! -e ${SCRIPT_DIR}/../report-jtreg-lib/target/ ] ; then
+  # thsi can happen during mvn release:perform even if  you built ahead of time
+  pushd ${SCRIPT_DIR}/../report-jtreg-lib
+    mvn package -DskipTests
+  popd
+fi
+
+
+cp -arv ${SCRIPT_DIR}/../report-jtreg-lib/target/* ${SCRIPT_DIR}/target
