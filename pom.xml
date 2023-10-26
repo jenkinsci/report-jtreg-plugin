@@ -23,8 +23,8 @@
 
     <properties>
         <revision>2.4</revision>
-        <changelist></changelist>
-        <gitHubRepo>jenkinsci/report-jtreg-plugin</gitHubRepo>
+        <changelist>-SNAPSHOT</changelist>
+        <gitHubRepo>jenkinsci/report-jtreg</gitHubRepo>
         <chartjs.version>1.0.2.6</chartjs.version>
         <jenkins.version>2.361.4</jenkins.version>
     </properties>
@@ -49,11 +49,14 @@
         </license>
     </licenses>
 
-    <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
-    <scm>
-        <connection>scm:git:https://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
-        <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
-        <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
+    <!-- we release only from report-jtreg-plugin submodule, so no -plugin append needed-->
+    <url>https://github.com/jenkinsci/${project.artifactId}</url>
+	<scm child.scm.connection.inherit.append.path="false"
+		 child.scm.developerConnection.inherit.append.path="false"
+		 child.scm.url.inherit.append.path="false">
+        <connection>scm:git:https://github.com/jenkinsci/${project.artifactId}.git</connection>
+        <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}.git</developerConnection>
+        <url>https://github.com/jenkinsci/${project.artifactId}</url>
         <tag>report-jtreg-2.3</tag>
     </scm>
 
