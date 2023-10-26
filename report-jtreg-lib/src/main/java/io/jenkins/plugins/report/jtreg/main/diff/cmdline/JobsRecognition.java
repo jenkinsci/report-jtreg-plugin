@@ -24,7 +24,14 @@
 package io.jenkins.plugins.report.jtreg.main.diff.cmdline;
 
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -34,7 +41,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class JobsRecognition {
@@ -186,7 +192,7 @@ public class JobsRecognition {
                 formatter.startColor(Formatter.SupportedColors.Cyan);
             }
             formatter.print("" + result + "(" + (result - latest) + "): ");
-            formatter.print("" + getChangelogsNvr(f));
+            formatter.print("" + getBuildXmlNvr(f));
             String tt = JobsRecognition.tail(creteLogFile(jobName, result));
             if (tt != null) {
                 //tt = tt.trim();
@@ -211,40 +217,29 @@ public class JobsRecognition {
 
     private static final Map<File, String> nvrCache = new HashMap<>();
 
-    public static String getChangelogsNvr(File buildPath) {
-        File f = creteChangelogFile(buildPath);
-        String cached = nvrCache.get(f);
+    public static String getBuildXmlNvr(File buildPath) {
+        File buildXml = new File(buildPath.getAbsolutePath() + "/build.xml");
+        String cached = nvrCache.get(buildXml);
         if (cached != null) {
             return cached;
         }
         try {
-            String content = new Scanner(f, "UTF-8").useDelimiter("\\Z").next();
-            String[] lines = content.split("[<>]");
-            boolean read1 = true;
-            boolean read2 = false;
-            for (String line : lines) {
-                line = line.replaceAll("\\s+", "");
-                if (line.isEmpty()) {
-                    continue;
-                }
-                if (read1 && read2) {
-                    nvrCache.put(f, line);
-                    return line;
-                }
-                if (line.equals("rpms")) {
-                    read1 = false;
-                }
-                if (line.equals("/rpms")) {
-                    read1 = true;
-                }
-                if (line.equals("nvr")) {
-                    read2 = true;
-                }
-                if (line.equals("/nvr")) {
-                    read2 = false;
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(buildXml);
+            doc.getDocumentElement().normalize();
+
+            // get the second <build> tag (the first is the main document tag)
+            NodeList nodeList = doc.getElementsByTagName("build").item(1).getChildNodes();
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                // goes through the child elements until it finds <nvr>
+                if (nodeList.item(i).getNodeName().equals("nvr")) {
+                    nvrCache.put(buildXml, nodeList.item(i).getChildNodes().item(0).getNodeValue());
+                    return nodeList.item(i).getChildNodes().item(0).getNodeValue();
                 }
             }
-        } catch (Exception ex) {
+        } catch (FactoryConfigurationError | ParserConfigurationException | IOException | SAXException e) {
+            // exact exceptions because of spotbugs
             return null;
         }
         return null;

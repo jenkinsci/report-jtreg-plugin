@@ -41,7 +41,7 @@ public class Builds {
         if (nvrQuery.equals("") || nvrQuery.equals("*")) {
             return true;
         }
-        String buildNvr = JobsRecognition.getChangelogsNvr(build);
+        String buildNvr = JobsRecognition.getBuildXmlNvr(build);
         if (buildNvr == null) {
             return false;
         } else if (nvrQuery.charAt(0) == '{') {
@@ -126,6 +126,6 @@ public class Builds {
     }
 
     public static String getNvr(File build) {
-        return JobsRecognition.getChangelogsNvr(build);
+        return JobsRecognition.getBuildXmlNvr(build);
     }
 }

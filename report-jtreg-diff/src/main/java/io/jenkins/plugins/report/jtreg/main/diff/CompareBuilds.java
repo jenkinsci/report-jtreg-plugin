@@ -256,12 +256,12 @@ public class CompareBuilds {
         }
         format().reset();
         format().println();
-        String nwNra = JobsRecognition.getChangelogsNvr(new File(br.getBuildName()));
+        String nwNra = JobsRecognition.getBuildXmlNvr(new File(br.getBuildName()));
         format().startTitle1();
         format().print(nwNra);
         String nwNraOld = null;
         if (old != null) {
-            nwNraOld = JobsRecognition.getChangelogsNvr(new File(old.getBuildName()));
+            nwNraOld = JobsRecognition.getBuildXmlNvr(new File(old.getBuildName()));
             format().print(" x(old) " + nwNraOld);
         }
         if (nwNra != null || nwNraOld != null) {
@@ -505,7 +505,7 @@ public class CompareBuilds {
         format().println("  ***  All tests!  *** ");
         format().reset();
         format().startTitle3();
-        String nwNra = JobsRecognition.getChangelogsNvr(new File(bre.getBuildName()));
+        String nwNra = JobsRecognition.getBuildXmlNvr(new File(bre.getBuildName()));
         format().print(nwNra + " (" + bre.getBuildNumber() + ": " + bre.getBuildName() + ")");
         format().reset();
         List<SuiteTestsWithResults> all = bre.getAllTests().getAllTestsAndSuites();
