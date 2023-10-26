@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>report-jtreg-lib</artifactId>
+  <version>2.3</version>
 
     <packaging>jar</packaging>
 
@@ -19,4 +20,8 @@
             <version>2.10.1</version>
         </dependency>
     </dependencies>
+
+  <scm>
+    <tag>report-jtreg-lib-2.3</tag>
+  </scm>
 </project>
