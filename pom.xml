@@ -23,7 +23,7 @@
 
     <properties>
         <revision>2.4</revision>
-        <changelist />
+        <changelist>-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/report-jtreg-plugin</gitHubRepo>
         <chartjs.version>1.0.2.6</chartjs.version>
         <jenkins.version>2.361.4</jenkins.version>
