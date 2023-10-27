@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>report-jtreg</artifactId>
+  <version>2.4</version>
 
     <packaging>hpi</packaging>
 
@@ -31,7 +32,7 @@
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
             <artifactId>report-jtreg-lib</artifactId>
-            <version>${revision}${changelist}</version>
+            <version>2.4</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -82,4 +83,8 @@
             </plugin>
         </plugins>
     </build>
+
+  <scm>
+    <tag>report-jtreg-2.4</tag>
+  </scm>
 </project>
