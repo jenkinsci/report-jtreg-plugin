@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+    <!--RELEASE NOTE-->
+    <!-- release always only from report-jtreg-plugin subdirectory-->
+
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
@@ -8,13 +11,13 @@
         <version>4.65</version>
     </parent>
     <groupId>io.jenkins.plugins</groupId>
-    <artifactId>report-jtreg</artifactId>
+    <artifactId>report-jtreg-plugin</artifactId>
     <version>${revision}${changelist}</version>
 
     <packaging>pom</packaging>
     <name>JTReg Plugin</name>
     <modules>
-        <module>report-jtreg-plugin</module>
+        <module>report-jtreg</module>
         <module>report-jtreg-comparator</module>
         <module>report-jtreg-diff</module>
         <module>report-jtreg-lib</module>
@@ -54,9 +57,9 @@
 	<scm child.scm.connection.inherit.append.path="false"
 		 child.scm.developerConnection.inherit.append.path="false"
 		 child.scm.url.inherit.append.path="false">
-        <connection>scm:git:https://github.com/jenkinsci/${project.artifactId}.git</connection>
-        <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}.git</developerConnection>
-        <url>https://github.com/jenkinsci/${project.artifactId}</url>
+        <connection>scm:git:https://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
+        <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
         <tag>report-jtreg-2.3</tag>
     </scm>
 
