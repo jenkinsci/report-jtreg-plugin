@@ -4,11 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.jenkins.plugins</groupId>
-        <artifactId>report-jtreg</artifactId>
+        <artifactId>report-jtreg-plugin</artifactId>
         <version>${revision}${changelist}</version>
     </parent>
 
     <artifactId>report-jtreg-lib</artifactId>
+  <version>${revision}${changelist}</version>
 
     <packaging>jar</packaging>
 
@@ -19,4 +20,8 @@
             <version>2.10.1</version>
         </dependency>
     </dependencies>
+
+  <scm>
+    <tag>report-jtreg-2.3</tag>
+  </scm>
 </project>
