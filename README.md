@@ -18,6 +18,8 @@ The plugin reads archived gzipped xml files prdoduced by junit/testng/jtreg/jck 
 * [Diff cli tool](#diff-cli-tool)
 * [Future work](#future-work)
 * [For developers](#for-developers)
+    * [embedding lib in plugin](#embedding-lib-in-plugin)
+    * [releaseing](#releaseing)
 
 ## Implementation details
 The xml reports you recieve, should be post processed a bit, and compressed.  Compressed, as plugin is used with reports hundrets of megabytes large. And postprocessed as various engines generates various reports. Thus the xml files should be gathered into archives, which are later considered as suites:
@@ -131,7 +133,12 @@ Html output is much more clumsy, but the listing of switches and jobs is live, a
 This plugin depends on https://github.com/judovana/jenkins-chartjs-plugin
 
 ## For developers
+### embedding lib in plugin
 In the compile phase of the `report-jtreg-plugin` module a `script.sh/.bat` is run. The script copies the `target` directory of the already compiled `jtreg-report-lib` module into the `target` directory of the plugin module.
 This is done because of the Jenkins security hardening (https://www.jenkins.io/blog/2018/03/15/jep-200-lts/). The plugin can't load classes from external modules, and it throws a class filter exception.
 
 The plugin should work correctly with this "workaround", however, if it doesn't, run Jenkins with this switch, it should solve the problem: `-Dhudson.remoting.ClassFilter=io.jenkins.plugins.report.jtreg.model.Report,io.jenkins.plugins.report.jtreg.model.ReportFull,io.jenkins.plugins.report.jtreg.model.Suite,io.jenkins.plugins.report.jtreg.model.Test,io.jenkins.plugins.report.jtreg.model.TestOutput`
+
+### releaseing
+This plugin is **multimodule** lib, plugin and two external services. Thus the autorelease do not work as expected.
+To release, you have to `cd report-jtreg` submodule which contans `report-jtreg-plugin artifactId` and here run manually `mvn release:preapre` and `mvn release:perform`. During preapare, always adjsut all modules, not jsut dependent ones (choice of `0`)
