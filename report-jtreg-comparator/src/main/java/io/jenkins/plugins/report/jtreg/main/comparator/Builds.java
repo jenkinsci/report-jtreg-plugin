@@ -1,5 +1,6 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
+import io.jenkins.plugins.report.jtreg.ConfigFinder;
 import io.jenkins.plugins.report.jtreg.main.diff.cmdline.JobsRecognition;
 
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
@@ -36,12 +37,14 @@ public class Builds {
     }
 
     // checks if the build has the same NVR as given
-    static boolean checkForNvr(File build, String nvrQuery) {
+    static boolean checkForNvr(File build, String nvrQuery, Options.Configuration nvrConfig) {
         // nvrQuery has the same syntax as query string
         if (nvrQuery.equals("") || nvrQuery.equals("*")) {
             return true;
         }
-        String buildNvr = JobsRecognition.getChangelogsNvr(build);
+        String buildNvr = ConfigFinder.findInConfig(new File(build.getAbsolutePath() + "/" + nvrConfig.getConfigFileName()),
+                "nvr", nvrConfig.getFindQuery());
+
         if (buildNvr == null) {
             return false;
         } else if (nvrQuery.charAt(0) == '{') {
@@ -57,7 +60,7 @@ public class Builds {
 
     // gets all the compatible builds with the given parameters and returns them in a list
     public static ArrayList<File> getBuilds(
-            File job, boolean skipFailed, String nvrQuery, int numberOfBuilds, boolean useDefaultBuild, Formatter formatter) {
+            File job, boolean skipFailed, String nvrQuery, int numberOfBuilds, boolean useDefaultBuild, Formatter formatter, Options.Configuration nvrConfig) {
 
         ArrayList<File> listOfBuilds = new ArrayList<>();
 
@@ -79,7 +82,7 @@ public class Builds {
 
         int buildsChecked = 0;
         for (File build : buildsInDir) {
-            if (checkIfCorrect(build, skipFailed) && checkForNvr(build, nvrQuery) && buildsChecked < numberOfBuilds) {
+            if (checkIfCorrect(build, skipFailed) && checkForNvr(build, nvrQuery, nvrConfig) && buildsChecked < numberOfBuilds) {
                 listOfBuilds.add(build);
             }
 

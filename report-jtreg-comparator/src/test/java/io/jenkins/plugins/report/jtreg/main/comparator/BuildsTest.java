@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-
-
 public class BuildsTest {
 
     private static File changelogFile;
@@ -22,26 +20,24 @@ public class BuildsTest {
 
     @org.junit.Test
     public void checkForNvrTest() {
-        boolean b = Builds.checkForNvr(new File("unused in this call"), "*");
+        Options.Configuration nvrConfig = new Options.Configuration(changelogFile.getName(), "/build/nvr");
+        boolean b = Builds.checkForNvr(new File("unused in this call"), "*", nvrConfig);
         org.junit.Assert.assertTrue(b);
-        b = Builds.checkForNvr(changelogFile.getParentFile(), "blah");
+        b = Builds.checkForNvr(changelogFile.getParentFile(), "blah", nvrConfig);
         org.junit.Assert.assertFalse(b);
-        b = Builds.checkForNvr(changelogFile.getParentFile(), "{blah}");
+        b = Builds.checkForNvr(changelogFile.getParentFile(), "{blah}", nvrConfig);
         org.junit.Assert.assertFalse(b);
-        b = Builds.checkForNvr(changelogFile.getParentFile(), "{blah, bleh}");
+        b = Builds.checkForNvr(changelogFile.getParentFile(), "{blah, bleh}", nvrConfig);
         org.junit.Assert.assertFalse(b);
-        b = Builds.checkForNvr(changelogFile.getParentFile(), "java-17-openjdk-portable-17.0.6.0.10-6.el7openjdkportable");
+        b = Builds.checkForNvr(changelogFile.getParentFile(), "java-17-openjdk-portable-17.0.6.0.10-6.el7openjdkportable", nvrConfig);
         org.junit.Assert.assertTrue(b);
-        b = Builds.checkForNvr(changelogFile.getParentFile(), "{blah,java-17-openjdk-portable-17.0.6.0.10-6.el7openjdkportable, bleh}");
+        b = Builds.checkForNvr(changelogFile.getParentFile(), "{blah,java-17-openjdk-portable-17.0.6.0.10-6.el7openjdkportable, bleh}", nvrConfig);
         org.junit.Assert.assertTrue(b);
-        b = Builds.checkForNvr(changelogFile.getParentFile(), "java-17-openjdk-portable-17.0.6.0.10-6");
+        b = Builds.checkForNvr(changelogFile.getParentFile(), "java-17-openjdk-portable-17.0.6.0.10-6", nvrConfig);
         org.junit.Assert.assertFalse(b);
-        b = Builds.checkForNvr(changelogFile.getParentFile(), "java-17-openjdk-portable-17.0.6.0.10-6.*");
+        b = Builds.checkForNvr(changelogFile.getParentFile(), "java-17-openjdk-portable-17.0.6.0.10-6.*", nvrConfig);
         org.junit.Assert.assertTrue(b);
-        b = Builds.checkForNvr(changelogFile.getParentFile(), "{blah,java-17-openjdk-portable-17.0.6.0.10-6.*, bleh}");
+        b = Builds.checkForNvr(changelogFile.getParentFile(), "{blah,java-17-openjdk-portable-17.0.6.0.10-6.*, bleh}", nvrConfig);
         org.junit.Assert.assertTrue(b);
-
-
-
     }
 }

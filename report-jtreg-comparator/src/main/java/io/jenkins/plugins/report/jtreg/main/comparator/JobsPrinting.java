@@ -7,12 +7,12 @@ import java.util.ArrayList;
 
 public class JobsPrinting {
     // print all matched jobs and their matched builds
-    public static void printJobs(ArrayList<File> matchedJobs, boolean skipFailed, String nvrQuery, int numberOfBuilds, Formatter formatter, boolean useDefaultBuild) {
+    public static void printJobs(ArrayList<File> matchedJobs, boolean skipFailed, String nvrQuery, int numberOfBuilds, Formatter formatter, boolean useDefaultBuild, Options.Configuration nvrConfig) {
         for (File job : matchedJobs) {
             formatter.startBold();
             formatter.println(job.getName() + ":");
             formatter.reset();
-            ArrayList<File> jobBuilds = Builds.getBuilds(job, skipFailed, nvrQuery, numberOfBuilds, useDefaultBuild, formatter);
+            ArrayList<File> jobBuilds = Builds.getBuilds(job, skipFailed, nvrQuery, numberOfBuilds, useDefaultBuild, formatter, nvrConfig);
             for (File build : jobBuilds) {
                 formatter.print("\t");
                 formatter.startColor(Formatter.SupportedColors.LightBlue);

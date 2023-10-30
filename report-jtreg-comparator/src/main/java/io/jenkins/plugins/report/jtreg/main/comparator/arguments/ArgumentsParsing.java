@@ -107,6 +107,19 @@ public class ArgumentsParsing {
                     // --use-default-build
                     options.setUseDefaultBuild(Boolean.parseBoolean(getArgumentValue(arguments, i++)));
 
+                } else if (currentArg.equals(ArgumentsDeclaration.configFindArg.getName())) {
+                    // --config-find
+                    String[] values = getArgumentValue(arguments, i++).split(":");
+                    Options.Configuration configuration;
+                    // checks the number of items it got from the splitting of the value
+                    if (values.length == 3) { // filename:whatToFind:findQuery
+                        configuration = new Options.Configuration(values[0], values[2]);
+                    } else {
+                        throw new RuntimeException("Unknown number of parameters with the --config-find argument.");
+                    }
+                    // (whatToFind, configuration)
+                    options.addConfiguration(values[1], configuration);
+
                     // parsing arguments of the jobs providers
                 } else if (jobsByQuery.getSupportedArgs().contains(currentArg) || jobsByRegex.getSupportedArgs().contains(currentArg)) {
                     // add a jobs provider to options, if there is none
@@ -146,6 +159,11 @@ public class ArgumentsParsing {
         // add the info about forcing vague queries to the current jobs provider
         if (options.isForceVague()) {
             options.getJobsProvider().parseArguments(ArgumentsDeclaration.forceArg.getName(), null);
+        }
+
+        // check if nvr config is present
+        if (options.getConfiguration("nvr") == null) {
+            throw new RuntimeException("Expected a config settings for NVR.");
         }
 
         return options;
