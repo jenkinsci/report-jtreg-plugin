@@ -1,0 +1,114 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<build>
+    <actions>
+        <hudson.model.CauseAction>
+            <causeBag class="linked-hash-map">
+                <entry>
+                    <hudson.triggers.SCMTrigger_-SCMTriggerCause/>
+                    <int>16</int>
+                </entry>
+            </causeBag>
+        </hudson.model.CauseAction>
+        <hudson.triggers.SCMTrigger_-BuildAction/>
+        <jenkins.scm.cvs.QuietPeriodCompleted plugin="cvs@2.19.1">
+            <timestamp>1689965050403</timestamp>
+        </jenkins.scm.cvs.QuietPeriodCompleted>
+        <hudson.plugins.scm.koji.KojiEnvVarsAction plugin="jenkins-scm-koji-plugin@2.0-SNAPSHOT">
+            <nvr>java-11-openjdk-11.0.20.0.8-3.el8</nvr>
+            <rpmsDir>/home/tester/workspace/workspace/crypto~tests-jp11-ojdk11~rpms-el8.aarch64-fastdebug.sdk-el8.aarch64.vagrant-x11.defaultgc.legacy.lnxagent.jfroff/rpms</rpmsDir>
+            <rpmFiles>/home/tester/workspace/workspace/crypto~tests-jp11-ojdk11~rpms-el8.aarch64-fastdebug.sdk-el8.aarch64.vagrant-x11.defaultgc.legacy.lnxagent.jfroff/rpms/java-11-openjdk-fastdebug-11.0.20.0.8-3.el8.aarch64.rpm:/home/tester/workspace/workspace/crypto~tests-jp11-ojdk11~rpms-el8.aarch64-fastdebug.sdk-el8.aarch64.vagrant-x11.defaultgc.legacy.lnxagent.jfroff/rpms/java-11-openjdk-headless-fastdebug-11.0.20.0.8-3.el8.aarch64.rpm:/home/tester/workspace/workspace/crypto~tests-jp11-ojdk11~rpms-el8.aarch64-fastdebug.sdk-el8.aarch64.vagrant-x11.defaultgc.legacy.lnxagent.jfroff/rpms/java-11-openjdk-devel-fastdebug-11.0.20.0.8-3.el8.aarch64.rpm:/home/tester/workspace/workspace/crypto~tests-jp11-ojdk11~rpms-el8.aarch64-fastdebug.sdk-el8.aarch64.vagrant-x11.defaultgc.legacy.lnxagent.jfroff/rpms/java-11-openjdk-jmods-fastdebug-11.0.20.0.8-3.el8.aarch64.rpm:/home/tester/workspace/workspace/crypto~tests-jp11-ojdk11~rpms-el8.aarch64-fastdebug.sdk-el8.aarch64.vagrant-x11.defaultgc.legacy.lnxagent.jfroff/rpms/java-11-openjdk-src-fastdebug-11.0.20.0.8-3.el8.aarch64.rpm</rpmFiles>
+        </hudson.plugins.scm.koji.KojiEnvVarsAction>
+        <hudson.plugins.scm.koji.KojiRevisionState plugin="jenkins-scm-koji-plugin@2.0-SNAPSHOT">
+            <build>
+                <id>2605086</id>
+                <name>java-11-openjdk</name>
+                <version>11.0.20.0.8</version>
+                <release>3.el8</release>
+                <nvr>java-11-openjdk-11.0.20.0.8-3.el8</nvr>
+                <completionTime>2023-07-20 20:21:15.380596</completionTime>
+                <rpms>
+                    <hudson.plugins.scm.koji.model.RPM>
+                        <name>java-11-openjdk</name>
+                        <version>11.0.20.0.8</version>
+                        <release>3.el8</release>
+                        <nvr>java-11-openjdk-11.0.20.0.8-3.el8</nvr>
+                        <arch>aarch64</arch>
+                    </hudson.plugins.scm.koji.model.RPM>
+                    <hudson.plugins.scm.koji.model.RPM>
+                        <name>java-11-openjdk-slowdebug</name>
+                        <version>11.0.20.0.8</version>
+                        <release>3.el8</release>
+                        <nvr>java-11-openjdk-slowdebug-11.0.20.0.8-3.el8</nvr>
+                        <arch>aarch64</arch>
+                    </hudson.plugins.scm.koji.model.RPM>
+                    <hudson.plugins.scm.koji.model.RPM>
+                        <name>java-11-openjdk-fastdebug</name>
+                        <version>11.0.20.0.8</version>
+                        <release>3.el8</release>
+                        <nvr>java-11-openjdk-fastdebug-11.0.20.0.8-3.el8</nvr>
+                        <arch>aarch64</arch>
+                    </hudson.plugins.scm.koji.model.RPM>
+                    <hudson.plugins.scm.koji.model.RPM>
+                        <name>java-11-openjdk-headless</name>
+                        <version>11.0.20.0.8</version>
+                        <release>3.el8</release>
+                        <nvr>java-11-openjdk-headless-11.0.20.0.8-3.el8</nvr>
+                        <arch>aarch64</arch>
+                    </hudson.plugins.scm.koji.model.RPM>
+                    <hudson.plugins.scm.koji.model.RPM>
+                        <name>java-11-openjdk-headless-slowdebug</name>
+                        <version>11.0.20.0.8</version>
+                        <release>3.el8</release>
+                        <nvr>java-11-openjdk-headless-slowdebug-11.0.20.0.8-3.el8</nvr>
+                        <arch>aarch64</arch>
+                    </hudson.plugins.scm.koji.model.RPM>
+                </rpms>
+                <tags>
+                    <string>rhel-8.9.0-candidate</string>
+                    <string>RHBA-2023:117615-pending</string>
+                    <string>java-openjdk-rhel-8-build</string>
+                    <string>rhel-8.8.0-z-pending</string>
+                    <string>rhel-8.8.0-z-candidate</string>
+                    <string>rhel-8.8.0-z-pending-signed</string>
+                </tags>
+            </build>
+        </hudson.plugins.scm.koji.KojiRevisionState>
+        <io.jenkins.plugins.report.genericdiff.DiffReportAction plugin="report-diff@3.0">
+            <build class="build" reference="../../.."/>
+        </io.jenkins.plugins.report.genericdiff.DiffReportAction>
+        <io.jenkins.plugins.report.genericdiff.RpmsReportAction plugin="report-diff@3.0">
+            <build class="build" reference="../../.."/>
+        </io.jenkins.plugins.report.genericdiff.RpmsReportAction>
+        <io.jenkins.plugins.report.jtreg.ReportAction plugin="report-jtreg@2.0-SNAPSHOT">
+            <build class="build" reference="../../.."/>
+            <prefixes>
+                <string>jtreg</string>
+            </prefixes>
+        </io.jenkins.plugins.report.jtreg.ReportAction>
+        <com.redhat.jenkins.plugins.ci.polarion.CIPolarionXUnitImporterBuildAction plugin="redhat-ci-plugin@1.5.11">
+            <providerData>
+                <name>Red Hat UMB</name>
+                <checks/>
+                <timeout>60</timeout>
+            </providerData>
+            <hasXUnitFiles>false</hasXUnitFiles>
+        </com.redhat.jenkins.plugins.ci.polarion.CIPolarionXUnitImporterBuildAction>
+    </actions>
+    <queueId>1233201</queueId>
+    <timestamp>1690019562385</timestamp>
+    <startTime>1690019563007</startTime>
+    <result>SUCCESS</result>
+    <displayName>11.0.20.0.8-3.el8</displayName>
+    <duration>2338145</duration>
+    <charset>UTF-8</charset>
+    <keepLog>false</keepLog>
+    <builtOn>norn3.brq.redhat.com</builtOn>
+    <workspace>/home/tester/workspace/workspace/crypto~tests-jp11-ojdk11~rpms-el8.aarch64-fastdebug.sdk-el8.aarch64.vagrant-x11.defaultgc.legacy.lnxagent.jfroff</workspace>
+    <hudsonVersion>2.401.1</hudsonVersion>
+    <scm class="hudson.plugins.scm.koji.KojiChangeLogParser" plugin="jenkins-scm-koji-plugin@2.0-SNAPSHOT"/>
+    <culprits class="java.util.Collections$UnmodifiableSet">
+        <c class="sorted-set">
+            <string>SYSTEM</string>
+        </c>
+    </culprits>
+</build>
