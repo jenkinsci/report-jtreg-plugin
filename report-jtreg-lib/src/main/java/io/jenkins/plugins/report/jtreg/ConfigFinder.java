@@ -37,10 +37,12 @@ public class ConfigFinder {
             throw new RuntimeException("Unsupported config file type.");
         }
 
-        // puts the value to the cache
-        Map<String, String> newMap = new HashMap<>();
-        newMap.put(whatToFind, value);
-        configCache.put(configFile, newMap);
+        // puts the value to the cache if not null
+        if (value != null) {
+            Map<String, String> newMap = new HashMap<>();
+            newMap.put(whatToFind, value);
+            configCache.put(configFile, newMap);
+        }
 
         return value;
     }
@@ -54,7 +56,11 @@ public class ConfigFinder {
             XPath xPath = XPathFactory.newInstance().newXPath();
             Node node = (Node) xPath.compile(xpath).evaluate(doc, XPathConstants.NODE);
 
-            return node.getFirstChild().getNodeValue();
+            if (node != null) {
+                return node.getFirstChild().getNodeValue();
+            } else {
+                return null;
+            }
         } catch (ParserConfigurationException | XPathExpressionException | IOException | SAXException e) {
             return null;
         }
