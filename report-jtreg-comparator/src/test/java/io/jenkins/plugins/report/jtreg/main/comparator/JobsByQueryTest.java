@@ -5,11 +5,14 @@ import io.jenkins.plugins.report.jtreg.main.comparator.listing.DirListing;
 import io.jenkins.plugins.report.jtreg.main.comparator.listing.ListDirListing;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 import io.jenkins.plugins.report.jtreg.formatters.PlainFormatter;
+import io.jenkins.plugins.report.jtreg.main.diff.cmdline.JobsRecognition;
 import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 public class JobsByQueryTest {
@@ -207,7 +210,7 @@ public class JobsByQueryTest {
     }
 
     @Test
-    public void testPrintJobs() {
+    public void testPrintJobs() throws IOException {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(outStream);
         Formatter formatter = new PlainFormatter(printStream);
@@ -218,7 +221,13 @@ public class JobsByQueryTest {
         jbq.addJobs(dummyJobs);
         jbq.filterJobs();
 
-        JobsPrinting.printJobs(jbq.getJobs(), false, "", 0, formatter, false);
+        File tmpdir = Files.createTempDirectory("reportJtregBuildTestDir").toFile();
+        File changelogFile = JobsRecognition.creteChangelogFile(tmpdir);
+        byte[] orig = BuildsTest.class.getResourceAsStream("/io/jenkins/plugins/report/jtreg/main/comparator/dummyNvr1.xml").readAllBytes();
+        Files.write(changelogFile.toPath(), orig);
+
+        Options.Configuration nvrConfig = new Options.Configuration(changelogFile.getName(), "/build/nvr");
+        JobsPrinting.printJobs(jbq.getJobs(), false, "", 0, formatter, false, nvrConfig);
 
         Assertions.assertEquals("crypto~tests-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.fips.lnxagent.jfroff:\n" +
                 "reproducers~regular-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.defaultcp.lnxagent.jfroff:\n", crlfToLf(outStream.toString()));

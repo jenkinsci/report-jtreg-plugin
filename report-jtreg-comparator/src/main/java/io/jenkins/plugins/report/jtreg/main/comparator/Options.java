@@ -4,6 +4,9 @@ import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsProvider;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 import io.jenkins.plugins.report.jtreg.formatters.PlainFormatter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Options {
     private Operations operation;
     private String jobsPath;
@@ -18,6 +21,7 @@ public class Options {
     private JobsProvider jobsProvider;
     private boolean printVirtual;
     private boolean die;
+    private final Map<String, Configuration> configurations;
 
     public Options() {
         this.nvrQuery = "";
@@ -31,6 +35,7 @@ public class Options {
         this.jobsProvider = null;
         this.printVirtual = false;
         this.die = false;
+        this.configurations = new HashMap<>();
     }
 
     public void setDie(boolean die) {
@@ -137,8 +142,33 @@ public class Options {
         this.printVirtual = printVirtual;
     }
 
+    public Configuration getConfiguration(String whatToFind) {
+        return configurations.get(whatToFind);
+    }
+
+    public void addConfiguration(String whatToFind, Configuration configuration) {
+        this.configurations.put(whatToFind, configuration);
+    }
+
     // enum of all available operations
     public enum Operations {
         List, Enumerate, Compare, Print
+    }
+
+    public static class Configuration {
+        private final String configFileName;
+        private final String findQuery;
+
+        public Configuration(String configFileName, String findQuery) {
+            this.configFileName = configFileName;
+            this.findQuery = findQuery;
+        }
+
+        public String getConfigFileName() {
+            return configFileName;
+        }
+        public String getFindQuery() {
+            return findQuery;
+        }
     }
 }
