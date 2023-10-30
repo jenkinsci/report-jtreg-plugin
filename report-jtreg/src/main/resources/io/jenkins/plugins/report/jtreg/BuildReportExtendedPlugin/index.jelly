@@ -39,7 +39,7 @@
                                      <j:forEach var="comparatorLinkGroups" items="${it.getMatchedComparatorLinksGroups()}">
                                          <div>
                                              <j:forEach var="link" items="${comparatorLinkGroups.getLinks()}">
-                                                 <a href="${it.createComparatorLinkUrl(it.getCompUrlStub(), link)}">${link.label}</a>&amp;nbsp;
+                                                 <a href="${it.createComparatorLinkUrl(it.getCompUrlStub(), link, true)}">${link.label}</a>&amp;nbsp;
                                              </j:forEach>
                                          </div>
                                      </j:forEach>

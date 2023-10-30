@@ -19,6 +19,7 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
 
     String diffToolUrl;
     List<ComparatorLinksGroup> comparatorLinksGroups;
+    List<ConfigItem> configItems;
 
     public static JenkinsReportJckGlobalConfig getInstance() {
         return GlobalConfiguration.all().get(JenkinsReportJckGlobalConfig.class);
@@ -62,10 +63,24 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
         this.comparatorLinksGroups = comparatorLinksGroups;
     }
 
+    public static List<ConfigItem> getGlobalConfigItems() {
+        return getInstance().getConfigItems();
+    }
+
+    public List<ConfigItem> getConfigItems() {
+        return configItems;
+    }
+
+    @DataBoundSetter
+    public void setConfigItems(List<ConfigItem> configItems) {
+        this.configItems = configItems;
+    }
+
     @DataBoundConstructor
-    public JenkinsReportJckGlobalConfig(String diffToolUrl, List<ComparatorLinksGroup> comparatorLinksGroups) {
+    public JenkinsReportJckGlobalConfig(String diffToolUrl, List<ComparatorLinksGroup> comparatorLinksGroups, List<ConfigItem> configItems) {
         this.diffToolUrl = diffToolUrl;
         this.comparatorLinksGroups = comparatorLinksGroups;
+        this.configItems = configItems;
     }
 
     public JenkinsReportJckGlobalConfig() {
