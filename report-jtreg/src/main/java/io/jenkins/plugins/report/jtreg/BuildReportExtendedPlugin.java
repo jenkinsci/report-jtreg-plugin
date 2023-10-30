@@ -52,12 +52,19 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         return matchedComparatorLinksGroup;
     }
 
-    public String createComparatorLinkUrl(String comparatorUrl, LinkToComparator ltc) {
+    public String createComparatorLinkUrl(String comparatorUrl, LinkToComparator ltc, boolean configArgs) {
         StringBuilder url = new StringBuilder();
 
         for (String arg : ltc.getComparatorArguments().split("(\\n|\\r\\n)")) {
             url.append(parseQueryToText(ltc.getSpliterator(), arg));
             url.append(" ");
+        }
+
+        if (configArgs) {
+            for (ConfigItem ci : JenkinsReportJckGlobalConfig.getGlobalConfigItems()) {
+                url.append(ci.generateConfigArgument());
+                url.append(" ");
+            }
         }
 
         return comparatorUrl + URLEncoder.encode(url.toString(), StandardCharsets.UTF_8);

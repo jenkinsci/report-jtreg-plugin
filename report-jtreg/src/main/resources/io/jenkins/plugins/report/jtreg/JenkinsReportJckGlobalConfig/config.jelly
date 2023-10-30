@@ -25,4 +25,19 @@
             <f:repeatableDeleteButton/>
         </f:repeatable>
     </f:section>
+
+    <f:section title="Config Items">
+        <f:repeatable field="configItems">
+            <f:entry field="configFileName" title="Config filename">
+                <f:textbox />
+            </f:entry>
+            <f:entry field="whatToFind" title="Name of the item to find">
+                <f:textbox />
+            </f:entry>
+            <f:entry field="findQuery" title="XPath to find the item in the config file">
+                <f:textbox />
+            </f:entry>
+            <f:repeatableDeleteButton/>
+        </f:repeatable>
+    </f:section>
 </j:jelly>
