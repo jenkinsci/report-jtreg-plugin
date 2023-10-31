@@ -4,8 +4,11 @@ import io.jenkins.plugins.report.jtreg.model.Test;
 import io.jenkins.plugins.report.jtreg.model.TestOutput;
 import io.jenkins.plugins.report.jtreg.model.TestStatus;
 import io.jenkins.plugins.report.jtreg.model.ReportFull;
+import io.jenkins.plugins.report.jtreg.model.Suite;
 import org.apache.commons.io.input.ReaderInputStream;
 import org.junit.Assert;
+import org.tukaani.xz.LZMA2Options;
+import org.tukaani.xz.XZOutputStream;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
@@ -16,12 +19,17 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.GZIPOutputStream;
 
 public class JckReportParserTest {
 
@@ -62,18 +70,19 @@ public class JckReportParserTest {
         return content.trim();
     }
 
-    @org.junit.Test
-    public void parseCompilerReportTest() {
-        ReportFull actualReport;
-        final JckReportParser parser = new JckReportParser();
-        try {
-            try (InputStream s = this.getClass().getResourceAsStream("/" + reportCompilerFileName)) {
-                actualReport = parser.parseReport(s);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+    private InputStream getReportCompilerStream() throws IOException {
+        return this.getClass().getResourceAsStream("/" + reportCompilerFileName);
+    }
 
+    private InputStream getReportDevtoolsStream() throws IOException {
+        return this.getClass().getResourceAsStream("/" + reportDevtoolsFileName);
+    }
+
+    private InputStream getReportRuntimeStream() throws IOException {
+        return this.getClass().getResourceAsStream("/" + reportRuntimeFileName);
+    }
+
+    public void checkCompilerReport(ReportFull actualReport) {
         Document document = createDocument(reportCompilerFileName);
 
         final List<String> testsList = new ArrayList<>();
@@ -114,17 +123,51 @@ public class JckReportParserTest {
     }
 
     @org.junit.Test
-    public void parseDevtoolsReportTest() {
-        ReportFull actualReport;
-        final JckReportParser parser = new JckReportParser();
-        try {
-            try (InputStream s = this.getClass().getResourceAsStream("/" + reportDevtoolsFileName)) {
-                actualReport = parser.parseReport(s);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException();
+    public void parseCompilerReportTest() throws Exception {
+        try (InputStream reportRuntimeStream = getReportCompilerStream()) {
+            final JckReportParser parser = new JckReportParser();
+            ReportFull actualReport = parser.parseReport(reportRuntimeStream);
+            checkCompilerReport(actualReport);
         }
+    }
 
+    @org.junit.Test
+    public void parseCompilerReportTestGz() throws Exception {
+        Path path = Files.createTempFile("report-compiler", ".xml.gz");
+        try (InputStream is = getReportCompilerStream();
+            FileOutputStream fos = new FileOutputStream(path.toFile());
+            OutputStream xzos = new GZIPOutputStream(fos)) {
+            copyStream(is, xzos);
+            xzos.close();
+            final JckReportParser parser = new JckReportParser();
+            Suite s = parser.parsePath(path);
+            Assert.assertNotNull("Suite in not null", s);
+            ReportFull actualReport = (ReportFull) s.getReport();
+            checkCompilerReport(actualReport);
+        } finally {
+            Files.delete(path);
+        }
+    }
+
+    @org.junit.Test
+    public void parseCompilerReportTestXz() throws Exception {
+        Path path = Files.createTempFile("report-compiler", ".xml.xz");
+        try (InputStream is = getReportCompilerStream();
+            FileOutputStream fos = new FileOutputStream(path.toFile());
+            OutputStream xzos = new XZOutputStream(fos, new LZMA2Options())) {
+            copyStream(is, xzos);
+            xzos.close();
+            final JckReportParser parser = new JckReportParser();
+            Suite s = parser.parsePath(path);
+            Assert.assertNotNull("Suite in not null", s);
+            ReportFull actualReport = (ReportFull) s.getReport();
+            checkCompilerReport(actualReport);
+        } finally {
+            Files.delete(path);
+        }
+    }
+
+    private void checkDevtoolsReport(ReportFull actualReport) {
         Document document = createDocument(reportDevtoolsFileName);
 
         final List<String> testsList = new ArrayList<>();
@@ -179,17 +222,51 @@ public class JckReportParserTest {
     }
 
     @org.junit.Test
-    public void parseRuntimeReportTest() {
-        ReportFull actualReport;
-        try {
-            try (InputStream reportCompilerStream = this.getClass().getResourceAsStream("/" + reportRuntimeFileName)) {
-                final JckReportParser parser = new JckReportParser();
-                actualReport = parser.parseReport(reportCompilerStream);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException();
+    public void parseDevtoolsReportTest() throws Exception {
+        try (InputStream reportRuntimeStream = getReportDevtoolsStream()) {
+            final JckReportParser parser = new JckReportParser();
+            ReportFull actualReport = parser.parseReport(reportRuntimeStream);
+            checkDevtoolsReport(actualReport);
         }
+    }
 
+    @org.junit.Test
+    public void parseDevtoolsReportTestGz() throws Exception {
+        Path path = Files.createTempFile("report-devtools", ".xml.gz");
+        try (InputStream is = getReportDevtoolsStream();
+            FileOutputStream fos = new FileOutputStream(path.toFile());
+            OutputStream xzos = new GZIPOutputStream(fos)) {
+            copyStream(is, xzos);
+            xzos.close();
+            final JckReportParser parser = new JckReportParser();
+            Suite s = parser.parsePath(path);
+            Assert.assertNotNull("Suite in not null", s);
+            ReportFull actualReport = (ReportFull) s.getReport();
+            checkDevtoolsReport(actualReport);
+        } finally {
+            Files.delete(path);
+        }
+    }
+
+    @org.junit.Test
+    public void parseDevtoolsReportTestXz() throws Exception {
+        Path path = Files.createTempFile("report-devtools", ".xml.xz");
+        try (InputStream is = getReportDevtoolsStream();
+            FileOutputStream fos = new FileOutputStream(path.toFile());
+            OutputStream xzos = new XZOutputStream(fos, new LZMA2Options())) {
+            copyStream(is, xzos);
+            xzos.close();
+            final JckReportParser parser = new JckReportParser();
+            Suite s = parser.parsePath(path);
+            Assert.assertNotNull("Suite in not null", s);
+            ReportFull actualReport = (ReportFull) s.getReport();
+            checkDevtoolsReport(actualReport);
+        } finally {
+            Files.delete(path);
+        }
+    }
+
+    private void checkRuntimeReport(ReportFull actualReport) {
         Document document = createDocument(reportRuntimeFileName);
 
         final List<String> testsList = new ArrayList<>();
@@ -236,6 +313,59 @@ public class JckReportParserTest {
         );
 
         Assert.assertEquals("Expected suite doesn\'t match the actual suite", expectedReport, actualReport);
+    }
+
+    @org.junit.Test
+    public void parseRuntimeReportTest() throws Exception {
+        try (InputStream reportRuntimeStream = getReportRuntimeStream()) {
+            final JckReportParser parser = new JckReportParser();
+            ReportFull actualReport = parser.parseReport(reportRuntimeStream);
+            checkRuntimeReport(actualReport);
+        }
+    }
+
+    @org.junit.Test
+    public void parseRuntimeReportTestGz() throws Exception {
+        Path path = Files.createTempFile("report-runtime", ".xml.gz");
+        try (InputStream is = getReportRuntimeStream();
+            FileOutputStream fos = new FileOutputStream(path.toFile());
+            OutputStream xzos = new GZIPOutputStream(fos)) {
+            copyStream(is, xzos);
+            xzos.close();
+            final JckReportParser parser = new JckReportParser();
+            Suite s = parser.parsePath(path);
+            Assert.assertNotNull("Suite in not null", s);
+            ReportFull actualReport = (ReportFull) s.getReport();
+            checkRuntimeReport(actualReport);
+        } finally {
+            Files.delete(path);
+        }
+    }
+
+    @org.junit.Test
+    public void parseRuntimeReportTestXz() throws Exception {
+        Path path = Files.createTempFile("report-runtime", ".xml.xz");
+        try (InputStream is = getReportRuntimeStream();
+            FileOutputStream fos = new FileOutputStream(path.toFile());
+            OutputStream xzos = new XZOutputStream(fos, new LZMA2Options())) {
+            copyStream(is, xzos);
+            xzos.close();
+            final JckReportParser parser = new JckReportParser();
+            Suite s = parser.parsePath(path);
+            Assert.assertNotNull("Suite in not null", s);
+            ReportFull actualReport = (ReportFull) s.getReport();
+            checkRuntimeReport(actualReport);
+        } finally {
+            Files.delete(path);
+        }
+    }
+
+    private void copyStream(InputStream is, OutputStream os) throws IOException {
+        int b;
+        while ((b = is.read()) >= 0) {
+            os.write(b);
+        }
+        is.close();
     }
 
     private String getExecStatusExpr(String testUrl) {
