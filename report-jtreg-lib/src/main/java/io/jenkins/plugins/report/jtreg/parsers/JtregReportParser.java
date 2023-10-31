@@ -51,6 +51,7 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import org.apache.commons.io.input.CloseShieldInputStream;
+import org.tukaani.xz.XZInputStream;
 
 import static javax.xml.stream.XMLStreamConstants.CDATA;
 import static javax.xml.stream.XMLStreamConstants.CHARACTERS;
@@ -214,7 +215,7 @@ public class  JtregReportParser implements ReportParser {
         map.put(".tar", in -> new TarArchiveInputStream(in));
         map.put(".tar.gz", in -> new TarArchiveInputStream(new GzipCompressorInputStream(in)));
         map.put(".tar.bz2", in -> new TarArchiveInputStream(new BZip2CompressorInputStream(in)));
-        map.put(".tar.xz", in -> new TarArchiveInputStream(new XZCompressorInputStream(in)));
+        map.put(".tar.xz", in -> new TarArchiveInputStream(new org.tukaani.xz.XZInputStream(in)));
 
         return Collections.unmodifiableMap(map);
     }
