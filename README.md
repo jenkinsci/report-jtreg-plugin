@@ -141,4 +141,6 @@ The plugin should work correctly with this "workaround", however, if it doesn't,
 
 ### releaseing
 This plugin is **multimodule** lib, plugin and two external services. Thus the autorelease do not work as expected.
-To release, you have to `cd report-jtreg` submodule which contans `report-jtreg-plugin artifactId` and here run manually `mvn release:preapre` and `mvn release:perform`. During preapare, always adjsut all modules, not jsut dependent ones (choice of `0`)
+To release, you have to `cd report-jtreg` submodule which contans `report-jtreg-plugin artifactId` and here run manually `mvn release:preapre` and `mvn release:perform`. During preapare, always adjsut all modules, not jsut dependent ones (choice of `0`). 
+
+Sometimes, you may need to fake the build bit, and to change project version to not-snapshot one (the upcoming release), and  `mvn clean install` lib, so it is in local m2 repos. then rewert the change, and proceed as described above.
