@@ -22,7 +22,7 @@ The plugin reads archived gzipped xml files prdoduced by junit/testng/jtreg/jck 
     * [releaseing](#releaseing)
 
 ## Implementation details
-The xml reports you recieve, should be post processed a bit, and compressed.  Compressed, as plugin is used with reports hundrets of megabytes large. And postprocessed as various engines generates various reports. Thus the xml files should be gathered into archives, which are later considered as suites:
+The xml reports you recieve, should be post processed a bit, and compressed. Zip, tar.gz and tar.xz (including xml.gz and xml.xz) are supported. Compressed, as plugin is used with reports hundrets of megabytes large. And postprocessed as various engines generates various reports. Thus the xml files should be gathered into archives, which are later considered as suites:
 ![suites](https://user-images.githubusercontent.com/2904395/43016538-6c5141aa-8c53-11e8-8b6f-2eb45ebcaf01.png)
 The level of granularity is up to you. The tar.gz archvies are later cached as two relatively small json files - one with listing for diff, one with stack traces of failures.  Latest cache is the properties file with total/run/passed/failed/error/skipp keys to be reused via https://github.com/judovana/jenkins-report-generic-chart-column (and used for quicker renderig of graphs of this plugin itself)
 
