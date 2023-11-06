@@ -27,17 +27,17 @@ import java.util.List;
 
 public class ProjectReport implements java.io.Serializable {
 
-    private final List<BuildReport> reports;
+    private final List<? extends  BuildReport> reports;
     private final List<Integer> improvements;
     private final List<Integer> regressions;
 
-    public ProjectReport(List<BuildReport> reports, List<Integer> improvements, List<Integer> regressions) {
+    public ProjectReport(List<? extends BuildReport> reports, List<Integer> improvements, List<Integer> regressions) {
         this.reports = reports;
         this.improvements = improvements;
         this.regressions = regressions;
     }
 
-    public List<BuildReport> getReports() {
+    public List<? extends BuildReport> getReports() {
         return reports;
     }
 
