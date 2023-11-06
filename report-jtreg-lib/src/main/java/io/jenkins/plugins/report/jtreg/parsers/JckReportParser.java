@@ -2,6 +2,7 @@ package io.jenkins.plugins.report.jtreg.parsers;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jenkins.plugins.report.jtreg.model.*;
+import org.tukaani.xz.XZInputStream;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -42,12 +43,18 @@ public class JckReportParser implements ReportParser {
         if (path.toString().endsWith(".gz")) {
             return new GZIPInputStream(stream);
         }
+        if (path.toString().endsWith(".xz")) {
+            return new org.tukaani.xz.XZInputStream(stream);
+        }
         return stream;
     }
 
     @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "We desrve to die")
     private String suiteName(Path path) {
         String fullName = path.getFileName().toString();
+        if (fullName.endsWith(".xml.xz")) {
+            return fullName.substring(0, fullName.length() - 7);
+        }
         if (fullName.endsWith(".xml.gz")) {
             return fullName.substring(0, fullName.length() - 7);
         }

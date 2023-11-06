@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>report-jtreg</artifactId>
+  <version>${revision}${changelist}</version>
 
     <packaging>hpi</packaging>
 
@@ -27,6 +28,11 @@
             <groupId>com.fasterxml.woodstox</groupId>
             <artifactId>woodstox-core</artifactId>
             <version>5.4.0</version>
+        </dependency>
+        <dependency>
+          <groupId>org.tukaani</groupId>
+          <artifactId>xz</artifactId>
+          <version>1.9</version>
         </dependency>
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
