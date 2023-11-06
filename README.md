@@ -144,3 +144,37 @@ This plugin is **multimodule** lib, plugin and two external services. Thus the a
 To release, you have to `cd report-jtreg` submodule which contans `report-jtreg-plugin artifactId` and here run manually `mvn release:preapre` and `mvn release:perform`. During preapare, always adjsut all modules, not jsut dependent ones (choice of `0`). 
 
 Sometimes, you may need to fake the build bit, and to change project version to not-snapshot one (the upcoming release), and  `mvn clean install` lib, so it is in local m2 repos. then rewert the change, and proceed as described above.
+
+After release, you may need to fix your poms, eg:
+```
+diff --git a/pom.xml b/pom.xml
+index ccca4f6..3cb2495 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -25,7 +25,7 @@
+     </modules>
+ 
+     <properties>
+-        <revision>2.6</revision>
++        <revision>2.7</revision>
+         <changelist>-SNAPSHOT</changelist>
+         <gitHubRepo>jenkinsci/report-jtreg</gitHubRepo>
+         <chartjs.version>1.0.2.6</chartjs.version>
+diff --git a/report-jtreg/pom.xml b/report-jtreg/pom.xml
+index f357a9a..7eea371 100644
+--- a/report-jtreg/pom.xml
++++ b/report-jtreg/pom.xml
+@@ -37,7 +37,7 @@
+         <dependency>
+             <groupId>io.jenkins.plugins</groupId>
+             <artifactId>report-jtreg-lib</artifactId>
+-            <version>2.6</version>
++            <version>${revision}${changelist}</version>
+             <scope>provided</scope>
+         </dependency>
+     </dependencies>
+```
+Because vhere mvn release:prepare and release:perform can remove the variables properly, it can not restore them as expected:
+https://github.com/jenkinsci/report-jtreg-plugin/commit/fe6d56b43304a41c85ec1d4eea965d257891e8cf
+-> https://github.com/jenkinsci/report-jtreg-plugin/commit/5bebd159ef746604dcddfbb250517cddbf6723f5 (amended)
+
