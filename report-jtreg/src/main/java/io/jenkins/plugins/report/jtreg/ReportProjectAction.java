@@ -92,7 +92,7 @@ public class ReportProjectAction implements Action {
 
     public ProjectReport getChartData() {
         AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(((Project) job).getPublishersList());
-        List<BuildReport> reports = new BuildSummaryParserPlugin(prefixes, settings).parseJobReports(job);
+        List<? extends BuildReport> reports = new BuildSummaryParserPlugin(prefixes, settings).parseJobReports(job);
         ProjectReport report = new ProjectReport(
                 reports,
                 collectImprovements(reports),
@@ -101,7 +101,7 @@ public class ReportProjectAction implements Action {
         return report;
     }
 
-    private List<Integer> collectImprovements(List<BuildReport> reports) {
+    private List<Integer> collectImprovements(List<? extends BuildReport> reports) {
         List<Integer> result = new ArrayList<>();
 
         Set<String> prev = null;
@@ -125,7 +125,7 @@ public class ReportProjectAction implements Action {
         return result;
     }
 
-    private List<Integer> collectRegressions(List<BuildReport> reports) {
+    private List<Integer> collectRegressions(List<? extends BuildReport> reports) {
         List<Integer> result = new ArrayList<>();
         Set<String> prev = null;
         for (BuildReport report : reports) {
@@ -204,7 +204,7 @@ public class ReportProjectAction implements Action {
     }
 
 //this happily ignores combined jck+jtreg reporting, but as it is never used, it may be already corupted elsewhere
-    static void cacheSumms(File rootBuild, List<BuildReport> reports) throws IOException {
+    static void cacheSumms(File rootBuild, List<? extends BuildReport> reports) throws IOException {
         for (BuildReport report : reports) {
             File cachedResults = getCachedResultsFile(rootBuild, report);
             if (!cachedResults.exists()) {

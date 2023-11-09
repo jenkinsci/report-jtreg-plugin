@@ -200,14 +200,14 @@ public class BuildSummaryParserPlugin extends BuildSummaryParser {
         return limit;
     }
 
-    public List<BuildReport> parseJobReports(Job<?, ?> job) {
+    public List<BuildReportPlugin> parseJobReports(Job<?, ?> job) {
         return parseJobReports(job.getBuilds());
     }
 
     @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
-    public List<BuildReport> parseJobReports(RunList<?> runs) {
+    public List<BuildReportPlugin> parseJobReports(RunList<?> runs) {
         int limit = getMaxItems();
-        List<BuildReport> list = new ArrayList<>();
+        List<BuildReportPlugin> list = new ArrayList<>();
         List<String> denylisted = getDenylisted(runs);
         List<String> allowlisted = getAllowlisted(runs);
         for (Run run : runs) {
@@ -224,7 +224,16 @@ public class BuildSummaryParserPlugin extends BuildSummaryParser {
             try {
                 BuildReport report = parseBuildReport(run);
                 if (!report.isInvalid()) {
-                    list.add(report);
+                    list.add(new BuildReportPlugin(
+                            report.getBuildNumber(),
+                            report.getBuildName(),
+                            report.getPassed(),
+                            report.getFailed(),
+                            report.getError(),
+                            report.getSuites(),
+                            report.getTotal(),
+                            report.getBuildNumber()
+                    ));
                 }
             } catch (Exception ignore) {
             }
