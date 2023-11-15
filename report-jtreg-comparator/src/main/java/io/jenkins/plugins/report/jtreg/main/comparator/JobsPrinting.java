@@ -23,7 +23,7 @@ public class JobsPrinting {
                 formatter.startColor(Formatter.SupportedColors.LightBlue);
                 formatter.print("nvr: ");
                 formatter.reset();
-                formatter.println(Builds.getNvr(build));
+                formatter.println(Builds.getNvr(build, nvrConfig));
             }
         }
     }

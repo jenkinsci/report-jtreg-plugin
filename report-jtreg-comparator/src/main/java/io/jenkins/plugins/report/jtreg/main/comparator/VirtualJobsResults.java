@@ -37,7 +37,7 @@ public class VirtualJobsResults {
         }
     }
 
-    public static void printVirtualTable(ArrayList<File> buildsToCompare, Formatter formatter) {
+    public static void printVirtualTable(ArrayList<File> buildsToCompare, Formatter formatter, Options.Configuration nvrConfig) {
         formatter.startBold();
         formatter.println("Virtual builds' results table:");
         formatter.println();
@@ -54,7 +54,7 @@ public class VirtualJobsResults {
             File build = buildsToCompare.get(i - 1);
             table[0][i] = Builds.getJobName(build)
                     + " - build:" + Builds.getBuildNumber(build)
-                    + " - nvr:" + Builds.getNvr(build);
+                    + " - nvr:" + Builds.getNvr(build, nvrConfig);
 
             String result = getBuildResult(build);
             table[results.indexOf(result) + 1][i] = "X";

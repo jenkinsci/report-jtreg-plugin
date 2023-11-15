@@ -5,7 +5,6 @@ import io.jenkins.plugins.report.jtreg.main.comparator.listing.DirListing;
 import io.jenkins.plugins.report.jtreg.main.comparator.listing.ListDirListing;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 import io.jenkins.plugins.report.jtreg.formatters.PlainFormatter;
-import io.jenkins.plugins.report.jtreg.main.diff.cmdline.JobsRecognition;
 import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayOutputStream;
@@ -222,7 +221,7 @@ public class JobsByQueryTest {
         jbq.filterJobs();
 
         File tmpdir = Files.createTempDirectory("reportJtregBuildTestDir").toFile();
-        File changelogFile = JobsRecognition.creteChangelogFile(tmpdir);
+        File changelogFile = new File(tmpdir, "changelog.xml");
         byte[] orig = BuildsTest.class.getResourceAsStream("/io/jenkins/plugins/report/jtreg/main/comparator/dummyNvr1.xml").readAllBytes();
         Files.write(changelogFile.toPath(), orig);
 
