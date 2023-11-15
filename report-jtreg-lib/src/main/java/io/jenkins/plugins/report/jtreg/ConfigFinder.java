@@ -12,9 +12,12 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class ConfigFinder {
     private static final Map<File, Map<String, String>> configCache = new HashMap<>();
@@ -34,7 +37,7 @@ public class ConfigFinder {
         if (configFile.getName().endsWith("xml")) {
             value = findInXml(configFile, findQuery);
         } else {
-            throw new RuntimeException("Unsupported config file type.");
+            value = findInProperties(configFile, findQuery);
         }
 
         // puts the value to the cache if not null
@@ -62,6 +65,17 @@ public class ConfigFinder {
                 return null;
             }
         } catch (ParserConfigurationException | XPathExpressionException | IOException | SAXException e) {
+            return null;
+        }
+    }
+
+    private static String findInProperties(File configFile, String key) {
+        try (FileReader configReader = new FileReader(configFile, StandardCharsets.UTF_8)) {
+            Properties properties = new Properties();
+            properties.load(configReader);
+
+            return properties.getProperty(key);
+        } catch (IOException e) {
             return null;
         }
     }
