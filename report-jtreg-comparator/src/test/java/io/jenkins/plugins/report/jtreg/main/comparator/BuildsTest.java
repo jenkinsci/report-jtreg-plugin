@@ -1,7 +1,5 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
-import io.jenkins.plugins.report.jtreg.main.diff.cmdline.JobsRecognition;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,7 +11,7 @@ public class BuildsTest {
     @org.junit.BeforeClass
     public static void createChangelogFile() throws IOException {
         File tmpdir = Files.createTempDirectory("reportJtregBuildTestDir").toFile();
-        changelogFile = JobsRecognition.creteChangelogFile(tmpdir);
+        changelogFile = new File(tmpdir, "changelog.xml");
         byte[] orig = BuildsTest.class.getResourceAsStream("/io/jenkins/plugins/report/jtreg/main/comparator/dummyNvr1.xml").readAllBytes();
         Files.write(changelogFile.toPath(), orig);
     }

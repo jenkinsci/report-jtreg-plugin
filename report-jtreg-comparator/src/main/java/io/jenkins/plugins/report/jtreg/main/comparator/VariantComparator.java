@@ -31,7 +31,7 @@ public class VariantComparator {
             // do the chosen operation
             if (options.getOperation() == Options.Operations.List || options.getOperation() == Options.Operations.Compare) {
                 FailedTests.printFailedTable(
-                        FailedTests.createFailedMap(buildsToCompare, options.isOnlyVolatile(), options.getExactTestsRegex(), options.getFormatter()),
+                        FailedTests.createFailedMap(buildsToCompare, options.isOnlyVolatile(), options.getExactTestsRegex(), options.getFormatter(), options.getConfiguration("nvr")),
                         options.getOperation(), options.getFormatter());
             } else if (options.getOperation() == Options.Operations.Enumerate) {
                 JobsPrinting.printVariants(options.getJobsProvider().getJobs(), options.getFormatter());
@@ -43,7 +43,7 @@ public class VariantComparator {
             // print virtual table
             if (options.isPrintVirtual()) {
                 options.getFormatter().println();
-                VirtualJobsResults.printVirtualTable(buildsToCompare, options.getFormatter());
+                VirtualJobsResults.printVirtualTable(buildsToCompare, options.getFormatter(), options.getConfiguration("nvr"));
             }
         }
     }

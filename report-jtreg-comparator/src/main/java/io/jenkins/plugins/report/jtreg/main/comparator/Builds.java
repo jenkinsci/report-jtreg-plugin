@@ -1,7 +1,6 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
 import io.jenkins.plugins.report.jtreg.ConfigFinder;
-import io.jenkins.plugins.report.jtreg.main.diff.cmdline.JobsRecognition;
 
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 import org.w3c.dom.Document;
@@ -42,8 +41,7 @@ public class Builds {
         if (nvrQuery.equals("") || nvrQuery.equals("*")) {
             return true;
         }
-        String buildNvr = ConfigFinder.findInConfig(new File(build.getAbsolutePath() + "/" + nvrConfig.getConfigFileName()),
-                "nvr", nvrConfig.getFindQuery());
+        String buildNvr = ConfigFinder.findInConfig(new File(build, nvrConfig.getConfigFileName()), "nvr", nvrConfig.getFindQuery());
 
         if (buildNvr == null) {
             return false;
@@ -98,7 +96,7 @@ public class Builds {
                     listOfBuilds.add(build);
                     formatter.startColor(Formatter.SupportedColors.Yellow);
                     formatter.println("Cannot find job " + getJobName(build) + " which matches " + nvrQuery +
-                            ", instead using build " + getBuildNumber(build) + " with nvr " + getNvr(build) + ".");
+                            ", instead using build " + getBuildNumber(build) + " with nvr " + getNvr(build, nvrConfig) + ".");
                     formatter.reset();
                     break;
                 }
@@ -128,7 +126,7 @@ public class Builds {
         }
     }
 
-    public static String getNvr(File build) {
-        return JobsRecognition.getChangelogsNvr(build);
+    public static String getNvr(File build, Options.Configuration nvrConfig) {
+        return ConfigFinder.findInConfig(new File(build, nvrConfig.getConfigFileName()), "nvr", nvrConfig.getFindQuery());
     }
 }

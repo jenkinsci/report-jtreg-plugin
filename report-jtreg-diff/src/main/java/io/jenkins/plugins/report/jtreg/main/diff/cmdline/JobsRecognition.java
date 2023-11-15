@@ -23,6 +23,7 @@
  */
 package io.jenkins.plugins.report.jtreg.main.diff.cmdline;
 
+import io.jenkins.plugins.report.jtreg.ConfigFinder;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 
 import java.io.File;
@@ -209,45 +210,8 @@ public class JobsRecognition {
         }
     }
 
-    private static final Map<File, String> nvrCache = new HashMap<>();
-
     public static String getChangelogsNvr(File buildPath) {
-        File f = creteChangelogFile(buildPath);
-        String cached = nvrCache.get(f);
-        if (cached != null) {
-            return cached;
-        }
-        try {
-            String content = new Scanner(f, "UTF-8").useDelimiter("\\Z").next();
-            String[] lines = content.split("[<>]");
-            boolean read1 = true;
-            boolean read2 = false;
-            for (String line : lines) {
-                line = line.replaceAll("\\s+", "");
-                if (line.isEmpty()) {
-                    continue;
-                }
-                if (read1 && read2) {
-                    nvrCache.put(f, line);
-                    return line;
-                }
-                if (line.equals("rpms")) {
-                    read1 = false;
-                }
-                if (line.equals("/rpms")) {
-                    read1 = true;
-                }
-                if (line.equals("nvr")) {
-                    read2 = true;
-                }
-                if (line.equals("/nvr")) {
-                    read2 = false;
-                }
-            }
-        } catch (Exception ex) {
-            return null;
-        }
-        return null;
+        return ConfigFinder.findInConfig(creteChangelogFile(buildPath), "nvr", "/build/nvr");
     }
 
     //maybe linux only, not utf8 valid solution... nto much tested, just copypasted and worked

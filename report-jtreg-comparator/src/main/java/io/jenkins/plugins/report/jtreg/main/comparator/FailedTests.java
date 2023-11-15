@@ -40,14 +40,14 @@ public class FailedTests {
 
     // function for creating a HashMap of "build info - list of its failed tests" pair
     public static HashMap<String, ArrayList<String>> createFailedMap(
-            ArrayList<File> buildsToCompare, boolean onlyVolatile, String exactTestsRegex, Formatter formatter) throws Exception {
+            ArrayList<File> buildsToCompare, boolean onlyVolatile, String exactTestsRegex, Formatter formatter, Options.Configuration nvrConfig) throws Exception {
 
         HashMap<String, ArrayList<String>> failedMap = new HashMap<>();
 
         for (File build : buildsToCompare) {
             failedMap.put(Builds.getJobName(build)
                     + " - build:" + Builds.getBuildNumber(build)
-                    + " - nvr:" + Builds.getNvr(build),
+                    + " - nvr:" + Builds.getNvr(build, nvrConfig),
                     getBuildFailedTests(build, exactTestsRegex, formatter));
         }
 
