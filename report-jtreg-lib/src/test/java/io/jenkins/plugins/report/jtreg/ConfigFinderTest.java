@@ -16,15 +16,15 @@ public class ConfigFinderTest {
 
     @org.junit.Test
     public void findInConfigTest() {
-        String value = ConfigFinder.findInConfig(testConfig, "nvr", "/build/actions/hudson.plugins.scm.koji.KojiRevisionState/build/nvr");
+        String value = ConfigFinder.findInConfigStatic(testConfig, "nvr", "/build/actions/hudson.plugins.scm.koji.KojiRevisionState/build/nvr");
         org.junit.Assert.assertNotNull(value);
         org.junit.Assert.assertEquals("java-11-openjdk-11.0.20.0.8-3.el8", value);
 
-        String valueCached = ConfigFinder.findInConfig(testConfig, "nvr", "/build/actions/hudson.plugins.scm.koji.KojiRevisionState/build/nvr");
+        String valueCached = ConfigFinder.findInConfigStatic(testConfig, "nvr", "/build/actions/hudson.plugins.scm.koji.KojiRevisionState/build/nvr");
         org.junit.Assert.assertNotNull(valueCached);
         org.junit.Assert.assertEquals("java-11-openjdk-11.0.20.0.8-3.el8", valueCached);
 
-        String valueNull = ConfigFinder.findInConfig(new File("null.xml"), "nvr", "/build/actions/hudson.plugins.scm.koji.KojiRevisionState/build/nvr");
+        String valueNull = ConfigFinder.findInConfigStatic(new File("null.xml"), "nvr", "/build/actions/hudson.plugins.scm.koji.KojiRevisionState/build/nvr");
         org.junit.Assert.assertNull(valueNull);
     }
 }

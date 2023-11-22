@@ -35,7 +35,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class JobsRecognition {
@@ -211,7 +210,7 @@ public class JobsRecognition {
     }
 
     public static String getChangelogsNvr(File buildPath) {
-        return ConfigFinder.findInConfig(creteChangelogFile(buildPath), "nvr", "/build/nvr");
+        return new ConfigFinder(creteChangelogFile(buildPath), "nvr", "/build/nvr").findInConfig();
     }
 
     //maybe linux only, not utf8 valid solution... nto much tested, just copypasted and worked

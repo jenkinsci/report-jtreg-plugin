@@ -22,7 +22,21 @@ import java.util.Properties;
 public class ConfigFinder {
     private static final Map<File, Map<String, String>> configCache = new HashMap<>();
 
-    public static String findInConfig(File configFile, String whatToFind, String findQuery) {
+    private final File configFile;
+    private final String whatToFind;
+    private final String findQuery;
+
+    public ConfigFinder(File configFile, String whatToFind, String findQuery) {
+        this.configFile = configFile;
+        this.whatToFind = whatToFind;
+        this.findQuery = findQuery;
+    }
+
+    public String findInConfig() {
+        return findInConfigStatic(configFile, whatToFind, findQuery);
+    }
+
+    public static String findInConfigStatic(File configFile, String whatToFind, String findQuery) {
         // checks if the file/items in the file are already cached
         Map<String, String> cachedMap = configCache.get(configFile);
         if (cachedMap != null) {
