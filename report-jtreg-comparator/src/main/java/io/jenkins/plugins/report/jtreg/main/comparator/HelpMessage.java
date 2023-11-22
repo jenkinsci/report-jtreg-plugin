@@ -65,7 +65,7 @@ final public class HelpMessage {
             JobsByQuery.queryStringUsage +
             "\n" +
             "NVR query syntax:\n" +
-            "    The syntax of the NVR query is simple: it either takes an asterisk (*)\n" +
-            "    all NVRs, or it takes a RegEx of a single NVR it should match, or\n" +
-            "    multiple RegExes in a set ({}) with same rules as the query string set.\n";
+            "    The syntax of the NVR query is simple: it either takes RegEx to match the NVR with\n" +
+            "    or multiple RegExes in curly brackets, separated by commas. Example:\n" +
+            "        --nvr {java-nvr1.*,.*nvr2.*}\n";
 }

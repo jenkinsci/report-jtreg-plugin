@@ -37,15 +37,13 @@ public class Builds {
 
     // checks if the build has the same NVR as given
     static boolean checkForNvr(File build, String nvrQuery, Options.Configuration nvrConfig) {
-        // nvrQuery has the same syntax as query string
-        if (nvrQuery.equals("") || nvrQuery.equals("*")) {
-            return true;
-        }
+        // nvrQuery matches with regex...
         String buildNvr = new ConfigFinder(nvrConfig.findConfigFile(build), "nvr", nvrConfig.getFindQuery()).findInConfig();
 
         if (buildNvr == null) {
             return false;
         } else if (nvrQuery.charAt(0) == '{') {
+            // or multiple regexes
             if (nvrQuery.charAt(nvrQuery.length() - 1) != '}') {
                 throw new RuntimeException("Expected closing }.");
             }
