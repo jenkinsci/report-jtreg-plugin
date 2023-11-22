@@ -18,7 +18,7 @@ public class BuildsTest {
 
     @org.junit.Test
     public void checkForNvrTest() {
-        Options.Configuration nvrConfig = new Options.Configuration(changelogFile.getName(), "/build/nvr");
+        Options.Configuration nvrConfig = new Options.Configuration(changelogFile.getName(), "/build/nvr", Options.Locations.Build);
         boolean b = Builds.checkForNvr(new File("unused in this call"), "*", nvrConfig);
         org.junit.Assert.assertTrue(b);
         b = Builds.checkForNvr(changelogFile.getParentFile(), "blah", nvrConfig);

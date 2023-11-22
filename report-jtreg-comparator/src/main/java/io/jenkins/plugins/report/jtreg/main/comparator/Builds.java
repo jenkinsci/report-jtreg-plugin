@@ -41,7 +41,7 @@ public class Builds {
         if (nvrQuery.equals("") || nvrQuery.equals("*")) {
             return true;
         }
-        String buildNvr = new ConfigFinder(new File(build, nvrConfig.getConfigFileName()), "nvr", nvrConfig.getFindQuery()).findInConfig();
+        String buildNvr = new ConfigFinder(nvrConfig.findConfigFile(build), "nvr", nvrConfig.getFindQuery()).findInConfig();
 
         if (buildNvr == null) {
             return false;
@@ -127,6 +127,6 @@ public class Builds {
     }
 
     public static String getNvr(File build, Options.Configuration nvrConfig) {
-        return new ConfigFinder(new File(build, nvrConfig.getConfigFileName()), "nvr", nvrConfig.getFindQuery()).findInConfig();
+        return new ConfigFinder(nvrConfig.findConfigFile(build), "nvr", nvrConfig.getFindQuery()).findInConfig();
     }
 }

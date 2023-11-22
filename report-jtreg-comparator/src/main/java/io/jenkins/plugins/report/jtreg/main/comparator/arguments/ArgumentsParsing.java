@@ -107,16 +107,11 @@ public class ArgumentsParsing {
                     // --use-default-build
                     options.setUseDefaultBuild(Boolean.parseBoolean(getArgumentValue(arguments, i++)));
 
-                } else if (currentArg.equals(ArgumentsDeclaration.configFindArg.getName())) {
+                } else if (currentArg.equals(ArgumentsDeclaration.buildConfigFindArg.getName()) ||
+                        currentArg.equals(ArgumentsDeclaration.jobConfigFindArg.getName())) {
                     // --config-find
                     String[] values = getArgumentValue(arguments, i++).split(":");
-                    Options.Configuration configuration;
-                    // checks the number of items it got from the splitting of the value
-                    if (values.length == 3) { // filename:whatToFind:findQuery
-                        configuration = new Options.Configuration(values[0], values[2]);
-                    } else {
-                        throw new RuntimeException("Unknown number of parameters with the --config-find argument.");
-                    }
+                    Options.Configuration configuration = getConfiguration(values, currentArg);
                     // (whatToFind, configuration)
                     options.addConfiguration(values[1], configuration);
 
@@ -167,6 +162,21 @@ public class ArgumentsParsing {
         }
 
         return options;
+    }
+
+    private static Options.Configuration getConfiguration(String[] values, String currentArg) {
+        Options.Configuration configuration;
+        // checks the number of items it got from the splitting of the value
+        if (values.length == 3) { // filename:whatToFind:findQuery
+            if (currentArg.equals(ArgumentsDeclaration.buildConfigFindArg.getName())) {
+                configuration = new Options.Configuration(values[0], values[2], Options.Locations.Build);
+            } else {
+                configuration = new Options.Configuration(values[0], values[2], Options.Locations.Job);
+            }
+        } else {
+            throw new RuntimeException("Unknown number of parameters with the --config-find argument.");
+        }
+        return configuration;
     }
 
     private static String getArgumentValue(String[] arguments, int i) {

@@ -10,12 +10,14 @@ public class ConfigItem extends AbstractDescribableImpl<ConfigItem> {
     private String configFileName;
     private String whatToFind;
     private String findQuery;
+    private String configLocation;
 
     @DataBoundConstructor
-    public ConfigItem(String configFileName, String whatToFind, String findQuery) {
+    public ConfigItem(String configFileName, String whatToFind, String findQuery, String configLocation) {
         this.configFileName = configFileName;
         this.whatToFind = whatToFind;
         this.findQuery = findQuery;
+        this.configLocation = configLocation;
     }
 
     public String getConfigFileName() {
@@ -37,13 +39,24 @@ public class ConfigItem extends AbstractDescribableImpl<ConfigItem> {
         return findQuery;
     }
     @DataBoundSetter
-    public void setFindQuery(String prefix) {
-        this.findQuery = prefix;
+    public void setFindQuery(String findQuery) {
+        this.findQuery = findQuery;
+    }
+    public String getConfigLocation() {
+        return configLocation;
+    }
+    @DataBoundSetter
+    public void setConfigLocation(String configLocation) {
+        this.configLocation = configLocation;
     }
 
     // --config-find filename:whatToFind:findQuery
     public String generateConfigArgument() {
-        return "--config-find " + configFileName + ":" + whatToFind + ":" + findQuery;
+        if (configLocation.equals("build")) {
+            return "--build-config-find " + configFileName + ":" + whatToFind + ":" + findQuery;
+        } else {
+            return "--job-config-find " + configFileName + ":" + whatToFind + ":" + findQuery;
+        }
     }
 
     @Extension

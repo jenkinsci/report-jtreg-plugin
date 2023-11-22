@@ -40,8 +40,10 @@ final public class HelpMessage {
             "    Other arguments:\n" +
             "    " + ArgumentsDeclaration.helpArg.getName() + "\n" +
             "                  " + ArgumentsDeclaration.helpArg.getHelp() + "\n" +
-            "    " + ArgumentsDeclaration.configFindArg.getName() + ArgumentsDeclaration.configFindArg.getUsage() + "\n" +
-            "                  " + ArgumentsDeclaration.configFindArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.buildConfigFindArg.getName() + ArgumentsDeclaration.buildConfigFindArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.buildConfigFindArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.jobConfigFindArg.getName() + ArgumentsDeclaration.jobConfigFindArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.jobConfigFindArg.getHelp() + "\n" +
             "    " + ArgumentsDeclaration.skipFailedArg.getName() + ArgumentsDeclaration.skipFailedArg.getUsage() + "\n" +
             "                  " + ArgumentsDeclaration.skipFailedArg.getHelp() + "\n" +
             "    " + ArgumentsDeclaration.nvrArg.getName() + ArgumentsDeclaration.nvrArg.getUsage() + "\n" +
