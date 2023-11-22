@@ -4,6 +4,7 @@ import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsProvider;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 import io.jenkins.plugins.report.jtreg.formatters.PlainFormatter;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -155,13 +156,19 @@ public class Options {
         List, Enumerate, Compare, Print
     }
 
+    public enum Locations {
+        Build, Job
+    }
+
     public static class Configuration {
         private final String configFileName;
         private final String findQuery;
+        private final Locations location;
 
-        public Configuration(String configFileName, String findQuery) {
+        public Configuration(String configFileName, String findQuery, Locations location) {
             this.configFileName = configFileName;
             this.findQuery = findQuery;
+            this.location = location;
         }
 
         public String getConfigFileName() {
@@ -169,6 +176,16 @@ public class Options {
         }
         public String getFindQuery() {
             return findQuery;
+        }
+        public File findConfigFile(File buildDir) {
+            // This method takes a build directory as an argument.
+            // If the user used --job-config-find, the method returns the config file in the job directory.
+            if (location == Locations.Build) {
+                return new File(buildDir, configFileName);
+            } else {
+                // go to the job directory from the build directory (.../job-dir/builds/1/...)
+                return new File(buildDir.getParentFile().getParentFile(), configFileName);
+            }
         }
     }
 }

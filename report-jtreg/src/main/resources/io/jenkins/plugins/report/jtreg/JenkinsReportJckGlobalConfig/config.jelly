@@ -5,6 +5,7 @@
             <f:textbox/>
         </f:entry>
     </f:section>
+
     <f:section title="Comparator links">
         <f:repeatable field="comparatorLinksGroups">
             <f:entry field="jobMatchRegex" title="Regex for matching jobs">
@@ -36,6 +37,12 @@
             </f:entry>
             <f:entry field="findQuery" title="XPath to find the item in the config file">
                 <f:textbox />
+            </f:entry>
+            <f:entry title="The directory with the config file" field="configLocation">
+                <select name="configLocation">
+                    <option value="build">Build directory</option>
+                    <option value="job">Job directory</option>
+                </select>
             </f:entry>
             <f:repeatableDeleteButton/>
         </f:repeatable>
