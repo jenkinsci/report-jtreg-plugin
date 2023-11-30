@@ -14,7 +14,7 @@ public class FailedTests {
     private static ArrayList<String> getBuildFailedTests(File build, String exactTestsRegex, Formatter formatter) throws Exception {
         ArrayList<String> failedTests = new ArrayList<>();
 
-        BuildSummaryParser bs = new BuildSummaryParser(Arrays.asList("jck", "jtreg"));
+        BuildSummaryParser bs = new BuildSummaryParser(Arrays.asList("jck", "jtreg"), null);
 
         BuildReportExtended bex = bs.parseBuildReportExtended(new RunWrapperFromDir(build), null);
         SuitesWithResults swr = bex.getAllTests();

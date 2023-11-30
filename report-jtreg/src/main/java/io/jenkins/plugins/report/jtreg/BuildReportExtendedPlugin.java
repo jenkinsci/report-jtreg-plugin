@@ -33,12 +33,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BuildReportExtendedPlugin extends BuildReportExtended {
-    private final String job;
+
+    private final UrlsProvider urlsProvider;
 
     public BuildReportExtendedPlugin(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites,
-                               List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges, int total, int notRun, SuitesWithResults allTests, String job) {
+                               List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges, int total,
+                                int notRun, SuitesWithResults allTests, String job, UrlsProvider urlProvider) {
         super(buildNumber, buildName, passed, failed, error, suites, addedSuites, removedSuites, testChanges, total, notRun, allTests, job);
-        this.job = job;
+        this.urlsProvider = urlProvider;
+        allTests.setUrlProviser(urlsProvider);
     }
 
     public List<ComparatorLinksGroup> getMatchedComparatorLinksGroups() {
@@ -110,8 +113,8 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         return converted;
     }
 
-    private static String getDiffUrlStub(){
-        return SuiteTestsWithResultsPlugin.getDiffServer() + "?generated-part=+-view%3Ddiff-list+++-view%3Ddiff-summary+++-view%3Ddiff-summary-suites+++-view%3Dinfo-problems+++-view%3Dinfo-summary+++-output%3Dhtml++-fill++&custom-part=";//+job+numbers //eg as above;
+    private String getDiffUrlStub(){
+        return urlsProvider.getDiffServer() + "?generated-part=+-view%3Ddiff-list+++-view%3Ddiff-summary+++-view%3Ddiff-summary-suites+++-view%3Dinfo-problems+++-view%3Dinfo-summary+++-output%3Dhtml++-fill++&custom-part=";//+job+numbers //eg as above;
     }
 
     public String getLinkDiff() {
@@ -126,12 +129,12 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         }
     }
 
-    private static String getTracesUrlStub() {
-        return SuiteTestsWithResultsPlugin.getDiffServer() + "?generated-part=+-view%3Dinfo+++-output%3Dhtml++&custom-part=";//+job+numbers //eg as above;
+    private String getTracesUrlStub() {
+        return urlsProvider.getDiffServer() + "?generated-part=+-view%3Dinfo+++-output%3Dhtml++&custom-part=";//+job+numbers //eg as above;
     }
 
-    public static String getCompUrlStub() {
-        return SuiteTestsWithResultsPlugin.getCompServer() + "?generated-part=&custom-part=";
+    public String getCompUrlStub() {
+        return urlsProvider.getCompServer() + "?generated-part=&custom-part=";
     }
 
     public String getLinkTraces() {
@@ -142,8 +145,8 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         return JenkinsReportJckGlobalConfig.isGlobalDiffUrl();
     }
 
-    private static String createDiffUrl() {
-        return SuiteTestsWithResultsPlugin.getDiffServer() + "?generated-part=+-view%3Dall-tests+++-output%3Dhtml++-fill++";
+    private String createDiffUrl() {
+        return urlsProvider.getDiffServer() + "?generated-part=+-view%3Dall-tests+++-output%3Dhtml++-fill++";
     }
 
     public String getTrackingUrl(Test test) {

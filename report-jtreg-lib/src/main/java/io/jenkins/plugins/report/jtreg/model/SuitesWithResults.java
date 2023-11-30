@@ -69,4 +69,9 @@ public class SuitesWithResults implements java.io.Serializable {
         return Collections.unmodifiableList(suitests);
     }
 
+    public void setUrlProviser(UrlsProvider urlsProvider) {
+        for(SuiteTestsWithResults suite: suitests) {
+            suite.setUrlsProvider(urlsProvider);
+        }
+    }
 }

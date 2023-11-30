@@ -78,7 +78,7 @@ public class CompareBuilds {
             if (i < options.getDirsToWork().size() - 1) {
                 oldOne = options.getDirsToWork().get(i + 1);
             }
-            BuildSummaryParser bs = new BuildSummaryParser(Arrays.asList("jck", "jtreg"));
+            BuildSummaryParser bs = new BuildSummaryParser(Arrays.asList("jck", "jtreg"), null);
 
             BuildReport br = bs.parseJobReports(newOne);
             if (options.isInfo()) {
