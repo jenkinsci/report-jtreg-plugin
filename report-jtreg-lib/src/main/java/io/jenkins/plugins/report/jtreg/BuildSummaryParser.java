@@ -50,7 +50,7 @@ public class BuildSummaryParser {
     protected final Set<String> prefixes = new HashSet<>();
     protected BuildReportExtendedFactory buildReportExtendedFactory;
 
-    public BuildSummaryParser(Collection<String> prefixes) {
+    public BuildSummaryParser(Collection<String> prefixes, UrlsProvider urlsProvider) {
         if (prefixes == null || prefixes.isEmpty()) {
             throw new IllegalArgumentException("Prefixes cannot be null or empty");
         }

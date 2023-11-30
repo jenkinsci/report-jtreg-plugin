@@ -23,9 +23,6 @@
  */
 package io.jenkins.plugins.report.jtreg;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -34,29 +31,16 @@ import hudson.model.Result;
 import hudson.model.Run;
 import io.jenkins.plugins.report.jtreg.model.*;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import io.jenkins.plugins.report.jtreg.wrappers.RunWrapper;
-import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromDir;
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromRun;
 import hudson.util.RunList;
 
 public class BuildSummaryParserPlugin extends BuildSummaryParser {
 
+    private static final UrlsProvider urlsProvider= new UrlsProviderPlugin();
     private static interface ListProvider {
 
         String getList();
@@ -66,7 +50,7 @@ public class BuildSummaryParserPlugin extends BuildSummaryParser {
     private final AbstractReportPublisher settings;
 
     public BuildSummaryParserPlugin(Collection<String> prefixes, AbstractReportPublisher settings) {
-        super(prefixes);
+        super(prefixes, urlsProvider);
         this.prefixes.addAll(prefixes);
         this.settings = settings;
         this.buildReportExtendedFactory = new BuildReportExtendedPluginFactory();

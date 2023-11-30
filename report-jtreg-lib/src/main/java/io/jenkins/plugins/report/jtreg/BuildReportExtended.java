@@ -39,7 +39,7 @@ public class BuildReportExtended extends BuildReport {
     private final int total;
     private final int notRun;
     private final SuitesWithResults allTests;
-    private final String job;
+    protected final String job;
 
     public BuildReportExtended(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites,
                                List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges, int total, int notRun, SuitesWithResults allTests, String job) {
