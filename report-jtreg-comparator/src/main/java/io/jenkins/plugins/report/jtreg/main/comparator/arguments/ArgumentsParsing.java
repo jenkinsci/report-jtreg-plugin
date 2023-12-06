@@ -7,6 +7,9 @@ import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsByRegex;
 import io.jenkins.plugins.report.jtreg.formatters.ColorFormatter;
 import io.jenkins.plugins.report.jtreg.formatters.HtmlFormatter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ArgumentsParsing {
     // parses the given arguments and returns instance of Options
     public static Options parse(String[] arguments) {
@@ -16,6 +19,8 @@ public class ArgumentsParsing {
             // setting up the available jobs providers
             JobsByQuery jobsByQuery = new JobsByQuery();
             JobsByRegex jobsByRegex = new JobsByRegex();
+
+            List<String> dynamicArgs = new ArrayList<>(); // a list for dynamic arguments
 
             for (int i = 0; i < arguments.length; i++) {
                 // delete all leading - characters
@@ -68,10 +73,6 @@ public class ArgumentsParsing {
                     // --path
                     options.setJobsPath(getArgumentValue(arguments, i++));
 
-                } else if (currentArg.equals(ArgumentsDeclaration.nvrArg.getName())) {
-                    // --nvr
-                    options.setNvrQuery(getArgumentValue(arguments, i++));
-
                 } else if (currentArg.equals(ArgumentsDeclaration.historyArg.getName())) {
                     // --history
                     options.setNumberOfBuilds(Integer.parseInt(getArgumentValue(arguments, i++)));
@@ -109,11 +110,12 @@ public class ArgumentsParsing {
 
                 } else if (currentArg.equals(ArgumentsDeclaration.buildConfigFindArg.getName()) ||
                         currentArg.equals(ArgumentsDeclaration.jobConfigFindArg.getName())) {
-                    // --config-find
+                    // --X-config-find
                     String[] values = getArgumentValue(arguments, i++).split(":");
                     Options.Configuration configuration = getConfiguration(values, currentArg);
                     // (whatToFind, configuration)
                     options.addConfiguration(values[1], configuration);
+                    dynamicArgs.add(values[1]);
 
                     // parsing arguments of the jobs providers
                 } else if (jobsByQuery.getSupportedArgs().contains(currentArg) || jobsByRegex.getSupportedArgs().contains(currentArg)) {
@@ -133,9 +135,20 @@ public class ArgumentsParsing {
                         throw new RuntimeException("Cannot combine arguments from multiple job providers.");
                     }
 
-                    // unknown argument
                 } else {
-                    throw new RuntimeException("Unknown argument " + currentArg + ", run with --help for info.");
+                    // check if the argument is one of the dynamic arguments
+                    String strippedArg = currentArg.replaceAll("-", "");
+                    if (dynamicArgs.contains(strippedArg)) {
+                        Options.Configuration configuration = options.getConfiguration(strippedArg);
+                        if (configuration != null) {
+                            configuration.setValue(getArgumentValue(arguments, i++));
+                        } else {
+                            throw new RuntimeException("Cannot find configuration for argument " + currentArg + ". Please set it first with --build-config-find or --job-config-find.");
+                        }
+                    } else {
+                        // unknown argument
+                        throw new RuntimeException("Unknown argument " + currentArg + ", run with --help for info.");
+                    }
                 }
 
             }
@@ -154,11 +167,6 @@ public class ArgumentsParsing {
         // add the info about forcing vague queries to the current jobs provider
         if (options.isForceVague()) {
             options.getJobsProvider().parseArguments(ArgumentsDeclaration.forceArg.getName(), null);
-        }
-
-        // check if nvr config is present
-        if (options.getConfiguration("nvr") == null) {
-            throw new RuntimeException("Expected a config settings for NVR.");
         }
 
         return options;
