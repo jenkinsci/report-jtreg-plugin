@@ -147,6 +147,10 @@ public class Options {
         return configurations.get(whatToFind);
     }
 
+    public Map<String, Configuration> getAllConfigurations() {
+        return configurations;
+    }
+
     public void addConfiguration(String whatToFind, Configuration configuration) {
         this.configurations.put(whatToFind, configuration);
     }
@@ -164,11 +168,13 @@ public class Options {
         private final String configFileName;
         private final String findQuery;
         private final Locations location;
+        private String value;
 
         public Configuration(String configFileName, String findQuery, Locations location) {
             this.configFileName = configFileName;
             this.findQuery = findQuery;
             this.location = location;
+            this.value = null;
         }
 
         public String getConfigFileName() {
@@ -186,6 +192,14 @@ public class Options {
                 // go to the job directory from the build directory (.../job-dir/builds/1/...)
                 return new File(buildDir.getParentFile().getParentFile(), configFileName);
             }
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
         }
     }
 }
