@@ -4,15 +4,19 @@ import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class JobsPrinting {
     // print all matched jobs and their matched builds
-    public static void printJobs(ArrayList<File> matchedJobs, boolean skipFailed, String nvrQuery, int numberOfBuilds, Formatter formatter, boolean useDefaultBuild, Options.Configuration nvrConfig) {
+    public static void printJobs(List<File> matchedJobs, Options options) {
+        Formatter formatter = options.getFormatter();
+
         for (File job : matchedJobs) {
             formatter.startBold();
             formatter.println(job.getName() + ":");
             formatter.reset();
-            ArrayList<File> jobBuilds = Builds.getBuilds(job, skipFailed, nvrQuery, numberOfBuilds, useDefaultBuild, formatter, nvrConfig);
+            List<File> jobBuilds = Builds.getBuilds(job, options);
             for (File build : jobBuilds) {
                 formatter.print("\t");
                 formatter.startColor(Formatter.SupportedColors.LightBlue);
@@ -23,7 +27,7 @@ public class JobsPrinting {
                 formatter.startColor(Formatter.SupportedColors.LightBlue);
                 formatter.print("nvr: ");
                 formatter.reset();
-                formatter.println(Builds.getNvr(build, nvrConfig));
+                formatter.println(Builds.getNvr(build, options.getConfiguration("nvr")));
             }
         }
     }

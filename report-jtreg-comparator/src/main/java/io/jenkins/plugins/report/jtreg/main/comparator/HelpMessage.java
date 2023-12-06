@@ -46,8 +46,6 @@ final public class HelpMessage {
             "                  " + ArgumentsDeclaration.jobConfigFindArg.getHelp() + "\n" +
             "    " + ArgumentsDeclaration.skipFailedArg.getName() + ArgumentsDeclaration.skipFailedArg.getUsage() + "\n" +
             "                  " + ArgumentsDeclaration.skipFailedArg.getHelp() + "\n" +
-            "    " + ArgumentsDeclaration.nvrArg.getName() + ArgumentsDeclaration.nvrArg.getUsage() + "\n" +
-            "                  " + ArgumentsDeclaration.nvrArg.getHelp() + "\n" +
             "    " + ArgumentsDeclaration.historyArg.getName() + ArgumentsDeclaration.historyArg.getUsage() + "\n" +
             "                  " + ArgumentsDeclaration.historyArg.getHelp() + "\n" +
             "    " + ArgumentsDeclaration.onlyVolatileArg.getName() + ArgumentsDeclaration.onlyVolatileArg.getUsage() + "\n" +
@@ -63,9 +61,5 @@ final public class HelpMessage {
             "\n" +
             "Query string syntax:\n" +
             JobsByQuery.queryStringUsage +
-            "\n" +
-            "NVR query syntax:\n" +
-            "    The syntax of the NVR query is simple: it either takes RegEx to match the NVR with\n" +
-            "    or multiple RegExes in curly brackets, separated by commas. Example:\n" +
-            "        --nvr {java-nvr1.*,.*nvr2.*}\n";
+            "\n";
 }

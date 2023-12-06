@@ -6,6 +6,7 @@ import io.jenkins.plugins.report.jtreg.main.comparator.listing.FsDirListing;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class VariantComparator {
     public static void main(String[] args) throws Exception {
@@ -22,12 +23,11 @@ public class VariantComparator {
 
         ArrayList<File> buildsToCompare = new ArrayList<>();
         for (File job : options.getJobsProvider().getJobs()) {
-            ArrayList<File> builds = Builds.getBuilds(job, options.isSkipFailed(), options.getNvrQuery(),
-                    options.getNumberOfBuilds(), options.isUseDefaultBuild(), options.getFormatter(), options.getConfiguration("nvr"));
+            List<File> builds = Builds.getBuilds(job, options);
             buildsToCompare.addAll(builds);
         }
 
-        if (buildsToCompare.size() != 0) {
+        if (!buildsToCompare.isEmpty()) {
             // do the chosen operation
             if (options.getOperation() == Options.Operations.List || options.getOperation() == Options.Operations.Compare) {
                 FailedTests.printFailedTable(
@@ -36,8 +36,7 @@ public class VariantComparator {
             } else if (options.getOperation() == Options.Operations.Enumerate) {
                 JobsPrinting.printVariants(options.getJobsProvider().getJobs(), options.getFormatter());
             } else if (options.getOperation() == Options.Operations.Print) {
-                JobsPrinting.printJobs(options.getJobsProvider().getJobs(), options.isSkipFailed(), options.getNvrQuery(),
-                        options.getNumberOfBuilds(), options.getFormatter(), options.isUseDefaultBuild(), options.getConfiguration("nvr"));
+                JobsPrinting.printJobs(options.getJobsProvider().getJobs(), options);
             }
 
             // print virtual table

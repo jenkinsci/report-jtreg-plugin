@@ -35,30 +35,43 @@ public class Builds {
         }
     }
 
-    // checks if the build has the same NVR as given
-    static boolean checkForNvr(File build, String nvrQuery, Options.Configuration nvrConfig) {
-        // nvrQuery matches with regex...
-        String buildNvr = new ConfigFinder(nvrConfig.findConfigFile(build), "nvr", nvrConfig.getFindQuery()).findInConfig();
+    // filter the jobs, keep only those, that are matching all user defined configurations
+    private static File[] filterByConfig(File[] builds, Map<String, Options.Configuration> configs) {
+        List<File> filteredBuilds = new ArrayList<>();
+        for (File build : builds) {
+            boolean correct = true;
+            for (Map.Entry<String, Options.Configuration> entry : configs.entrySet()) {
+                String desiredValue = entry.getValue().getValue();
+                String valueInConfig = new ConfigFinder(entry.getValue().findConfigFile(build), entry.getKey(), entry.getValue().getFindQuery()).findInConfig();
 
-        if (buildNvr == null) {
-            return false;
-        } else if (nvrQuery.charAt(0) == '{') {
-            // or multiple regexes
-            if (nvrQuery.charAt(nvrQuery.length() - 1) != '}') {
-                throw new RuntimeException("Expected closing }.");
+                if (valueInConfig == null) {
+                    correct = false;
+                } else if (desiredValue == null || desiredValue.isEmpty()) {
+                    correct = true;
+                } else if (desiredValue.charAt(0) == '{') {
+                    // match multiple values
+                    if (desiredValue.charAt(desiredValue.length() - 1) != '}') {
+                        throw new RuntimeException("Expected closing } in the --" + entry.getKey() + "  value.");
+                    }
+
+                    String[] values = desiredValue.substring(1, desiredValue.length() - 1).split(",");
+                    correct = Arrays.stream(values).anyMatch(valueInConfig::matches);
+                } else {
+                    correct = valueInConfig.matches(desiredValue);
+                }
             }
-            String[] nvrs = nvrQuery.substring(1, nvrQuery.length() - 1).split(",");
-            return Arrays.stream(nvrs).anyMatch(s -> buildNvr.matches(s));
-        } else {
-            return buildNvr.matches(nvrQuery);
+
+            if (correct) {
+                filteredBuilds.add(build);
+            }
         }
+
+        return filteredBuilds.toArray(new File[0]);
     }
 
     // gets all the compatible builds with the given parameters and returns them in a list
-    public static ArrayList<File> getBuilds(
-            File job, boolean skipFailed, String nvrQuery, int numberOfBuilds, boolean useDefaultBuild, Formatter formatter, Options.Configuration nvrConfig) {
-
-        ArrayList<File> listOfBuilds = new ArrayList<>();
+    public static List<File> getBuilds(File job, Options options) {
+        List<File> listOfBuilds = new ArrayList<>();
 
         File buildDir = new File(job.getAbsolutePath() + "/builds/");
         File[] filesInDir = buildDir.listFiles();
@@ -76,26 +89,27 @@ public class Builds {
         Arrays.sort(buildsInDir, Comparator.comparingInt(a -> Integer.parseInt(a.getName())));
         Collections.reverse(Arrays.asList(buildsInDir));
 
+        buildsInDir = filterByConfig(buildsInDir, options.getAllConfigurations());
+
         int buildsChecked = 0;
         for (File build : buildsInDir) {
-            if (checkIfCorrect(build, skipFailed) && checkForNvr(build, nvrQuery, nvrConfig) && buildsChecked < numberOfBuilds) {
+            if (checkIfCorrect(build, options.isSkipFailed()) && buildsChecked < options.getNumberOfBuilds()) {
                 listOfBuilds.add(build);
             }
 
             // only add to the counter when the build was successful, or when we also take unsuccessful builds
-            if (!skipFailed || checkIfCorrect(build, true)) {
+            if (!options.isSkipFailed() || checkIfCorrect(build, true)) {
                 buildsChecked++;
             }
         }
 
-        if (!nvrQuery.equals("") && listOfBuilds.size() == 0 && useDefaultBuild) {
+        if (listOfBuilds.isEmpty() && options.isUseDefaultBuild()) {
             for (File build : buildsInDir) {
-                if (checkIfCorrect(build, skipFailed)) {
+                if (checkIfCorrect(build, options.isSkipFailed())) {
                     listOfBuilds.add(build);
-                    formatter.startColor(Formatter.SupportedColors.Yellow);
-                    formatter.println("Cannot find job " + getJobName(build) + " which matches " + nvrQuery +
-                            ", instead using build " + getBuildNumber(build) + " with nvr " + getNvr(build, nvrConfig) + ".");
-                    formatter.reset();
+                    options.getFormatter().startColor(Formatter.SupportedColors.Yellow);
+                    options.getFormatter().println("Cannot find any builds of job " + getJobName(build) + " that matches your criteria, instead using default build " + getBuildNumber(build) + ".");
+                    options.getFormatter().reset();
                     break;
                 }
             }
@@ -125,6 +139,10 @@ public class Builds {
     }
 
     public static String getNvr(File build, Options.Configuration nvrConfig) {
-        return new ConfigFinder(nvrConfig.findConfigFile(build), "nvr", nvrConfig.getFindQuery()).findInConfig();
+        if (nvrConfig != null) {
+            return new ConfigFinder(nvrConfig.findConfigFile(build), "nvr", nvrConfig.getFindQuery()).findInConfig();
+        } else {
+            return "";
+        }
     }
 }
