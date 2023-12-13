@@ -25,31 +25,14 @@ package io.jenkins.plugins.report.jtreg.model;
 
 import io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig;
 
-import java.util.List;
+public final class UrlsProviderPlugin implements UrlsProvider {
 
-public class SuiteTestsWithResultsPlugin extends SuiteTestsWithResults {
-
-    public static String getDiffServer() {
+    @Override
+    public String getDiffServer() {
         return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + "/diff.html";
     }
-    public static String getCompServer() {
+    @Override
+    public  String getCompServer() {
         return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + "/comp.html";
     }
-
-    private static String getDiffUrlStub() {
-        return getDiffServer() + "?generated-part=+-view%3Dall-tests+++-view%3Dinfo-summary+++-view%3Dinfo-summary-suites+++-output%3Dhtml++&custom-part=";//+job+number //eg as above;
-    }
-
-    private final String job;
-    private final int id;
-
-    public SuiteTestsWithResultsPlugin(String name, List<StringWithResult> tests, String job, int id) {
-        super(name, tests, job, id);
-        this.job = job;
-        this.id = id;
-    }
-
-    public String getLink() {
-        return getDiffUrlStub() + job + "+" + id;
-    }
-}
+ }

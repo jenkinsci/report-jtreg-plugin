@@ -24,7 +24,6 @@
 package io.jenkins.plugins.report.jtreg.model;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-//import io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +33,7 @@ import java.util.Collections;
 public class SuiteTestsWithResults implements java.io.Serializable {
     private static final int MAX = 1000;
     private final String name;
+    private UrlsProvider urlsProvider;
 
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification =  "should be internal implementation only, and thus ArrayList and that is serialisable")
     private final List<StringWithResult> tests;
@@ -76,6 +76,21 @@ public class SuiteTestsWithResults implements java.io.Serializable {
         } else {
             return "... Shown " + MAX + " from " + tests.size() + " tests. To see remaining " + (tests.size() - 1000) + " use our cmdline diff tool or ";
         }
+    }
+
+
+    public void setUrlsProvider(UrlsProvider urlsProvider) {
+        this.urlsProvider = urlsProvider;
+    }
+
+    private String getDiffUrlStub() {
+        return urlsProvider.getDiffServer() + "?generated-part=+-view%3Dall-tests+++-view%3Dinfo-summary+++-view%3Dinfo-summary"
+                + "-suites+++-output"
+                + "%3Dhtml++&custom-part=";//+job+number //eg as above;
+    }
+
+    public String getLink() {
+        return getDiffUrlStub() + job + "+" + id;
     }
 
     public static class StringWithResult {
