@@ -18,7 +18,7 @@ public class BuildsTest {
         Options.Configuration nvrConfig = new Options.Configuration("changelog.xml", "/build/nvr", Options.Locations.Build);
 
         Options options = new Options();
-        options.setSkipFailed(false);
+        options.getConfiguration("result").setValue(".*"); // --skip-failed false
         options.setNumberOfBuilds(2);
 
         // matches both

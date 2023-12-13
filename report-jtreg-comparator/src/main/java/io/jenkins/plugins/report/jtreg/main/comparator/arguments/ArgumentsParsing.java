@@ -79,7 +79,10 @@ public class ArgumentsParsing {
 
                 } else if (currentArg.equals(ArgumentsDeclaration.skipFailedArg.getName())) {
                     // --skip-failed
-                    options.setSkipFailed(Boolean.parseBoolean(getArgumentValue(arguments, i++)));
+                    if (!Boolean.parseBoolean(getArgumentValue(arguments, i++))) {
+                        // if skip failed = false, any result value is taken, so .*
+                        options.getConfiguration("result").setValue(".*");
+                    }
 
                 } else if (currentArg.equals(ArgumentsDeclaration.forceArg.getName())) {
                     // --force
