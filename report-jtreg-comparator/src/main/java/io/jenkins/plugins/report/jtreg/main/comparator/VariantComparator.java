@@ -42,7 +42,7 @@ public class VariantComparator {
             // print virtual table
             if (options.isPrintVirtual()) {
                 options.getFormatter().println();
-                VirtualJobsResults.printVirtualTable(buildsToCompare, options.getFormatter(), options.getConfiguration("nvr"));
+                VirtualJobsResults.printVirtualTable(buildsToCompare, options.getFormatter(), options.getConfiguration("result"), options.getConfiguration("nvr"));
             }
         }
     }
