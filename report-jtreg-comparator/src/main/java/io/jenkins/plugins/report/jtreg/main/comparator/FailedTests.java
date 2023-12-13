@@ -45,10 +45,12 @@ public class FailedTests {
         HashMap<String, ArrayList<String>> failedMap = new HashMap<>();
 
         for (File build : buildsToCompare) {
-            failedMap.put(Builds.getJobName(build)
-                    + " - build:" + Builds.getBuildNumber(build)
-                    + " - nvr:" + Builds.getNvr(build, nvrConfig),
-                    getBuildFailedTests(build, exactTestsRegex, formatter));
+            if (build != null) {
+                failedMap.put(Builds.getJobName(build)
+                                + " - build:" + Builds.getBuildNumber(build)
+                                + " - nvr:" + Builds.getNvr(build, nvrConfig),
+                        getBuildFailedTests(build, exactTestsRegex, formatter));
+            }
         }
 
         if (onlyVolatile) {

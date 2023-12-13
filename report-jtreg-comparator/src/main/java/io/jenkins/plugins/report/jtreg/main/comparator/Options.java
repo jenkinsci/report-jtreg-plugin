@@ -11,9 +11,7 @@ import java.util.Map;
 public class Options {
     private Operations operation;
     private String jobsPath;
-    private String nvrQuery;
     private int numberOfBuilds;
-    private boolean skipFailed;
     private boolean forceVague;
     private boolean onlyVolatile;
     private String exactTestsRegex;
@@ -25,9 +23,7 @@ public class Options {
     private final Map<String, Configuration> configurations;
 
     public Options() {
-        this.nvrQuery = "";
         this.numberOfBuilds = 1;
-        this.skipFailed = true;
         this.forceVague = false;
         this.onlyVolatile = false;
         this.exactTestsRegex = ".*";
@@ -37,6 +33,10 @@ public class Options {
         this.printVirtual = false;
         this.die = false;
         this.configurations = new HashMap<>();
+        // default configuration for getting job results
+        Configuration resultConfig = new Configuration("build.xml", "/build/result", Locations.Build);
+        resultConfig.setValue("{SUCCESS,UNSTABLE}");
+        addConfiguration("result", resultConfig);
     }
 
     public void setDie(boolean die) {
@@ -63,28 +63,12 @@ public class Options {
         this.jobsPath = jobsPath;
     }
 
-    public String getNvrQuery() {
-        return nvrQuery;
-    }
-
-    public void setNvrQuery(String nvr) {
-        this.nvrQuery = nvr;
-    }
-
     public int getNumberOfBuilds() {
         return numberOfBuilds;
     }
 
     public void setNumberOfBuilds(int numberOfBuilds) {
         this.numberOfBuilds = numberOfBuilds;
-    }
-
-    public boolean isSkipFailed() {
-        return skipFailed;
-    }
-
-    public void setSkipFailed(boolean skipFailed) {
-        this.skipFailed = skipFailed;
     }
 
     public boolean isForceVague() {
@@ -147,6 +131,10 @@ public class Options {
         return configurations.get(whatToFind);
     }
 
+    public Map<String, Configuration> getAllConfigurations() {
+        return configurations;
+    }
+
     public void addConfiguration(String whatToFind, Configuration configuration) {
         this.configurations.put(whatToFind, configuration);
     }
@@ -164,11 +152,13 @@ public class Options {
         private final String configFileName;
         private final String findQuery;
         private final Locations location;
+        private String value;
 
         public Configuration(String configFileName, String findQuery, Locations location) {
             this.configFileName = configFileName;
             this.findQuery = findQuery;
             this.location = location;
+            this.value = null;
         }
 
         public String getConfigFileName() {
@@ -186,6 +176,14 @@ public class Options {
                 // go to the job directory from the build directory (.../job-dir/builds/1/...)
                 return new File(buildDir.getParentFile().getParentFile(), configFileName);
             }
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
         }
     }
 }

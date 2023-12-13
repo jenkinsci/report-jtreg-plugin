@@ -229,8 +229,8 @@ public class BuildSummaryParser {
         String job = build.getRoot().getParentFile().getParentFile().getName();
         try {
             allTests = SuitesWithResults.create(currentBuildTestsList, parseBuildReport(build), job, build.getNumber());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception ignored) {
+            // does not need the stack trace printing
         }
         return buildReportExtendedFactory.createBuildReportExtended(
                 currentReport.getBuildNumber(),

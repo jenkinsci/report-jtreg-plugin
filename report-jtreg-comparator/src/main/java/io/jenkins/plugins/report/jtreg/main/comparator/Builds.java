@@ -3,62 +3,55 @@ package io.jenkins.plugins.report.jtreg.main.comparator;
 import io.jenkins.plugins.report.jtreg.ConfigFinder;
 
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
-import org.w3c.dom.Document;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.*;
 
 public class Builds {
-    // checks if the given build was successful
-    private static boolean checkIfCorrect(File build, boolean requireSuccessful) {
-        if (requireSuccessful) {
-            try {
-                File buildXml = new File(build.getAbsolutePath() + "/build.xml");
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                Document doc = builder.parse(buildXml);
-                doc.getDocumentElement().normalize();
+    // filter the jobs, keep only those, that are matching all user defined configurations
+    private static List<File> filterByConfig(File[] builds, Map<String, Options.Configuration> configs) {
+        List<File> filteredBuilds = new ArrayList<>();
+        for (File build : builds) {
+            boolean correct = true;
+            for (Map.Entry<String, Options.Configuration> entry : configs.entrySet()) {
+                String desiredValue = entry.getValue().getValue();
+                String valueInConfig = new ConfigFinder(entry.getValue().findConfigFile(build), entry.getKey(), entry.getValue().getFindQuery()).findInConfig();
 
-                String result = doc
-                        .getElementsByTagName("result").item(0)
-                        .getChildNodes().item(0)
-                        .getNodeValue();
+                if (valueInConfig == null) {
+                    // if the config it is looking for, is the build result, and it is set to false (--skip-failed false),
+                    // the job could still be running, the build.xml does not exist and the result is still valid
+                    if (!(entry.getKey().equals("result") && entry.getValue().getValue().equals(".*"))) {
+                        correct = false;
+                    }
+                } else if (desiredValue == null || desiredValue.isEmpty()) {
+                    correct = true;
+                } else if (desiredValue.charAt(0) == '{') {
+                    // match multiple values
+                    if (desiredValue.charAt(desiredValue.length() - 1) != '}') {
+                        throw new RuntimeException("Expected closing } in the --" + entry.getKey() + "  value.");
+                    }
 
-                return result.equals("SUCCESS") || result.equals("UNSTABLE");
-            } catch (Exception e) {
-                e.printStackTrace();
+                    String[] values = desiredValue.substring(1, desiredValue.length() - 1).split(",");
+                    correct = Arrays.stream(values).anyMatch(valueInConfig::matches);
+                } else {
+                    correct = valueInConfig.matches(desiredValue);
+                }
+
+                if (!correct) {
+                    break;
+                }
             }
-            return false;
-        } else {
-            return true;
-        }
-    }
 
-    // checks if the build has the same NVR as given
-    static boolean checkForNvr(File build, String nvrQuery, Options.Configuration nvrConfig) {
-        // nvrQuery matches with regex...
-        String buildNvr = new ConfigFinder(nvrConfig.findConfigFile(build), "nvr", nvrConfig.getFindQuery()).findInConfig();
-
-        if (buildNvr == null) {
-            return false;
-        } else if (nvrQuery.charAt(0) == '{') {
-            // or multiple regexes
-            if (nvrQuery.charAt(nvrQuery.length() - 1) != '}') {
-                throw new RuntimeException("Expected closing }.");
+            if (correct) {
+                filteredBuilds.add(build);
             }
-            String[] nvrs = nvrQuery.substring(1, nvrQuery.length() - 1).split(",");
-            return Arrays.stream(nvrs).anyMatch(s -> buildNvr.matches(s));
-        } else {
-            return buildNvr.matches(nvrQuery);
         }
+
+        return filteredBuilds;
     }
 
     // gets all the compatible builds with the given parameters and returns them in a list
-    public static ArrayList<File> getBuilds(
-            File job, boolean skipFailed, String nvrQuery, int numberOfBuilds, boolean useDefaultBuild, Formatter formatter, Options.Configuration nvrConfig) {
-
-        ArrayList<File> listOfBuilds = new ArrayList<>();
+    public static List<File> getBuilds(File job, Options options) {
+        List<File> listOfBuilds = new ArrayList<>();
 
         File buildDir = new File(job.getAbsolutePath() + "/builds/");
         File[] filesInDir = buildDir.listFiles();
@@ -76,35 +69,25 @@ public class Builds {
         Arrays.sort(buildsInDir, Comparator.comparingInt(a -> Integer.parseInt(a.getName())));
         Collections.reverse(Arrays.asList(buildsInDir));
 
-        int buildsChecked = 0;
-        for (File build : buildsInDir) {
-            if (checkIfCorrect(build, skipFailed) && checkForNvr(build, nvrQuery, nvrConfig) && buildsChecked < numberOfBuilds) {
-                listOfBuilds.add(build);
-            }
+        // check only N builds (based on --history switch, default is 1)
+        File[] choppedArray = Arrays.copyOfRange(buildsInDir, 0, options.getNumberOfBuilds());
 
-            // only add to the counter when the build was successful, or when we also take unsuccessful builds
-            if (!skipFailed || checkIfCorrect(build, true)) {
-                buildsChecked++;
-            }
-        }
+        listOfBuilds = filterByConfig(choppedArray, options.getAllConfigurations());
 
-        if (!nvrQuery.equals("") && listOfBuilds.size() == 0 && useDefaultBuild) {
-            for (File build : buildsInDir) {
-                if (checkIfCorrect(build, skipFailed)) {
-                    listOfBuilds.add(build);
-                    formatter.startColor(Formatter.SupportedColors.Yellow);
-                    formatter.println("Cannot find job " + getJobName(build) + " which matches " + nvrQuery +
-                            ", instead using build " + getBuildNumber(build) + " with nvr " + getNvr(build, nvrConfig) + ".");
-                    formatter.reset();
-                    break;
-                }
-            }
+        if (listOfBuilds.isEmpty() && options.isUseDefaultBuild()) {
+            listOfBuilds.add(buildsInDir[0]);
+            options.getFormatter().startColor(Formatter.SupportedColors.Yellow);
+            options.getFormatter().println("Cannot find any builds of job " + getJobName(buildsInDir[0]) + " that matches your criteria, instead using default build " + getBuildNumber(buildsInDir[0]) + ".");
+            options.getFormatter().reset();
         }
 
         return listOfBuilds;
     }
 
     public static String getJobName(File build) {
+        if (build == null) {
+            return "";
+        }
         String path = build.getAbsolutePath();
         String[] split = path.split("/");
         if (split[split.length - 2].equals("builds")) { // second last should be the "builds" directory
@@ -115,6 +98,9 @@ public class Builds {
     }
 
     public static String getBuildNumber(File build) {
+        if (build == null) {
+            return "";
+        }
         String path = build.getAbsolutePath();
         String[] split = path.split("/");
         if (split[split.length - 2].equals("builds")) { // second last should be the "builds" directory
@@ -125,6 +111,10 @@ public class Builds {
     }
 
     public static String getNvr(File build, Options.Configuration nvrConfig) {
-        return new ConfigFinder(nvrConfig.findConfigFile(build), "nvr", nvrConfig.getFindQuery()).findInConfig();
+        if (build != null && nvrConfig != null) {
+            return new ConfigFinder(nvrConfig.findConfigFile(build), "nvr", nvrConfig.getFindQuery()).findInConfig();
+        } else {
+            return "";
+        }
     }
 }

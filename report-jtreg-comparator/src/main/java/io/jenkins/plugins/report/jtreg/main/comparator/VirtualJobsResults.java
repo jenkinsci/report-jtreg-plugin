@@ -1,53 +1,41 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
+import io.jenkins.plugins.report.jtreg.ConfigFinder;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
-import org.w3c.dom.Document;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class VirtualJobsResults {
-    private static final List<String> results = Arrays.asList("SUCCESS", "UNSTABLE", "FAILURE", "ABORTED", "RUNNING?");
+    private static final List<String> RESULTS = Arrays.asList("SUCCESS", "UNSTABLE", "FAILURE", "ABORTED", "RUNNING?");
 
-    private static String getBuildResult(File build) {
-        Document doc = null;
-        try {
-            File buildXml = new File(build.getAbsolutePath() + "/build.xml");
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            doc = builder.parse(buildXml);
-            doc.getDocumentElement().normalize();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private static String getBuildResult(File build, Options.Configuration resultConfig) {
+        String result = new ConfigFinder(resultConfig.findConfigFile(build), "result", resultConfig.getFindQuery()).findInConfig();
 
-        if (doc == null) {
+        if (result == null) {
+            // if there is no result in the config file, it is possible that the build is still running
             return "RUNNING?";
         }
 
-        try {
-            return doc.getElementsByTagName("result").item(0)
-                    .getChildNodes().item(0)
-                    .getNodeValue();
-        } catch (Exception e) {
-            return "RUNNING?";
+        if (RESULTS.contains(result)) {
+            return result;
+        } else {
+            throw new RuntimeException("The " + result + " result is not a valid build result.");
         }
     }
 
-    public static void printVirtualTable(ArrayList<File> buildsToCompare, Formatter formatter, Options.Configuration nvrConfig) {
+    public static void printVirtualTable(ArrayList<File> buildsToCompare, Formatter formatter, Options.Configuration resultConfig, Options.Configuration nvrConfig) {
         formatter.startBold();
         formatter.println("Virtual builds' results table:");
         formatter.println();
         formatter.reset();
 
-        String[][] table = new String[results.size() + 1][buildsToCompare.size() + 1];
+        String[][] table = new String[RESULTS.size() + 1][buildsToCompare.size() + 1];
 
         // first column definitions
-        for (int i = 1; i <= results.size(); i++) {
-            table[i][0] = results.get(i - 1);
+        for (int i = 1; i <= RESULTS.size(); i++) {
+            table[i][0] = RESULTS.get(i - 1);
         }
 
         for (int i = 1; i <= buildsToCompare.size(); i++) {
@@ -56,10 +44,10 @@ public class VirtualJobsResults {
                     + " - build:" + Builds.getBuildNumber(build)
                     + " - nvr:" + Builds.getNvr(build, nvrConfig);
 
-            String result = getBuildResult(build);
-            table[results.indexOf(result) + 1][i] = "X";
+            String result = getBuildResult(build, resultConfig);
+            table[RESULTS.indexOf(result) + 1][i] = "X";
         }
 
-        formatter.printTable(table, results.size() + 1, buildsToCompare.size() + 1);
+        formatter.printTable(table, RESULTS.size() + 1, buildsToCompare.size() + 1);
     }
 }
