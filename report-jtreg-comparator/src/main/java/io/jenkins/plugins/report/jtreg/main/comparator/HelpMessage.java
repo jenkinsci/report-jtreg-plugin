@@ -20,6 +20,9 @@ final public class HelpMessage {
             "    You can choose one of these to filter the jobs by their name:\n" +
             "    " + JobsByQuery.queryArg.getName() + JobsByQuery.queryArg.getUsage() + "\n" +
             "                  " + JobsByQuery.queryArg.getHelp() + "\n" +
+            "    Query string syntax:\n" +
+            JobsByQuery.queryStringUsage +
+            "\n" +
             "            " + JobsByQuery.exactLengthArg.getName() + JobsByQuery.exactLengthArg.getUsage() + "\n" +
             "                          " + JobsByQuery.exactLengthArg.getHelp() + "\n" +
             "    " + JobsByRegex.regexArg.getName() + JobsByRegex.regexArg.getUsage() + "\n" +
@@ -40,10 +43,6 @@ final public class HelpMessage {
             "    Other arguments:\n" +
             "    " + ArgumentsDeclaration.helpArg.getName() + "\n" +
             "                  " + ArgumentsDeclaration.helpArg.getHelp() + "\n" +
-            "    " + ArgumentsDeclaration.buildConfigFindArg.getName() + ArgumentsDeclaration.buildConfigFindArg.getUsage() + "\n" +
-            "                  " + ArgumentsDeclaration.buildConfigFindArg.getHelp() + "\n" +
-            "    " + ArgumentsDeclaration.jobConfigFindArg.getName() + ArgumentsDeclaration.jobConfigFindArg.getUsage() + "\n" +
-            "                  " + ArgumentsDeclaration.jobConfigFindArg.getHelp() + "\n" +
             "    " + ArgumentsDeclaration.skipFailedArg.getName() + ArgumentsDeclaration.skipFailedArg.getUsage() + "\n" +
             "                  " + ArgumentsDeclaration.skipFailedArg.getHelp() + "\n" +
             "    " + ArgumentsDeclaration.historyArg.getName() + ArgumentsDeclaration.historyArg.getUsage() + "\n" +
@@ -59,7 +58,35 @@ final public class HelpMessage {
             "    " + ArgumentsDeclaration.useDefaultBuildArg.getName() + ArgumentsDeclaration.useDefaultBuildArg.getUsage() + "\n" +
             "                  " + ArgumentsDeclaration.useDefaultBuildArg.getHelp() + "\n" +
             "\n" +
-            "Query string syntax:\n" +
-            JobsByQuery.queryStringUsage +
-            "\n";
+            "    Dynamic arguments:\n" +
+            "        Another type of arguments you can use are dynamic arguments. They are used\n" +
+            "        for further filtering the jobs/builds to compare by any value in their config\n" +
+            "        files.\n" +
+            "        First, you must define the value to look for in a config file. The general syntax is:\n" +
+            "          --X \"configFileName:whatAreYouLookingFor:queryToFindIt\"\n" +
+            "            Instead of --X, you use one of these arguments:\n" +
+            "    " + ArgumentsDeclaration.buildConfigFindArg.getName() + ArgumentsDeclaration.buildConfigFindArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.buildConfigFindArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.jobConfigFindArg.getName() + ArgumentsDeclaration.jobConfigFindArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.jobConfigFindArg.getHelp() + "\n" +
+            "            configFileName is the name of the config file in the chosen working directory.\n" +
+            "            whatAreYouLookingFor is the name of the config value you are looking for.\n" +
+            "                You later use this name as an argument for the filtering itself.\n" +
+            "            queryToFindIt is the query, to find the value in the config file. Currently,\n" +
+            "                XPath is supported for XML files, Json Query for JSON files and plain value\n" +
+            "                for properties files.\n" +
+            "        After defining the value, you can proceed to the filtering itself. For that, you\n" +
+            "        use the whatAreYouLooking part from the definition as an argument and this syntax:\n" +
+            "            It either takes RegEx to match the value with or multiple RegExes\n" +
+            "            in curly brackets, separated by commas. (e.g. {nvr1.*,nvr2.*})\n" +
+            "        Example:\n" +
+            "        " + ArgumentsDeclaration.buildConfigFindArg.getName() + " " + "\"changelog.xml:nvr:/build/nvr\"\n" +
+            "        Then you can use this argument: --nvr \"java-17-openjdk.*\" to filter only builds,\n" +
+            "        that have changelog.xml file in the build directory, and the value on XPath /build/nvr\n" +
+            "        matches java-17-openjdk.*.\n" +
+            "    Additional info:\n" +
+            "        When taking the build results, the tool defaults to using the results from build.xml\n" +
+            "        file with /build/result XPath, but you can set it to different value with\n" +
+            "        " + ArgumentsDeclaration.buildConfigFindArg.getName() + "argument. (The whatAreYouLookingFor part of the syntax\n" +
+            "        should be set to \"result\".)\n";
 }
