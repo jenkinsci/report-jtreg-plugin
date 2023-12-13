@@ -228,7 +228,7 @@ public class JobsByQueryTest {
         nvrConfig.setValue("");
 
         Options options = new Options();
-        options.setSkipFailed(false);
+        options.getConfiguration("result").setValue(".*"); // --skip-failed false
         options.addConfiguration("nvr", nvrConfig);
         options.setNumberOfBuilds(0);
         options.setFormatter(new PlainFormatter(printStream));
