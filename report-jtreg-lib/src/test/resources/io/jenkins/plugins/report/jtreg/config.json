@@ -1,0 +1,119 @@
+{
+  "build": {
+    "actions": {
+      "hudson-model-CauseAction": {
+        "causeBag": {
+          "entry": {
+            "hudson-triggers-SCMTrigger_-SCMTriggerCause": "",
+            "int": 16
+          }
+        }
+      },
+      "hudson-triggers-SCMTrigger_-BuildAction": "",
+      "jenkins-scm-cvs-QuietPeriodCompleted": {
+        "timestamp": 1689965050403
+      },
+      "hudson-plugins-scm-koji-KojiEnvVarsAction": {
+        "nvr": "java-11-openjdk-11.0.20.0.8-3.el8",
+        "rpmsDir": "/home/tester/workspace/workspace/crypto~tests-jp11-ojdk11~rpms-el8.aarch64-fastdebug.sdk-el8.aarch64.vagrant-x11.defaultgc.legacy.lnxagent.jfroff/rpms",
+        "rpmFiles": "/home/tester/workspace/workspace/crypto~tests-jp11-ojdk11~rpms-el8.aarch64-fastdebug.sdk-el8.aarch64.vagrant-x11.defaultgc.legacy.lnxagent.jfroff/rpms/java-11-openjdk-fastdebug-11.0.20.0.8-3.el8.aarch64.rpm:/home/tester/workspace/workspace/crypto~tests-jp11-ojdk11~rpms-el8.aarch64-fastdebug.sdk-el8.aarch64.vagrant-x11.defaultgc.legacy.lnxagent.jfroff/rpms/java-11-openjdk-headless-fastdebug-11.0.20.0.8-3.el8.aarch64.rpm:/home/tester/workspace/workspace/crypto~tests-jp11-ojdk11~rpms-el8.aarch64-fastdebug.sdk-el8.aarch64.vagrant-x11.defaultgc.legacy.lnxagent.jfroff/rpms/java-11-openjdk-devel-fastdebug-11.0.20.0.8-3.el8.aarch64.rpm:/home/tester/workspace/workspace/crypto~tests-jp11-ojdk11~rpms-el8.aarch64-fastdebug.sdk-el8.aarch64.vagrant-x11.defaultgc.legacy.lnxagent.jfroff/rpms/java-11-openjdk-jmods-fastdebug-11.0.20.0.8-3.el8.aarch64.rpm:/home/tester/workspace/workspace/crypto~tests-jp11-ojdk11~rpms-el8.aarch64-fastdebug.sdk-el8.aarch64.vagrant-x11.defaultgc.legacy.lnxagent.jfroff/rpms/java-11-openjdk-src-fastdebug-11.0.20.0.8-3.el8.aarch64.rpm"
+      },
+      "hudson-plugins-scm-koji-KojiRevisionState": {
+        "build": {
+          "id": 2605086,
+          "name": "java-11-openjdk",
+          "version": "11.0.20.0.8",
+          "release": "3.el8",
+          "nvr": "java-11-openjdk-11.0.20.0.8-3.el8",
+          "completionTime": "2023-07-20 20:21:15.380596",
+          "rpms": {
+            "hudson-plugins-scm-koji-model-RPM": [
+              {
+                "name": "java-11-openjdk",
+                "version": "11.0.20.0.8",
+                "release": "3.el8",
+                "nvr": "java-11-openjdk-11.0.20.0.8-3.el8",
+                "arch": "aarch64"
+              },
+              {
+                "name": "java-11-openjdk-slowdebug",
+                "version": "11.0.20.0.8",
+                "release": "3.el8",
+                "nvr": "java-11-openjdk-slowdebug-11.0.20.0.8-3.el8",
+                "arch": "aarch64"
+              },
+              {
+                "name": "java-11-openjdk-fastdebug",
+                "version": "11.0.20.0.8",
+                "release": "3.el8",
+                "nvr": "java-11-openjdk-fastdebug-11.0.20.0.8-3.el8",
+                "arch": "aarch64"
+              },
+              {
+                "name": "java-11-openjdk-headless",
+                "version": "11.0.20.0.8",
+                "release": "3.el8",
+                "nvr": "java-11-openjdk-headless-11.0.20.0.8-3.el8",
+                "arch": "aarch64"
+              },
+              {
+                "name": "java-11-openjdk-headless-slowdebug",
+                "version": "11.0.20.0.8",
+                "release": "3.el8",
+                "nvr": "java-11-openjdk-headless-slowdebug-11.0.20.0.8-3.el8",
+                "arch": "aarch64"
+              }
+            ]
+          },
+          "tags": {
+            "string": [
+              "rhel-8.9.0-candidate",
+              "RHBA-2023:117615-pending",
+              "java-openjdk-rhel-8-build",
+              "rhel-8.8.0-z-pending",
+              "rhel-8.8.0-z-candidate",
+              "rhel-8.8.0-z-pending-signed"
+            ]
+          }
+        }
+      },
+      "io-jenkins-plugins-report-genericdiff-DiffReportAction": {
+        "build": ""
+      },
+      "io-jenkins-plugins-report-genericdiff-RpmsReportAction": {
+        "build": ""
+      },
+      "io-jenkins-plugins-report-jtreg-ReportAction": {
+        "build": "",
+        "prefixes": {
+          "string": "jtreg"
+        }
+      },
+      "com-redhat-jenkins-plugins-ci-polarion-CIPolarionXUnitImporterBuildAction": {
+        "providerData": {
+          "name": "Red Hat UMB",
+          "checks": "",
+          "timeout": 60
+        },
+        "hasXUnitFiles": false
+      }
+    },
+    "queueId": 1233201,
+    "timestamp": 1690019562385,
+    "startTime": 1690019563007,
+    "result": "SUCCESS",
+    "displayName": "11.0.20.0.8-3.el8",
+    "duration": 2338145,
+    "charset": "UTF-8",
+    "keepLog": false,
+    "builtOn": "norn3.brq.redhat.com",
+    "workspace": "/home/tester/workspace/workspace/crypto~tests-jp11-ojdk11~rpms-el8.aarch64-fastdebug.sdk-el8.aarch64.vagrant-x11.defaultgc.legacy.lnxagent.jfroff",
+    "hudsonVersion": "2.401.1",
+    "scm": "",
+    "culprits": {
+      "c": {
+        "string": "SYSTEM"
+      }
+    }
+  }
+}
