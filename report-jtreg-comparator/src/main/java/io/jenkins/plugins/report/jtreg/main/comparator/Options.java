@@ -11,9 +11,7 @@ import java.util.Map;
 public class Options {
     private Operations operation;
     private String jobsPath;
-    private String nvrQuery;
     private int numberOfBuilds;
-    private boolean skipFailed;
     private boolean forceVague;
     private boolean onlyVolatile;
     private String exactTestsRegex;
@@ -25,9 +23,7 @@ public class Options {
     private final Map<String, Configuration> configurations;
 
     public Options() {
-        this.nvrQuery = "";
         this.numberOfBuilds = 1;
-        this.skipFailed = true;
         this.forceVague = false;
         this.onlyVolatile = false;
         this.exactTestsRegex = ".*";
@@ -37,6 +33,10 @@ public class Options {
         this.printVirtual = false;
         this.die = false;
         this.configurations = new HashMap<>();
+        // default configuration for getting job results
+        Configuration resultConfig = new Configuration("build.xml", "/build/result", Locations.Build);
+        resultConfig.setValue("{SUCCESS,UNSTABLE}");
+        addConfiguration("result", resultConfig);
     }
 
     public void setDie(boolean die) {
@@ -63,28 +63,12 @@ public class Options {
         this.jobsPath = jobsPath;
     }
 
-    public String getNvrQuery() {
-        return nvrQuery;
-    }
-
-    public void setNvrQuery(String nvr) {
-        this.nvrQuery = nvr;
-    }
-
     public int getNumberOfBuilds() {
         return numberOfBuilds;
     }
 
     public void setNumberOfBuilds(int numberOfBuilds) {
         this.numberOfBuilds = numberOfBuilds;
-    }
-
-    public boolean isSkipFailed() {
-        return skipFailed;
-    }
-
-    public void setSkipFailed(boolean skipFailed) {
-        this.skipFailed = skipFailed;
     }
 
     public boolean isForceVague() {
