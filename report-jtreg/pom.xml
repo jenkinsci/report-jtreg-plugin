@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>report-jtreg</artifactId>
-    <version>4.1</version>
+    <version>${revision}${changelist}</version>
 
     <packaging>hpi</packaging>
 
