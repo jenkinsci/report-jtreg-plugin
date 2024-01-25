@@ -46,7 +46,7 @@ public class BuildReport implements java.io.Serializable {
         this.suites = suites;
         this.total = total;
         this.notRun = notRun;
-        this.run = 0;
+        this.run = total - notRun;
     }
 
     public int getBuildNumber() {
@@ -82,7 +82,7 @@ public class BuildReport implements java.io.Serializable {
     }
 
     public int getRun() {
-        return total - notRun;
+        return run;
     }
 
     public boolean isInvalid() {

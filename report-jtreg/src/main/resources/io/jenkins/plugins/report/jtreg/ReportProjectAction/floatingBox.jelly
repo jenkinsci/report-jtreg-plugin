@@ -30,7 +30,7 @@
     </span>
     <span id="jckdata_runned" style="visibility:hidden">
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
-            ${build.Run}<j:if test="${!status.last}">,</j:if>
+            ${build.run}<j:if test="${!status.last}">,</j:if>
         </j:forEach>
     </span>
     <span id="jckdata_imps" style="visibility:hidden">
