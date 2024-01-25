@@ -37,7 +37,7 @@
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
             <artifactId>report-jtreg-lib</artifactId>
-            <version>4.1</version>
+            <version>${revision}${changelist}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -88,9 +88,4 @@
             </plugin>
         </plugins>
     </build>
-
-
-  <scm>
-    <tag>report-jtreg-4.1</tag>
-  </scm>
 </project>
