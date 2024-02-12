@@ -1,5 +1,6 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
+import io.jenkins.plugins.report.jtreg.ConfigFinder;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 
 import java.io.File;
@@ -13,21 +14,28 @@ public class JobsPrinting {
         Formatter formatter = options.getFormatter();
 
         for (File job : matchedJobs) {
-            formatter.startBold();
-            formatter.println(job.getName() + ":");
-            formatter.reset();
             List<File> jobBuilds = Builds.getBuilds(job, options);
+            if (!jobBuilds.isEmpty()) {
+                formatter.startBold();
+                formatter.println(job.getName() + ":");
+                formatter.reset();
+            }
+
             for (File build : jobBuilds) {
                 formatter.print("\t");
                 formatter.startColor(Formatter.SupportedColors.LightBlue);
                 formatter.print("build:");
                 formatter.reset();
                 formatter.print(Builds.getBuildNumber(build));
-                formatter.print(" - ");
-                formatter.startColor(Formatter.SupportedColors.LightBlue);
-                formatter.print("nvr: ");
-                formatter.reset();
-                formatter.println(Builds.getNvr(build, options.getConfiguration("nvr")));
+
+                for (Map.Entry<String, Options.Configuration> entry : options.getAllConfigurations().entrySet()) {
+                    formatter.print(" - ");
+                    formatter.startColor(Formatter.SupportedColors.LightBlue);
+                    formatter.print(entry.getKey() + ":");
+                    formatter.reset();
+                    formatter.print(new ConfigFinder(entry.getValue().findConfigFile(build), entry.getKey(), entry.getValue().getFindQuery()).findInConfig());
+                }
+                formatter.println();
             }
         }
     }
