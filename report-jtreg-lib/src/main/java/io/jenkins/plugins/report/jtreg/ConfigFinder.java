@@ -87,6 +87,10 @@ public class ConfigFinder {
                 return null;
             }
         } catch (ParserConfigurationException | XPathExpressionException | IOException | SAXException e) {
+            // warn the user that an exception was thrown, print its stack trace and return null
+            System.out.println("Warning, an exception was thrown when looking for a value defined by " + xpath + " in file " +
+                    configFile.getAbsolutePath() + ", returning null.");
+            e.printStackTrace();
             return null;
         }
     }
@@ -98,6 +102,9 @@ public class ConfigFinder {
 
             return properties.getProperty(key);
         } catch (IOException e) {
+            System.out.println("Warning, an exception was thrown when looking for a value defined by " + key + " in file " +
+                    configFile.getAbsolutePath() + ", returning null.");
+            e.printStackTrace();
             return null;
         }
     }
@@ -147,10 +154,16 @@ public class ConfigFinder {
                     // try to get the value as string
                     return je.getAsString();
                 } catch (Exception e) {
+                    System.out.println("Warning, an exception was thrown when looking for a value defined by " + jsonQuery + " in file " +
+                            configFile.getAbsolutePath() + ", returning null.");
+                    e.printStackTrace();
                     return null;
                 }
             }
         } catch (IOException e) {
+            System.out.println("Warning, an exception was thrown when looking for a value defined by " + jsonQuery + " in file " +
+                    configFile.getAbsolutePath() + ", returning null.");
+            e.printStackTrace();
             return null;
         }
     }
