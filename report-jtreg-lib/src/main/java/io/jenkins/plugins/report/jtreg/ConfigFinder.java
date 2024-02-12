@@ -133,7 +133,16 @@ public class ConfigFinder {
 
                     // check if it is not null
                     if (current.get(split[0]) != null) {
-                        je = current.get(split[0]).getAsJsonArray().get(num);
+                        try {
+                            je = current.get(split[0]).getAsJsonArray().get(num);
+                        } catch (IllegalStateException e) {
+                            // the element is not an array
+                            System.out.println("Warning, an exception was thrown when looking for a value defined by " + jsonQuery + " in file " +
+                                    configFile.getAbsolutePath() + ", returning null.");
+                            e.printStackTrace();
+                            return null;
+                        }
+
                     } else {
                         System.out.println("Warning, the value defined by " + jsonQuery + " in file " + configFile.getAbsolutePath() +
                                 " does not exist, returning null.");
