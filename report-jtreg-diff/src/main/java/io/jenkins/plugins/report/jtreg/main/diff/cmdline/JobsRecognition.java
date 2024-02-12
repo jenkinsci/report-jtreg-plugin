@@ -213,6 +213,10 @@ public class JobsRecognition {
         return new ConfigFinder(creteChangelogFile(buildPath), "nvr", "/build/nvr").findInConfig();
     }
 
+    public static String getBuildXmlDisplayName(File buildPath) {
+        return new ConfigFinder(new File(buildPath, "build.xml"), "display-name", "/build/displayName").findInConfig();
+    }
+
     //maybe linux only, not utf8 valid solution... nto much tested, just copypasted and worked
     public static String tail(File file) {
         if (!file.exists()) {
