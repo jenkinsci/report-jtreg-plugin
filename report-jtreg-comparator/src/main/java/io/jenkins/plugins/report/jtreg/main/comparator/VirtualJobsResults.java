@@ -25,7 +25,7 @@ public class VirtualJobsResults {
         }
     }
 
-    public static void printVirtualTable(ArrayList<File> buildsToCompare, Formatter formatter, Options.Configuration resultConfig, Options.Configuration nvrConfig) {
+    public static void printVirtualTable(ArrayList<File> buildsToCompare, Formatter formatter, Options.Configuration resultConfig) {
         formatter.startBold();
         formatter.println("Virtual builds' results table:");
         formatter.println();
@@ -40,9 +40,7 @@ public class VirtualJobsResults {
 
         for (int i = 1; i <= buildsToCompare.size(); i++) {
             File build = buildsToCompare.get(i - 1);
-            table[0][i] = Builds.getJobName(build)
-                    + " - build:" + Builds.getBuildNumber(build)
-                    + " - nvr:" + Builds.getNvr(build, nvrConfig);
+            table[0][i] = Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build);
 
             String result = getBuildResult(build, resultConfig);
             table[RESULTS.indexOf(result) + 1][i] = "X";
