@@ -3,7 +3,6 @@ package io.jenkins.plugins.report.jtreg;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonReader;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -82,6 +81,9 @@ public class ConfigFinder {
             if (node != null) {
                 return node.getFirstChild().getNodeValue();
             } else {
+                // warn the user that the value was not found and then return null
+                System.out.println("Warning, the value defined by " + xpath + " in file " + configFile.getAbsolutePath() +
+                        " does not exist, returning null.");
                 return null;
             }
         } catch (ParserConfigurationException | XPathExpressionException | IOException | SAXException e) {
@@ -126,6 +128,8 @@ public class ConfigFinder {
                     if (current.get(split[0]) != null) {
                         je = current.get(split[0]).getAsJsonArray().get(num);
                     } else {
+                        System.out.println("Warning, the value defined by " + jsonQuery + " in file " + configFile.getAbsolutePath() +
+                                " does not exist, returning null.");
                         return null;
                     }
                 } else {
@@ -135,6 +139,8 @@ public class ConfigFinder {
             }
 
             if (je == null) {
+                System.out.println("Warning, the value defined by " + jsonQuery + " in file " + configFile.getAbsolutePath() +
+                        " does not exist, returning null.");
                 return null;
             } else {
                 try {
