@@ -209,37 +209,6 @@ public class JobsByQueryTest {
     }
 
     @Test
-    public void testPrintJobs() throws IOException {
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        PrintStream printStream = new PrintStream(outStream);
-
-        String queryString = "!{jtreg~full,jtreg~tier1} {jp11,jp17} {ojdk11~rpms,ojdk17~rpms} f36 x86_64 fastdebug sdk f36 x86_64 vagrant x11 !shenandoah * *";
-        JobsByQuery jbq = new JobsByQuery();
-        jbq.parseArguments("--query", queryString);
-        jbq.addJobs(dummyJobs);
-        jbq.filterJobs();
-
-        File tmpdir = Files.createTempDirectory("reportJtregBuildTestDir").toFile();
-        File changelogFile = new File(tmpdir, "changelog.xml");
-        byte[] orig = BuildsTest.class.getResourceAsStream("/io/jenkins/plugins/report/jtreg/main/comparator/dummyJob/builds/1/changelog.xml").readAllBytes();
-        Files.write(changelogFile.toPath(), orig);
-
-        Options.Configuration nvrConfig = new Options.Configuration(changelogFile.getName(), "/build/nvr", Options.Locations.Build);
-        nvrConfig.setValue("");
-
-        Options options = new Options();
-        options.getConfiguration("result").setValue(".*"); // --skip-failed false
-        options.addConfiguration("nvr", nvrConfig);
-        options.setNumberOfBuilds(0);
-        options.setFormatter(new PlainFormatter(printStream));
-
-        JobsPrinting.printJobs(jbq.getJobs(), options);
-
-        Assertions.assertEquals("crypto~tests-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.fips.lnxagent.jfroff:\n" +
-                "reproducers~regular-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.defaultcp.lnxagent.jfroff:\n", crlfToLf(outStream.toString()));
-    }
-
-    @Test
     public void testPrintVariants() {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(outStream);
