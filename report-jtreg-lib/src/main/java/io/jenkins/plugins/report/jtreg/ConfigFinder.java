@@ -61,9 +61,14 @@ public class ConfigFinder {
 
         // puts the value to the cache if not null
         if (value != null) {
-            Map<String, String> newMap = new HashMap<>();
-            newMap.put(whatToFind, value);
-            configCache.put(configFile, newMap);
+            if (cachedMap != null) {
+                cachedMap.put(whatToFind, value);
+            } else {
+                cachedMap = new HashMap<>();
+                cachedMap.put(whatToFind, value);
+            }
+
+            configCache.put(configFile, cachedMap);
         }
 
         return value;
