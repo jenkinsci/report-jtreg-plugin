@@ -2,6 +2,7 @@ package io.jenkins.plugins.report.jtreg.main.comparator.arguments;
 
 import io.jenkins.plugins.report.jtreg.main.comparator.HelpMessage;
 import io.jenkins.plugins.report.jtreg.main.comparator.Options;
+import io.jenkins.plugins.report.jtreg.main.comparator.jobs.DefaultProvider;
 import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsByQuery;
 import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsByRegex;
 import io.jenkins.plugins.report.jtreg.formatters.ColorFormatter;
@@ -16,10 +17,6 @@ public class ArgumentsParsing {
         Options options = new Options();
 
         if (arguments.length >= 1) {
-            // setting up the available jobs providers
-            JobsByQuery jobsByQuery = new JobsByQuery();
-            JobsByRegex jobsByRegex = new JobsByRegex();
-
             List<String> dynamicArgs = new ArrayList<>(); // a list for dynamic arguments
 
             for (int i = 0; i < arguments.length; i++) {
@@ -121,13 +118,13 @@ public class ArgumentsParsing {
                     dynamicArgs.add(values[1]);
 
                     // parsing arguments of the jobs providers
-                } else if (jobsByQuery.getSupportedArgs().contains(currentArg) || jobsByRegex.getSupportedArgs().contains(currentArg)) {
+                } else if (JobsByQuery.getSupportedArgsStatic().contains(currentArg) || JobsByRegex.getSupportedArgsStatic().contains(currentArg)) {
                     // add a jobs provider to options, if there is none
                     if (options.getJobsProvider() == null) {
-                        if (jobsByQuery.getSupportedArgs().contains(currentArg)) {
-                            options.setJobsProvider(jobsByQuery);
-                        } else if (jobsByRegex.getSupportedArgs().contains(currentArg)){
-                            options.setJobsProvider(jobsByRegex);
+                        if (JobsByQuery.getSupportedArgsStatic().contains(currentArg)) {
+                            options.setJobsProvider(new JobsByQuery());
+                        } else if (JobsByRegex.getSupportedArgsStatic().contains(currentArg)){
+                            options.setJobsProvider(new JobsByRegex());
                         }
                     }
                     // check if the argument is compatible with current jobs provider
@@ -165,6 +162,11 @@ public class ArgumentsParsing {
         }
         if (options.getJobsPath() == null) {
             throw new RuntimeException("Expected path to jobs directory (--path).");
+        }
+
+        // if no provider was set, fallback to default provider
+        if (options.getJobsProvider() == null) {
+            options.setJobsProvider(new DefaultProvider());
         }
 
         // add the info about forcing vague queries to the current jobs provider

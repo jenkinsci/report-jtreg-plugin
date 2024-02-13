@@ -17,7 +17,8 @@ final public class HelpMessage {
             "    " + ArgumentsDeclaration.pathArg.getName() + ArgumentsDeclaration.pathArg.getUsage() + "\n" +
             "                  " + ArgumentsDeclaration.pathArg.getHelp() + "\n" +
             "\n" +
-            "    You can choose one of these to filter the jobs by their name:\n" +
+            "    You can choose one of these arguments to filter the jobs by their name\n" +
+            "    (but they are not mandatory to use):\n" +
             "    " + JobsByQuery.queryArg.getName() + JobsByQuery.queryArg.getUsage() + "\n" +
             "                  " + JobsByQuery.queryArg.getHelp() + "\n" +
             "    Query string syntax:\n" +
