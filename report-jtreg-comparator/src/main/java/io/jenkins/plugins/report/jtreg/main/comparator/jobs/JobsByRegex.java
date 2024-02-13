@@ -22,10 +22,14 @@ public class JobsByRegex implements JobsProvider {
         this.matchedJobs = new ArrayList<>();
     }
 
-    public ArrayList<String> getSupportedArgs() {
+    public static ArrayList<String> getSupportedArgsStatic() {
         ArrayList<String> supportedArgs = new ArrayList<>();
         supportedArgs.add(regexArg.getName());
         return supportedArgs;
+    }
+
+    public ArrayList<String> getSupportedArgs() {
+        return getSupportedArgsStatic();
     }
 
     public void parseArguments(String argument, String value) {
