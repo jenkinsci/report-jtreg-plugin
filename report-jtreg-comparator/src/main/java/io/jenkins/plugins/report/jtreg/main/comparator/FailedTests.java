@@ -21,9 +21,7 @@ public class FailedTests {
 
         // since the exception is already handled elsewhere, it checks for it by this and prints the info message
         if (swr == null) {
-            formatter.startColor(Formatter.SupportedColors.Yellow);
-            formatter.println("The " + Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build) + " is probably missing some files (may be ABORTED).");
-            formatter.reset();
+            System.err.println("The " + Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build) + " is probably missing some files (may be ABORTED).");
             return failedTests;
         }
 
