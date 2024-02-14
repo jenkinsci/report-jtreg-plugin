@@ -61,13 +61,10 @@ public class ConfigFinder {
 
         // puts the value to the cache if not null
         if (value != null) {
-            if (cachedMap != null) {
-                cachedMap.put(whatToFind, value);
-            } else {
+            if (cachedMap == null) {
                 cachedMap = new HashMap<>();
-                cachedMap.put(whatToFind, value);
             }
-
+            cachedMap.put(whatToFind, value);
             configCache.put(configFile, cachedMap);
         }
 
