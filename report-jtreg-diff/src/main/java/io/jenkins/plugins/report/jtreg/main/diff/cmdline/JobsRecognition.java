@@ -186,7 +186,7 @@ public class JobsRecognition {
                 formatter.startColor(Formatter.SupportedColors.Cyan);
             }
             formatter.print("" + result + "(" + (result - latest) + "): ");
-            formatter.print("" + getChangelogsNvr(f));
+            formatter.print("" + getBuildXmlDisplayName(f));
             String tt = JobsRecognition.tail(creteLogFile(jobName, result));
             if (tt != null) {
                 //tt = tt.trim();
