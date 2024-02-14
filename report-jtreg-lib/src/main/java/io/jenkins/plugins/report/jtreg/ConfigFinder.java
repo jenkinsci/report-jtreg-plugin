@@ -87,13 +87,13 @@ public class ConfigFinder {
                 return node.getFirstChild().getNodeValue();
             } else {
                 // warn the user that the value was not found and then return null
-                System.out.println("Warning, the value defined by " + xpath + " in file " + configFile.getAbsolutePath() +
+                System.err.println("Warning, the value defined by " + xpath + " in file " + configFile.getAbsolutePath() +
                         " does not exist, returning null.");
                 return null;
             }
         } catch (ParserConfigurationException | XPathExpressionException | IOException | SAXException e) {
             // warn the user that an exception was thrown, print its stack trace and return null
-            System.out.println("Warning, an exception was thrown when looking for a value defined by " + xpath + " in file " +
+            System.err.println("Warning, an exception was thrown when looking for a value defined by " + xpath + " in file " +
                     configFile.getAbsolutePath() + ", returning null.");
             e.printStackTrace();
             return null;
@@ -107,7 +107,7 @@ public class ConfigFinder {
 
             return properties.getProperty(key);
         } catch (IOException e) {
-            System.out.println("Warning, an exception was thrown when looking for a value defined by " + key + " in file " +
+            System.err.println("Warning, an exception was thrown when looking for a value defined by " + key + " in file " +
                     configFile.getAbsolutePath() + ", returning null.");
             e.printStackTrace();
             return null;
@@ -142,14 +142,14 @@ public class ConfigFinder {
                             je = current.get(split[0]).getAsJsonArray().get(num);
                         } catch (IllegalStateException e) {
                             // the element is not an array
-                            System.out.println("Warning, an exception was thrown when looking for a value defined by " + jsonQuery + " in file " +
+                            System.err.println("Warning, an exception was thrown when looking for a value defined by " + jsonQuery + " in file " +
                                     configFile.getAbsolutePath() + ", returning null.");
                             e.printStackTrace();
                             return null;
                         }
 
                     } else {
-                        System.out.println("Warning, the value defined by " + jsonQuery + " in file " + configFile.getAbsolutePath() +
+                        System.err.println("Warning, the value defined by " + jsonQuery + " in file " + configFile.getAbsolutePath() +
                                 " does not exist, returning null.");
                         return null;
                     }
@@ -160,7 +160,7 @@ public class ConfigFinder {
             }
 
             if (je == null) {
-                System.out.println("Warning, the value defined by " + jsonQuery + " in file " + configFile.getAbsolutePath() +
+                System.err.println("Warning, the value defined by " + jsonQuery + " in file " + configFile.getAbsolutePath() +
                         " does not exist, returning null.");
                 return null;
             } else {
@@ -168,14 +168,14 @@ public class ConfigFinder {
                     // try to get the value as string
                     return je.getAsString();
                 } catch (Exception e) {
-                    System.out.println("Warning, an exception was thrown when looking for a value defined by " + jsonQuery + " in file " +
+                    System.err.println("Warning, an exception was thrown when looking for a value defined by " + jsonQuery + " in file " +
                             configFile.getAbsolutePath() + ", returning null.");
                     e.printStackTrace();
                     return null;
                 }
             }
         } catch (IOException e) {
-            System.out.println("Warning, an exception was thrown when looking for a value defined by " + jsonQuery + " in file " +
+            System.err.println("Warning, an exception was thrown when looking for a value defined by " + jsonQuery + " in file " +
                     configFile.getAbsolutePath() + ", returning null.");
             e.printStackTrace();
             return null;

@@ -76,9 +76,7 @@ public class Builds {
 
         if (listOfBuilds.isEmpty() && options.isUseDefaultBuild()) {
             listOfBuilds.add(buildsInDir[0]);
-            options.getFormatter().startColor(Formatter.SupportedColors.Yellow);
-            options.getFormatter().println("Cannot find any builds of job " + getJobName(buildsInDir[0]) + " that matches your criteria, instead using default build " + getBuildNumber(buildsInDir[0]) + ".");
-            options.getFormatter().reset();
+            System.err.println("Cannot find any builds of job " + getJobName(buildsInDir[0]) + " that matches your criteria, instead using default build " + getBuildNumber(buildsInDir[0]) + ".");
         }
 
         return listOfBuilds;
