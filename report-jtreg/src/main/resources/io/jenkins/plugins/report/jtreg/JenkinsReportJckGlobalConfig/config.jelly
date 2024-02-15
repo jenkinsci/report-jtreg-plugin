@@ -7,18 +7,34 @@
     </f:section>
 
     <f:section title="Comparator links">
+        <div>
+            <p>
+                This section is used for generating automatic links to the comparator tool with prefilled arguments.
+                These links will be shown on top of any jtreg report page that matches the set criteria.
+                You can set those links to basically anything you wish, an example of this can be a link that automatically
+                compares given job with its variants on different operating systems or architectures.
+            </p>
+            <p>
+                <i>Each field in the form below has a help button describing what should be filled in.</i>
+            </p>
+        </div>
         <f:repeatable field="comparatorLinksGroups">
-            <f:entry field="jobMatchRegex" title="Regex for matching jobs">
+            <!-- the help needs to be specified manually, otherwise it is not shown in repeatable... -->
+            <f:entry field="jobMatchRegex" title="Regex for matching jobs"
+                     help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/jobMatchRegex">
                 <f:textbox />
             </f:entry>
             <f:repeatable field="links">
-                <f:entry field="label" title="Link label">
+                <f:entry field="label" title="Link label"
+                         help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/label">
                     <f:textbox />
                 </f:entry>
-                <f:entry field="spliterator" title="Regex to split the job names by">
+                <f:entry field="spliterator" title="A spliterator to split the job names"
+                         help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/spliterator">
                     <f:textbox />
                 </f:entry>
-                <f:entry field="comparatorArguments" title="Comparator tool arguments (one on each line)">
+                <f:entry field="comparatorArguments" title="Comparator tool arguments (one on each line)"
+                         help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/comparatorArguments">
                     <f:textarea />
                 </f:entry>
                 <f:repeatableDeleteButton/>
@@ -28,21 +44,35 @@
     </f:section>
 
     <f:section title="Config Items">
+        <div>
+            <p>
+                This section is used for automatically generating "<code>--build-config-find</code>" and "<code>--job-config-find</code>"
+                arguments into the link to comparator, that are above, since writing it manually can clutter the field
+                very easily. Each of these will generate the arguments into EVERY link specified above.
+            </p>
+            <p>
+                <i>Each field in the form below has a help button describing what should be filled in.</i>
+            </p>
+        </div>
         <f:repeatable field="configItems">
-            <f:entry field="configFileName" title="Config filename">
+            <f:entry field="configFileName" title="Config filename"
+                     help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/configFileName">
                 <f:textbox />
             </f:entry>
-            <f:entry field="whatToFind" title="Name of the item to find">
-                <f:textbox />
-            </f:entry>
-            <f:entry field="findQuery" title="XPath to find the item in the config file">
-                <f:textbox />
-            </f:entry>
-            <f:entry title="The directory with the config file" field="configLocation">
+            <f:entry title="The directory with the config file" field="configLocation"
+                     help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/configLocation">
                 <select name="configLocation">
                     <option value="build">Build directory</option>
                     <option value="job">Job directory</option>
                 </select>
+            </f:entry>
+            <f:entry field="whatToFind" title="Name of the item to find"
+                     help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/whatToFind">
+                <f:textbox />
+            </f:entry>
+            <f:entry field="findQuery" title="XPath/JSON query/properties key to find the item in the config file"
+                     help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/findQuery">
+                <f:textbox />
             </f:entry>
             <f:repeatableDeleteButton/>
         </f:repeatable>

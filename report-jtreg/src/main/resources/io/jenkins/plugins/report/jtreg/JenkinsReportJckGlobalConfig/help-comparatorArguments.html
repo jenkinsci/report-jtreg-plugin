@@ -1,0 +1,41 @@
+<div>
+    <p>
+        As the label suggests, you can write any command line argument of the comparator tool here. Each argument
+        should be on its own separate line. The available arguments can be seen in the comparator help message (you can
+        see this message when running comparator with the <code>--help</code> argument).
+    </p>
+    <p>
+        On top of the normal arguments, there is also a type of <b>macro system</b>. This macro system is powerful and
+        can be used for making the link dynamic. These macros represent each part of the split job name (split by the
+        spliterator) and when loading the report page, they are replaced by it.
+    </p>
+    <i>The macros have this syntax:</i><br>
+    <ul>
+        <li>"<code>%{x}</code>", where you replace <code>x</code> with a number corresponding with the xth split part
+            of the job's name (indexing starting with 1). It will be replaced with that part.</li>
+
+        <li>"<code>%{N-y}</code>", where you replace <code>y</code> with a number corresponding for the yth split part
+            of the job's name from the BACK. It will be replaced with that part. Entering just "<code>%{N}</code>"
+            will be replaced with the last part of the name.</li>
+
+        <li>"<code>%{S}</code>" or "<code>%{SPLIT}</code>" will be replaced with the spliterator specified in the field
+            above.</li>
+    </ul>
+    <p>
+        <i>Example of the macros:</i><br>
+        For the job name "<code>jtreg~full-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.legacy.lnxagent.jfroff</code>",<br>
+        and spliterator set to "<code>[.-]</code>", the macros "<code>%{2}%{S}%{N-1}_something_%{N}</code>" will be
+        replaced with "<code>jp11[.-]lnxagent_something_jfroff</code>".
+    </p>
+    <p>
+        <i>So an example of the whole prompt with arguments can look like this:</i><br>
+        <code>
+            --compare<br>
+            --history 5<br>
+            --build-config-find changelog.xml:nvr:/build/nvr<br>
+            --nvr ".*"<br>
+            --formatting html<br>
+            --regex %{1}%{S}%{2}%{S}%{3}%{S}.*%{S}%{5}%{S}%{6}%{S}%{7}%{S}.*%{S}%{9}%{S}%{10}%{S}%{11}%{S}%{12}%{S}%{13}%{S}%{14}%{S}%{15}<br>
+        </code>
+    </p>
+</div>
