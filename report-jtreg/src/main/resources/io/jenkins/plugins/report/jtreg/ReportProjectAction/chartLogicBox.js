@@ -82,6 +82,7 @@
                 ]
         },
         options: {
+          responsive: false,
           plugins: {
             legend: { display: false }
           },
@@ -135,6 +136,7 @@
                 ]
         },
         options: {
+          responsive: false,
           plugins: {
           legend: { display: false }
           },
@@ -184,6 +186,7 @@
                 ]
         },
         options: {
+          responsive: false,
           plugins: {
             legend: { display: false }
           },
@@ -205,15 +208,5 @@
         var ctx = document.getElementById("jckRegressionsChart").getContext("2d");
         var jckRegressions = new Chart(ctx, allJckRegressions);
 
-        //hopefully temporary workaround to weird sizes
-        var jc1 = document.getElementById('jckErrorsFailuresChartContainer')
-        jc1.style.width = "599px";
-        jc1.style.height = "599px";
-        var jc2 = document.getElementById('jckPassedChartContainer')
-        jc2.style.width = "599px";
-        jc2.style.height = "599px";
-        var jc3 = document.getElementById('jckRegressionsChartContainer')
-        jc3.style.width = "599px";
-        jc3.style.height = "599px";
         // ]]>
 
