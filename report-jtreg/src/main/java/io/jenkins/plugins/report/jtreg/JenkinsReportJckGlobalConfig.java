@@ -7,7 +7,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -19,8 +18,8 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
     private static Logger logger = Logger.getLogger(JenkinsReportJckGlobalConfig.class.getName());
 
     String diffToolUrl;
-    List<ComparatorLinksGroup> comparatorLinksGroups = new ArrayList<>();
-    List<ConfigItem> configItems = new ArrayList<>();
+    List<ComparatorLinksGroup> comparatorLinksGroups;
+    List<ConfigItem> configItems;
 
     public static JenkinsReportJckGlobalConfig getInstance() {
         return GlobalConfiguration.all().get(JenkinsReportJckGlobalConfig.class);
