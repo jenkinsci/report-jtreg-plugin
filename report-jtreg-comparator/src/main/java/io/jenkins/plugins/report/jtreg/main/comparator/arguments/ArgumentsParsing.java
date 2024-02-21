@@ -1,5 +1,6 @@
 package io.jenkins.plugins.report.jtreg.main.comparator.arguments;
 
+import io.jenkins.plugins.report.jtreg.Constants;
 import io.jenkins.plugins.report.jtreg.main.comparator.HelpMessage;
 import io.jenkins.plugins.report.jtreg.main.comparator.Options;
 import io.jenkins.plugins.report.jtreg.main.comparator.jobs.DefaultProvider;
@@ -181,6 +182,11 @@ public class ArgumentsParsing {
         Options.Configuration configuration;
         // checks the number of items it got from the splitting of the value
         if (values.length == 3) { // filename:whatToFind:findQuery
+            // check if the user is trying to escape the current directory with ../
+            if (values[0].matches(Constants.ESCAPE_DIRECTORY_REGEX)) {
+                throw new RuntimeException("Cannot escape from the directory with config file to its parent directory.");
+            }
+
             if (currentArg.equals(ArgumentsDeclaration.buildConfigFindArg.getName())) {
                 configuration = new Options.Configuration(values[0], values[2], Options.Locations.Build);
             } else {
