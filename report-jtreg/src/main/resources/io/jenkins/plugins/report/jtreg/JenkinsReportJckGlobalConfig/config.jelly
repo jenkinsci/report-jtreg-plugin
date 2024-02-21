@@ -62,8 +62,8 @@
             <f:entry title="The directory with the config file" field="configLocation"
                      help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/configLocation">
                 <select name="configLocation">
-                    <option value="build">Build directory</option>
-                    <option value="job">Job directory</option>
+                    <option value="build" selected="${instance.ConfigLocation.equals('build') ? 'true' : null}">Build directory</option>
+                    <option value="job" selected="${instance.ConfigLocation.equals('job') ? 'true' : null}">Job directory</option>
                 </select>
             </f:entry>
             <f:entry field="whatToFind" title="Name of the item to find"
