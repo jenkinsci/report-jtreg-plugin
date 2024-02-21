@@ -14,6 +14,11 @@ public class ConfigItem extends AbstractDescribableImpl<ConfigItem> {
 
     @DataBoundConstructor
     public ConfigItem(String configFileName, String whatToFind, String findQuery, String configLocation) {
+        // check if the user is trying to escape the current directory with ../
+        if (configFileName.matches(Constants.ESCAPE_DIRECTORY_REGEX)) {
+            throw new RuntimeException("Cannot escape from the directory with config file to its parent directory.");
+        }
+
         this.configFileName = configFileName;
         this.whatToFind = whatToFind;
         this.findQuery = findQuery;
