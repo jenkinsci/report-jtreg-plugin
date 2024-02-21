@@ -6,7 +6,7 @@
         </f:entry>
     </f:section>
 
-    <f:section title="Comparator links">
+    <f:section title="Comparator Links">
         <div>
             <p>
                 This section is used for generating automatic links to the comparator tool with prefilled arguments.
@@ -48,7 +48,8 @@
             <p>
                 This section is used for automatically generating "<code>--build-config-find</code>" and "<code>--job-config-find</code>"
                 arguments into the link to comparator, that are above, since writing it manually can clutter the field
-                very easily. Each of these will generate the arguments into EVERY link specified above.
+                very easily. Each of these will generate the arguments into EVERY link specified above. After specifying them,
+                you can also use them as a macro in the arguments field in the <i>comparator links</i> section.
             </p>
             <p>
                 <i>Each field in the form below has a help button describing what should be filled in.</i>
