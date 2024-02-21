@@ -63,7 +63,7 @@ final public class HelpMessage {
             "        Another type of arguments you can use are dynamic arguments. They are used\n" +
             "        for further filtering the jobs/builds to compare by any value in their config\n" +
             "        files.\n" +
-            "        First, you must define the value to look for in a config file. The general syntax is:\n" +
+            "        You must define the value to look for in a config file. The general syntax is:\n" +
             "          --X \"configFileName:whatAreYouLookingFor:queryToFindIt\"\n" +
             "            Instead of --X, you use one of these arguments:\n" +
             "    " + ArgumentsDeclaration.buildConfigFindArg.getName() + ArgumentsDeclaration.buildConfigFindArg.getUsage() + "\n" +
@@ -76,8 +76,8 @@ final public class HelpMessage {
             "            queryToFindIt is the query, to find the value in the config file. Currently,\n" +
             "                XPath is supported for XML files, Json Query for JSON files and plain value\n" +
             "                for properties files.\n" +
-            "        After defining the value, you can proceed to the filtering itself. For that, you\n" +
-            "        use the whatAreYouLooking part from the definition as an argument and this syntax:\n" +
+            "        Now, you can proceed to the filtering itself. For that, you use the whatAreYouLooking\n" +
+            "        part from the definition as an argument and this syntax:\n" +
             "            It either takes RegEx to match the value with or multiple RegExes\n" +
             "            in curly brackets, separated by commas. (e.g. {nvr1.*,nvr2.*})\n" +
             "        Example:\n" +
