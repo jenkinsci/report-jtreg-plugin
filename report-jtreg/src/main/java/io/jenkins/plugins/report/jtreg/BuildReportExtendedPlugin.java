@@ -25,6 +25,7 @@ package io.jenkins.plugins.report.jtreg;
 
 import io.jenkins.plugins.report.jtreg.model.*;
 
+import java.io.File;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -78,17 +79,17 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
 
         String converted = query;
 
-        // finds %{X} in the query from Jenkins config and replaces it with corresponding part of job name
-        Pattern p = Pattern.compile("%\\{(N?[+-]?[0-9]+|N|S|SPLIT)\\}");
+        // finds %{X} in the query from Jenkins config and replaces it with corresponding part of job name or value from config
+        Pattern p = Pattern.compile("%\\{[a-zA-Z0-9+-]+}");
         Matcher m = p.matcher(converted);
 
         while (m.find()) {
             String insideBrackets = converted.substring(m.start() + 1 + 1, m.end() - 1); // get just the inside of the brackets
 
-            String replacement;
+            String replacement = "";
             if (insideBrackets.equals("S") || insideBrackets.equals("SPLIT")) {
                 replacement = spliterator;
-            } else {
+            } else if (insideBrackets.matches("N?[+-]?[0-9]+|N")) {
                 int number;
                 if (insideBrackets.charAt(0) == 'N' && insideBrackets.length() > 1) {
                     number = splitJob.length + Integer.parseInt(insideBrackets.substring(1));
@@ -104,6 +105,30 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
                 }
 
                 replacement = splitJob[number];
+            } else {
+                List<ConfigItem> configItems = JenkinsReportJckGlobalConfig.getGlobalConfigItems();
+                boolean found = false;
+                for (ConfigItem item : configItems) {
+                    if (item.getWhatToFind().equals(insideBrackets)) {
+                        found = true;
+
+                        // get path of Jenkins home
+                        String jenkinsHome = System.getProperty("jenkins_home");
+                        if (jenkinsHome == null) {
+                            jenkinsHome = System.getenv("JENKINS_HOME");
+                        }
+
+                        File configFile = getFile(item, jenkinsHome);
+
+                        replacement = new ConfigFinder(configFile, item.getWhatToFind(), item.getFindQuery()).findInConfig();
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    System.err.println("WARNING: Cannot find a config item corresponding with \""+ insideBrackets + "\", please set it first!");
+                    return "Cannot find \"" + insideBrackets + "\" config item!";
+                }
             }
 
             converted = m.replaceFirst(replacement);
@@ -111,6 +136,23 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         }
 
         return converted;
+    }
+
+    private File getFile(ConfigItem item, String jenkinsHome) {
+        String path = jenkinsHome + "/jobs/" + job + "/";
+
+        // check if it is looking into job or build directory and add the correct path
+        if (item.getConfigLocation().equals("build")) {
+            path = path + "builds/" + getBuildNumber();
+        } else if (!item.getConfigLocation().equals("job")){
+            throw new RuntimeException("Invalid location of config file, only job or build directories are allowed.");
+        }
+
+        File configFile = new File(path, item.getConfigFileName());
+        if (!configFile.exists()) {
+            throw new RuntimeException("The file " + path + item.getConfigFileName() + " was not found.");
+        }
+        return configFile;
     }
 
     private String getDiffUrlStub(){
