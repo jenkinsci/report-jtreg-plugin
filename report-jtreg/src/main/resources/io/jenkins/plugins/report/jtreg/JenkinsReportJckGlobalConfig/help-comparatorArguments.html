@@ -29,7 +29,7 @@
     <p>
         <i>Example of the macros:</i><br>
         There is a job with the job name "<code>jtreg~full-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.legacy.lnxagent.jfroff</code>",<br>
-        spliterator set to "<code>[.-]</code>" and a config item with the <i>Name of the item to find</i> field set
+        spliterator set to "<code>[.-]</code>" and a build config item with the <i>Name of the item to find</i> field set
         to "<code>nvr</code>" and its evaluation in the config file being "<code>java-17-openjdk-17.0.6.0.9-0.4.ea.el8</code>".
     </p>
     <p>
@@ -42,6 +42,8 @@
             --compare<br>
             --history 5<br>
             --nvr "%{nvr}"<br>
+            --job-config-find "cfg.properties:os:operating-system"<br>
+            --os "rhel9"<br>
             --formatting html<br>
             --regex %{1}%{S}%{2}%{S}%{3}%{S}.*%{S}%{5}%{S}%{6}%{S}%{7}%{S}.*%{S}%{9}%{S}%{10}%{S}%{11}%{S}%{12}%{S}%{13}%{S}%{14}%{S}%{15}<br>
         </code>
