@@ -167,6 +167,9 @@ public class Options {
         public String getFindQuery() {
             return findQuery;
         }
+        public Locations getLocation() {
+            return location;
+        }
         public File findConfigFile(File buildDir) {
             // This method takes a build directory as an argument.
             // If the user used --job-config-find, the method returns the config file in the job directory.

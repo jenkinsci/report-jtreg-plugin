@@ -21,8 +21,11 @@ public class VariantComparator {
         options.getJobsProvider().addJobs(dl.getJobsInDir());
         options.getJobsProvider().filterJobs();
 
+        JobConfigFilter jfbc = new JobConfigFilter(options.getJobsProvider().getJobs(), options.getAllConfigurations());
+        jfbc.filterJobs();
+
         ArrayList<File> buildsToCompare = new ArrayList<>();
-        for (File job : options.getJobsProvider().getJobs()) {
+        for (File job : jfbc.getJobs()) {
             List<File> builds = Builds.getBuilds(job, options);
             buildsToCompare.addAll(builds);
         }

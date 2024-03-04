@@ -2,7 +2,6 @@ package io.jenkins.plugins.report.jtreg.main.comparator;
 
 import io.jenkins.plugins.report.jtreg.ConfigFinder;
 
-import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 import java.io.File;
 import java.util.*;
 
@@ -13,6 +12,11 @@ public class Builds {
         for (File build : builds) {
             boolean correct = true;
             for (Map.Entry<String, Options.Configuration> entry : configs.entrySet()) {
+                // only filter by configurations in the build directories
+                if (entry.getValue().getLocation() != Options.Locations.Build) {
+                    continue;
+                }
+
                 String desiredValue = entry.getValue().getValue();
                 String valueInConfig = new ConfigFinder(entry.getValue().findConfigFile(build), entry.getKey(), entry.getValue().getFindQuery()).findInConfig();
 
