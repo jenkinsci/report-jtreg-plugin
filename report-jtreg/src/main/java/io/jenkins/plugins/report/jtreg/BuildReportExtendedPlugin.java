@@ -149,6 +149,9 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         }
 
         File configFile = new File(path, item.getConfigFileName());
+
+        ConfigFinder.checkIfConfigIsInParent(new File(path), configFile);
+
         if (!configFile.exists()) {
             throw new RuntimeException("The file " + path + item.getConfigFileName() + " was not found.");
         }

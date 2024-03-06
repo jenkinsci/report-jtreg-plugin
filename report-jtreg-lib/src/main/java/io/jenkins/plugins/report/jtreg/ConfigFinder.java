@@ -178,4 +178,23 @@ public class ConfigFinder {
             return null;
         }
     }
+
+    public static void checkIfConfigIsInParent(File parentDir, File configFile) {
+        if (!parentDir.exists() || !parentDir.isDirectory()) {
+            throw new RuntimeException("Invalid parent directory specified when checking for unwanted escaping from config directories.");
+        }
+
+        File canonicalParentDir = null;
+        File canonicalConfigFile = null;
+        try {
+            canonicalParentDir = parentDir.getCanonicalFile();
+            canonicalConfigFile = configFile.getCanonicalFile();
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot convert files to canonical.");
+        }
+
+        if (!canonicalConfigFile.toPath().startsWith(canonicalParentDir.toPath())) {
+            throw new RuntimeException("Cannot escape the config's parent directory.");
+        }
+    }
 }

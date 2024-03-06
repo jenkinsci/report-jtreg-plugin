@@ -27,6 +27,7 @@ public class JobConfigFilter {
 
                 File config = new File(job, entry.getValue().getConfigFileName());
                 String desiredValue = entry.getValue().getValue();
+                ConfigFinder.checkIfConfigIsInParent(job, config);
                 String valueInConfig = new ConfigFinder(config, entry.getKey(), entry.getValue().getFindQuery()).findInConfig();
 
                 if (valueInConfig == null) {
