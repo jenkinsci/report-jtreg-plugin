@@ -10,6 +10,9 @@ public class Builds {
     private static List<File> filterByConfig(File[] builds, Map<String, Options.Configuration> configs) {
         List<File> filteredBuilds = new ArrayList<>();
         for (File build : builds) {
+            if (build == null) {
+                continue;
+            }
             boolean correct = true;
             for (Map.Entry<String, Options.Configuration> entry : configs.entrySet()) {
                 // only filter by configurations in the build directories
@@ -18,6 +21,7 @@ public class Builds {
                 }
 
                 String desiredValue = entry.getValue().getValue();
+                ConfigFinder.checkIfConfigIsInParent(build, entry.getValue().findConfigFile(build));
                 String valueInConfig = new ConfigFinder(entry.getValue().findConfigFile(build), entry.getKey(), entry.getValue().getFindQuery()).findInConfig();
 
                 if (valueInConfig == null) {

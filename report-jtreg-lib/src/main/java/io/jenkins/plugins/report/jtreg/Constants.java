@@ -30,5 +30,4 @@ final public class Constants {
     public static final String IRRELEVANT_GLOB_STRING = "report-{runtime,devtools,compiler}.xml.gz";
     public static final double VAGUE_QUERY_THRESHOLD = 0.5;
     public static final int VAGUE_QUERY_LENGTH_THRESHOLD = 4;
-    public static final String ESCAPE_DIRECTORY_REGEX = "((\\.\\./)+.*(\\.\\./)*.*)|((\\.\\./)*.*(\\.\\./)+.*)";
 }
