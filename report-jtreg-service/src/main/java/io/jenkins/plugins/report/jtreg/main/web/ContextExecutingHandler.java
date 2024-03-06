@@ -110,14 +110,8 @@ public abstract class ContextExecutingHandler implements HttpHandler {
                 }
             }
             parsedParams.add(0, targetProgram.getAbsolutePath());
-            for(String param: parsedParams){
-                if (param.contains(";") || param.contains("&") || param.contains("|") || param.contains("eval")  || param.contains("exec")) {
-                    t.sendResponseHeaders(505, 0);
-                    t.getResponseBody().write("nice try, but if you do better, you will beat me".getBytes("ascii"));
-                    t.getResponseBody().flush();
-                    t.getResponseBody().close();
-                    return;
-                }
+            if (checkForBedChars(parsedParams, t)) {
+                return;
             }
             t.sendResponseHeaders(200, 0);
             try (BufferedWriter wos = new BufferedWriter(new OutputStreamWriter(t.getResponseBody(), "utf-8"))) {
@@ -197,6 +191,45 @@ public abstract class ContextExecutingHandler implements HttpHandler {
             }
         }
 
+    }
+
+    static boolean checkForBedChars(List<String> parsedParams, HttpExchange t) throws IOException {
+        char q1 = '"';
+        char q2 = '\'';
+        for (String param : parsedParams) {
+            if (param.contains("eval") || param.contains("exec")) {
+                if (t != null) {
+                    sayBayBay(t);
+                }
+                return true;
+            }
+            int currentQuote = -1;
+            for (int i = 0; i < param.length(); i++) {
+                char investigatedChar = param.charAt(i);
+                if (currentQuote == -1 && (investigatedChar == q1 || investigatedChar == q2)) {
+                    currentQuote = investigatedChar;
+                } else {
+                    if (investigatedChar == currentQuote) {
+                        currentQuote = -1;
+                    } else {
+                        if (currentQuote == -1 && (investigatedChar == ';' || investigatedChar == '&' || investigatedChar == '|')) {
+                            if (t != null) {
+                                sayBayBay(t);
+                            }
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private static void sayBayBay(HttpExchange t) throws IOException {
+        t.sendResponseHeaders(505, 0);
+        t.getResponseBody().write("nice try, but if you do better, you will beat me".getBytes("ascii"));
+        t.getResponseBody().flush();
+        t.getResponseBody().close();
     }
 
     protected abstract String pritnHelp() throws UnsupportedEncodingException;
