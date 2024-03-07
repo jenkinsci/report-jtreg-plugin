@@ -30,7 +30,15 @@ public class ContextExecutingHandlerTest {
     }
 
     @org.junit.Test
-    public void checkForBedEscapedCharsCharsTest() throws IOException {
+    public void checkForBedNastyEscapedCharsTest() throws IOException {
+        for (char ch : new char[]{'|', '&', ';', '>', '<'}) {
+            Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"\\\"\"" + ch), null));
+            Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"\\\"\"" + ch + "echo ahoj"), null));
+        }
+    }
+
+    @org.junit.Test
+    public void checkForBedEscapedCharsTest() throws IOException {
         for (char ch : new char[]{'|', '&', ';', '>', '<'}) {
             //    \" escaped "
             Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("\\\"" + ch), null));
@@ -70,8 +78,30 @@ public class ContextExecutingHandlerTest {
         Assert.assertTrue(ContextExecutingHandler.checkForBedChars(
                 Arrays.asList("--compare", "--only-volatile", "true", "--formatting", "html", "--history", "1", "--force", "--regex",
                         "\\\".*;echo ahoj;\\\""), null));
+        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(
+                Arrays.asList("--compare", "--only-volatile", "true", "--formatting", "html", "--history", "1", "--regex", "\"\\\"\"",
+                        "--virtual", "--force;echo ahoj"), null));
+        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(
+                Arrays.asList("--compare", "--only-volatile", "true", "--formatting", "html", "--history", "1", "--regex", "\"\\\"\"",
+                        "--virtual", "--force;echo", "ahoj"), null));
         Assert.assertFalse(ContextExecutingHandler.checkForBedChars(
                 Arrays.asList("--compare", "--only-volatile", "true", "--formatting", "html", "--history", "1", "--force", "--regex",
                         "\".*;echo ahoj;\""), null));
+    }
+
+    @org.junit.Test
+    public void checkForBadCharsRealLifeNastyPinnedTest() throws IOException {
+        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"\\\"\";echo"), null));
+    }
+
+    @org.junit.Test
+    public void checkForBadCharsRealLifeNastyTest() throws IOException {
+        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"\\\"\";echo"), null));
+        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(
+                Arrays.asList("--compare", "--only-volatile", "true", "--formatting", "html", "--history", "1", "--regex",
+                        "\"\\\"\";echo", "ahoj"), null));
+        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(
+                Arrays.asList("--compare", "--only-volatile", "true", "--formatting", "html", "--history", "1", "--regex",
+                        "\"\\\"\";echo ahoj"), null));
     }
 }
