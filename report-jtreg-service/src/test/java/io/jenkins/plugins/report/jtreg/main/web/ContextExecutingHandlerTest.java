@@ -64,4 +64,14 @@ public class ContextExecutingHandlerTest {
             Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("'\"" + ch + "'"), null));
         }
     }
+
+    @org.junit.Test
+    public void checkForBadCharsRealLifeTest() throws IOException {
+        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(
+                Arrays.asList("--compare", "--only-volatile", "true", "--formatting", "html", "--history", "1", "--force", "--regex",
+                        "\\\".*;echo ahoj;\\\""), null));
+        Assert.assertFalse(ContextExecutingHandler.checkForBedChars(
+                Arrays.asList("--compare", "--only-volatile", "true", "--formatting", "html", "--history", "1", "--force", "--regex",
+                        "\".*;echo ahoj;\""), null));
+    }
 }
