@@ -3,3 +3,11 @@
 .idea/
 *.iml
 work/
+
+report-jtreg-comparator/target/
+report-jtreg-diff/target/
+report-jtreg-lib/config.xml
+report-jtreg-lib/target/
+report-jtreg-service/target/
+report-jtreg/target/
+
