@@ -28,4 +28,17 @@ public class ContextExecutingHandlerTest {
             Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("'\"" + ch + "'"), null));
         }
     }
+
+    @org.junit.Test
+    public void checkForGoodCharsCharsTest() throws IOException {
+        for (char ch : new char[]{'*', '?', '.', 'a', 'b'}) {
+            Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("" + ch), null));
+            Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("''" + ch), null));
+            Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"\"" + ch), null));
+            Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"" + ch + "\""), null));
+            Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("'" + ch + "'"), null));
+            Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"'" + ch + "\""), null));
+            Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("'\"" + ch + "'"), null));
+        }
+    }
 }
