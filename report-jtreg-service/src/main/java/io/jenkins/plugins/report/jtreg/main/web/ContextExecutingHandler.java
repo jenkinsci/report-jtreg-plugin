@@ -212,7 +212,12 @@ public abstract class ContextExecutingHandler implements HttpHandler {
                     if (investigatedChar == currentQuote) {
                         currentQuote = -1;
                     } else {
-                        if (currentQuote == -1 && (investigatedChar == ';' || investigatedChar == '&' || investigatedChar == '|')) {
+                        if (currentQuote == -1 &&
+                                (investigatedChar == ';' ||
+                                        investigatedChar == '&' ||
+                                        investigatedChar == '|' ||
+                                        investigatedChar == '>' ||
+                                        investigatedChar == '<' )) {
                             if (t != null) {
                                 sayBayBay(t);
                             }

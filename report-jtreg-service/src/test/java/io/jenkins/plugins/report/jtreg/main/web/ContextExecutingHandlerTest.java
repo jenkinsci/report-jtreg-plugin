@@ -9,40 +9,23 @@ import java.util.Arrays;
 public class ContextExecutingHandlerTest {
     @org.junit.Test
     public void checkForBedCharsKeywordTest() throws IOException {
-        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("exec"), null));
-        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("eval"), null));
-        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("'exec'"), null));
-        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("'eval'"), null));
-        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"exec\""), null));
-        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"eval\""), null));
+        for (String keyword : new String[]{"exec", "eval"}) {
+            Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList(keyword), null));
+            Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("'" + keyword + "'"), null));
+            Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"" + keyword + "\""), null));
+        }
     }
 
     @org.junit.Test
     public void checkForBedCharsCharsTest() throws IOException {
-        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("|"), null));
-        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("&"), null));
-        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList(";"), null));
-
-        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("''|"), null));
-        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("''&"), null));
-        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("'';"), null));
-
-        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"\"|"), null));
-        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"\"&"), null));
-        Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"\";"), null));
-
-        Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"|\""), null));
-        Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"&\""), null));
-        Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("\";\""), null));
-        Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("'|'"), null));
-        Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("'&'"), null));
-        Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("';'"), null));
-
-        Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"'|\""), null));
-        Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"'&\""), null));
-        Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"';\""), null));
-        Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("'\"|'"), null));
-        Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("'\"&'"), null));
-        Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("'\";'"), null));
+        for (char ch : new char[]{'|', '&', ';', '>', '<'}) {
+            Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("" + ch), null));
+            Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("''" + ch), null));
+            Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"\"" + ch), null));
+            Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"" + ch + "\""), null));
+            Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("'" + ch + "'"), null));
+            Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("\"'" + ch + "\""), null));
+            Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("'\"" + ch + "'"), null));
+        }
     }
 }
