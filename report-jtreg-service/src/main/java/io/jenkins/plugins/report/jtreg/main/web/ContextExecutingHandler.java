@@ -193,6 +193,14 @@ public abstract class ContextExecutingHandler implements HttpHandler {
 
     }
 
+    /**
+     *
+     * TODO, easily broken by quotes escaping
+     * @param parsedParams
+     * @param t
+     * @return
+     * @throws IOException
+     */
     static boolean checkForBedChars(List<String> parsedParams, HttpExchange t) throws IOException {
         char q1 = '"';
         char q2 = '\'';
