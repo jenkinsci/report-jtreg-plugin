@@ -197,10 +197,6 @@ public abstract class ContextExecutingHandler implements HttpHandler {
         return i % 2 == 0;
     }
 
-    private static boolean isOdd(int i) {
-        return i % 2 == 1;
-    }
-
     /**
      * this is caunting escapes only for quotes, so actually can be missleading a bit, but toward not allowing more, thus correct
      * I think this still can be fooled byescaping over several params
