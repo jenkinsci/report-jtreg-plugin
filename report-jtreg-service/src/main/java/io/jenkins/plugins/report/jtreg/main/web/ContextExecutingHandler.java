@@ -193,9 +193,13 @@ public abstract class ContextExecutingHandler implements HttpHandler {
 
     }
 
+    private static boolean isEven(int i) {
+        return i % 2 == 0;
+    }
+
     /**
-     *
-     * TODO, easily broken by quotes escaping
+     * this is caunting escapes only for quotes, so actually can be missleading a bit, but toward not allowing more, thus correct
+     * I think this still can be fooled byescaping over several params
      * @param parsedParams
      * @param t
      * @return
@@ -204,6 +208,7 @@ public abstract class ContextExecutingHandler implements HttpHandler {
     static boolean checkForBedChars(List<String> parsedParams, HttpExchange t) throws IOException {
         char q1 = '"';
         char q2 = '\'';
+        char escapeChar = '\\';
         for (String param : parsedParams) {
             if (param.contains("eval") || param.contains("exec")) {
                 if (t != null) {
@@ -212,26 +217,28 @@ public abstract class ContextExecutingHandler implements HttpHandler {
                 return true;
             }
             int currentQuote = -1;
+            int escapesCounter = 0;
             for (int i = 0; i < param.length(); i++) {
                 char investigatedChar = param.charAt(i);
-                if (currentQuote == -1 && (investigatedChar == q1 || investigatedChar == q2)) {
-                    currentQuote = investigatedChar;
+                if (investigatedChar == escapeChar) {
+                    escapesCounter++;
                 } else {
-                    if (investigatedChar == currentQuote) {
-                        currentQuote = -1;
+                    if (isEven(escapesCounter) && currentQuote == -1 && (investigatedChar == q1 || investigatedChar == q2)) {
+                        currentQuote = investigatedChar;
                     } else {
-                        if (currentQuote == -1 &&
-                                (investigatedChar == ';' ||
-                                        investigatedChar == '&' ||
-                                        investigatedChar == '|' ||
-                                        investigatedChar == '>' ||
-                                        investigatedChar == '<' )) {
-                            if (t != null) {
-                                sayBayBay(t);
+                        if (investigatedChar == currentQuote) {
+                            currentQuote = -1;
+                        } else {
+                            if (currentQuote == -1 && (investigatedChar == ';' || investigatedChar == '&' || investigatedChar == '|'
+                                    || investigatedChar == '>' || investigatedChar == '<')) {
+                                if (t != null) {
+                                    sayBayBay(t);
+                                }
+                                return true;
                             }
-                            return true;
                         }
                     }
+                    escapesCounter = 0;
                 }
             }
         }

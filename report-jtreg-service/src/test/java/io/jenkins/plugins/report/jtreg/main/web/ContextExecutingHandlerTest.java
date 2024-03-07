@@ -30,6 +30,29 @@ public class ContextExecutingHandlerTest {
     }
 
     @org.junit.Test
+    public void checkForBedEscapedCharsCharsTest() throws IOException {
+        for (char ch : new char[]{'|', '&', ';', '>', '<'}) {
+            //    \" escaped "
+            Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("\\\"" + ch), null));
+            //    \' escaped '
+            Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("\\'" + ch), null));
+            //    \\" escaped \, thus valid "
+            Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("\\\\\"" + ch), null));
+            //    \\' \, thus valid '
+            Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("\\\\'" + ch), null));
+
+            //    \\\" escaped \ + escaped "
+            Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("\\\\\\\"" + ch), null));
+            //    \\\' escaped \ + escaped  '
+            Assert.assertTrue(ContextExecutingHandler.checkForBedChars(Arrays.asList("\\\\\\'" + ch), null));
+            //    \\\\" 2x escaped \, thus valid "
+            Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("\\\\\\\\\"" + ch), null));
+            //    \\\\' 2x escaped \, thus valid '
+            Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("\\\\\\\\'" + ch), null));
+        }
+    }
+
+    @org.junit.Test
     public void checkForGoodCharsCharsTest() throws IOException {
         for (char ch : new char[]{'*', '?', '.', 'a', 'b'}) {
             Assert.assertFalse(ContextExecutingHandler.checkForBedChars(Arrays.asList("" + ch), null));
