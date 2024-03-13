@@ -100,6 +100,7 @@ public class PrintTableTest {
                 "<li><b>2:</b> second item</li>\n" +
                 "<li><b>3:</b> third item</li>\n" +
                 "</ul>\n" +
+                "<button onclick='expandOrCollapse()' style='margin-bottom:25px'>expand / collapse all</button>\n" +
                 "<table>\n" +
                 "<tr>\n" +
                 "<td></td>\n" +
@@ -126,7 +127,24 @@ public class PrintTableTest {
                 "<td>X</td>\n" +
                 "</tr>\n" +
                 "</table>\n" +
-                "</div>\n",
+                "</div>\n" +
+                "<script>\n" +
+                "let opened = false;\n" +
+                "\n" +
+                "function expandOrCollapse() {\n" +
+                "    let detailsElements = document.querySelectorAll('details');\n" +
+                "\n" +
+                "    detailsElements.forEach((detailsElement) => {\n" +
+                "        if (opened) {\n" +
+                "            detailsElement.removeAttribute('open');\n" +
+                "        } else {\n" +
+                "            detailsElement.setAttribute('open', '');\n" +
+                "        }\n" +
+                "    });\n" +
+                "\n" +
+                "    opened = !opened;\n" +
+                "}\n" +
+                "</script>\n",
                 crlfToLf(outStream.toString()));
     }
 }
