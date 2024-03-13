@@ -23,6 +23,8 @@
  */
 package io.jenkins.plugins.report.jtreg.formatters;
 
+import io.jenkins.plugins.report.jtreg.Constants;
+
 import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -138,7 +140,9 @@ public class HtmlFormatter extends StringMappedFormatter {
 
     @Override
     public void printTable(String[][] table, int rowSize, int columnSize) {
-        super.println("<style>table, td { border: 1px solid black; border-collapse: collapse; padding: 0.5em; }</style>");
+        super.println(Constants.COMPARATOR_TABLE_CSS); // print styles
+
+        super.println("<div class='contents'>"); // start the section
 
         // first print the first row definitions
         super.println("<ul>");
@@ -148,16 +152,16 @@ public class HtmlFormatter extends StringMappedFormatter {
         }
         super.println("</ul>");
 
-        // print the table
+        // print the table itself
         super.println("<table>");
         for (int i = 0; i < rowSize; i++) {
             super.println("<tr>");
             for (int j = 0; j < columnSize; j++) {
                 if (table[i][j] != null) {
                     if (table[i][j].equals("X")) {
-                        super.println("<td style=\"color:Red\">" + table[i][j] + "</td>");
-                    } else {
                         super.println("<td>" + table[i][j] + "</td>");
+                    } else {
+                        super.println("<td class='blk'>" + table[i][j] + "</td>");
                     }
                 } else {
                     super.println("<td></td>");
@@ -166,5 +170,25 @@ public class HtmlFormatter extends StringMappedFormatter {
             super.println("</tr>");
         }
         super.println("</table>");
+
+        super.println("</div>"); // end the section
+    }
+
+    @Override
+    public String generateTableHeaderItem(String mainLine, List<String> otherLines) {
+        StringBuilder headerItem = new StringBuilder();
+
+        // main line
+        headerItem.append("<b style='color:Green'>").append(mainLine).append("</b><br>");
+
+        // other lines, hidden by default
+        headerItem.append("<details>");
+        headerItem.append("<summary style='color:DodgerBlue'>properties</summary>");
+        for (String line : otherLines) {
+            headerItem.append(line).append("<br>");
+        }
+        headerItem.append("</details>");
+
+        return headerItem.toString();
     }
 }

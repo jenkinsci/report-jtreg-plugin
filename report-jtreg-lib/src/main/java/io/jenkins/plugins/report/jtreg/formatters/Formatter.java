@@ -23,6 +23,8 @@
  */
 package io.jenkins.plugins.report.jtreg.formatters;
 
+import java.util.List;
+
 public interface Formatter {
 
     public enum SupportedColors {
@@ -73,4 +75,5 @@ public interface Formatter {
     public void preClose();
 
     public void printTable(String[][] table, int rowSize, int columnSize);
+    public String generateTableHeaderItem(String mainLine, List<String> otherLines);
 }

@@ -25,6 +25,7 @@ package io.jenkins.plugins.report.jtreg.formatters;
 
 import java.io.PrintStream;
 import java.util.Arrays;
+import java.util.List;
 
 public class ColorFormatter extends StringMappedFormatter {
 //those are NOT spaces but bash \e
@@ -170,4 +171,18 @@ public class ColorFormatter extends StringMappedFormatter {
         }
     }
 
+    @Override
+    public String generateTableHeaderItem(String mainLine, List<String> otherLines) {
+        StringBuilder headerItem = new StringBuilder();
+
+        // main line
+        headerItem.append(Bold).append(Green).append(mainLine).append(ResetAll);
+
+        // other lines
+        for (String line : otherLines) {
+            headerItem.append("\n\t\t").append(Cyan).append(line).append(ResetAll);
+        }
+
+        return headerItem.toString();
+    }
 }

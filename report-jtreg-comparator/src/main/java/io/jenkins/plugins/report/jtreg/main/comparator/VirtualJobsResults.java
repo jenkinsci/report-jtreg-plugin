@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class VirtualJobsResults {
     private static final List<String> RESULTS = Arrays.asList("SUCCESS", "UNSTABLE", "FAILURE", "ABORTED", "RUNNING?");
@@ -25,7 +26,8 @@ public class VirtualJobsResults {
         }
     }
 
-    public static void printVirtualTable(ArrayList<File> buildsToCompare, Formatter formatter, Options.Configuration resultConfig) {
+    public static void printVirtualTable(ArrayList<File> buildsToCompare, Options options) {
+        Formatter formatter = options.getFormatter();
         formatter.startBold();
         formatter.println("Virtual builds' results table:");
         formatter.println();
@@ -40,9 +42,21 @@ public class VirtualJobsResults {
 
         for (int i = 1; i <= buildsToCompare.size(); i++) {
             File build = buildsToCompare.get(i - 1);
-            table[0][i] = Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build);
 
-            String result = getBuildResult(build, resultConfig);
+            // create main line of the table header
+            String mainLine = Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build);
+            List<String> otherLines = new ArrayList<>();
+
+            // create the other lines (job properties)
+            for (Map.Entry<String, Options.Configuration> entry : options.getAllConfigurations().entrySet()) {
+                String line = entry.getKey() + " : " +
+                        new ConfigFinder(entry.getValue().findConfigFile(build), entry.getKey(), entry.getValue().getFindQuery()).findInConfig();
+                otherLines.add(line);
+            }
+
+            table[0][i] = formatter.generateTableHeaderItem(mainLine, otherLines);
+
+            String result = getBuildResult(build, options.getConfiguration("result"));
             table[RESULTS.indexOf(result) + 1][i] = "X";
         }
 
