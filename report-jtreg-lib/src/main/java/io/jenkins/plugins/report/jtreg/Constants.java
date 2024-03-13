@@ -31,7 +31,7 @@ final public class Constants {
     public static final double VAGUE_QUERY_THRESHOLD = 0.5;
     public static final int VAGUE_QUERY_LENGTH_THRESHOLD = 4;
     public static final String COMPARATOR_TABLE_CSS =
-            "<style>\n" +
+                    "<style>\n" +
                     ".contents {\n" +
                     "    font-family: monospace, monospace;\n" +
                     "}\n" +
@@ -51,4 +51,22 @@ final public class Constants {
                     "    padding: 0.5em;\n" +
                     "}\n" +
                     "</style>";
+    public static final String COMPARATOR_TABLE_JAVASCRIPT =
+                    "<script>\n" +
+                    "let opened = false;\n" +
+                    "\n" +
+                    "function expandOrCollapse() {\n" +
+                    "    let detailsElements = document.querySelectorAll('details');\n" +
+                    "\n" +
+                    "    detailsElements.forEach((detailsElement) => {\n" +
+                    "        if (opened) {\n" +
+                    "            detailsElement.removeAttribute('open');\n" +
+                    "        } else {\n" +
+                    "            detailsElement.setAttribute('open', '');\n" +
+                    "        }\n" +
+                    "    });\n" +
+                    "\n" +
+                    "    opened = !opened;\n" +
+                    "}\n" +
+                    "</script>";
 }

@@ -152,6 +152,8 @@ public class HtmlFormatter extends StringMappedFormatter {
         }
         super.println("</ul>");
 
+        super.println("<button onclick='expandOrCollapse()' style='margin-bottom:25px'>expand / collapse all</button>");
+
         // print the table itself
         super.println("<table>");
         for (int i = 0; i < rowSize; i++) {
@@ -169,9 +171,10 @@ public class HtmlFormatter extends StringMappedFormatter {
             }
             super.println("</tr>");
         }
-        super.println("</table>");
 
+        super.println("</table>");
         super.println("</div>"); // end the section
+        super.println(Constants.COMPARATOR_TABLE_JAVASCRIPT); // print the javascript to expand/collapse the properties
     }
 
     @Override
