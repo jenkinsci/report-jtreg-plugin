@@ -24,6 +24,7 @@
 package io.jenkins.plugins.report.jtreg.formatters;
 
 import java.io.PrintStream;
+import java.util.List;
 
 public abstract class BasicFormatter implements Formatter {
 
@@ -56,7 +57,7 @@ public abstract class BasicFormatter implements Formatter {
 
     @Override
     public void small(){
-        
+
     }
 
     @Override
@@ -72,5 +73,10 @@ public abstract class BasicFormatter implements Formatter {
     @Override
     public void printTable(String[][] table, int rowSize, int columnSize) {
 
+    }
+
+    @Override
+    public String generateTableHeaderItem(String mainLine, List<String> otherLines) {
+        return "";
     }
 }

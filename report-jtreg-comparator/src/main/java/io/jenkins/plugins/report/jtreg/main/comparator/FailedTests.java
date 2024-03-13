@@ -2,6 +2,7 @@ package io.jenkins.plugins.report.jtreg.main.comparator;
 
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
+import io.jenkins.plugins.report.jtreg.ConfigFinder;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 import io.jenkins.plugins.report.jtreg.model.*;
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromDir;
@@ -11,7 +12,7 @@ import java.util.*;
 
 public class FailedTests {
     // function for getting failed tests into an ArrayList
-    private static ArrayList<String> getBuildFailedTests(File build, String exactTestsRegex, Formatter formatter) throws Exception {
+    private static ArrayList<String> getBuildFailedTests(File build, String exactTestsRegex) throws Exception {
         ArrayList<String> failedTests = new ArrayList<>();
 
         BuildSummaryParser bs = new BuildSummaryParser(Arrays.asList("jck", "jtreg"), null);
@@ -37,19 +38,26 @@ public class FailedTests {
     }
 
     // function for creating a HashMap of "build info - list of its failed tests" pair
-    public static HashMap<String, ArrayList<String>> createFailedMap(
-            ArrayList<File> buildsToCompare, boolean onlyVolatile, String exactTestsRegex, Formatter formatter) throws Exception {
+    public static HashMap<String, ArrayList<String>> createFailedMap(ArrayList<File> buildsToCompare, Options options) throws Exception {
 
         HashMap<String, ArrayList<String>> failedMap = new HashMap<>();
 
         for (File build : buildsToCompare) {
             if (build != null) {
-                failedMap.put(Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build),
-                        getBuildFailedTests(build, exactTestsRegex, formatter));
+                String mainLine = Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build);
+                List<String> otherLines = new ArrayList<>();
+
+                for (Map.Entry<String, Options.Configuration> entry : options.getAllConfigurations().entrySet()) {
+                    String line = entry.getKey() + " : " +
+                            new ConfigFinder(entry.getValue().findConfigFile(build), entry.getKey(), entry.getValue().getFindQuery()).findInConfig();
+                    otherLines.add(line);
+                }
+
+                failedMap.put(options.getFormatter().generateTableHeaderItem(mainLine, otherLines), getBuildFailedTests(build, options.getExactTestsRegex()));
             }
         }
 
-        if (onlyVolatile) {
+        if (options.isOnlyVolatile()) {
             // get all different tests
             Set<String> failedTests = new HashSet<>();
             for (ArrayList<String> tests : failedMap.values()) {

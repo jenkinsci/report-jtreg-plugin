@@ -25,6 +25,7 @@ package io.jenkins.plugins.report.jtreg.formatters;
 
 import java.io.PrintStream;
 import java.util.Arrays;
+import java.util.List;
 
 public class PlainFormatter extends BasicFormatter {
 
@@ -114,5 +115,20 @@ public class PlainFormatter extends BasicFormatter {
             }
             super.print("\n");
         }
+    }
+
+    @Override
+    public String generateTableHeaderItem(String mainLine, List<String> otherLines) {
+        StringBuilder headerItem = new StringBuilder();
+
+        // main line
+        headerItem.append(mainLine);
+
+        // other lines
+        for (String line : otherLines) {
+            headerItem.append("\n\t\t").append(line);
+        }
+
+        return headerItem.toString();
     }
 }

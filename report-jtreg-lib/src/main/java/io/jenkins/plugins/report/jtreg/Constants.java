@@ -30,4 +30,25 @@ final public class Constants {
     public static final String IRRELEVANT_GLOB_STRING = "report-{runtime,devtools,compiler}.xml.gz";
     public static final double VAGUE_QUERY_THRESHOLD = 0.5;
     public static final int VAGUE_QUERY_LENGTH_THRESHOLD = 4;
+    public static final String COMPARATOR_TABLE_CSS =
+            "<style>\n" +
+                    ".contents {\n" +
+                    "    font-family: monospace, monospace;\n" +
+                    "}\n" +
+                    "\n" +
+                    ".blk {\n" +
+                    "    color: Black;\n" +
+                    "}\n" +
+                    "\n" +
+                    "details {\n" +
+                    "    padding-left: 35px;\n" +
+                    "}\n" +
+                    "\n" +
+                    "table, td {\n" +
+                    "    border: 1px solid black;\n" +
+                    "    border-collapse: collapse;\n" +
+                    "    color: Red;\n" +
+                    "    padding: 0.5em;\n" +
+                    "}\n" +
+                    "</style>";
 }

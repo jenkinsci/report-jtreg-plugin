@@ -39,12 +39,12 @@ public class PrintTableTest {
         f.printTable(newTable, 4, 4);
 
         Assertions.assertEquals("1) first item\n" +
-                "2) second item\n" +
-                "3) third item\n" +
-                "           | 1 | 2                                                    | 3 | \n" +
-                "second row | X | this is a very long text in a center cell of a table | X | \n" +
-                "third row  |   |                                                      | X | \n" +
-                "fourth row | X | X                                                    | X | \n",
+                        "2) second item\n" +
+                        "3) third item\n" +
+                        "           | 1 | 2                                                    | 3 | \n" +
+                        "second row | X | this is a very long text in a center cell of a table | X | \n" +
+                        "third row  |   |                                                      | X | \n" +
+                        "fourth row | X | X                                                    | X | \n",
                 crlfToLf(outStream.toString()));
     }
 
@@ -57,12 +57,12 @@ public class PrintTableTest {
         f.printTable(table, 4, 4);
 
         Assertions.assertEquals("\u001B[1m1) \u001B[0mfirst item\n" +
-                "\u001B[1m2) \u001B[0msecond item\n" +
-                "\u001B[1m3) \u001B[0mthird item\n" +
-                "           | \u001B[1m1\u001B[0m | \u001B[1m2\u001B[0m                                                    | \u001B[1m3\u001B[0m | \n" +
-                "second row | \u001B[31mX\u001B[0m | this is a very long text in a center cell of a table | \u001B[31mX\u001B[0m | \n" +
-                "third row  |   |                                                      | \u001B[31mX\u001B[0m | \n" +
-                "fourth row | \u001B[31mX\u001B[0m | \u001B[31mX\u001B[0m                                                    | \u001B[31mX\u001B[0m | \n",
+                        "\u001B[1m2) \u001B[0msecond item\n" +
+                        "\u001B[1m3) \u001B[0mthird item\n" +
+                        "           | \u001B[1m1\u001B[0m | \u001B[1m2\u001B[0m                                                    | \u001B[1m3\u001B[0m | \n" +
+                        "second row | \u001B[31mX\u001B[0m | this is a very long text in a center cell of a table | \u001B[31mX\u001B[0m | \n" +
+                        "third row  |   |                                                      | \u001B[31mX\u001B[0m | \n" +
+                        "fourth row | \u001B[31mX\u001B[0m | \u001B[31mX\u001B[0m                                                    | \u001B[31mX\u001B[0m | \n",
                 crlfToLf(outStream.toString()));
     }
 
@@ -74,7 +74,27 @@ public class PrintTableTest {
 
         f.printTable(table, 4, 4);
 
-        Assertions.assertEquals("<style>table, td { border: 1px solid black; border-collapse: collapse; padding: 0.5em; }</style>\n" +
+        Assertions.assertEquals("<style>\n" +
+                ".contents {\n" +
+                "    font-family: monospace, monospace;\n" +
+                "}\n" +
+                "\n" +
+                ".blk {\n" +
+                "    color: Black;\n" +
+                "}\n" +
+                "\n" +
+                "details {\n" +
+                "    padding-left: 35px;\n" +
+                "}\n" +
+                "\n" +
+                "table, td {\n" +
+                "    border: 1px solid black;\n" +
+                "    border-collapse: collapse;\n" +
+                "    color: Red;\n" +
+                "    padding: 0.5em;\n" +
+                "}\n" +
+                "</style>\n" +
+                "<div class='contents'>\n" +
                 "<ul>\n" +
                 "<li><b>1:</b> first item</li>\n" +
                 "<li><b>2:</b> second item</li>\n" +
@@ -83,29 +103,30 @@ public class PrintTableTest {
                 "<table>\n" +
                 "<tr>\n" +
                 "<td></td>\n" +
-                "<td><b>1</b></td>\n" +
-                "<td><b>2</b></td>\n" +
-                "<td><b>3</b></td>\n" +
+                "<td class='blk'><b>1</b></td>\n" +
+                "<td class='blk'><b>2</b></td>\n" +
+                "<td class='blk'><b>3</b></td>\n" +
                 "</tr>\n" +
                 "<tr>\n" +
-                "<td>second row</td>\n" +
-                "<td style=\"color:Red\">X</td>\n" +
-                "<td>this is a very long text in a center cell of a table</td>\n" +
-                "<td style=\"color:Red\">X</td>\n" +
+                "<td class='blk'>second row</td>\n" +
+                "<td>X</td>\n" +
+                "<td class='blk'>this is a very long text in a center cell of a table</td>\n" +
+                "<td>X</td>\n" +
                 "</tr>\n" +
                 "<tr>\n" +
-                "<td>third row</td>\n" +
+                "<td class='blk'>third row</td>\n" +
                 "<td></td>\n" +
-                "<td></td>\n" +
-                "<td style=\"color:Red\">X</td>\n" +
+                "<td class='blk'></td>\n" +
+                "<td>X</td>\n" +
                 "</tr>\n" +
                 "<tr>\n" +
-                "<td>fourth row</td>\n" +
-                "<td style=\"color:Red\">X</td>\n" +
-                "<td style=\"color:Red\">X</td>\n" +
-                "<td style=\"color:Red\">X</td>\n" +
+                "<td class='blk'>fourth row</td>\n" +
+                "<td>X</td>\n" +
+                "<td>X</td>\n" +
+                "<td>X</td>\n" +
                 "</tr>\n" +
-                "</table>\n",
+                "</table>\n" +
+                "</div>\n",
                 crlfToLf(outStream.toString()));
     }
 }
