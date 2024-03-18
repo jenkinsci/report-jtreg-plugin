@@ -19,6 +19,7 @@ public class Options {
     private boolean useDefaultBuild;
     private JobsProvider jobsProvider;
     private boolean printVirtual;
+    private boolean hidePasses;
     private boolean die;
     private final Map<String, Configuration> configurations;
 
@@ -31,6 +32,7 @@ public class Options {
         this.useDefaultBuild = false;
         this.jobsProvider = null;
         this.printVirtual = false;
+        this.hidePasses = false;
         this.die = false;
         this.configurations = new HashMap<>();
         // default configuration for getting job results
@@ -121,6 +123,14 @@ public class Options {
 
     public boolean isPrintVirtual() {
         return printVirtual;
+    }
+
+    public void setHidePasses(boolean hidePasses) {
+        this.hidePasses = hidePasses;
+    }
+
+    public boolean isHidePasses() {
+        return hidePasses;
     }
 
     public void setPrintVirtual(boolean printVirtual) {
