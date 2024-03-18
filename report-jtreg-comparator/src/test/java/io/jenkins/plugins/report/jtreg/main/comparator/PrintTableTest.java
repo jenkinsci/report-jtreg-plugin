@@ -96,17 +96,17 @@ public class PrintTableTest {
                 "</style>\n" +
                 "<div class='contents'>\n" +
                 "<ul>\n" +
-                "<li><b>1:</b> first item</li>\n" +
-                "<li><b>2:</b> second item</li>\n" +
-                "<li><b>3:</b> third item</li>\n" +
+                "<li><b id='legend-1'><a href='#table-1'>1:</a></b> first item</li>\n" +
+                "<li><b id='legend-2'><a href='#table-2'>2:</a></b> second item</li>\n" +
+                "<li><b id='legend-3'><a href='#table-3'>3:</a></b> third item</li>\n" +
                 "</ul>\n" +
                 "<button onclick='expandOrCollapse()' style='margin-bottom:25px'>expand / collapse all</button>\n" +
                 "<table>\n" +
                 "<tr>\n" +
                 "<td></td>\n" +
-                "<td class='blk'><b>1</b></td>\n" +
-                "<td class='blk'><b>2</b></td>\n" +
-                "<td class='blk'><b>3</b></td>\n" +
+                "<td class='blk'><b id='table-1'><a href='#legend-1'>1</a></b></td>\n" +
+                "<td class='blk'><b id='table-2'><a href='#legend-2'>2</a></b></td>\n" +
+                "<td class='blk'><b id='table-3'><a href='#legend-3'>3</a></b></td>\n" +
                 "</tr>\n" +
                 "<tr>\n" +
                 "<td class='blk'>second row</td>\n" +
