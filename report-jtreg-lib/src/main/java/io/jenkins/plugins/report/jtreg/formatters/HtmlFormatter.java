@@ -147,8 +147,9 @@ public class HtmlFormatter extends StringMappedFormatter {
         // first print the first row definitions
         super.println("<ul>");
         for (int i = 1; i < table[0].length; i++) {
-            super.println("<li><b>" + i + ":</b> " + table[0][i] + "</li>");
-            table[0][i] = "<b>" + i + "</b>"; // replace the item with its definition (number)
+            // make the definition and the table header linkable between each other
+            super.println("<li><b id='legend-" + i + "'><a href='#table-" + i + "'>" + i + ":</a></b> " + table[0][i] + "</li>");
+            table[0][i] = "<b id='table-" + i + "'><a href='#legend-" + i + "'>" + i + "</a></b>"; // replace the item with its definition (number)
         }
         super.println("</ul>");
 
