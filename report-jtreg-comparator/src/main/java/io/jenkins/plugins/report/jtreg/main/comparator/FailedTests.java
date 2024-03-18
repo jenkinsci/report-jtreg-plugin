@@ -87,7 +87,12 @@ public class FailedTests {
     }
 
     // function for getting the HashMap of failed tests ready for printing to console
-    public static void printFailedTable(HashMap<String, ArrayList<String>> failedMap, Options.Operations operation, Formatter formatter) {
+    public static void printFailedTable(HashMap<String, ArrayList<String>> failedMap, Options options) {
+        // by default, all builds are shown, this makes the table less "cluttery" by deleting builds with no failed tests
+        if (options.isHidePasses()) {
+            failedMap.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+        }
+
         // get all non-duplicate failed tests from the map
         Set<String> nonRepeatingValues = new HashSet<>();
         for (ArrayList<String> values : failedMap.values()) {
@@ -103,7 +108,7 @@ public class FailedTests {
         Collections.sort(keys);
 
         // if the operation is "compare" (rows are failed tests and columns builds), switch the values and keys
-        if (operation == Options.Operations.Compare) {
+        if (options.getOperation() == Options.Operations.Compare) {
             List<String> temp = keys;
             keys = sortedValues;
             sortedValues = temp;
@@ -124,7 +129,7 @@ public class FailedTests {
 
             // now, create a list of values where to put the X for each column
             List<String> putXList = new ArrayList<>();
-            if (operation == Options.Operations.Compare) {
+            if (options.getOperation() == Options.Operations.Compare) {
                 // if the operation is compare, the values to put X are the builds (or the keys in the map),
                 // so it has to go through the map and find them
                 for (Map.Entry<String, ArrayList<String>> entry : failedMap.entrySet()) {
@@ -146,6 +151,6 @@ public class FailedTests {
         }
 
         // print the table into stdout
-        formatter.printTable(table, keys.size() + 1, sortedValues.size() + 1);
+        options.getFormatter().printTable(table, keys.size() + 1, sortedValues.size() + 1);
     }
 }

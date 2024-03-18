@@ -112,6 +112,10 @@ public class ArgumentsParsing {
                 // --use-default-build
                 options.setUseDefaultBuild(Boolean.parseBoolean(getArgumentValue(arguments, i++)));
 
+            } else if (currentArg.equals(ArgumentsDeclaration.hidePassesArg.getName())) {
+                // --hide-passes
+                options.setHidePasses(Boolean.parseBoolean(getArgumentValue(arguments, i++)));
+
             } else if (currentArg.equals(ArgumentsDeclaration.buildConfigFindArg.getName()) ||
                     currentArg.equals(ArgumentsDeclaration.jobConfigFindArg.getName())) {
                 // --X-config-find
@@ -124,7 +128,7 @@ public class ArgumentsParsing {
                     throw new RuntimeException("The configuration for " + values[1] + " already exists.");
                 }
 
-                    // parsing arguments of the jobs providers
+            // parsing arguments of the jobs providers
             } else if (JobsByQuery.getSupportedArgsStatic().contains(currentArg) || JobsByRegex.getSupportedArgsStatic().contains(currentArg)) {
                 // add a jobs provider to options, if there is none
                 if (options.getJobsProvider() == null) {

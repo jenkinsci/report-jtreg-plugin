@@ -58,6 +58,8 @@ final public class HelpMessage {
             "                  " + ArgumentsDeclaration.exactTestsArg.getHelp() + "\n" +
             "    " + ArgumentsDeclaration.useDefaultBuildArg.getName() + ArgumentsDeclaration.useDefaultBuildArg.getUsage() + "\n" +
             "                  " + ArgumentsDeclaration.useDefaultBuildArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.hidePassesArg.getName() + ArgumentsDeclaration.hidePassesArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.hidePassesArg.getHelp() + "\n" +
             "\n" +
             "    Dynamic arguments:\n" +
             "        Another type of arguments you can use are dynamic arguments. They are used\n" +

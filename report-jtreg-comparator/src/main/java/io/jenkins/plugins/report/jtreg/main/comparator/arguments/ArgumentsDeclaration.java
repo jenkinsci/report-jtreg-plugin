@@ -18,4 +18,5 @@ public final class ArgumentsDeclaration {
   public static final Argument useDefaultBuildArg = new Argument("--use-default-build", "If set to true and no matching build with given criteria was found, the tool will use the latest (default) build instead. Default value is false.", " <true/false>");
   public static final Argument buildConfigFindArg = new Argument("--build-config-find", "Argument used for declaring dynamic arguments. Looks for the specified config file inside the BUILD directory.", " configFileName:whatAreYouLookingFor:queryToFindIt");
   public static final Argument jobConfigFindArg = new Argument("--job-config-find", "Argument used for declaring dynamic arguments. Looks for the specified config file inside the JOB directory.", " configFileName:whatAreYouLookingFor:queryToFindIt");
+  public static final Argument hidePassesArg = new Argument("--hide-passes", "If set to true, when printing the compare table, only builds with at least one failed test will be shown, passed tests will be hidden to make the table smaller. Set to false by default.", " <true/false>");
 }
