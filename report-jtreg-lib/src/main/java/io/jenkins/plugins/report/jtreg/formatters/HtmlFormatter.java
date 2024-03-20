@@ -163,6 +163,19 @@ public class HtmlFormatter extends StringMappedFormatter {
                 if (table[i][j] != null) {
                     if (table[i][j].equals("X")) {
                         super.println("<td>" + table[i][j] + "</td>");
+                    } else if (table[i][j].matches("^[1-9]?[0-9]$|^100$")) {
+                        // the table is displaying numbers from 0-100 (percentage), color code them
+                        int number = Integer.parseInt(table[i][j]);
+                        if (number == 100) {
+                            super.println("<td style='color:DeepSkyBlue'>" + table[i][j] + "</td>");
+                        } else if (number > 90) {
+                            super.println("<td style='color:ForestGreen'>" + table[i][j] + "</td>");
+                        } else if (number > 30) {
+                            super.println("<td style='color:DarkOrange'>" + table[i][j] + "</td>");
+                        } else {
+                            // will be red
+                            super.println("<td>" + table[i][j] + "</td>");
+                        }
                     } else {
                         super.println("<td class='blk'>" + table[i][j] + "</td>");
                     }

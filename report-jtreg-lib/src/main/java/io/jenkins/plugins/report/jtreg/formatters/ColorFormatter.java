@@ -154,6 +154,18 @@ public class ColorFormatter extends StringMappedFormatter {
                         // Xs will be red
                     } else if (table[i][j].equals("X")) {
                         super.print(Red + table[i][j] + ResetAll + " ");
+                    } else if (table[i][j].matches("^[1-9]?[0-9]$|^100$")) {
+                        // the table is displaying numbers from 0-100 (percentage), color code them
+                        int number = Integer.parseInt(table[i][j]);
+                        if (number == 100) {
+                            super.print(Cyan + table[i][j] + ResetAll + " ");
+                        } else if (number > 90) {
+                            super.print(Green + table[i][j] + ResetAll + " ");
+                        } else if (number > 30) {
+                            super.print(Yellow + table[i][j] + ResetAll + " ");
+                        } else {
+                            super.print(Red + table[i][j] + ResetAll + " ");
+                        }
                     } else {
                         super.print(table[i][j] + " ");
                     }
