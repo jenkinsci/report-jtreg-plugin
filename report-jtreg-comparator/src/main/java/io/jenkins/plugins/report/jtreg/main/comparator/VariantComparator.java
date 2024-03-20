@@ -38,6 +38,8 @@ public class VariantComparator {
                 JobsPrinting.printVariants(options.getJobsProvider().getJobs(), options.getFormatter());
             } else if (options.getOperation() == Options.Operations.Print) {
                 JobsPrinting.printJobs(options.getJobsProvider().getJobs(), options);
+            } else if (options.getOperation() == Options.Operations.TraceCompare) {
+                StackTraceCompare.compareTraces(FailedTests.createFailedMap(buildsToCompare, options), options);
             }
 
             // print virtual table
