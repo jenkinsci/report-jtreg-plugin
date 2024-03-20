@@ -1,6 +1,5 @@
 package io.jenkins.plugins.report.jtreg.main.comparator.arguments;
 
-import io.jenkins.plugins.report.jtreg.Constants;
 import io.jenkins.plugins.report.jtreg.main.comparator.HelpMessage;
 import io.jenkins.plugins.report.jtreg.main.comparator.Options;
 import io.jenkins.plugins.report.jtreg.main.comparator.jobs.DefaultProvider;
@@ -66,6 +65,13 @@ public class ArgumentsParsing {
                 }
                 options.setOperation(Options.Operations.Print);
 
+            } else if (currentArg.equals(ArgumentsDeclaration.compareTracesArg.getName())) {
+                // --compare-traces
+                if (options.getOperation() != null) {
+                    throw new RuntimeException("Cannot combine --compare-traces with other operations.");
+                }
+                options.setOperation(Options.Operations.TraceCompare);
+
             } else if (currentArg.equals(ArgumentsDeclaration.virtualArg.getName())) {
                 // --virtual
                 options.setPrintVirtual(true);
@@ -115,6 +121,16 @@ public class ArgumentsParsing {
             } else if (currentArg.equals(ArgumentsDeclaration.hidePassesArg.getName())) {
                 // --hide-passes
                 options.setHidePasses(Boolean.parseBoolean(getArgumentValue(arguments, i++)));
+
+            } else if (currentArg.equals(ArgumentsDeclaration.setReferentialArg.getName())) {
+                // --set-referential
+                String[] values = getArgumentValue(arguments, i++).split(":");
+                if (values.length != 2) {
+                    throw new RuntimeException("Wrong value format for " + ArgumentsDeclaration.setReferentialArg.getName() + " argument.");
+                } else {
+                    options.setReferentialJobName(values[0]);
+                    options.setReferentialBuildNumber(Integer.parseInt(values[1]));
+                }
 
             } else if (currentArg.equals(ArgumentsDeclaration.buildConfigFindArg.getName()) ||
                     currentArg.equals(ArgumentsDeclaration.jobConfigFindArg.getName())) {

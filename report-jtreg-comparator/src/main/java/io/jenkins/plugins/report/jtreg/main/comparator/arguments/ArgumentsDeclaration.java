@@ -19,4 +19,6 @@ public final class ArgumentsDeclaration {
   public static final Argument buildConfigFindArg = new Argument("--build-config-find", "Argument used for declaring dynamic arguments. Looks for the specified config file inside the BUILD directory.", " configFileName:whatAreYouLookingFor:queryToFindIt");
   public static final Argument jobConfigFindArg = new Argument("--job-config-find", "Argument used for declaring dynamic arguments. Looks for the specified config file inside the JOB directory.", " configFileName:whatAreYouLookingFor:queryToFindIt");
   public static final Argument hidePassesArg = new Argument("--hide-passes", "If set to true, when printing the compare table, only builds with at least one failed test will be shown, passed tests will be hidden to make the table smaller. Set to false by default.", " <true/false>");
+  public static final Argument compareTracesArg = new Argument("--compare-traces", "TODO", ""); // TODO add description and add to help
+  public static final Argument setReferentialArg = new Argument("--set-referential", "TODO", "<jobName:buildNumber>"); // TODO add description and add to help
 }

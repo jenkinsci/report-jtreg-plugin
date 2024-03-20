@@ -22,6 +22,8 @@ public class Options {
     private boolean hidePasses;
     private boolean die;
     private final Map<String, Configuration> configurations;
+    private String referentialJobName;
+    private int referentialBuildNumber;
 
     public Options() {
         this.numberOfBuilds = 1;
@@ -35,6 +37,8 @@ public class Options {
         this.hidePasses = false;
         this.die = false;
         this.configurations = new HashMap<>();
+        this.referentialJobName = null;
+        this.referentialBuildNumber = -1;
         // default configuration for getting job results
         Configuration resultConfig = new Configuration("build.xml", "/build/result", Locations.Build);
         resultConfig.setValue("{SUCCESS,UNSTABLE}");
@@ -137,6 +141,22 @@ public class Options {
         this.printVirtual = printVirtual;
     }
 
+    public String getReferentialJobName() {
+        return referentialJobName;
+    }
+
+    public void setReferentialJobName(String referentialJobName) {
+        this.referentialJobName = referentialJobName;
+    }
+
+    public int getReferentialBuildNumber() {
+        return referentialBuildNumber;
+    }
+
+    public void setReferentialBuildNumber(int referentialBuildNumber) {
+        this.referentialBuildNumber = referentialBuildNumber;
+    }
+
     public Configuration getConfiguration(String whatToFind) {
         return configurations.get(whatToFind);
     }
@@ -151,7 +171,7 @@ public class Options {
 
     // enum of all available operations
     public enum Operations {
-        List, Enumerate, Compare, Print
+        List, Enumerate, Compare, Print, TraceCompare
     }
 
     public enum Locations {
