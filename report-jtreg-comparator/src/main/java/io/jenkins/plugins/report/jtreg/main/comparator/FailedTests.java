@@ -3,7 +3,6 @@ package io.jenkins.plugins.report.jtreg.main.comparator;
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
 import io.jenkins.plugins.report.jtreg.ConfigFinder;
-import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 import io.jenkins.plugins.report.jtreg.model.*;
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromDir;
 
@@ -44,16 +43,7 @@ public class FailedTests {
 
         for (File build : buildsToCompare) {
             if (build != null) {
-                String mainLine = Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build);
-                List<String> otherLines = new ArrayList<>();
-
-                for (Map.Entry<String, Options.Configuration> entry : options.getAllConfigurations().entrySet()) {
-                    String line = entry.getKey() + " : " +
-                            new ConfigFinder(entry.getValue().findConfigFile(build), entry.getKey(), entry.getValue().getFindQuery()).findInConfig();
-                    otherLines.add(line);
-                }
-
-                failedMap.put(options.getFormatter().generateTableHeaderItem(mainLine, otherLines), getBuildFailedTests(build, options.getExactTestsRegex()));
+                failedMap.put(build.getAbsolutePath(), getBuildFailedTests(build, options.getExactTestsRegex()));
             }
         }
 
@@ -93,9 +83,25 @@ public class FailedTests {
             failedMap.entrySet().removeIf(entry -> entry.getValue().isEmpty());
         }
 
+        // convert build paths in the map to a styled build description
+        Map<String, ArrayList<String>> convertedMap = new HashMap<>();
+        for (Map.Entry<String, ArrayList<String>> entry : failedMap.entrySet()) {
+            File build = new File(entry.getKey());
+            String mainLine = Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build);
+            List<String> otherLines = new ArrayList<>();
+
+            for (Map.Entry<String, Options.Configuration> configEntry : options.getAllConfigurations().entrySet()) {
+                String line = configEntry.getKey() + " : " +
+                        new ConfigFinder(configEntry.getValue().findConfigFile(build), configEntry.getKey(), configEntry.getValue().getFindQuery()).findInConfig();
+                otherLines.add(line);
+            }
+
+            convertedMap.put(options.getFormatter().generateTableHeaderItem(mainLine, otherLines), entry.getValue());
+        }
+
         // get all non-duplicate failed tests from the map
         Set<String> nonRepeatingValues = new HashSet<>();
-        for (ArrayList<String> values : failedMap.values()) {
+        for (ArrayList<String> values : convertedMap.values()) {
             nonRepeatingValues.addAll(values);
         }
 
@@ -104,7 +110,7 @@ public class FailedTests {
         Collections.sort(sortedValues);
 
         // get the key from the map (builds) and sort them
-        List<String> keys = new ArrayList<>(failedMap.keySet());
+        List<String> keys = new ArrayList<>(convertedMap.keySet());
         Collections.sort(keys);
 
         // if the operation is "compare" (rows are failed tests and columns builds), switch the values and keys
@@ -132,14 +138,14 @@ public class FailedTests {
             if (options.getOperation() == Options.Operations.Compare) {
                 // if the operation is compare, the values to put X are the builds (or the keys in the map),
                 // so it has to go through the map and find them
-                for (Map.Entry<String, ArrayList<String>> entry : failedMap.entrySet()) {
+                for (Map.Entry<String, ArrayList<String>> entry : convertedMap.entrySet()) {
                     if (entry.getValue().contains(key)) {
                         putXList.add(entry.getKey());
                     }
                 }
             } else {
                 // otherwise, just get the values from the map
-                putXList = failedMap.get(key);
+                putXList = convertedMap.get(key);
             }
 
             // put the Xs itself
