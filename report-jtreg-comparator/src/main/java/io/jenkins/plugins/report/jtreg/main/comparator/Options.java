@@ -24,6 +24,8 @@ public class Options {
     private final Map<String, Configuration> configurations;
     private String referentialJobName;
     private int referentialBuildNumber;
+    private Side substringSide;
+    private int substringLength;
 
     public Options() {
         this.numberOfBuilds = 1;
@@ -39,6 +41,8 @@ public class Options {
         this.configurations = new HashMap<>();
         this.referentialJobName = null;
         this.referentialBuildNumber = -1;
+        this.substringSide = Side.Tail;
+        substringLength = 5000; // TODO this default value is probably subject to change
         // default configuration for getting job results
         Configuration resultConfig = new Configuration("build.xml", "/build/result", Locations.Build);
         resultConfig.setValue("{SUCCESS,UNSTABLE}");
@@ -157,6 +161,22 @@ public class Options {
         this.referentialBuildNumber = referentialBuildNumber;
     }
 
+    public Side getSubstringSide() {
+        return substringSide;
+    }
+
+    public void setSubstringSide(Side substringSide) {
+        this.substringSide = substringSide;
+    }
+
+    public int getSubstringLength() {
+        return substringLength;
+    }
+
+    public void setSubstringLength(int substringLength) {
+        this.substringLength = substringLength;
+    }
+
     public Configuration getConfiguration(String whatToFind) {
         return configurations.get(whatToFind);
     }
@@ -176,6 +196,10 @@ public class Options {
 
     public enum Locations {
         Build, Job
+    }
+
+    public enum Side {
+        Head, Tail
     }
 
     public static class Configuration {
