@@ -132,6 +132,22 @@ public class ArgumentsParsing {
                     options.setReferentialBuildNumber(Integer.parseInt(values[1]));
                 }
 
+            } else if (currentArg.equals(ArgumentsDeclaration.cutTraceArg.getName())) {
+                // --cut-trace
+                String[] values = getArgumentValue(arguments, i++).split(":");
+                if (values.length != 2) {
+                    throw new RuntimeException("Wrong value format for " + ArgumentsDeclaration.cutTraceArg.getName() + " argument.");
+                } else {
+                    if (values[0].equalsIgnoreCase("head")) {
+                        options.setSubstringSide(Options.Side.Head);
+                    } else if (values[0].equalsIgnoreCase("tail")) {
+                        options.setSubstringSide(Options.Side.Tail);
+                    } else {
+                        throw new RuntimeException("Wrong value for side of stack trace, only 'head' or 'tail' is allowed.");
+                    }
+                    options.setSubstringLength(Integer.parseInt(values[1]));
+                }
+
             } else if (currentArg.equals(ArgumentsDeclaration.buildConfigFindArg.getName()) ||
                     currentArg.equals(ArgumentsDeclaration.jobConfigFindArg.getName())) {
                 // --X-config-find

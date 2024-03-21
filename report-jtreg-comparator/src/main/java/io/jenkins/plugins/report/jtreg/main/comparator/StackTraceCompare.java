@@ -5,6 +5,7 @@ import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
 import io.jenkins.plugins.report.jtreg.ConfigFinder;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.model.Test;
+import io.jenkins.plugins.report.jtreg.model.TestOutput;
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromDir;
 
 import java.io.File;
@@ -71,7 +72,7 @@ public class StackTraceCompare {
             String reference = null;
             if (options.getReferentialJobName() == null || options.getReferentialBuildNumber() == -1) {
                 // if not set, get the first one in table as referential
-                reference = getTestTrace(new File(putList.get(0)), test);
+                reference = getTestTrace(new File(putList.get(0)), test, options.getSubstringSide(), options.getSubstringLength());
             } else {
                 String value = putList.stream()
                         .filter(build -> build.matches(".*jobs/" + options.getReferentialJobName() + "/builds/" + options.getReferentialBuildNumber()))
@@ -79,7 +80,7 @@ public class StackTraceCompare {
                         .orElse(null);
 
                 if (value != null) {
-                    reference = getTestTrace(new File(value), test);
+                    reference = getTestTrace(new File(value), test, options.getSubstringSide(), options.getSubstringLength());
                 }
 
             }
@@ -89,7 +90,7 @@ public class StackTraceCompare {
                 String stringToPut = "-";
 
                 if (reference != null) {
-                    String second = getTestTrace(new File(value), test);
+                    String second = getTestTrace(new File(value), test, options.getSubstringSide(), options.getSubstringLength());
                     stringToPut = String.valueOf(getTraceSimilarity(reference, second));
                 }
 
@@ -106,11 +107,7 @@ public class StackTraceCompare {
         options.getFormatter().printTable(table, failedTests.size() + 1, jobBuilds.size() + 1);
     }
 
-    private static String getTestTrace(File build, String testName) {
-        // TODO:
-        // - for now, it only takes system-out trace, it should also work with system-err (maybe combine them?)
-        // - cut the trace shorter, it its too big (first or last 100kb maximum - probably a new switch)
-
+    private static String getTestTrace(File build, String testName, Options.Side cutSide, int cutLength) {
         try {
             BuildReportExtended bex = bs.parseBuildReportExtended(new RunWrapperFromDir(build), null);
 
@@ -120,7 +117,27 @@ public class StackTraceCompare {
                 Test t = s.getReport().getTestProblems().stream().filter(test -> test.getName().equals(testName)).findFirst().orElse(null);
                 if (t != null) {
                     // return the output (stack trace)
-                    return t.getOutputs().get(0).getValue();
+                    StringBuilder wholeTrace = new StringBuilder();
+                    wholeTrace.append(t.getStatusLine());
+
+                    // get outputs, sort them by their name (to be deterministic) and append them to the string
+                    List<TestOutput> outs = t.getOutputs();
+                    outs.sort(Comparator.comparing(TestOutput::getName));
+
+                    // TODO, for now just concatenating all of the outputs
+                    for (TestOutput out : outs) {
+                        if (out.getValue().length() > cutLength) {
+                            if (cutSide == Options.Side.Head) {
+                                wholeTrace.append(out.getValue(), 0, cutLength);
+                            } else {
+                                wholeTrace.append(out.getValue(), out.getValue().length() - cutLength, out.getValue().length());
+                            }
+                        } else {
+                            wholeTrace.append(out.getValue());
+                        }
+                    }
+
+                    return wholeTrace.toString();
                 }
 
             }
