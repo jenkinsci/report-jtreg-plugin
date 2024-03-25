@@ -41,7 +41,7 @@ public class Options {
         this.configurations = new HashMap<>();
         this.referentialJobName = null;
         this.referentialBuildNumber = -1;
-        this.substringSide = Side.Tail;
+        this.substringSide = Side.TailEach;
         substringLength = 5000; // TODO this default value is probably subject to change
         // default configuration for getting job results
         Configuration resultConfig = new Configuration("build.xml", "/build/result", Locations.Build);
@@ -199,7 +199,7 @@ public class Options {
     }
 
     public enum Side {
-        Head, Tail
+        Head, HeadEach, Tail, TailEach
     }
 
     public static class Configuration {

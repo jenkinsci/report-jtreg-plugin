@@ -21,5 +21,5 @@ public final class ArgumentsDeclaration {
   public static final Argument hidePassesArg = new Argument("--hide-passes", "If set to true, when printing the compare table, only builds with at least one failed test will be shown, passed tests will be hidden to make the table smaller. Set to false by default.", " <true/false>");
   public static final Argument compareTracesArg = new Argument("--compare-traces", "TODO", ""); // TODO add description and add to help
   public static final Argument setReferentialArg = new Argument("--set-referential", "TODO", "<jobName:buildNumber>"); // TODO add description and add to help
-  public static final Argument cutTraceArg = new Argument("--cut-trace", "TODO", "<head/tail:numberOfChars>"); // TODO add description and add to help
+  public static final Argument cutTraceArg = new Argument("--cut-trace", "TODO", "<head/headEach/tail/tailEach:numberOfChars>"); // TODO add description and add to help
 }

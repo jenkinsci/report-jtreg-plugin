@@ -140,10 +140,14 @@ public class ArgumentsParsing {
                 } else {
                     if (values[0].equalsIgnoreCase("head")) {
                         options.setSubstringSide(Options.Side.Head);
+                    } else if (values[0].equalsIgnoreCase("headeach")) {
+                        options.setSubstringSide(Options.Side.HeadEach);
                     } else if (values[0].equalsIgnoreCase("tail")) {
                         options.setSubstringSide(Options.Side.Tail);
+                    } else if (values[0].equalsIgnoreCase("taileach")) {
+                        options.setSubstringSide(Options.Side.TailEach);
                     } else {
-                        throw new RuntimeException("Wrong value for side of stack trace, only 'head' or 'tail' is allowed.");
+                        throw new RuntimeException("Wrong value for side of stack trace, only 'head', 'headEach', 'tail' or 'tailEach' are allowed.");
                     }
                     options.setSubstringLength(Integer.parseInt(values[1]));
                 }

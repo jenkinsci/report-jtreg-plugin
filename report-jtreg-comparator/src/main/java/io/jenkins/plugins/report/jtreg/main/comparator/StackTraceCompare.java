@@ -124,16 +124,23 @@ public class StackTraceCompare {
                     List<TestOutput> outs = t.getOutputs();
                     outs.sort(Comparator.comparing(TestOutput::getName));
 
-                    // TODO, for now just concatenating all of the outputs
                     for (TestOutput out : outs) {
-                        if (out.getValue().length() > cutLength) {
-                            if (cutSide == Options.Side.Head) {
+                        if ((cutSide == Options.Side.HeadEach || cutSide == Options.Side.TailEach) && out.getValue().length() > cutLength) {
+                            if (cutSide == Options.Side.HeadEach) {
                                 wholeTrace.append(out.getValue(), 0, cutLength);
                             } else {
                                 wholeTrace.append(out.getValue(), out.getValue().length() - cutLength, out.getValue().length());
                             }
                         } else {
                             wholeTrace.append(out.getValue());
+                        }
+                    }
+
+                    if ((cutSide == Options.Side.Head || cutSide == Options.Side.Tail) && wholeTrace.length() > cutLength) {
+                        if (cutSide == Options.Side.Head) {
+                            return wholeTrace.substring(0, cutLength);
+                        } else {
+                            return wholeTrace.substring(wholeTrace.length() - cutLength, wholeTrace.length());
                         }
                     }
 
@@ -158,14 +165,15 @@ public class StackTraceCompare {
             return 0;
         }
 
-        // ALGORITHM FOR CALCULATING LEVENSHTEIN DISTANCE:
+        // ALGORITHM FOR CALCULATING LEVENSHTEIN DISTANCE,
+        // taken and edited from: https://github.com/judovana/similars
         int[][] matrix = new int[one.length() + 1][two.length() + 1];
 
         for (int i = 0; i <= one.length(); i++) {
             for (int j = 0; j <= two.length(); j++) {
-                if (i == 0) { // distance between "" and two == how long two is
+                if (i == 0) {
                     matrix[i][j] = j;
-                } else if (j == 0) { // distance between one and "" == how long one is
+                } else if (j == 0) {
                     matrix[i][j] = i;
                 } else {
                     int substitution = matrix[i - 1][j - 1] + ((one.charAt(i - 1) == two.charAt(j - 1)) ? 0 : 1);
