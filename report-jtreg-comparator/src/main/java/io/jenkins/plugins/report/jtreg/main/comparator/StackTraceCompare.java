@@ -87,7 +87,7 @@ public class StackTraceCompare {
 
             // calculate and put the percentages (or - if no referential was found)
             for (String value : putList) {
-                String stringToPut = "-";
+                String stringToPut = "N/A";
 
                 if (reference != null) {
                     String second = getTestTrace(new File(value), test, options.getSubstringSide(), options.getSubstringLength());
