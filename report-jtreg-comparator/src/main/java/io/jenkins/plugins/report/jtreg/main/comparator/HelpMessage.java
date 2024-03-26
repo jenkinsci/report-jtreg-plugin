@@ -40,6 +40,8 @@ final public class HelpMessage {
             "                  " + ArgumentsDeclaration.compareArg.getHelp() + "\n" +
             "    " + ArgumentsDeclaration.virtualArg.getName() + "\n" +
             "                  " + ArgumentsDeclaration.virtualArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.compareTracesArg.getName() + "\n" +
+            "                  " + ArgumentsDeclaration.compareTracesArg.getHelp() + "\n" +
             "\n" +
             "    Other arguments:\n" +
             "    " + ArgumentsDeclaration.helpArg.getName() + "\n" +
@@ -60,6 +62,10 @@ final public class HelpMessage {
             "                  " + ArgumentsDeclaration.useDefaultBuildArg.getHelp() + "\n" +
             "    " + ArgumentsDeclaration.hidePassesArg.getName() + ArgumentsDeclaration.hidePassesArg.getUsage() + "\n" +
             "                  " + ArgumentsDeclaration.hidePassesArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.setReferentialArg.getName() + ArgumentsDeclaration.setReferentialArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.setReferentialArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.cutTraceArg.getName() + ArgumentsDeclaration.cutTraceArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.cutTraceArg.getHelp() + "\n" +
             "\n" +
             "    Dynamic arguments:\n" +
             "        Another type of arguments you can use are dynamic arguments. They are used\n" +

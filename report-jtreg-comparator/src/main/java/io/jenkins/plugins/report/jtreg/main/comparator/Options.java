@@ -42,7 +42,7 @@ public class Options {
         this.referentialJobName = null;
         this.referentialBuildNumber = -1;
         this.substringSide = Side.TailEach;
-        substringLength = 5000; // TODO this default value is probably subject to change
+        substringLength = 5000;
         // default configuration for getting job results
         Configuration resultConfig = new Configuration("build.xml", "/build/result", Locations.Build);
         resultConfig.setValue("{SUCCESS,UNSTABLE}");
