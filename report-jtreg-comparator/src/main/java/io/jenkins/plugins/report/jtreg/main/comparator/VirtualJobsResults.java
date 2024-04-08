@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class VirtualJobsResults {
-    private static final List<String> RESULTS = Arrays.asList("SUCCESS", "UNSTABLE", "FAILURE", "ABORTED", "RUNNING?");
+    private static final List<String> RESULTS = Arrays.asList("SUCCESS", "UNSTABLE", "FAILURE", "ABORTED", "NOT_BUILT", "RUNNING?");
 
     private static String getBuildResult(File build, Options.Configuration resultConfig) {
         String result = new ConfigFinder(resultConfig.findConfigFile(build), "result", resultConfig.getFindQuery()).findInConfig();
