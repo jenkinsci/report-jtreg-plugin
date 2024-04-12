@@ -71,7 +71,7 @@ public class JobsRecognition {
     public static String[] getNonNullListing(File f){
         String[] l = f.list();
         if (l == null){
-            throw new NullPointerException(f+" do not exists or is file or not accessible or hidden io error occured");
+            throw new NullPointerException("`" + f + "` do not exists or is file or not accessible or hidden io error occured");
         }
         return l;
     }

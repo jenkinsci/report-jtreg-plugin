@@ -79,6 +79,9 @@ public class PrintTableTest {
                 "    font-family: monospace, monospace;\n" +
                 "}\n" +
                 "\n" +
+                ":target {border-color: #3399FF;border-style: dashed;}\n" +
+                ".NameBuildLine{color:Green}\n" +
+                ".NameBuildSummary{color:DodgerBlue}\n" +
                 ".blk {\n" +
                 "    color: Black;\n" +
                 "}\n" +

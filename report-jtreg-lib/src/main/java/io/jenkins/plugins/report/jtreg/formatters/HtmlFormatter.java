@@ -194,13 +194,11 @@ public class HtmlFormatter extends StringMappedFormatter {
     @Override
     public String generateTableHeaderItem(String mainLine, List<String> otherLines) {
         StringBuilder headerItem = new StringBuilder();
-
         // main line
-        headerItem.append("<b style='color:Green'>").append(mainLine).append("</b><br>");
-
+        headerItem.append("<b class='NameBuildLine'>").append(mainLine).append("</b><br>");
         // other lines, hidden by default
         headerItem.append("<details>");
-        headerItem.append("<summary style='color:DodgerBlue'>properties</summary>");
+        headerItem.append("<summary class='NameBuildSummary'>properties</summary>");
         for (String line : otherLines) {
             headerItem.append(line).append("<br>");
         }
@@ -208,4 +206,5 @@ public class HtmlFormatter extends StringMappedFormatter {
 
         return headerItem.toString();
     }
+
 }
