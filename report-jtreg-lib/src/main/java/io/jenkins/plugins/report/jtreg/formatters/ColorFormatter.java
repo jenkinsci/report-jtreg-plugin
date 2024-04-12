@@ -184,10 +184,10 @@ public class ColorFormatter extends StringMappedFormatter {
     }
 
     @Override
-    public String generateTableHeaderItem(String mainLine, List<String> otherLines) {
+    public String generateTableHeaderItem(String jobName, String buildId, List<String> otherLines) {
         StringBuilder headerItem = new StringBuilder();
-
         // main line
+        String mainLine = jobName + " - build:" + buildId;
         headerItem.append(Bold).append(Green).append(mainLine).append(ResetAll);
 
         // other lines

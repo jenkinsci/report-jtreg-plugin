@@ -87,7 +87,6 @@ public class FailedTests {
         Map<String, ArrayList<String>> convertedMap = new HashMap<>();
         for (Map.Entry<String, ArrayList<String>> entry : failedMap.entrySet()) {
             File build = new File(entry.getKey());
-            String mainLine = Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build);
             List<String> otherLines = new ArrayList<>();
 
             for (Map.Entry<String, Options.Configuration> configEntry : options.getAllConfigurations().entrySet()) {
@@ -96,7 +95,7 @@ public class FailedTests {
                 otherLines.add(line);
             }
 
-            convertedMap.put(options.getFormatter().generateTableHeaderItem(mainLine, otherLines), entry.getValue());
+            convertedMap.put(options.getFormatter().generateTableHeaderItem(Builds.getJobName(build), Builds.getBuildNumber(build), otherLines), entry.getValue());
         }
 
         // get all non-duplicate failed tests from the map

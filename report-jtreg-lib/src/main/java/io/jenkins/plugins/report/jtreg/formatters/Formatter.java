@@ -75,5 +75,5 @@ public interface Formatter {
     public void preClose();
 
     public void printTable(String[][] table, int rowSize, int columnSize);
-    public String generateTableHeaderItem(String mainLine, List<String> otherLines);
+    public String generateTableHeaderItem(String jobName, String buildId, List<String> otherLines);
 }

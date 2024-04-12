@@ -42,11 +42,7 @@ public class VirtualJobsResults {
 
         for (int i = 1; i <= buildsToCompare.size(); i++) {
             File build = buildsToCompare.get(i - 1);
-
-            // create main line of the table header
-            String mainLine = Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build);
             List<String> otherLines = new ArrayList<>();
-
             // create the other lines (job properties)
             for (Map.Entry<String, Options.Configuration> entry : options.getAllConfigurations().entrySet()) {
                 String line = entry.getKey() + " : " +
@@ -54,7 +50,7 @@ public class VirtualJobsResults {
                 otherLines.add(line);
             }
 
-            table[0][i] = formatter.generateTableHeaderItem(mainLine, otherLines);
+            table[0][i] = formatter.generateTableHeaderItem(Builds.getJobName(build),Builds.getBuildNumber(build), otherLines);
 
             String result = getBuildResult(build, options.getConfiguration("result"));
             table[RESULTS.indexOf(result) + 1][i] = "X";

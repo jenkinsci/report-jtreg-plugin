@@ -118,12 +118,11 @@ public class PlainFormatter extends BasicFormatter {
     }
 
     @Override
-    public String generateTableHeaderItem(String mainLine, List<String> otherLines) {
+    public String generateTableHeaderItem(String jobName, String buildId, List<String> otherLines) {
         StringBuilder headerItem = new StringBuilder();
-
         // main line
+        String mainLine = jobName + " - build:" + buildId;
         headerItem.append(mainLine);
-
         // other lines
         for (String line : otherLines) {
             headerItem.append("\n\t\t").append(line);

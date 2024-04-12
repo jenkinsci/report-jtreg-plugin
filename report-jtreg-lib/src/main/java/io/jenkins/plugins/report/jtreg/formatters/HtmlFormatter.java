@@ -192,17 +192,24 @@ public class HtmlFormatter extends StringMappedFormatter {
     }
 
     @Override
-    public String generateTableHeaderItem(String mainLine, List<String> otherLines) {
+    public String generateTableHeaderItem(String jobName, String buildId, List<String> otherLines) {
         StringBuilder headerItem = new StringBuilder();
         // main line
-        headerItem.append("<b class='NameBuildLine'>").append(mainLine).append("</b><br>");
+        String mainLine =
+                "<a class='NameBuildLine' href='../job/"+jobName+"'>"
+                        + jobName + "</a>"
+                        + " - " + "<a class='NameBuildLine' "
+                        + "href='../jobs/"+jobName+
+                        "/"+buildId+"'>build:" + buildId +
+                        "</a>";
+        headerItem.append("<span class='NameBuildLineWrap'>").append(mainLine).append("</span><br>");
         // other lines, hidden by default
-        headerItem.append("<details>");
+        headerItem.append("<small><details>");
         headerItem.append("<summary class='NameBuildSummary'>properties</summary>");
         for (String line : otherLines) {
             headerItem.append(line).append("<br>");
         }
-        headerItem.append("</details>");
+        headerItem.append("</details></small>");
 
         return headerItem.toString();
     }

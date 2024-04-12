@@ -40,17 +40,14 @@ public class StackTraceCompare {
         for (int i = 1; i < jobBuilds.size() + 1; i++) {
             // convert the path into a file and then format it into the header
             File build = new File(jobBuilds.get(i - 1));
-
-            String mainLine = Builds.getJobName(build) + " - build:" + Builds.getBuildNumber(build);
             List<String> otherLines = new ArrayList<>();
-
             for (Map.Entry<String, Options.Configuration> configEntry : options.getAllConfigurations().entrySet()) {
                 String line = configEntry.getKey() + " : " +
                         new ConfigFinder(configEntry.getValue().findConfigFile(build), configEntry.getKey(), configEntry.getValue().getFindQuery()).findInConfig();
                 otherLines.add(line);
             }
 
-            table[0][i] = options.getFormatter().generateTableHeaderItem(mainLine, otherLines);
+            table[0][i] = options.getFormatter().generateTableHeaderItem(Builds.getJobName(build),Builds.getBuildNumber(build), otherLines);
         }
 
         // add the similarity percentages into the table
