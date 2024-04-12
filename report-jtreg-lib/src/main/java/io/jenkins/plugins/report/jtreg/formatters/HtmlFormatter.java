@@ -199,7 +199,7 @@ public class HtmlFormatter extends StringMappedFormatter {
                 "<a class='NameBuildLine' href='../job/"+jobName+"'>"
                         + jobName + "</a>"
                         + " - " + "<a class='NameBuildLine' "
-                        + "href='../jobs/"+jobName+
+                        + "href='../job/"+jobName+
                         "/"+buildId+"'>build:" + buildId +
                         "</a>";
         headerItem.append("<span class='NameBuildLineWrap'>").append(mainLine).append("</span><br>");
