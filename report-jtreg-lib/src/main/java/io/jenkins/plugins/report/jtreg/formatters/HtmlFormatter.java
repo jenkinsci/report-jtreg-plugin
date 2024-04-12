@@ -197,10 +197,8 @@ public class HtmlFormatter extends StringMappedFormatter {
         // main line
         String mainLine =
                 "<a class='NameBuildLine' href='../job/"+jobName+"'>"
-                        + jobName + "</a>"
-                        + " - " + "<a class='NameBuildLine' "
-                        + "href='../job/"+jobName+
-                        "/"+buildId+"'>build:" + buildId +
+                        + jobName + "</a>" + " - " + "<a class='NameBuildLine' href='../job/" + jobName + "/" + buildId + "'>build</a>"
+                        + ":" + "<a class='NameBuildLine' href='../job/" + jobName + "/" + buildId + "/java-reports'>" + buildId +
                         "</a>";
         headerItem.append("<span class='NameBuildLineWrap'>").append(mainLine).append("</span><br>");
         // other lines, hidden by default
