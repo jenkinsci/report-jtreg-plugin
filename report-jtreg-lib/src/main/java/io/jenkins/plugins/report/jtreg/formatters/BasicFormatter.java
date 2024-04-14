@@ -71,7 +71,7 @@ public abstract class BasicFormatter implements Formatter {
     }
 
     @Override
-    public void printTable(String[][] table, int rowSize, int columnSize) {
+    public void printTable(JtregPluginServicesCell[][] table, int rowSize, int columnSize) {
 
     }
 

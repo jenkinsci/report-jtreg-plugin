@@ -3,6 +3,7 @@ package io.jenkins.plugins.report.jtreg.main.comparator;
 import io.jenkins.plugins.report.jtreg.formatters.ColorFormatter;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 import io.jenkins.plugins.report.jtreg.formatters.HtmlFormatter;
+import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesCell;
 import io.jenkins.plugins.report.jtreg.formatters.PlainFormatter;
 import org.junit.jupiter.api.*;
 
@@ -10,15 +11,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 public class PrintTableTest {
-    private static String[][] table;
+    private static JtregPluginServicesCell[][] table;
 
     @BeforeEach
     public void updateTable() {
-        table = new String[][] {
-                {null, "first item", "second item", "third item"},
-                {"second row", "X", "this is a very long text in a center cell of a table", "X"},
-                {"third row", null, "", "X"},
-                {"fourth row", "X", "X", "X", "this is out of range and it won't be shown"}
+        PlainFormatter pf = new PlainFormatter(new PrintStream(new ByteArrayOutputStream()));
+        table = new JtregPluginServicesCell[][]{
+                {pf.createCell(null),         pf.createCell("first item"), pf.createCell("second item"), pf.createCell("third item")},
+                {pf.createCell("second row"), pf.createCell("X"),          pf.createCell("this is a very long text in a center cell of a table"), pf.createCell("X")},
+                {pf.createCell("third row"),  pf.createCell(null),         pf.createCell(""), pf.createCell("X")},
+                {pf.createCell("fourth row"), pf.createCell("X"),          pf.createCell("X"), pf.createCell("X"), pf.createCell("this is out of range and it won't be shown")}
         };
     }
 
@@ -34,7 +36,7 @@ public class PrintTableTest {
         PrintStream printStream = new PrintStream(outStream);
         Formatter f = new PlainFormatter(printStream);
 
-        String[][] newTable = table;
+        JtregPluginServicesCell[][] newTable = table;
 
         f.printTable(newTable, 4, 4);
 

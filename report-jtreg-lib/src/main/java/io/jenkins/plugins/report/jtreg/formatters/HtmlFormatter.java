@@ -139,7 +139,7 @@ public class HtmlFormatter extends StringMappedFormatter {
     }
 
     @Override
-    public void printTable(String[][] table, int rowSize, int columnSize) {
+    public void printTable(JtregPluginServicesCell[][] table, int rowSize, int columnSize) {
         super.println(Constants.COMPARATOR_TABLE_CSS); // print styles
 
         super.println("<div class='contents'>"); // start the section
@@ -148,8 +148,8 @@ public class HtmlFormatter extends StringMappedFormatter {
         super.println("<ul>");
         for (int i = 1; i < table[0].length; i++) {
             // make the definition and the table header linkable between each other
-            super.println("<li><b id='legend-" + i + "'><a href='#table-" + i + "'>" + i + ":</a></b> " + table[0][i] + "</li>");
-            table[0][i] = "<b id='table-" + i + "'><a href='#legend-" + i + "'>" + i + "</a></b>"; // replace the item with its definition (number)
+            super.println("<li><b id='legend-" + i + "'><a href='#table-" + i + "'>" + i + ":</a></b> " + table[0][i].renderCell() + "</li>");
+            table[0][i] = this.createCell("<b id='table-" + i + "'><a href='#legend-" + i + "'>" + i + "</a></b>"); // replace the item with its definition (number)
         }
         super.println("</ul>");
 
@@ -161,23 +161,23 @@ public class HtmlFormatter extends StringMappedFormatter {
             super.println("<tr>");
             for (int j = 0; j < columnSize; j++) {
                 if (table[i][j] != null) {
-                    if (table[i][j].equals("X")) {
-                        super.println("<td>" + table[i][j] + "</td>");
-                    } else if (table[i][j].matches("^[1-9]?[0-9]$|^100$")) {
+                    if (table[i][j].contentEquals("X")) {
+                        super.println("<td>" + table[i][j].renderCell() + "</td>");
+                    } else if (table[i][j].contentMatches("^[1-9]?[0-9]$|^100$")) {
                         // the table is displaying numbers from 0-100 (percentage), color code them
-                        int number = Integer.parseInt(table[i][j]);
+                        int number = Integer.parseInt(table[i][j].getCellContent());
                         if (number == 100) {
-                            super.println("<td style='color:DeepSkyBlue'>" + table[i][j] + "</td>");
+                            super.println("<td style='color:DeepSkyBlue'>" + table[i][j].renderCell() + "</td>");
                         } else if (number > 90) {
-                            super.println("<td style='color:ForestGreen'>" + table[i][j] + "</td>");
+                            super.println("<td style='color:ForestGreen'>" + table[i][j].renderCell() + "</td>");
                         } else if (number > 30) {
-                            super.println("<td style='color:DarkOrange'>" + table[i][j] + "</td>");
+                            super.println("<td style='color:DarkOrange'>" + table[i][j].renderCell() + "</td>");
                         } else {
                             // will be red
-                            super.println("<td>" + table[i][j] + "</td>");
+                            super.println("<td>" + table[i][j].renderCell() + "</td>");
                         }
                     } else {
-                        super.println("<td class='blk'>" + table[i][j] + "</td>");
+                        super.println("<td class='blk'>" + table[i][j].renderCell() + "</td>");
                     }
                 } else {
                     super.println("<td></td>");
@@ -210,6 +210,11 @@ public class HtmlFormatter extends StringMappedFormatter {
         headerItem.append("</details></small>");
 
         return headerItem.toString();
+    }
+
+    @Override
+    public JtregPluginServicesCell generateTableHeaderItemAsCell(String jobName, String buildId, List<String> otherLines) {
+        return this.createCell(generateTableHeaderItem(jobName, buildId, otherLines));
     }
 
 }

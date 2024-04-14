@@ -79,11 +79,11 @@ public class PlainFormatter extends BasicFormatter {
     }
 
     @Override
-    public void printTable(String[][] table, int rowSize, int columnSize) {
+    public void printTable(JtregPluginServicesCell[][] table, int rowSize, int columnSize) {
         // first print the first row definitions
         for (int i = 1; i < table[0].length; i++) {
-            super.println(i + ") " + table[0][i]);
-            table[0][i] = Integer.toString(i); // replace the item with its definition (number)
+            super.println(i + ") " + table[0][i].renderCell());
+            table[0][i] = this.createCell(Integer.toString(i)); // replace the item with its definition (number)
         }
 
         // get the length of the longest item in each column
@@ -91,8 +91,8 @@ public class PlainFormatter extends BasicFormatter {
         Arrays.fill(lengths, 0);
         for (int i = 0; i < rowSize; i++) {
             for (int j = 0; j < columnSize; j++) {
-                if (table[i][j] != null && table[i][j].length() > lengths[j]) {
-                    lengths[j] = table[i][j].length();
+                if (table[i][j] != null && table[i][j].cellWidth() > lengths[j]) {
+                    lengths[j] = table[i][j].cellWidth();
                 }
             }
         }
@@ -102,8 +102,8 @@ public class PlainFormatter extends BasicFormatter {
             for (int j = 0; j < columnSize; j++) {
                 int len = 0;
                 if (table[i][j] != null) {
-                    super.print(table[i][j] + " ");
-                    len = table[i][j].length();
+                    super.print(table[i][j].renderCell() + " ");
+                    len = table[i][j].cellWidth();
                 } else {
                     super.print(" ");
                 }
@@ -129,5 +129,10 @@ public class PlainFormatter extends BasicFormatter {
         }
 
         return headerItem.toString();
+    }
+
+    @Override
+    public JtregPluginServicesCell generateTableHeaderItemAsCell(String jobName, String buildId, List<String> otherLines) {
+        return this.createCell(generateTableHeaderItem(jobName, buildId, otherLines));
     }
 }

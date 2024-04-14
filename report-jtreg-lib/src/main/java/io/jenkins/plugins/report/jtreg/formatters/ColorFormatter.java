@@ -125,11 +125,11 @@ public class ColorFormatter extends StringMappedFormatter {
     }
 
     @Override
-    public void printTable(String[][] table, int rowSize, int columnSize) {
+    public void printTable(JtregPluginServicesCell[][] table, int rowSize, int columnSize) {
         // first print the first row definitions
         for (int i = 1; i < table[0].length; i++) {
-            super.println(Bold + i + ") " + ResetAll + table[0][i]);
-            table[0][i] = Integer.toString(i); // replace the item with its definition (number)
+            super.println(Bold + i + ") " + ResetAll + table[0][i].renderCell());
+            table[0][i] = this.createCell(Integer.toString(i)); // replace the item with its definition (number)
         }
 
         // get the length of the longest item in each column
@@ -137,8 +137,8 @@ public class ColorFormatter extends StringMappedFormatter {
         Arrays.fill(lengths, 0);
         for (int i = 0; i < rowSize; i++) {
             for (int j = 0; j < columnSize; j++) {
-                if (table[i][j] != null && table[i][j].length() > lengths[j]) {
-                    lengths[j] = table[i][j].length();
+                if (table[i][j] != null && table[i][j].cellWidth() > lengths[j]) {
+                    lengths[j] = table[i][j].cellWidth();
                 }
             }
         }
@@ -150,26 +150,26 @@ public class ColorFormatter extends StringMappedFormatter {
                 if (table[i][j] != null) {
                     // print the first row (the numbers) bold
                     if (i == 0) {
-                        super.print(Bold + table[i][j] + ResetAll + " ");
+                        super.print(Bold + table[i][j].renderCell() + ResetAll + " ");
                         // Xs will be red
-                    } else if (table[i][j].equals("X")) {
-                        super.print(Red + table[i][j] + ResetAll + " ");
-                    } else if (table[i][j].matches("^[1-9]?[0-9]$|^100$")) {
+                    } else if (table[i][j].contentEquals("X")) {
+                        super.print(Red + table[i][j].renderCell() + ResetAll + " ");
+                    } else if (table[i][j].contentMatches("^[1-9]?[0-9]$|^100$")) {
                         // the table is displaying numbers from 0-100 (percentage), color code them
-                        int number = Integer.parseInt(table[i][j]);
+                        int number = Integer.parseInt(table[i][j].getCellContent());
                         if (number == 100) {
-                            super.print(Cyan + table[i][j] + ResetAll + " ");
+                            super.print(Cyan + table[i][j].renderCell() + ResetAll + " ");
                         } else if (number > 90) {
-                            super.print(Green + table[i][j] + ResetAll + " ");
+                            super.print(Green + table[i][j].renderCell() + ResetAll + " ");
                         } else if (number > 30) {
-                            super.print(Yellow + table[i][j] + ResetAll + " ");
+                            super.print(Yellow + table[i][j].renderCell() + ResetAll + " ");
                         } else {
-                            super.print(Red + table[i][j] + ResetAll + " ");
+                            super.print(Red + table[i][j].renderCell() + ResetAll + " ");
                         }
                     } else {
-                        super.print(table[i][j] + " ");
+                        super.print(table[i][j].renderCell() + " ");
                     }
-                    len = table[i][j].length();
+                    len = table[i][j].cellWidth();
                 } else {
                     super.print(" ");
                 }
@@ -196,5 +196,10 @@ public class ColorFormatter extends StringMappedFormatter {
         }
 
         return headerItem.toString();
+    }
+
+    @Override
+    public JtregPluginServicesCell generateTableHeaderItemAsCell(String jobName, String buildId, List<String> otherLines) {
+        return this.createCell(generateTableHeaderItem(jobName, buildId, otherLines));
     }
 }

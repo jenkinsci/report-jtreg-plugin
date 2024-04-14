@@ -74,6 +74,14 @@ public interface Formatter {
     public void pre();
     public void preClose();
 
-    public void printTable(String[][] table, int rowSize, int columnSize);
+    public void printTable(JtregPluginServicesCell[][] table, int rowSize, int columnSize);
     public String generateTableHeaderItem(String jobName, String buildId, List<String> otherLines);
+    public JtregPluginServicesCell generateTableHeaderItemAsCell(String jobName, String buildId, List<String> otherLines);
+
+    default JtregPluginServicesCell createCell(String dummyContent) {
+        if (dummyContent == null) {
+            return null;
+        }
+        return new JtregPluginServicesCell(dummyContent);
+    }
 }

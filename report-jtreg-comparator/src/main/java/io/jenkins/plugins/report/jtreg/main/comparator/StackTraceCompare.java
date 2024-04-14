@@ -3,6 +3,7 @@ package io.jenkins.plugins.report.jtreg.main.comparator;
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
 import io.jenkins.plugins.report.jtreg.ConfigFinder;
+import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesCell;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.model.Test;
 import io.jenkins.plugins.report.jtreg.model.TestOutput;
@@ -34,7 +35,7 @@ public class StackTraceCompare {
         Collections.sort(jobBuilds);
 
         // create the table itself (2D array), where [rows][columns]
-        String[][] table = new String[failedTests.size() + 1][jobBuilds.size() + 1];
+        JtregPluginServicesCell[][] table = new JtregPluginServicesCell[failedTests.size() + 1][jobBuilds.size() + 1];
 
         // put values into the table header (first row)
         for (int i = 1; i < jobBuilds.size() + 1; i++) {
@@ -47,13 +48,13 @@ public class StackTraceCompare {
                 otherLines.add(line);
             }
 
-            table[0][i] = options.getFormatter().generateTableHeaderItem(Builds.getJobName(build),Builds.getBuildNumber(build), otherLines);
+            table[0][i] = options.getFormatter().generateTableHeaderItemAsCell(Builds.getJobName(build),Builds.getBuildNumber(build), otherLines);
         }
 
         // add the similarity percentages into the table
         int i = 1;
         for (String test : failedTests) {
-            table[i][0] = test; // put the test name into first column
+            table[i][0] = options.getFormatter().createCell(test); // put the test name into first column
 
             // create a list of values where to put the percentages
             List<String> putList = new ArrayList<>();
@@ -91,7 +92,7 @@ public class StackTraceCompare {
                     stringToPut = String.valueOf(getTraceSimilarity(reference, second));
                 }
 
-                table[i][jobBuilds.indexOf(value) + 1] = stringToPut;
+                table[i][jobBuilds.indexOf(value) + 1] = options.getFormatter().createCell(stringToPut);
             }
 
             // TODO delete, just for debug logging

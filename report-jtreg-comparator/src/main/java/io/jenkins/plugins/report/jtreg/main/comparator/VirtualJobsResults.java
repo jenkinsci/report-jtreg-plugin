@@ -2,6 +2,8 @@ package io.jenkins.plugins.report.jtreg.main.comparator;
 
 import io.jenkins.plugins.report.jtreg.ConfigFinder;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
+import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesCell;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,11 +35,11 @@ public class VirtualJobsResults {
         formatter.println();
         formatter.reset();
 
-        String[][] table = new String[RESULTS.size() + 1][buildsToCompare.size() + 1];
+        JtregPluginServicesCell[][] table = new JtregPluginServicesCell[RESULTS.size() + 1][buildsToCompare.size() + 1];
 
         // first column definitions
         for (int i = 1; i <= RESULTS.size(); i++) {
-            table[i][0] = RESULTS.get(i - 1);
+            table[i][0] = options.getFormatter().createCell(RESULTS.get(i - 1));
         }
 
         for (int i = 1; i <= buildsToCompare.size(); i++) {
@@ -50,10 +52,10 @@ public class VirtualJobsResults {
                 otherLines.add(line);
             }
 
-            table[0][i] = formatter.generateTableHeaderItem(Builds.getJobName(build),Builds.getBuildNumber(build), otherLines);
+            table[0][i] =formatter.generateTableHeaderItemAsCell(Builds.getJobName(build),Builds.getBuildNumber(build), otherLines);
 
             String result = getBuildResult(build, options.getConfiguration("result"));
-            table[RESULTS.indexOf(result) + 1][i] = "X";
+            table[RESULTS.indexOf(result) + 1][i] = formatter.createCell("X");
         }
 
         formatter.printTable(table, RESULTS.size() + 1, buildsToCompare.size() + 1);
