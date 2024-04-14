@@ -192,13 +192,16 @@ public class HtmlFormatter extends StringMappedFormatter {
     }
 
     @Override
-    public String generateTableHeaderItem(String jobName, String buildId, List<String> otherLines) {
+    public String generateTableHeaderItem(String jobName, String buildId, List<String> otherLines, String urlStub) {
+        if (urlStub == null) {
+            urlStub="..";
+        }
         StringBuilder headerItem = new StringBuilder();
         // main line
         String mainLine =
-                "<a class='NameBuildLine' href='../job/"+jobName+"'>"
-                        + jobName + "</a>" + " - " + "<a class='NameBuildLine' href='../job/" + jobName + "/" + buildId + "'>build</a>"
-                        + ":" + "<a class='NameBuildLine' href='../job/" + jobName + "/" + buildId + "/java-reports'>" + buildId +
+                "<a class='NameBuildLine' href='" + urlStub + "/job/"+jobName+"'>"
+                        + jobName + "</a>" + " - " + "<a class='NameBuildLine' href='" + urlStub + "/job/" + jobName + "/" + buildId + "'>build</a>"
+                        + ":" + "<a class='NameBuildLine' href='" + urlStub + "/job/" + jobName + "/" + buildId + "/java-reports'>" + buildId +
                         "</a>";
         headerItem.append("<span class='NameBuildLineWrap'>").append(mainLine).append("</span><br>");
         // other lines, hidden by default
@@ -213,8 +216,8 @@ public class HtmlFormatter extends StringMappedFormatter {
     }
 
     @Override
-    public JtregPluginServicesCell generateTableHeaderItemAsCell(String jobName, String buildId, List<String> otherLines) {
-        return this.createCell(generateTableHeaderItem(jobName, buildId, otherLines));
+    public JtregPluginServicesCell generateTableHeaderItemAsCell(String jobName, String buildId, List<String> otherLines, String urlStub) {
+        return this.createCell(generateTableHeaderItem(jobName, buildId, otherLines, urlStub));
     }
 
 }

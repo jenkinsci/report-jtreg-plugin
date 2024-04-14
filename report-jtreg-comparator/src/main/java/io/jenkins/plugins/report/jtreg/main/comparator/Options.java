@@ -11,6 +11,7 @@ import java.util.Map;
 public class Options {
     private Operations operation;
     private String jobsPath;
+    private String jenkinsUrl;
     private int numberOfBuilds;
     private boolean forceVague;
     private boolean onlyVolatile;
@@ -71,6 +72,14 @@ public class Options {
 
     public void setJobsPath(String jobsPath) {
         this.jobsPath = jobsPath;
+    }
+
+    public String getJenkinsUrl() {
+        return jenkinsUrl;
+    }
+
+    public void setJenkinsUrl(String jenkinsUrl) {
+        this.jenkinsUrl = jenkinsUrl;
     }
 
     public int getNumberOfBuilds() {

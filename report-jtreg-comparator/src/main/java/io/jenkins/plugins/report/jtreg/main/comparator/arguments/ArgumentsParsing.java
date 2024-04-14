@@ -80,6 +80,10 @@ public class ArgumentsParsing {
                 // --path
                 options.setJobsPath(getArgumentValue(arguments, i++));
 
+            } else if (currentArg.equals(ArgumentsDeclaration.jenkinsUrlArg.getName())) {
+                // --path
+                options.setJenkinsUrl(getArgumentValue(arguments, i++));
+
             } else if (currentArg.equals(ArgumentsDeclaration.historyArg.getName())) {
                 // --history
                 options.setNumberOfBuilds(Integer.parseInt(getArgumentValue(arguments, i++)));

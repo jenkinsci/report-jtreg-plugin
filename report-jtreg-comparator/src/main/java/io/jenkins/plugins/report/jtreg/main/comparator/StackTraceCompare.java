@@ -48,7 +48,7 @@ public class StackTraceCompare {
                 otherLines.add(line);
             }
 
-            table[0][i] = options.getFormatter().generateTableHeaderItemAsCell(Builds.getJobName(build),Builds.getBuildNumber(build), otherLines);
+            table[0][i] = options.getFormatter().generateTableHeaderItemAsCell(Builds.getJobName(build),Builds.getBuildNumber(build), otherLines, options.getJenkinsUrl());
         }
 
         // add the similarity percentages into the table

@@ -76,7 +76,7 @@ public abstract class BasicFormatter implements Formatter {
     }
 
     @Override
-    public String generateTableHeaderItem(String jobsName, String buildId, List<String> otherLines) {
+    public String generateTableHeaderItem(String jobsName, String buildId, List<String> otherLines, String urlStub) {
         return "";
     }
 }

@@ -52,7 +52,7 @@ public class VirtualJobsResults {
                 otherLines.add(line);
             }
 
-            table[0][i] =formatter.generateTableHeaderItemAsCell(Builds.getJobName(build),Builds.getBuildNumber(build), otherLines);
+            table[0][i] =formatter.generateTableHeaderItemAsCell(Builds.getJobName(build),Builds.getBuildNumber(build), otherLines, options.getJenkinsUrl());
 
             String result = getBuildResult(build, options.getConfiguration("result"));
             table[RESULTS.indexOf(result) + 1][i] = formatter.createCell("X");

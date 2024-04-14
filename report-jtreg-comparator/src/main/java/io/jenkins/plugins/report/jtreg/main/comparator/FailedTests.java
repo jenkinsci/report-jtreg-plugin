@@ -96,7 +96,7 @@ public class FailedTests {
                 otherLines.add(line);
             }
 
-            convertedMap.put(options.getFormatter().generateTableHeaderItem(Builds.getJobName(build), Builds.getBuildNumber(build), otherLines), entry.getValue());
+            convertedMap.put(options.getFormatter().generateTableHeaderItem(Builds.getJobName(build), Builds.getBuildNumber(build), otherLines, options.getJenkinsUrl()), entry.getValue());
         }
 
         // get all non-duplicate failed tests from the map

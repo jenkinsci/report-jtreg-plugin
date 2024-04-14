@@ -67,6 +67,12 @@ final public class HelpMessage {
             "    " + ArgumentsDeclaration.cutTraceArg.getName() + ArgumentsDeclaration.cutTraceArg.getUsage() + "\n" +
             "                  " + ArgumentsDeclaration.cutTraceArg.getHelp() + "\n" +
             "\n" +
+            "    Links arguments:\n" +
+            "        Some html outputs may contain links\n" +
+            "        If you want to point them to reasonable locations, set following stubs:\n" +
+            "    " + ArgumentsDeclaration.jenkinsUrlArg.getName() + ArgumentsDeclaration.jenkinsUrlArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.jenkinsUrlArg.getHelp() + "\n" +
+            "\n" +
             "    Dynamic arguments:\n" +
             "        Another type of arguments you can use are dynamic arguments. They are used\n" +
             "        for further filtering the jobs/builds to compare by any value in their config\n" +

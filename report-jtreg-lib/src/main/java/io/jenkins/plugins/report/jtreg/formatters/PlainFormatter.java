@@ -118,7 +118,7 @@ public class PlainFormatter extends BasicFormatter {
     }
 
     @Override
-    public String generateTableHeaderItem(String jobName, String buildId, List<String> otherLines) {
+    public String generateTableHeaderItem(String jobName, String buildId, List<String> otherLines, String urlStub) {
         StringBuilder headerItem = new StringBuilder();
         // main line
         String mainLine = jobName + " - build:" + buildId;
@@ -132,7 +132,7 @@ public class PlainFormatter extends BasicFormatter {
     }
 
     @Override
-    public JtregPluginServicesCell generateTableHeaderItemAsCell(String jobName, String buildId, List<String> otherLines) {
-        return this.createCell(generateTableHeaderItem(jobName, buildId, otherLines));
+    public JtregPluginServicesCell generateTableHeaderItemAsCell(String jobName, String buildId, List<String> otherLines, String urlStub) {
+        return this.createCell(generateTableHeaderItem(jobName, buildId, otherLines, urlStub));
     }
 }
