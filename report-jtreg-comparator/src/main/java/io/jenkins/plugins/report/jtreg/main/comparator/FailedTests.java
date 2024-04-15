@@ -4,6 +4,7 @@ import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
 import io.jenkins.plugins.report.jtreg.ConfigFinder;
 import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesCell;
+import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesLinkWithTooltip;
 import io.jenkins.plugins.report.jtreg.model.*;
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromDir;
 
@@ -125,13 +126,14 @@ public class FailedTests {
 
         // first, put values into the table header (first row)
         for (int i = 1; i < sortedValues.size() + 1; i++) {
-            table[0][i] = options.getFormatter().createCell(sortedValues.get(i - 1));
+            table[0][i] = options.getFormatter().createCell(new JtregPluginServicesLinkWithTooltip(sortedValues.get(i - 1)));
         }
 
         // add the "X"s to the table where the tests fail
         int i = 1;
         for (String key : keys) {
-            table[i][0] = options.getFormatter().createCell(key); // put the key into first column
+            table[i][0] = options.getFormatter().createCell(new JtregPluginServicesLinkWithTooltip(key)); // put the key into first
+            // column
 
             // now, create a list of values where to put the X for each column
             List<String> putXList = new ArrayList<>();
@@ -150,7 +152,8 @@ public class FailedTests {
 
             // put the Xs itself
             for (String value : putXList) {
-                table[i][sortedValues.indexOf(value) + 1] = options.getFormatter().createCell("X");
+                table[i][sortedValues.indexOf(value) + 1] =
+                        options.getFormatter().createCell(new JtregPluginServicesLinkWithTooltip("X"));
             }
 
             i++;

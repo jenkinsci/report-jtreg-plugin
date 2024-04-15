@@ -4,6 +4,7 @@ import io.jenkins.plugins.report.jtreg.formatters.ColorFormatter;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 import io.jenkins.plugins.report.jtreg.formatters.HtmlFormatter;
 import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesCell;
+import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesLinkWithTooltip;
 import io.jenkins.plugins.report.jtreg.formatters.PlainFormatter;
 import org.junit.jupiter.api.*;
 
@@ -11,17 +12,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 public class PrintTableTest {
-    private static JtregPluginServicesCell[][] table;
 
-    @BeforeEach
-    public void updateTable() {
-        PlainFormatter pf = new PlainFormatter(new PrintStream(new ByteArrayOutputStream()));
-        table = new JtregPluginServicesCell[][]{
-                {pf.createCell(null),         pf.createCell("first item"), pf.createCell("second item"), pf.createCell("third item")},
-                {pf.createCell("second row"), pf.createCell("X"),          pf.createCell("this is a very long text in a center cell of a table"), pf.createCell("X")},
-                {pf.createCell("third row"),  pf.createCell(null),         pf.createCell(""), pf.createCell("X")},
-                {pf.createCell("fourth row"), pf.createCell("X"),          pf.createCell("X"), pf.createCell("X"), pf.createCell("this is out of range and it won't be shown")}
+    public JtregPluginServicesCell[][] updateTable(Formatter pf) {
+        return new JtregPluginServicesCell[][]{
+                {create(pf, null),         create(pf, "first item"), create(pf, "second item"), create(pf, "third item")},
+                {create(pf, "second row"), create(pf, "X"),          create(pf, "this is a very long text in a center cell of a table"), create(pf, "X")},
+                {create(pf, "third row"),  create(pf, null),         create(pf, ""), create(pf, "X")},
+                {create(pf, "fourth row"), create(pf, "X"),          create(pf, "X"), create(pf, "X"), create(pf, "this is out of range and it won't be shown")}
         };
+    }
+
+    private static JtregPluginServicesCell create(Formatter pf, String content) {
+        return pf.createCell(new JtregPluginServicesLinkWithTooltip(content));
     }
 
     private String crlfToLf(String s) {
@@ -36,9 +38,9 @@ public class PrintTableTest {
         PrintStream printStream = new PrintStream(outStream);
         Formatter f = new PlainFormatter(printStream);
 
-        JtregPluginServicesCell[][] newTable = table;
+        JtregPluginServicesCell[][] table = updateTable(f);
 
-        f.printTable(newTable, 4, 4);
+        f.printTable(table, 4, 4);
 
         Assertions.assertEquals("1) first item\n" +
                         "2) second item\n" +
@@ -55,7 +57,7 @@ public class PrintTableTest {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(outStream);
         Formatter f = new ColorFormatter(printStream);
-
+        JtregPluginServicesCell[][] table = updateTable(f);
         f.printTable(table, 4, 4);
 
         Assertions.assertEquals("\u001B[1m1) \u001B[0mfirst item\n" +
@@ -73,7 +75,7 @@ public class PrintTableTest {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(outStream);
         Formatter f = new HtmlFormatter(printStream);
-
+        JtregPluginServicesCell[][] table = updateTable(f);
         f.printTable(table, 4, 4);
 
         Assertions.assertEquals("<style>\n" +

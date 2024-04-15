@@ -1,5 +1,10 @@
 package io.jenkins.plugins.report.jtreg.formatters;
 
+import org.apache.commons.collections.list.UnmodifiableList;
+
+import java.util.Collections;
+import java.util.List;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -10,18 +15,33 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 public class JtregPluginServicesCell {
 
-    private final String dummyContent;
+    private final List<JtregPluginServicesLinkWithTooltip> content;
 
-    protected JtregPluginServicesCell(String dummyContent) {
-        this.dummyContent = dummyContent;
+    protected JtregPluginServicesCell(List<JtregPluginServicesLinkWithTooltip> content) {
+        if (content == null) {
+            throw new NullPointerException("content can not be null");
+        }
+        this.content = Collections.unmodifiableList(content);
     }
 
     public String renderCell() {
-        return dummyContent;
+        StringBuilder sb = new StringBuilder();
+        for(JtregPluginServicesLinkWithTooltip item: content){
+            if (item == null) {
+                sb.append("");
+            } else {
+                sb.append(item.render()).append(" ");
+            }
+        }
+        return sb.toString().trim();
     }
 
     public String getCellContent() {
-        return dummyContent;
+        StringBuilder sb = new StringBuilder();
+        for(JtregPluginServicesLinkWithTooltip item: content){
+            sb.append(item.getText()).append(" ");
+        }
+        return sb.toString().trim();
     }
 
     public String toString() {
@@ -57,7 +77,6 @@ public class JtregPluginServicesCell {
     public boolean equals(Object obj) {
         throw  new RuntimeException("remove usage in favour of contentEquals()");
     }
-
 
     public boolean contentMatches(String s) {
         return getCellContent().matches(s);

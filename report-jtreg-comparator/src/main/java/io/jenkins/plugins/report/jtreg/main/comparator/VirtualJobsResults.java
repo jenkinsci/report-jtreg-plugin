@@ -3,6 +3,7 @@ package io.jenkins.plugins.report.jtreg.main.comparator;
 import io.jenkins.plugins.report.jtreg.ConfigFinder;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesCell;
+import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesLinkWithTooltip;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class VirtualJobsResults {
 
         // first column definitions
         for (int i = 1; i <= RESULTS.size(); i++) {
-            table[i][0] = options.getFormatter().createCell(RESULTS.get(i - 1));
+            table[i][0] = options.getFormatter().createCell(new JtregPluginServicesLinkWithTooltip(RESULTS.get(i - 1)));
         }
 
         for (int i = 1; i <= buildsToCompare.size(); i++) {
@@ -55,7 +56,7 @@ public class VirtualJobsResults {
             table[0][i] =formatter.generateTableHeaderItemAsCell(Builds.getJobName(build),Builds.getBuildNumber(build), otherLines, options.getJenkinsUrl());
 
             String result = getBuildResult(build, options.getConfiguration("result"));
-            table[RESULTS.indexOf(result) + 1][i] = formatter.createCell("X");
+            table[RESULTS.indexOf(result) + 1][i] = formatter.createCell(new JtregPluginServicesLinkWithTooltip("X"));
         }
 
         formatter.printTable(table, RESULTS.size() + 1, buildsToCompare.size() + 1);

@@ -26,6 +26,7 @@ package io.jenkins.plugins.report.jtreg.formatters;
 import io.jenkins.plugins.report.jtreg.Constants;
 
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -149,7 +150,9 @@ public class HtmlFormatter extends StringMappedFormatter {
         for (int i = 1; i < table[0].length; i++) {
             // make the definition and the table header linkable between each other
             super.println("<li><b id='legend-" + i + "'><a href='#table-" + i + "'>" + i + ":</a></b> " + table[0][i].renderCell() + "</li>");
-            table[0][i] = this.createCell("<b id='table-" + i + "'><a href='#legend-" + i + "'>" + i + "</a></b>"); // replace the item with its definition (number)
+            table[0][i] =
+                    this.createCell(new JtregPluginServicesLinkWithTooltip("<b id='table-" + i + "'><a href='#legend-" + i +
+                            "'>" + i +"</a></b>")); // replace the item with its definition (number)
         }
         super.println("</ul>");
 
@@ -217,7 +220,15 @@ public class HtmlFormatter extends StringMappedFormatter {
 
     @Override
     public JtregPluginServicesCell generateTableHeaderItemAsCell(String jobName, String buildId, List<String> otherLines, String urlStub) {
-        return this.createCell(generateTableHeaderItem(jobName, buildId, otherLines, urlStub));
+        return this.createCell(new JtregPluginServicesLinkWithTooltip(generateTableHeaderItem(jobName, buildId, otherLines, urlStub)));
+    }
+
+    @Override
+    public JtregPluginServicesCell createCell(List<JtregPluginServicesLinkWithTooltip> content) {
+        if (content == null) {
+            return null;
+        }
+        return new JtregPluginServicesCell(content);
     }
 
 }

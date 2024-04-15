@@ -23,6 +23,7 @@
  */
 package io.jenkins.plugins.report.jtreg.formatters;
 
+import java.util.Arrays;
 import java.util.List;
 
 public interface Formatter {
@@ -78,10 +79,13 @@ public interface Formatter {
     public String generateTableHeaderItem(String jobName, String buildId, List<String> otherLines, String urlStub);
     public JtregPluginServicesCell generateTableHeaderItemAsCell(String jobName, String buildId, List<String> otherLines, String urlStub);
 
-    default JtregPluginServicesCell createCell(String dummyContent) {
-        if (dummyContent == null) {
+    public JtregPluginServicesCell createCell(List<JtregPluginServicesLinkWithTooltip> content);
+
+    default JtregPluginServicesCell createCell(JtregPluginServicesLinkWithTooltip content) {
+        if (content == null) {
             return null;
         }
-        return new JtregPluginServicesCell(dummyContent);
+        return new JtregPluginServicesCell(Arrays.asList((content)));
     }
+
 }

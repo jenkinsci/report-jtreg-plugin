@@ -129,7 +129,8 @@ public class ColorFormatter extends StringMappedFormatter {
         // first print the first row definitions
         for (int i = 1; i < table[0].length; i++) {
             super.println(Bold + i + ") " + ResetAll + table[0][i].renderCell());
-            table[0][i] = this.createCell(Integer.toString(i)); // replace the item with its definition (number)
+            table[0][i] = this.createCell(new JtregPluginServicesLinkWithTooltip(Integer.toString(i))); // replace the item with its
+            // definition (number)
         }
 
         // get the length of the longest item in each column
@@ -200,6 +201,15 @@ public class ColorFormatter extends StringMappedFormatter {
 
     @Override
     public JtregPluginServicesCell generateTableHeaderItemAsCell(String jobName, String buildId, List<String> otherLines, String urlStub) {
-        return this.createCell(generateTableHeaderItem(jobName, buildId, otherLines, urlStub));
+        return this.createCell(new JtregPluginServicesLinkWithTooltip(generateTableHeaderItem(jobName, buildId,
+                otherLines, urlStub)));
+    }
+
+    @Override
+    public JtregPluginServicesCell createCell(List<JtregPluginServicesLinkWithTooltip> content) {
+        if (content == null) {
+            return null;
+        }
+        return new JtregPluginServicesCell(JtregPluginServicesLinkWithTooltip.toPlainList(content));
     }
 }

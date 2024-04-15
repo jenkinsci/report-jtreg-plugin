@@ -4,6 +4,7 @@ import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
 import io.jenkins.plugins.report.jtreg.ConfigFinder;
 import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesCell;
+import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesLinkWithTooltip;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.model.Test;
 import io.jenkins.plugins.report.jtreg.model.TestOutput;
@@ -54,7 +55,8 @@ public class StackTraceCompare {
         // add the similarity percentages into the table
         int i = 1;
         for (String test : failedTests) {
-            table[i][0] = options.getFormatter().createCell(test); // put the test name into first column
+            table[i][0] = options.getFormatter().createCell(new JtregPluginServicesLinkWithTooltip(test)); // put the test name into
+            // first column
 
             // create a list of values where to put the percentages
             List<String> putList = new ArrayList<>();
@@ -92,7 +94,8 @@ public class StackTraceCompare {
                     stringToPut = String.valueOf(getTraceSimilarity(reference, second));
                 }
 
-                table[i][jobBuilds.indexOf(value) + 1] = options.getFormatter().createCell(stringToPut);
+                table[i][jobBuilds.indexOf(value) + 1] =
+                        options.getFormatter().createCell(new JtregPluginServicesLinkWithTooltip(stringToPut));
             }
 
             // TODO delete, just for debug logging
