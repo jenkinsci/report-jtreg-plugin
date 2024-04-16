@@ -155,7 +155,10 @@ public class ColorFormatter extends StringMappedFormatter {
                         // Xs will be red
                     } else if (table[i][j].contentEquals("X")) {
                         super.print(Red + table[i][j].renderCell() + ResetAll + " ");
-                    } else if (table[i][j].contentMatches("^[1-9]?[0-9]$|^100$")) {
+                    }
+                    //this will need to be redone per-item
+                    //JtregPluginServicesCell currently do not have method for that, but should be easy to do
+                    else if (table[i][j].contentMatches("^[1-9]?[0-9]$|^100$")) {
                         // the table is displaying numbers from 0-100 (percentage), color code them
                         int number = Integer.parseInt(table[i][j].getCellContent());
                         if (number == 100) {

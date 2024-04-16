@@ -166,7 +166,11 @@ public class HtmlFormatter extends StringMappedFormatter {
                 if (table[i][j] != null) {
                     if (table[i][j].contentEquals("X")) {
                         super.println("<td>" + table[i][j].renderCell() + "</td>");
-                    } else if (table[i][j].contentMatches("^[1-9]?[0-9]$|^100$")) {
+
+                    }
+                    //this will need to be redone per-item
+                    //JtregPluginServicesCell currently do not have method for that, but should be easy to do
+                    else if (table[i][j].contentMatches("^[1-9]?[0-9]$|^100$")) {
                         // the table is displaying numbers from 0-100 (percentage), color code them
                         int number = Integer.parseInt(table[i][j].getCellContent());
                         if (number == 100) {

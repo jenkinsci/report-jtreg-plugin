@@ -5,14 +5,7 @@ import org.apache.commons.collections.list.UnmodifiableList;
 import java.util.Collections;
 import java.util.List;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-/**
- * todo, replace dummy content by formatting + text?
- * todo replace by interface and have formatter based cell?
- *
- * todo, rmeove the  SuppressWarnings once all ewuals and hashes are identified and fixed
- */
 public class JtregPluginServicesCell {
 
     private final List<JtregPluginServicesLinkWithTooltip> content;
@@ -46,7 +39,7 @@ public class JtregPluginServicesCell {
     }
 
     public String toString() {
-        throw  new RuntimeException("remove usage in favour of renderCell() (or getCellContent)");
+        return renderCell();
     }
 
     public int cellWidth() {
@@ -63,7 +56,7 @@ public class JtregPluginServicesCell {
         return  getCellContent().hashCode();
     }
     public int hashCode() {
-        throw  new RuntimeException("remove usage in favour of contetntHashCode()");
+        return contetntHashCode();
     }
 
     /**
@@ -74,9 +67,8 @@ public class JtregPluginServicesCell {
         return  getCellContent().equals(obj);
     }
 
-    @SuppressFBWarnings({"EQ_UNUSUAL"})
     public boolean equals(Object obj) {
-        throw  new RuntimeException("remove usage in favour of contentEquals()");
+        return contentEquals(obj);
     }
 
     public boolean contentMatches(String s) {

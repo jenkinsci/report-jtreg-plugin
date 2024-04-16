@@ -32,6 +32,28 @@ final public class Constants {
     public static final int VAGUE_QUERY_LENGTH_THRESHOLD = 4;
     public static final String COMPARATOR_TABLE_CSS =
                     "<style>\n" +
+                            ".tooltip {\n" +
+                            "  position: relative;\n" +
+                            "  display: inline-block;\n" +
+                            "}\n" +
+                            ".tooltip .tooltiptext {\n" +
+                            "  visibility: hidden;\n" +
+                            "  width: 240px;\n" +
+                            "  background-color: grey;\n" +
+                            "  color: #fff;\n" +
+                            "  text-align: left;\n" +
+                            "  border-radius: 6px;\n" +
+                            "  padding: 5px 0;\n" +
+                            "  /* Position the tooltip */\n" +
+                            "  position: absolute;\n" +
+                            "  z-index: 1;\n" +
+                            "  top: 100%;\n" +
+                            "  left: 50%;\n" +
+                            "  margin-left: -60px;" +
+                            "}\n" +
+                            ".tooltip:hover .tooltiptext {\n" +
+                            "  visibility: visible;\n" +
+                            "}\n" +
                     ".contents {\n" +
                     "    font-family: monospace, monospace;\n" +
                     "}\n" +

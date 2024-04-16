@@ -118,10 +118,10 @@ public class JtregPluginServicesLinkWithTooltip {
                     sb.append(" ");
                 }
             }
-            sb.append("<span>\n");
+            sb.append("</span>\n");
         }
         if (!tooltips.isEmpty()) {
-            sb.append("<div>\n");
+            sb.append("</div>\n");
         }
         return sb.toString();
     }

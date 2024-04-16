@@ -94,8 +94,14 @@ public class StackTraceCompare {
                     stringToPut = String.valueOf(getTraceSimilarity(reference, second));
                 }
 
-                table[i][jobBuilds.indexOf(value) + 1] =
-                        options.getFormatter().createCell(new JtregPluginServicesLinkWithTooltip(stringToPut));
+                List<JtregPluginServicesLinkWithTooltip> maybeSeveralComaprisons = new ArrayList<>();
+                maybeSeveralComaprisons.add(new JtregPluginServicesLinkWithTooltip(stringToPut, null, getLinksTooltip(), true));
+                //this is just demo
+                //FIXME repace by real logic
+                if ((jobBuilds.indexOf(value) + i + 1 )%2 == 0){
+                    maybeSeveralComaprisons.add(new JtregPluginServicesLinkWithTooltip("X", "test", getLinksTooltip(), true));
+                }
+                table[i][jobBuilds.indexOf(value) + 1] = options.getFormatter().createCell(maybeSeveralComaprisons);
             }
 
             // TODO delete, just for debug logging
@@ -106,6 +112,15 @@ public class StackTraceCompare {
 
         // print the table into stdout
         options.getFormatter().printTable(table, failedTests.size() + 1, jobBuilds.size() + 1);
+    }
+
+    private static List<JtregPluginServicesLinkWithTooltip> getLinksTooltip() {
+        List<JtregPluginServicesLinkWithTooltip> list = new ArrayList<>();
+        list.add(new JtregPluginServicesLinkWithTooltip("this is tool tip of comparison of $TEST trace of  $job1:$X x $job2:$Y"));
+        list.add(new JtregPluginServicesLinkWithTooltip("use this as base", "some link", null));
+        list.add(new JtregPluginServicesLinkWithTooltip("show diff agaisnt base", "some otjer link", null));
+        list.add(new JtregPluginServicesLinkWithTooltip("show diff ind ifferent setup", "other link", null));
+        return list;
     }
 
     private static String getTestTrace(File build, String testName, Options.Side cutSide, int cutLength) {
