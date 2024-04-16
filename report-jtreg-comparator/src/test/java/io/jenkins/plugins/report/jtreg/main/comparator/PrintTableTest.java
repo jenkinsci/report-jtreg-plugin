@@ -63,7 +63,7 @@ public class PrintTableTest {
         Assertions.assertEquals("\u001B[1m1) \u001B[0mfirst item\n" +
                         "\u001B[1m2) \u001B[0msecond item\n" +
                         "\u001B[1m3) \u001B[0mthird item\n" +
-                        "           | \u001B[1m1\u001B[0m | \u001B[1m2\u001B[0m                                                    | \u001B[1m3\u001B[0m | \n" +
+                        "\u001B[1m\u001B[0m           | \u001B[1m1\u001B[0m | \u001B[1m2\u001B[0m                                                    | \u001B[1m3\u001B[0m | \n" +
                         "second row | \u001B[31mX\u001B[0m | this is a very long text in a center cell of a table | \u001B[31mX\u001B[0m | \n" +
                         "third row  |   |                                                      | \u001B[31mX\u001B[0m | \n" +
                         "fourth row | \u001B[31mX\u001B[0m | \u001B[31mX\u001B[0m                                                    | \u001B[31mX\u001B[0m | \n",
