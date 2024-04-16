@@ -5,9 +5,7 @@ import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
 import io.jenkins.plugins.report.jtreg.ConfigFinder;
 import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesCell;
 import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesLinkWithTooltip;
-import io.jenkins.plugins.report.jtreg.model.Suite;
-import io.jenkins.plugins.report.jtreg.model.Test;
-import io.jenkins.plugins.report.jtreg.model.TestOutput;
+import io.jenkins.plugins.report.jtreg.model.*;
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromDir;
 
 import java.io.File;
@@ -123,6 +121,37 @@ public class StackTraceCompare {
         return list;
     }
 
+    public static void printTraceDiff(Options options) {
+        Options.DiffInfo diffInfo = options.getDiffInfo();
+        File buildOne = diffInfo.getBuildOne(options.getJobsPath());
+        String testRegex = options.getExactTestsRegex();
+        List<String> matchedFailedTests = new ArrayList<>();
+
+        try {
+            BuildReportExtended bex = bs.parseBuildReportExtended(new RunWrapperFromDir(buildOne), null);
+            SuitesWithResults swr = bex.getAllTests();
+
+            for (SuiteTestsWithResults stwr : swr.getAllTestsAndSuites()) {
+                for (SuiteTestsWithResults.StringWithResult t : stwr.getTests()) {
+                    if (t.getStatus().isFailed() && t.getTestName().matches(testRegex)) {
+                        matchedFailedTests.add(t.getTestName());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("An exception was caught when trying to get the failed tests of " + diffInfo.getBuildOneName());
+            e.printStackTrace();
+        }
+
+        for (String test : matchedFailedTests) {
+            String traceOne = getTestTrace(buildOne, test, options.getSubstringSide(), options.getSubstringLength());
+            String traceTwo = getTestTrace(diffInfo.getBuildTwo(options.getJobsPath()), test, options.getSubstringSide(), options.getSubstringLength());
+
+            options.getFormatter().printDiff(traceOne, diffInfo.getBuildOneName() + " : test " + test, traceTwo,
+                    diffInfo.getBuildTwoName() + " : test " + test, options.getDiffInfo().getTypeOfDiff());
+        }
+    }
+
     private static String getTestTrace(File build, String testName, Options.Side cutSide, int cutLength) {
         try {
             BuildReportExtended bex = bs.parseBuildReportExtended(new RunWrapperFromDir(build), null);
@@ -135,12 +164,16 @@ public class StackTraceCompare {
                     // return the output (stack trace)
                     StringBuilder wholeTrace = new StringBuilder();
                     wholeTrace.append(t.getStatusLine());
+                    wholeTrace.append("\n\n");
 
                     // get outputs, sort them by their name (to be deterministic) and append them to the string
                     List<TestOutput> outs = t.getOutputs();
                     outs.sort(Comparator.comparing(TestOutput::getName));
 
                     for (TestOutput out : outs) {
+                        wholeTrace.append(out.getName());
+                        wholeTrace.append(" : \n");
+
                         if ((cutSide == Options.Side.HeadEach || cutSide == Options.Side.TailEach) && out.getValue().length() > cutLength) {
                             if (cutSide == Options.Side.HeadEach) {
                                 wholeTrace.append(out.getValue(), 0, cutLength);
@@ -150,6 +183,8 @@ public class StackTraceCompare {
                         } else {
                             wholeTrace.append(out.getValue());
                         }
+
+                        wholeTrace.append("\n\n");
                     }
 
                     if ((cutSide == Options.Side.Head || cutSide == Options.Side.Tail) && wholeTrace.length() > cutLength) {

@@ -1,5 +1,6 @@
 package io.jenkins.plugins.report.jtreg.main.comparator.arguments;
 
+import io.jenkins.plugins.report.jtreg.formatters.BasicFormatter;
 import io.jenkins.plugins.report.jtreg.main.comparator.HelpMessage;
 import io.jenkins.plugins.report.jtreg.main.comparator.Options;
 import io.jenkins.plugins.report.jtreg.main.comparator.jobs.DefaultProvider;
@@ -71,6 +72,32 @@ public class ArgumentsParsing {
                     throw new RuntimeException("Cannot combine --compare-traces with other operations.");
                 }
                 options.setOperation(Options.Operations.TraceCompare);
+
+            } else if (currentArg.equals(ArgumentsDeclaration.traceFromArg.getName())) {
+                // --trace-from
+                if (options.getOperation() != null && options.getOperation() != Options.Operations.DiffTrace) {
+                    throw new RuntimeException("Cannot combine --trace-from with other operations.");
+                }
+                String[] values = getArgumentValue(arguments, i++).split(":");
+                if (values.length != 2) {
+                    throw new RuntimeException("Wrong value format for " + ArgumentsDeclaration.traceFromArg.getName() + " argument.");
+                } else {
+                    options.getDiffInfo().setBuildOne(values[0], values[1]);
+                }
+                options.setOperation(Options.Operations.DiffTrace);
+
+            } else if (currentArg.equals(ArgumentsDeclaration.traceToArg.getName())) {
+                // --trace-to
+                if (options.getOperation() != null && options.getOperation() != Options.Operations.DiffTrace) {
+                    throw new RuntimeException("Cannot combine --trace-to with other operations.");
+                }
+                String[] values = getArgumentValue(arguments, i++).split(":");
+                if (values.length != 2) {
+                    throw new RuntimeException("Wrong value format for " + ArgumentsDeclaration.traceToArg.getName() + " argument.");
+                } else {
+                    options.getDiffInfo().setBuildTwo(values[0], values[1]);
+                }
+                options.setOperation(Options.Operations.DiffTrace);
 
             } else if (currentArg.equals(ArgumentsDeclaration.virtualArg.getName())) {
                 // --virtual
@@ -156,6 +183,17 @@ public class ArgumentsParsing {
                     options.setSubstringLength(Integer.parseInt(values[1]));
                 }
 
+            } else if (currentArg.equals(ArgumentsDeclaration.diffFormatArg.getName())) {
+                // --diff-format
+                String format = getArgumentValue(arguments, i++).toLowerCase();
+                if (format.equals("inline")) {
+                    options.getDiffInfo().setTypeOfDiff(BasicFormatter.TypeOfDiff.INLINE);
+                } else if (format.equals("sidebyside")) {
+                    options.getDiffInfo().setTypeOfDiff(BasicFormatter.TypeOfDiff.SIDEBYSIDE);
+                } else if (!format.equals("patch")) {
+                    throw new RuntimeException("Unexpected diff format specified, expected patch, inline or sidebyside.");
+                }
+
             } else if (currentArg.equals(ArgumentsDeclaration.buildConfigFindArg.getName()) ||
                     currentArg.equals(ArgumentsDeclaration.jobConfigFindArg.getName())) {
                 // --X-config-find
@@ -213,7 +251,7 @@ public class ArgumentsParsing {
 
         // check for basic errors
         if (options.getOperation() == null && !options.isPrintVirtual()) {
-            throw new RuntimeException("Expected some operation (--list, --enumerate, --compare, --print or --virtual).");
+            throw new RuntimeException("Expected some operation (use --help for the set of available operations).");
         }
         if (options.getJobsPath() == null) {
             throw new RuntimeException("Expected path to jobs directory (--path).");

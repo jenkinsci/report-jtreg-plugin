@@ -42,6 +42,10 @@ final public class HelpMessage {
             "                  " + ArgumentsDeclaration.virtualArg.getHelp() + "\n" +
             "    " + ArgumentsDeclaration.compareTracesArg.getName() + "\n" +
             "                  " + ArgumentsDeclaration.compareTracesArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.traceFromArg.getName() + ArgumentsDeclaration.traceFromArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.traceFromArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.traceToArg.getName() + ArgumentsDeclaration.traceToArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.traceToArg.getHelp() + "\n" +
             "\n" +
             "    Other arguments:\n" +
             "    " + ArgumentsDeclaration.helpArg.getName() + "\n" +
@@ -66,6 +70,8 @@ final public class HelpMessage {
             "                  " + ArgumentsDeclaration.setReferentialArg.getHelp() + "\n" +
             "    " + ArgumentsDeclaration.cutTraceArg.getName() + ArgumentsDeclaration.cutTraceArg.getUsage() + "\n" +
             "                  " + ArgumentsDeclaration.cutTraceArg.getHelp() + "\n" +
+            "    " + ArgumentsDeclaration.diffFormatArg.getName() + ArgumentsDeclaration.diffFormatArg.getUsage() + "\n" +
+            "                  " + ArgumentsDeclaration.diffFormatArg.getHelp() + "\n" +
             "\n" +
             "    Links arguments:\n" +
             "        Some html outputs may contain links\n" +

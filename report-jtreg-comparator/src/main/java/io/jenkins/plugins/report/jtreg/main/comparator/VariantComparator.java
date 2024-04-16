@@ -1,5 +1,6 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
+import io.jenkins.plugins.report.jtreg.formatters.BasicFormatter;
 import io.jenkins.plugins.report.jtreg.main.comparator.arguments.ArgumentsParsing;
 import io.jenkins.plugins.report.jtreg.main.comparator.listing.DirListing;
 import io.jenkins.plugins.report.jtreg.main.comparator.listing.FsDirListing;
@@ -12,6 +13,12 @@ public class VariantComparator {
     public static void main(String[] args) throws Exception {
         Options options = ArgumentsParsing.parse(args);
         if(options.isDie()) {
+            return;
+        }
+
+        // creating diff between two stack traces == no other operation will be made, so it is not necessary to continue
+        if (options.getOperation() == Options.Operations.DiffTrace) {
+            StackTraceCompare.printTraceDiff(options);
             return;
         }
 
