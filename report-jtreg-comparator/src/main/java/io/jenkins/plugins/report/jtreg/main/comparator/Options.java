@@ -1,5 +1,6 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
+import io.jenkins.plugins.report.jtreg.formatters.BasicFormatter;
 import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsProvider;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 import io.jenkins.plugins.report.jtreg.formatters.PlainFormatter;
@@ -27,6 +28,7 @@ public class Options {
     private int referentialBuildNumber;
     private Side substringSide;
     private int substringLength;
+    private DiffInfo diffInfo;
 
     public Options() {
         this.numberOfBuilds = 1;
@@ -48,6 +50,7 @@ public class Options {
         Configuration resultConfig = new Configuration("build.xml", "/build/result", Locations.Build);
         resultConfig.setValue("{SUCCESS,UNSTABLE}");
         addConfiguration("result", resultConfig);
+        this.diffInfo = new DiffInfo();
     }
 
     public void setDie(boolean die) {
@@ -186,6 +189,10 @@ public class Options {
         this.substringLength = substringLength;
     }
 
+    public DiffInfo getDiffInfo() {
+        return diffInfo;
+    }
+
     public Configuration getConfiguration(String whatToFind) {
         return configurations.get(whatToFind);
     }
@@ -200,7 +207,7 @@ public class Options {
 
     // enum of all available operations
     public enum Operations {
-        List, Enumerate, Compare, Print, TraceCompare
+        List, Enumerate, Compare, Print, TraceCompare, DiffTrace
     }
 
     public enum Locations {
@@ -250,6 +257,74 @@ public class Options {
 
         public void setValue(String value) {
             this.value = value;
+        }
+    }
+
+    public static class DiffInfo {
+        private String jobOne;
+        private String buildOne;
+        private String jobTwo;
+        private String buildTwo;
+        private BasicFormatter.TypeOfDiff typeOfDiff;
+
+        public DiffInfo() {
+            typeOfDiff = BasicFormatter.TypeOfDiff.PATCH;
+        }
+
+        public void setBuildOne(String jobOne, String buildOne) {
+            this.jobOne = jobOne;
+            this.buildOne = buildOne;
+        }
+
+        public void setBuildTwo(String jobTwo, String buildTwo) {
+            this.jobTwo = jobTwo;
+            this.buildTwo = buildTwo;
+        }
+
+        public File getBuildOne(String pathToJobsDir) {
+            if (jobOne == null || buildOne == null) {
+                throw new RuntimeException("Please specify the first build to compare the stack trace.");
+            }
+
+            File jobsDir = new File(pathToJobsDir);
+            File firstBuild = new File(jobsDir, jobOne + "/builds/" + buildOne);
+
+            if (firstBuild.exists()) {
+                return firstBuild;
+            } else {
+                throw new RuntimeException("The specified " + buildOne + " of job " + jobOne + " does not exist.");
+            }
+        }
+
+        public String getBuildOneName() {
+            return jobOne + " : build " + buildOne;
+        }
+
+        public File getBuildTwo(String pathToJobsDir) {
+            if (jobTwo == null || buildTwo == null) {
+                throw new RuntimeException("Please specify the second build to compare the stack trace.");
+            }
+
+            File jobsDir = new File(pathToJobsDir);
+            File secondBuild = new File(jobsDir, jobTwo + "/builds/" + buildTwo);
+
+            if (secondBuild.exists()) {
+                return secondBuild;
+            } else {
+                throw new RuntimeException("The specified " + buildTwo + " of job " + jobTwo + " does not exist.");
+            }
+        }
+
+        public String getBuildTwoName() {
+            return jobTwo + " : build " + buildTwo;
+        }
+
+        public BasicFormatter.TypeOfDiff getTypeOfDiff() {
+            return typeOfDiff;
+        }
+
+        public void setTypeOfDiff(BasicFormatter.TypeOfDiff typeOfDiff) {
+            this.typeOfDiff = typeOfDiff;
         }
     }
 }
