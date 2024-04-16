@@ -94,4 +94,17 @@ final public class Constants {
                     "    opened = !opened;\n" +
                     "}\n" +
                     "</script>";
+
+    public static final String TRACE_DIFF_TABLE_CSS =
+            "<style>\n" +
+            ".contents {\n" +
+            "    font-family: monospace, monospace;\n" +
+            "}\n" +
+            "\n" +
+            "table, td {\n" +
+            "    border: 1px solid black;\n" +
+            "    border-collapse: collapse;\n" +
+            "    padding: 0.25em;\n" +
+            "}\n" +
+            "</style>";
 }

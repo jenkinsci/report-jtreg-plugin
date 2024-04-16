@@ -23,6 +23,12 @@
  */
 package io.jenkins.plugins.report.jtreg.formatters;
 
+import com.github.difflib.DiffUtils;
+import com.github.difflib.UnifiedDiffUtils;
+import com.github.difflib.patch.Patch;
+import com.github.difflib.text.DiffRow;
+import com.github.difflib.text.DiffRowGenerator;
+
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -131,6 +137,24 @@ public class PlainFormatter extends BasicFormatter {
         }
 
         return headerItem.toString();
+    }
+
+    @Override
+    public void printDiff(String traceOne, String nameOne, String traceTwo, String nameTwo, BasicFormatter.TypeOfDiff typeOfDiff) {
+        // split the traces by lines
+        List<String> listOne = new ArrayList<>(List.of(traceOne.split(System.lineSeparator())));
+        List<String> listTwo = new ArrayList<>(List.of(traceTwo.split(System.lineSeparator())));
+
+        if (typeOfDiff == TypeOfDiff.PATCH) {
+            // create patch from the traces
+            Patch<String> diff = DiffUtils.diff(listOne, listTwo);
+            List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff(nameOne, nameTwo, listOne, diff, 0);
+
+            // print the patch
+            unifiedDiff.forEach(super::println);
+        } else {
+            super.println("Plain formatting only supports the PATCH format, please use other formatter.");
+        }
     }
 
     @Override

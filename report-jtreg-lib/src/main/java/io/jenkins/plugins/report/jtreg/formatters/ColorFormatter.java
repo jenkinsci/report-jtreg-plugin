@@ -23,7 +23,14 @@
  */
 package io.jenkins.plugins.report.jtreg.formatters;
 
+import com.github.difflib.DiffUtils;
+import com.github.difflib.UnifiedDiffUtils;
+import com.github.difflib.patch.Patch;
+import com.github.difflib.text.DiffRow;
+import com.github.difflib.text.DiffRowGenerator;
+
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -200,6 +207,60 @@ public class ColorFormatter extends StringMappedFormatter {
         }
 
         return headerItem.toString();
+    }
+
+    @Override
+    public void printDiff(String traceOne, String nameOne, String traceTwo, String nameTwo, BasicFormatter.TypeOfDiff typeOfDiff) {
+        // split the traces by lines
+        List<String> listOne = new ArrayList<>(List.of(traceOne.split(System.lineSeparator())));
+        List<String> listTwo = new ArrayList<>(List.of(traceTwo.split(System.lineSeparator())));
+
+        if (typeOfDiff == TypeOfDiff.PATCH) {
+            // create patch from the traces
+            Patch<String> diff = DiffUtils.diff(listOne, listTwo);
+            List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff(nameOne, nameTwo, listOne, diff, 0);
+
+            // color the patch
+            for (String line : unifiedDiff) {
+                if (line.matches("^(---|\\+\\+\\+).*$")) {
+                    // lines starting with --- or +++, bold
+                    super.println(Bold + line + ResetAll);
+                } else if (line.matches("^@@.*$")) {
+                    // lines starting with @@, cyan
+                    super.println(Cyan + line + ResetAll);
+                } else if (line.matches("^-.*$")) {
+                    // lines starting with -, red
+                    super.println(Red + line + ResetAll);
+                } else if (line.matches("^\\+.*$")) {
+                    // lines starting with +, green
+                    super.println(Green + line + ResetAll);
+                } else {
+                    // other lines, print normally
+                    super.println(line);
+                }
+            }
+        } else if (typeOfDiff == TypeOfDiff.INLINE) {
+            // define the generator for inline diff
+            DiffRowGenerator generator = DiffRowGenerator.create()
+                    .showInlineDiffs(true)
+                    .mergeOriginalRevised(true)
+                    .inlineDiffByWord(true)
+                    .oldTag(f -> f ? Red : ResetAll)
+                    .newTag(f -> f ? Green + Bold : ResetAll)
+                    .build();
+
+            // create the diff
+            List<DiffRow> rows = generator.generateDiffRows(listOne, listTwo);
+
+            super.println(Bold + nameOne + " --- " + nameTwo + ResetAll + "\n"); // print the names of the builds
+
+            // and print the diff
+            for (DiffRow row : rows) {
+                super.println(row.getOldLine());
+            }
+        } else {
+            super.println("Color formatting does not support SIDEBYSIDE format, please use html formatter.");
+        }
     }
 
     @Override
