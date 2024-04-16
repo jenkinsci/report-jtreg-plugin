@@ -243,19 +243,19 @@ public class HtmlFormatter extends StringMappedFormatter {
             for (String line : unifiedDiff) {
                 if (line.matches("^(---|\\+\\+\\+).*$")) {
                     // lines starting with --- or +++, bold
-                    super.println("<b>" + line + "</b>");
+                    super.println("<b>" + line + "</b><br>");
                 } else if (line.matches("^@@.*$")) {
                     // lines starting with @@, cyan
-                    super.println("<span style='color:DeepSkyBlue'>" + line + "</span>");
+                    super.println("<span style='color:DeepSkyBlue'>" + line + "</span><br>");
                 } else if (line.matches("^-.*$")) {
                     // lines starting with -, red
-                    super.println("<span style='color:Red'>" + line + "</span>");
+                    super.println("<span style='color:Red'>" + line + "</span><br>");
                 } else if (line.matches("^\\+.*$")) {
                     // lines starting with +, green
-                    super.println("<span style='color:Green'>" + line + "</span>>");
+                    super.println("<span style='color:Green'>" + line + "</span><br>");
                 } else {
                     // other lines, print normally
-                    super.println(line);
+                    super.println(line + "<br>");
                 }
             }
         } else if (typeOfDiff == TypeOfDiff.INLINE) {
@@ -271,11 +271,11 @@ public class HtmlFormatter extends StringMappedFormatter {
             // create the diff
             List<DiffRow> rows = generator.generateDiffRows(listOne, listTwo);
 
-            super.println("<b>" + nameOne + " --- " + nameTwo + "</b>" + "\n"); // print the names of the builds
+            super.println("<b>" + nameOne + " --- " + nameTwo + "</b><br>" + "\n"); // print the names of the builds
 
             // and print the diff
             for (DiffRow row : rows) {
-                super.println(row.getOldLine());
+                super.println(row.getOldLine() + "<br>");
             }
         } else {
             DiffRowGenerator generator = DiffRowGenerator.create()
