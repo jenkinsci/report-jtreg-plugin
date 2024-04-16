@@ -33,7 +33,8 @@ public class JtregPluginServicesCell {
                 sb.append(item.render()).append(" ");
             }
         }
-        return sb.toString().trim();
+        //calssical trim is much more powerfull,a nd is removing also colouring bash sequences
+        return sb.toString().replaceAll("\\s+$","").replaceAll("^\\s+","");
     }
 
     public String getCellContent() {
