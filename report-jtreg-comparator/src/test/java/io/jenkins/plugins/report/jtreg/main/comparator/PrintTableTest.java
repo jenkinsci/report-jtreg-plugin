@@ -110,7 +110,7 @@ public class PrintTableTest {
                 "<button onclick='expandOrCollapse()' style='margin-bottom:25px'>expand / collapse all</button>\n" +
                 "<table>\n" +
                 "<tr>\n" +
-                "<td></td>\n" +
+                "<td class='blk'></td>\n" +
                 "<td class='blk'><b id='table-1'><a href='#legend-1'>1</a></b></td>\n" +
                 "<td class='blk'><b id='table-2'><a href='#legend-2'>2</a></b></td>\n" +
                 "<td class='blk'><b id='table-3'><a href='#legend-3'>3</a></b></td>\n" +
@@ -123,7 +123,7 @@ public class PrintTableTest {
                 "</tr>\n" +
                 "<tr>\n" +
                 "<td class='blk'>third row</td>\n" +
-                "<td></td>\n" +
+                "<td class='blk'></td>\n" +
                 "<td class='blk'></td>\n" +
                 "<td>X</td>\n" +
                 "</tr>\n" +
