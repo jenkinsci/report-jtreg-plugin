@@ -23,9 +23,15 @@
  */
 package io.jenkins.plugins.report.jtreg.formatters;
 
+import com.github.difflib.DiffUtils;
+import com.github.difflib.UnifiedDiffUtils;
+import com.github.difflib.patch.Patch;
+import com.github.difflib.text.DiffRow;
+import com.github.difflib.text.DiffRowGenerator;
 import io.jenkins.plugins.report.jtreg.Constants;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -220,6 +226,76 @@ public class HtmlFormatter extends StringMappedFormatter {
         headerItem.append("</details></small>");
 
         return headerItem.toString();
+    }
+
+    @Override
+    public void printDiff(String traceOne, String nameOne, String traceTwo, String nameTwo, BasicFormatter.TypeOfDiff typeOfDiff) {
+        // split the traces by lines
+        List<String> listOne = new ArrayList<>(List.of(traceOne.split(System.lineSeparator())));
+        List<String> listTwo = new ArrayList<>(List.of(traceTwo.split(System.lineSeparator())));
+
+        if (typeOfDiff == TypeOfDiff.PATCH) {
+            // create patch from the traces
+            Patch<String> diff = DiffUtils.diff(listOne, listTwo);
+            List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff(nameOne, nameTwo, listOne, diff, 0);
+
+            // print the patch with formatting
+            for (String line : unifiedDiff) {
+                if (line.matches("^(---|\\+\\+\\+).*$")) {
+                    // lines starting with --- or +++, bold
+                    super.println("<b>" + line + "</b>");
+                } else if (line.matches("^@@.*$")) {
+                    // lines starting with @@, cyan
+                    super.println("<span style='color:DeepSkyBlue'>" + line + "</span>");
+                } else if (line.matches("^-.*$")) {
+                    // lines starting with -, red
+                    super.println("<span style='color:Red'>" + line + "</span>");
+                } else if (line.matches("^\\+.*$")) {
+                    // lines starting with +, green
+                    super.println("<span style='color:Green'>" + line + "</span>>");
+                } else {
+                    // other lines, print normally
+                    super.println(line);
+                }
+            }
+        } else if (typeOfDiff == TypeOfDiff.INLINE) {
+            // define the generator for inline diff
+            DiffRowGenerator generator = DiffRowGenerator.create()
+                    .showInlineDiffs(true)
+                    .mergeOriginalRevised(true)
+                    .inlineDiffByWord(true)
+                    .oldTag(f -> f ? "<s style='color:Red'>" : "</s>")
+                    .newTag(f -> f ? "<b style='color:Green'>" : "</b>")
+                    .build();
+
+            // create the diff
+            List<DiffRow> rows = generator.generateDiffRows(listOne, listTwo);
+
+            super.println("<b>" + nameOne + " --- " + nameTwo + "</b>" + "\n"); // print the names of the builds
+
+            // and print the diff
+            for (DiffRow row : rows) {
+                super.println(row.getOldLine());
+            }
+        } else {
+            DiffRowGenerator generator = DiffRowGenerator.create()
+                    .showInlineDiffs(true)
+                    .inlineDiffByWord(true)
+                    .oldTag(f -> f ? "<s style='color:Red'>" : "</s>")
+                    .newTag(f -> f ? "<b style='color:Green'>" : "</b>")
+                    .build();
+            List<DiffRow> rows = generator.generateDiffRows(listOne, listTwo);
+
+            super.println(Constants.TRACE_DIFF_TABLE_CSS);
+            super.println("<div class='contents'><table>");
+            super.println("<tr><th><b>" + nameOne + "</b></th><th><b>" + nameTwo + "</b></th></tr>");
+
+            for (DiffRow row : rows) {
+                super.println("<tr><td>" + row.getOldLine() + "</td><td>" + row.getNewLine() + "</td></tr>");
+            }
+
+            super.println("</table></div>");
+        }
     }
 
     @Override

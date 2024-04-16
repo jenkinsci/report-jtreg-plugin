@@ -34,6 +34,10 @@ public abstract class BasicFormatter implements Formatter {
         this.o = o;
     }
 
+    public enum TypeOfDiff {
+        PATCH, INLINE, SIDEBYSIDE
+    }
+
     @Override
     public void print(String s) {
         o.print(s);
@@ -78,5 +82,10 @@ public abstract class BasicFormatter implements Formatter {
     @Override
     public String generateTableHeaderItem(String jobsName, String buildId, List<String> otherLines, String urlStub) {
         return "";
+    }
+
+    @Override
+    public void printDiff(String traceOne, String traceTwo, String nameOne, String nameTwo, BasicFormatter.TypeOfDiff typeOfDiff) {
+
     }
 }

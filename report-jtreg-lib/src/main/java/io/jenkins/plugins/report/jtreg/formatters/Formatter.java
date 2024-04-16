@@ -77,6 +77,9 @@ public interface Formatter {
 
     public void printTable(JtregPluginServicesCell[][] table, int rowSize, int columnSize);
     public String generateTableHeaderItem(String jobName, String buildId, List<String> otherLines, String urlStub);
+
+    public void printDiff(String traceOne, String traceTwo, String nameOne, String nameTwo, BasicFormatter.TypeOfDiff typeOfDiff);
+
     public JtregPluginServicesCell generateTableHeaderItemAsCell(String jobName, String buildId, List<String> otherLines, String urlStub);
 
     public JtregPluginServicesCell createCell(List<JtregPluginServicesLinkWithTooltip> content);
