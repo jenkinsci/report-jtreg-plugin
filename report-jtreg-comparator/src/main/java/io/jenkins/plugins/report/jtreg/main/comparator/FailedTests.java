@@ -87,6 +87,7 @@ public class FailedTests {
 
         // convert build paths in the map to a styled build description
         Map<String, ArrayList<String>> convertedMap = new HashMap<>();
+        List<File> orderedBuilds = new ArrayList<>();
         for (Map.Entry<String, ArrayList<String>> entry : failedMap.entrySet()) {
             File build = new File(entry.getKey());
             List<String> otherLines = new ArrayList<>();
@@ -96,7 +97,7 @@ public class FailedTests {
                         new ConfigFinder(configEntry.getValue().findConfigFile(build), configEntry.getKey(), configEntry.getValue().getFindQuery()).findInConfig();
                 otherLines.add(line);
             }
-
+            orderedBuilds.add(build);
             convertedMap.put(options.getFormatter().generateTableHeaderItem(Builds.getJobName(build), Builds.getBuildNumber(build), otherLines, options.getJenkinsUrl()), entry.getValue());
         }
 
@@ -152,8 +153,12 @@ public class FailedTests {
 
             // put the Xs itself
             for (String value : putXList) {
-                table[i][sortedValues.indexOf(value) + 1] =
-                        options.getFormatter().createCell(new JtregPluginServicesLinkWithTooltip("X"));
+                int column = sortedValues.indexOf(value) + 1;
+                String buildName = Builds.getJobName(orderedBuilds.get(column-1));
+                String jobId = Builds.getBuildNumber(orderedBuilds.get(column-1));
+                String id = "failed-" + key + "-" + buildName + "-" + jobId;
+                table[i][column] =
+                        options.getFormatter().createCell(new JtregPluginServicesLinkWithTooltip("X", null, id, VirtualJobsResults.createTooltip(key, buildName, jobId, column, id, options.getJenkinsUrl()), true));
             }
 
             i++;

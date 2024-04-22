@@ -94,14 +94,20 @@ public class StackTraceCompare {
                     stringToPut = String.valueOf(getTraceSimilarity(reference, second));
                 }
 
+                int column = jobBuilds.indexOf(value) + 1;
+                String buildName = Builds.getJobName(new File(jobBuilds.get(column-1)));
+                String jobId = Builds.getBuildNumber(new File(jobBuilds.get(column-1)));
+                String id = "comapre-" + test + "-" + buildName + "-" + jobId;
                 List<JtregPluginServicesLinkWithTooltip> maybeSeveralComaprisons = new ArrayList<>();
-                maybeSeveralComaprisons.add(new JtregPluginServicesLinkWithTooltip(stringToPut, null, getLinksTooltip(), true));
-                //this is just demo
-                //FIXME repace by real logic
-                if ((jobBuilds.indexOf(value) + i + 1 )%2 == 0){
-                    maybeSeveralComaprisons.add(new JtregPluginServicesLinkWithTooltip("X", "test", getLinksTooltip(), true));
-                }
-                table[i][jobBuilds.indexOf(value) + 1] = options.getFormatter().createCell(maybeSeveralComaprisons);
+                maybeSeveralComaprisons.add(new JtregPluginServicesLinkWithTooltip(stringToPut, null, id, createTooltip(test, buildName, jobId, column, id, options.getJenkinsUrl()), true));
+                //you can add more links simply by
+                //maybeSeveralComaprisons.add(new JtregPluginServicesLinkWithTooltip("X2", "test", null, getLinksTooltip(), true));
+                //maybeSeveralComaprisons.add(new JtregPluginServicesLinkWithTooltip("X3", "test", null, getLinksTooltip(), true));
+                //...
+                //but be aware, that coloouring will fail onmore then one record
+                //TODO, fix that^
+
+                table[i][column] = options.getFormatter().createCell(maybeSeveralComaprisons);
             }
 
             // TODO delete, just for debug logging
@@ -114,12 +120,12 @@ public class StackTraceCompare {
         options.getFormatter().printTable(table, failedTests.size() + 1, jobBuilds.size() + 1);
     }
 
-    private static List<JtregPluginServicesLinkWithTooltip> getLinksTooltip() {
-        List<JtregPluginServicesLinkWithTooltip> list = new ArrayList<>();
-        list.add(new JtregPluginServicesLinkWithTooltip("this is tool tip of comparison of $TEST trace of  $job1:$X x $job2:$Y"));
-        list.add(new JtregPluginServicesLinkWithTooltip("use this as base", "some link", null));
-        list.add(new JtregPluginServicesLinkWithTooltip("show diff agaisnt base", "some otjer link", null));
-        list.add(new JtregPluginServicesLinkWithTooltip("show diff ind ifferent setup", "other link", null));
+    private static List<JtregPluginServicesLinkWithTooltip> createTooltip(String result, String buildName, String buildId, int column, String id, String url) {
+        List<JtregPluginServicesLinkWithTooltip> list = VirtualJobsResults.createTooltip(result, buildName, buildId, column, id, url);
+        list.add(new JtregPluginServicesLinkWithTooltip("*** comapre links ***"));
+        list.add(new JtregPluginServicesLinkWithTooltip(" * use this as base", "some link", null));
+        list.add(new JtregPluginServicesLinkWithTooltip(" * show diff agaisnt base", "some otjer link", null));
+        list.add(new JtregPluginServicesLinkWithTooltip(" * show diff in different setup", "other link", null));
         return list;
     }
 
