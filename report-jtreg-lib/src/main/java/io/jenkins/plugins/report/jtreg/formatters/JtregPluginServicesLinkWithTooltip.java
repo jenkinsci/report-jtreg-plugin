@@ -61,6 +61,7 @@ Hover over me5
 public class JtregPluginServicesLinkWithTooltip {
     private final String text;
     private final String link;
+    private final String id;
     private final boolean tooltipLineBreaks;
 
     /**
@@ -74,12 +75,22 @@ public class JtregPluginServicesLinkWithTooltip {
         this(text, null, null);
     }
 
-    public JtregPluginServicesLinkWithTooltip(String text, String link, List<JtregPluginServicesLinkWithTooltip> tooltips) {
-        this(text, link, tooltips, false);
+    public JtregPluginServicesLinkWithTooltip(String text, String link) {
+        this(text, link, null);
     }
 
-    public JtregPluginServicesLinkWithTooltip(String text, String link, List<JtregPluginServicesLinkWithTooltip> tooltips,
-            boolean tooltipLineBreaks) {
+    public JtregPluginServicesLinkWithTooltip(String text, String link, String id) {
+        this(text, link, id, null);
+    }
+
+    public JtregPluginServicesLinkWithTooltip(String text, String link, String id, List<JtregPluginServicesLinkWithTooltip> tooltips) {
+        this(text, link, id, tooltips, false);
+    }
+
+    public JtregPluginServicesLinkWithTooltip(String text, String link, String id,
+                                              List<JtregPluginServicesLinkWithTooltip> tooltips,
+                                              boolean tooltipLineBreaks) {
+        this.id = id;
         if (text == null) {
             this.text = "";
         } else {
@@ -101,7 +112,11 @@ public class JtregPluginServicesLinkWithTooltip {
     public String render() {
         StringBuilder sb = new StringBuilder();
         if (!tooltips.isEmpty()) {
-            sb.append("<div class=\"tooltip\">\n");
+            String idString = "";
+            if (id != null) {
+                idString = "id='" + id + "'";
+            }
+            sb.append("<div " + idString + " class=\"tooltip\">\n");
         }
         if (link.isEmpty()) {
             sb.append(text);
@@ -131,11 +146,10 @@ public class JtregPluginServicesLinkWithTooltip {
     }
 
     public JtregPluginServicesLinkWithTooltip toPlain() {
-        return new JtregPluginServicesLinkWithTooltip(getText(), null, null, false);
+        return new JtregPluginServicesLinkWithTooltip(getText(), null, null, null, false);
     }
 
     public static List<JtregPluginServicesLinkWithTooltip> toPlainList(List<JtregPluginServicesLinkWithTooltip> rich) {
         return rich.stream().map(a->a.toPlain()).collect(Collectors.toList());
-
     }
 }

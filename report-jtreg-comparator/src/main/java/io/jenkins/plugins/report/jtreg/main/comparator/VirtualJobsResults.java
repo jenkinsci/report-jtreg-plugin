@@ -53,12 +53,28 @@ public class VirtualJobsResults {
                 otherLines.add(line);
             }
 
-            table[0][i] =formatter.generateTableHeaderItemAsCell(Builds.getJobName(build),Builds.getBuildNumber(build), otherLines, options.getJenkinsUrl());
+            table[0][i] = formatter.generateTableHeaderItemAsCell(Builds.getJobName(build), Builds.getBuildNumber(build), otherLines, options.getJenkinsUrl());
 
             String result = getBuildResult(build, options.getConfiguration("result"));
-            table[RESULTS.indexOf(result) + 1][i] = formatter.createCell(new JtregPluginServicesLinkWithTooltip("X"));
+            String buildName =Builds.getJobName(build);
+            String jobId = Builds.getBuildNumber(build);
+            String id = "virtual-" + result + "-" + buildName + "-" + jobId;
+            table[RESULTS.indexOf(result) + 1][i] = formatter.createCell(new JtregPluginServicesLinkWithTooltip("X", null, id, createTooltip(result, buildName, jobId, i, id, options.getJenkinsUrl()), true));
         }
 
         formatter.printTable(table, RESULTS.size() + 1, buildsToCompare.size() + 1);
     }
+
+    public static List<JtregPluginServicesLinkWithTooltip> createTooltip(String result, String buildName, String buildId, int column, String id, String url) {
+        List<JtregPluginServicesLinkWithTooltip> tooltips = new ArrayList<>();
+        tooltips.add(new JtregPluginServicesLinkWithTooltip(result, url + "/job/" + buildName + "/" + buildId + "/java-reports#" + result));
+        tooltips.add(new JtregPluginServicesLinkWithTooltip(" * self: " + column, "#" + id));
+        tooltips.add(new JtregPluginServicesLinkWithTooltip(" * header: " + column, "#legend-" + column));
+        tooltips.add(new JtregPluginServicesLinkWithTooltip(" * column: " + column, "#table-" + column));
+        tooltips.add(new JtregPluginServicesLinkWithTooltip(" * build: " + buildId + " in: ", url + "/job/" + buildName + "/" + buildId));
+        tooltips.add(new JtregPluginServicesLinkWithTooltip(buildName, url + "/job/" + buildName));
+        return tooltips;
+    }
+
+
 }

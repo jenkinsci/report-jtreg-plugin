@@ -88,7 +88,7 @@ public interface Formatter {
         if (content == null) {
             return null;
         }
-        return new JtregPluginServicesCell(Arrays.asList((content)));
+        return createCell(Arrays.asList((content)));
     }
 
 }
