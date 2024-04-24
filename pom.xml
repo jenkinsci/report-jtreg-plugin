@@ -22,6 +22,7 @@
         <module>report-jtreg-diff</module>
         <module>report-jtreg-lib</module>
         <module>report-jtreg-service</module>
+        <module>report-jtreg-tracediff</module>
     </modules>
 
     <properties>
