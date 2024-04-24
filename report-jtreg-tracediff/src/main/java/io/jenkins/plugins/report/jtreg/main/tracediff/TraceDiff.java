@@ -2,7 +2,7 @@ package io.jenkins.plugins.report.jtreg.main.tracediff;
 
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
-import io.jenkins.plugins.report.jtreg.StackTraceTools;
+import io.jenkins.plugins.report.jtreg.utils.StackTraceTools;
 import io.jenkins.plugins.report.jtreg.model.SuiteTestsWithResults;
 import io.jenkins.plugins.report.jtreg.model.SuitesWithResults;
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromDir;

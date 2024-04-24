@@ -1,5 +1,8 @@
-package io.jenkins.plugins.report.jtreg;
+package io.jenkins.plugins.report.jtreg.utils;
 
+import io.jenkins.plugins.report.jtreg.BuildReportExtended;
+import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
+import io.jenkins.plugins.report.jtreg.CommonOptions;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.model.Test;
 import io.jenkins.plugins.report.jtreg.model.TestOutput;
