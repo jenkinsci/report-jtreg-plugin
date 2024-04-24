@@ -1,7 +1,7 @@
 package io.jenkins.plugins.report.jtreg.main.comparator.jobs;
 
-import io.jenkins.plugins.report.jtreg.main.comparator.arguments.Argument;
-import io.jenkins.plugins.report.jtreg.main.comparator.arguments.ArgumentsDeclaration;
+import io.jenkins.plugins.report.jtreg.arguments.Argument;
+import io.jenkins.plugins.report.jtreg.main.comparator.arguments.ComparatorArgDeclaration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class JobsByRegex implements JobsProvider {
     public void parseArguments(String argument, String value) {
         if (argument.equals(regexArg.getName())) {
             this.regexString = value;
-        } else if (argument.equals(ArgumentsDeclaration.forceArg.getName())) {
+        } else if (argument.equals(ComparatorArgDeclaration.forceArg.getName())) {
             this.forceVague = true;
         } else {
             throw new RuntimeException("JobsByRegex got an unexpected argument.");

@@ -1,4 +1,4 @@
-package io.jenkins.plugins.report.jtreg.main.comparator.arguments;
+package io.jenkins.plugins.report.jtreg.arguments;
 
 public class Argument {
     private final String argumentName; // the name of the argument (example: --path)
