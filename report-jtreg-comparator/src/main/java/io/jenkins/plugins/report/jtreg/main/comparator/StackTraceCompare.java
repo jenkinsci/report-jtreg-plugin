@@ -2,7 +2,7 @@ package io.jenkins.plugins.report.jtreg.main.comparator;
 
 import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
 import io.jenkins.plugins.report.jtreg.ConfigFinder;
-import io.jenkins.plugins.report.jtreg.StackTraceTools;
+import io.jenkins.plugins.report.jtreg.utils.StackTraceTools;
 import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesCell;
 import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesLinkWithTooltip;
 
