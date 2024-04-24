@@ -1,8 +1,8 @@
 package io.jenkins.plugins.report.jtreg.main.comparator.jobs;
 
 import io.jenkins.plugins.report.jtreg.Constants;
-import io.jenkins.plugins.report.jtreg.main.comparator.arguments.Argument;
-import io.jenkins.plugins.report.jtreg.main.comparator.arguments.ArgumentsDeclaration;
+import io.jenkins.plugins.report.jtreg.arguments.Argument;
+import io.jenkins.plugins.report.jtreg.main.comparator.arguments.ComparatorArgDeclaration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class JobsByQuery implements JobsProvider {
             "            To stop the tool from draining system resources by looking at\n" +
             "            all jobs, if more than half of the query elements are asterisks,\n" +
             "            or the query has less than 4 parts, you must combine it with the\n" +
-            "            \"" + ArgumentsDeclaration.forceArg.getName() + "\" switch.\n" +
+            "            \"" + ComparatorArgDeclaration.forceArg.getName() + "\" switch.\n" +
             "        {f37,el8} - this is a set of possible matches, so the jobs's part on\n" +
             "                    4th position can be either f37 or el8. There can me as\n" +
             "                    many elements as you want, but they must be split by\n" +
@@ -66,7 +66,7 @@ public class JobsByQuery implements JobsProvider {
             this.queryString = value;
         } else if (argument.equals(exactLengthArg.getName())) {
             this.exactLength = Integer.parseInt(value);
-        } else if (argument.equals(ArgumentsDeclaration.forceArg.getName())) {
+        } else if (argument.equals(ComparatorArgDeclaration.forceArg.getName())) {
             this.forceVague = true;
         } else {
             throw new RuntimeException("JobsByQuery got an unexpected argument.");

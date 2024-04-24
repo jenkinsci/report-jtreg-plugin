@@ -1,64 +1,40 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
-import io.jenkins.plugins.report.jtreg.formatters.BasicFormatter;
+import io.jenkins.plugins.report.jtreg.CommonOptions;
 import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsProvider;
-import io.jenkins.plugins.report.jtreg.formatters.Formatter;
-import io.jenkins.plugins.report.jtreg.formatters.PlainFormatter;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Options {
+public class Options extends CommonOptions {
     private Operations operation;
-    private String jobsPath;
-    private String jenkinsUrl;
     private int numberOfBuilds;
     private boolean forceVague;
     private boolean onlyVolatile;
-    private String exactTestsRegex;
-    private Formatter formatter;
     private boolean useDefaultBuild;
     private JobsProvider jobsProvider;
     private boolean printVirtual;
     private boolean hidePasses;
-    private boolean die;
     private final Map<String, Configuration> configurations;
     private String referentialJobName;
     private int referentialBuildNumber;
-    private Side substringSide;
-    private int substringLength;
-    private DiffInfo diffInfo;
 
     public Options() {
         this.numberOfBuilds = 1;
         this.forceVague = false;
         this.onlyVolatile = false;
-        this.exactTestsRegex = ".*";
-        this.formatter = new PlainFormatter(System.out);
         this.useDefaultBuild = false;
         this.jobsProvider = null;
         this.printVirtual = false;
         this.hidePasses = false;
-        this.die = false;
         this.configurations = new HashMap<>();
         this.referentialJobName = null;
         this.referentialBuildNumber = -1;
-        this.substringSide = Side.TailEach;
-        substringLength = 5000;
         // default configuration for getting job results
         Configuration resultConfig = new Configuration("build.xml", "/build/result", Locations.Build);
         resultConfig.setValue("{SUCCESS,UNSTABLE}");
         addConfiguration("result", resultConfig);
-        this.diffInfo = new DiffInfo();
-    }
-
-    public void setDie(boolean die) {
-        this.die = die;
-    }
-
-    public boolean isDie() {
-        return die;
     }
 
     public Operations getOperation() {
@@ -67,22 +43,6 @@ public class Options {
 
     public void setOperation(Operations operation) {
         this.operation = operation;
-    }
-
-    public String getJobsPath() {
-        return jobsPath;
-    }
-
-    public void setJobsPath(String jobsPath) {
-        this.jobsPath = jobsPath;
-    }
-
-    public String getJenkinsUrl() {
-        return jenkinsUrl;
-    }
-
-    public void setJenkinsUrl(String jenkinsUrl) {
-        this.jenkinsUrl = jenkinsUrl;
     }
 
     public int getNumberOfBuilds() {
@@ -107,22 +67,6 @@ public class Options {
 
     public void setOnlyVolatile(boolean onlyVolatile) {
         this.onlyVolatile = onlyVolatile;
-    }
-
-    public String getExactTestsRegex() {
-        return exactTestsRegex;
-    }
-
-    public void setExactTestsRegex(String exactTestsRegex) {
-        this.exactTestsRegex = exactTestsRegex;
-    }
-
-    public Formatter getFormatter() {
-        return formatter;
-    }
-
-    public void setFormatter(Formatter formatter) {
-        this.formatter = formatter;
     }
 
     public JobsProvider getJobsProvider() {
@@ -173,26 +117,6 @@ public class Options {
         this.referentialBuildNumber = referentialBuildNumber;
     }
 
-    public Side getSubstringSide() {
-        return substringSide;
-    }
-
-    public void setSubstringSide(Side substringSide) {
-        this.substringSide = substringSide;
-    }
-
-    public int getSubstringLength() {
-        return substringLength;
-    }
-
-    public void setSubstringLength(int substringLength) {
-        this.substringLength = substringLength;
-    }
-
-    public DiffInfo getDiffInfo() {
-        return diffInfo;
-    }
-
     public Configuration getConfiguration(String whatToFind) {
         return configurations.get(whatToFind);
     }
@@ -207,15 +131,11 @@ public class Options {
 
     // enum of all available operations
     public enum Operations {
-        List, Enumerate, Compare, Print, TraceCompare, DiffTrace
+        List, Enumerate, Compare, Print, TraceCompare
     }
 
     public enum Locations {
         Build, Job
-    }
-
-    public enum Side {
-        Head, HeadEach, Tail, TailEach
     }
 
     public static class Configuration {
@@ -257,74 +177,6 @@ public class Options {
 
         public void setValue(String value) {
             this.value = value;
-        }
-    }
-
-    public static class DiffInfo {
-        private String jobOne;
-        private String buildOne;
-        private String jobTwo;
-        private String buildTwo;
-        private BasicFormatter.TypeOfDiff typeOfDiff;
-
-        public DiffInfo() {
-            typeOfDiff = BasicFormatter.TypeOfDiff.PATCH;
-        }
-
-        public void setBuildOne(String jobOne, String buildOne) {
-            this.jobOne = jobOne;
-            this.buildOne = buildOne;
-        }
-
-        public void setBuildTwo(String jobTwo, String buildTwo) {
-            this.jobTwo = jobTwo;
-            this.buildTwo = buildTwo;
-        }
-
-        public File getBuildOne(String pathToJobsDir) {
-            if (jobOne == null || buildOne == null) {
-                throw new RuntimeException("Please specify the first build to compare the stack trace.");
-            }
-
-            File jobsDir = new File(pathToJobsDir);
-            File firstBuild = new File(jobsDir, jobOne + "/builds/" + buildOne);
-
-            if (firstBuild.exists()) {
-                return firstBuild;
-            } else {
-                throw new RuntimeException("The specified " + buildOne + " of job " + jobOne + " does not exist.");
-            }
-        }
-
-        public String getBuildOneName() {
-            return jobOne + " : build " + buildOne;
-        }
-
-        public File getBuildTwo(String pathToJobsDir) {
-            if (jobTwo == null || buildTwo == null) {
-                throw new RuntimeException("Please specify the second build to compare the stack trace.");
-            }
-
-            File jobsDir = new File(pathToJobsDir);
-            File secondBuild = new File(jobsDir, jobTwo + "/builds/" + buildTwo);
-
-            if (secondBuild.exists()) {
-                return secondBuild;
-            } else {
-                throw new RuntimeException("The specified " + buildTwo + " of job " + jobTwo + " does not exist.");
-            }
-        }
-
-        public String getBuildTwoName() {
-            return jobTwo + " : build " + buildTwo;
-        }
-
-        public BasicFormatter.TypeOfDiff getTypeOfDiff() {
-            return typeOfDiff;
-        }
-
-        public void setTypeOfDiff(BasicFormatter.TypeOfDiff typeOfDiff) {
-            this.typeOfDiff = typeOfDiff;
         }
     }
 }
