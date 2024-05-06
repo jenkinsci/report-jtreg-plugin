@@ -23,32 +23,30 @@
  */
 package io.jenkins.plugins.report.jtreg.main.web;
 
+import io.jenkins.plugins.report.jtreg.main.tracediff.DiffHelp;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import io.jenkins.plugins.report.jtreg.main.comparator.HelpMessage;
+public class TraceDiffContextExecutingHandler extends ContextExecutingHandler {
 
-public class ComapreContextExecutingHandler extends ContextExecutingHandler {
-
-    public ComapreContextExecutingHandler(File targetProgram) throws IOException {
+    public TraceDiffContextExecutingHandler(File targetProgram) throws IOException {
         super(targetProgram);
     }
 
     @Override
     protected String loadDifTemplate() throws IOException {
-        return loadTemplate("/io/jenkins/plugins/report/jtreg/main/web/comp.html");
+        return loadTemplate("/io/jenkins/plugins/report/jtreg/main/web/trace.html");
     }
 
     @Override
     protected String pritnHelp() throws UnsupportedEncodingException {
-        return sanitizeHtml(HelpMessage.HELP_MESSAGE) + "\n" + "note:\n"
-                + "--path path_to_the_jenkins_jobs_directory is already preset, no need to  set it\n"
-                + "examples:\n"
-                + "--compare --query  \"tck jp19 ojdkLatest~rpms * * release sdk * aarch64 beaker x11 defaultgc ignorecp lnxagent *\" --history 5  --nvr \"java-latest-openjdk-19.0.2.0.7-1.rolling"
-                + ".el8\"\n"
-                + "--compare --query  \"tck jp19 ojdkLatest~rpms * * release sdk * aarch64 beaker x11 defaultgc ignorecp lnxagent *\" --history 1\n"
-                + "When launched from here, web, the  `\" or * or { or } you have to use \\\" and \\* and \\{ and \\}` is NOT CORRECT\n"
-                + "html wrapper not yet finished, you ust check SOURCE (ctrl+u) for anyviable thing\n";
+        return sanitizeHtml(DiffHelp.HELP_MESSAGE) + "\n" +
+                "note:\n" +
+                "    --path path_to_the_jenkins_jobs_directory is already preset, no need to  set it\n" +
+                "examples:\n" +
+                "    --trace-from a-jenkins-job:210 --trace-to a-jenkins-job:211 --diff-format inline --formatting html\n" +
+                "    --trace-from first-job:105 --trace-to second-job:166 --exact-tests .*compilation.* --cut-trace headEach:2500 --formatting html\n";
     }
 }

@@ -254,4 +254,13 @@ public abstract class ContextExecutingHandler implements HttpHandler {
 
     protected abstract String pritnHelp() throws UnsupportedEncodingException;
 
+    protected String sanitizeHtml(String helpMessage) {
+        return helpMessage
+                .replace("&", "&amp;")
+                .replace("\"", "&quot;")
+                .replace("'", "&apos;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;");
+
+    }
 }
