@@ -23,5 +23,11 @@
             <artifactId>report-jtreg-comparator</artifactId>
             <version>${revision}${changelist}</version>
         </dependency>
+        <dependency>
+            <groupId>io.jenkins.plugins</groupId>
+            <artifactId>report-jtreg-tracediff</artifactId>
+            <version>4.5-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

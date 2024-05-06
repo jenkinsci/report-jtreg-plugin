@@ -1,0 +1,257 @@
+<!-- WARNING -->
+<!-- the comments around various outputs are marks fro preprocessor! -->
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <script type="text/javascript">
+            function show(id_show) {
+                document.getElementById(id_show).style.display = 'block';
+            }
+            function hide(id_show) {
+                document.getElementById(id_show).style.display = 'none';
+            }
+
+            function showHideStds(id_show, id_hide1, id_hide2) {
+                show(id_show)
+                hide(id_hide1)
+                hide(id_hide2)
+            }
+
+            function showStds() {
+                show("out")
+                show("err")
+                hide("in")
+            }
+
+            function showAllStds() {
+                show("out")
+                show("err")
+                show("in")
+            }
+
+            function getSelectValues(select) {
+                var result = [];
+                var options = select && select.options;
+                var opt;
+
+                for (var i = 0, iLen = options.length; i < iLen; i++) {
+                    opt = options[i];
+
+                    if (opt.selected) {
+                        //      result.push(opt.value || opt.text);
+                        result.push(opt.text);
+                    }
+                }
+                return result;
+            }
+
+            function deletElementByID() {
+                var elementID = this.id
+                var element = document.getElementById("DIV" + elementID)
+                element.parentNode.removeChild(element);
+                generateComand()
+            }
+
+
+            function load_jobs(id, jobName) {
+                document.getElementById(id).innerHTML = '<object style="width:100%" type="text/html" data="diff.html?generated-part=+-output%3Dhtml2+' + jobName + '" ></object>';
+            }
+
+            function addJob() {
+                var id = new Date().getTime();
+                var futureParent = document.getElementById("selectedJobs")
+                var jobs = document.getElementById("jobs");
+                var selJob = jobs.options[jobs.selectedIndex].text;
+                var mainWrapper = document.createElement("div")
+                var title = document.createElement("h5")
+                var input = document.createElement("input")
+                var jobsDiv = document.createElement("div")
+
+                mainWrapper.id = "DIV" + id;
+                title.id = id;
+                title.addEventListener("click", deletElementByID, false);
+                input.id = "IN" + id;
+                input.oninput = generateComand ;
+                input.setAttribute("class", "dynamicJobs")
+                input.style.width = "100%"
+                jobsDiv.id = "JOBS" + id;
+                jobsDiv.style.width = "100%"
+
+                input.value = " " + selJob + " "
+                title.appendChild(document.createTextNode(selJob + " click to remove, write jobs"))
+
+                mainWrapper.appendChild(title);
+                mainWrapper.appendChild(input);
+                mainWrapper.appendChild(jobsDiv);
+
+                futureParent.appendChild(mainWrapper);
+
+                generateComand()
+                if (document.getElementById("ajaxEanbled").checked) {
+                    load_jobs("JOBS" + id, selJob)
+                }
+            }
+
+            function generateComand() {
+                var views = getSelectValues(document.getElementById("views"))
+                var genCmd = "";
+                for (var i = 0; i < views.length; i++) {
+                    genCmd = genCmd + " -view=" + views[i] + "  ";
+                }
+
+                var e = document.getElementById("outputs");
+                //var value = e.options[e.selectedIndex].value;
+                var text = e.options[e.selectedIndex].text;
+                if (text != "") {
+                    genCmd = genCmd + " -output=" + text + "  ";
+                }
+
+                var kfe = document.getElementById("-keep-failed");
+                if (kfe.checked) {
+                    genCmd = genCmd + "-keep-failed  ";
+                }
+                var fe = document.getElementById("-fill");
+                if (fe.checked) {
+                    genCmd = genCmd + "-fill  ";
+                }
+
+                var magicJobs = document.getElementsByClassName("dynamicJobs");
+                for (var i = 0; i < magicJobs.length; i++) {
+                    genCmd = genCmd + " " + magicJobs[i].value;
+                }
+
+                document.getElementById("genCmd").value = genCmd
+
+            }
+
+            function adjustComand() {
+                var jobs = document.getElementById("jobs");
+                var initValue = document.getElementById("customCmd").value;
+                var selJob = jobs.options[jobs.selectedIndex].text;
+                document.getElementById("customCmd").value = initValue + "  " + selJob + "  ";
+            }
+
+            function firstLoad() {
+                var urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.toString().length > 0) {
+                    //not yet used
+                    //unset all
+                    //var elements = document.getElementById("views").options;
+                    //for(var i = 0; i < elements.length; i++){
+                    //    elements[i].selected = false;
+                    //}
+                    //var elements = document.getElementById("outputs").options;
+                    //for(var i = 0; i < elements.length; i++){
+                    //    if (elements[i].text=="") {
+                    //      elements[i].selected = true;
+                    //    } else {
+                    //      elements[i].selected = false;
+                    //    }
+                    //}
+                    //document.getElementById("-keep-failed").checked=false;
+                    //document.getElementById("-fill").checked=false;
+                    for(var pair of urlParams.entries()) {
+                        console.log(pair[0]+ ', '+ pair[1]);
+                        if (pair[0] == "custom-part") {
+                            document.getElementById("customCmd").value=pair[1]
+                        }
+                        if (pair[0] == "generated-part") {
+                            continue ; //not yet used
+                            //pair[1] must be processed manually
+                            var spaces = new RegExp(" +"); 
+                            var sa = pair[1].split(spaces);
+                            for(var ii=0;ii<sa.length;ii++){
+                                item=sa[ii]
+                                if(item.trim().length>0) {
+                                    console.log(item) //usually something like -param=value or -param or -param
+                                    var custompair = item.split("=");
+                                    if (custompair[0] == "-fill") {
+                                        document.getElementById("-fill").checked=true;
+                                    } else  if (custompair[0] == "-keep-failed") {
+                                        document.getElementById("-keep-failed").checked=true;
+                                    } else  if (custompair[0] == "-output") {
+                                        var elements = document.getElementById("outputs").options;
+                                        for(var i = 0; i < elements.length; i++){
+                                            if (elements[i].text==custompair[1]) {
+                                              elements[i].selected = true;
+                                            } else {
+                                              elements[i].selected = false;
+                                            }
+                                        }
+                                    } else  if (custompair[0] == "-view") {
+                                        var elements = document.getElementById("views").options;
+                                        for(var i = 0; i < elements.length; i++) {
+                                            if (elements[i].text==custompair[1]) {
+                                              elements[i].selected = true;
+                                            }
+                                        }
+                                    } else {
+//everything else is job1 a b c d job2 e f g.... good luck; so keeping it in custom command for now...
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } 
+               generateComand()
+            }
+
+        </script>
+    </head>
+    <body onLoad="firstLoad()">
+        <div id="inButton"  onclick="showHideStds('in', 'err', 'out');" style="border:double;float:left">
+            input
+        </div>
+        <div id="serrButton" onclick="showHideStds('err', 'in', 'out');" style="border:double;float:left">
+            serr
+        </div>
+        <div id="soutButton" onclick="showHideStds('out', 'err', 'in');" style="border:double;float:left">
+            sout
+        </div>
+        <div id="outs" onclick="showStds();" style="border:double;float:left">
+            outs
+        </div>
+        <div id="all" onclick="showAllStds();" style="border:double;float:left">
+            all
+        </div>
+        <div id="reset1" style="clear:left">
+        </div>
+        <div id="in" style="display:block;border:solid;">
+            <h4>A webui for a tool for creating a diff between two stack traces</h4>
+            <p>
+                If you need some grepping, you may want to run <a href="https://github.com/judovana/jenkins-report-jtreg/blob/master/src/main/resources/io/jenkins/plugins/report/jtreg/JenkinsReportJckGlobalConfig/config.jelly#L4">custom shell wrapper around</a> commandline application. <br/>
+                This page is wrapper around that  anyway.
+            </p>
+            <p>
+            <pre style="height: 300;overflow:auto;">
+<!--help-->
+note:
+    --path path_to_the_jenkins_jobs_directory is already preset, no need to  set it
+examples:
+    --trace-from a-jenkins-job:210 --trace-to a-jenkins-job:211 --diff-format inline --formatting html
+    --trace-from first-job:105 --trace-to second-job:166 --exact-tests .*compilation.* --cut-trace headEach:2500 --formatting html
+<!--helpEnd-->
+            </pre>
+        </p>
+        <form action="trace.html">
+            Generated command:  <input style="width:80%" type="text" id="genCmd" name="generated-part" value="" readonly></input><br/>
+            Custom command:  <input style="width:80%" type="text" id="customCmd" name="custom-part" value=""></input><br/>
+            <div style="text-align:center; border:dotted" style="width:100%">
+                <input type="submit" value="Submit" style="width: 80%" >
+            </div>
+        </form> 
+
+        <div style="clear:left" >
+        </div>
+    </div>
+    <div id="out" style="border:solid;">
+        <pre>
+        <!--
+        *** Closing and serr is generated, to allow live streaming of results ***
+            </div>
+            <div id="err" style="border:solid;">
+            </div>
+        </body>
+        </html>
+        -->
+
