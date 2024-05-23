@@ -19,10 +19,10 @@
     <modules>
         <module>report-jtreg</module>
         <module>report-jtreg-comparator</module>
-        <module>report-jtreg-diff</module>
+        <module>report-jtreg-list</module>
         <module>report-jtreg-lib</module>
         <module>report-jtreg-service</module>
-        <module>report-jtreg-tracediff</module>
+        <module>report-jtreg-diff</module>
     </modules>
 
     <properties>

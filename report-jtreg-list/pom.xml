@@ -8,7 +8,7 @@
         <version>${revision}${changelist}</version>
     </parent>
 
-    <artifactId>report-jtreg-tracediff</artifactId>
+    <artifactId>report-jtreg-list</artifactId>
 
     <packaging>jar</packaging>
 

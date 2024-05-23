@@ -26,8 +26,8 @@ package io.jenkins.plugins.report.jtreg.main;
 import com.sun.net.httpserver.HttpServer;
 
 import io.jenkins.plugins.report.jtreg.main.web.ComapreContextExecutingHandler;
+import io.jenkins.plugins.report.jtreg.main.web.ListContextExecutingHandler;
 import io.jenkins.plugins.report.jtreg.main.web.DiffContextExecutingHandler;
-import io.jenkins.plugins.report.jtreg.main.web.TraceDiffContextExecutingHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +36,7 @@ import java.net.InetSocketAddress;
 public class Service {
 
     public static void main(String... args) throws IOException {
-        String file1 = "/home/tester/vm-shared/TckScripts/jenkins/custom_run_wrappers/diff_jobs_hydra.sh";
+        String file1 = "/home/tester/vm-shared/TckScripts/jenkins/custom_run_wrappers/list_jobs_hydra.sh";
         String file2 = "/home/tester/vm-shared/TckScripts/jenkins/custom_run_wrappers/compare_jobs_hydra.sh";
         String file3 = "/home/tester/vm-shared/TckScripts/jenkins/custom_run_wrappers/diff_traces_hydra.sh";
         int port = 9090;
@@ -58,15 +58,15 @@ public class Service {
             help();
             throw new RuntimeException("0,1,3 or 4 args expected. Is " + args.length);
         }
-        String b1 = "/diff.html";
+        String b1 = "/list.html";
         String b2 = "/comp.html";
-        String b3 = "/trace.html";
+        String b3 = "/diff.html";
         HttpServer hs = HttpServer.create(new InetSocketAddress(port), 0);
-        hs.createContext(b1, new DiffContextExecutingHandler(
+        hs.createContext(b1, new ListContextExecutingHandler(
                 new File(file1)));
         hs.createContext(b2, new ComapreContextExecutingHandler(
                 new File(file2)));
-        hs.createContext(b3, new TraceDiffContextExecutingHandler(
+        hs.createContext(b3, new DiffContextExecutingHandler(
                 new File(file3)));
         hs.start();
         souter(b1 + " server started. Running at " + port + ". Terminate to end. Run for: " + file1);

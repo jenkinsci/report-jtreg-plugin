@@ -1,11 +1,11 @@
-package io.jenkins.plugins.report.jtreg.main.tracediff;
+package io.jenkins.plugins.report.jtreg.main.diff;
 
 import io.jenkins.plugins.report.jtreg.CommonOptions;
 import io.jenkins.plugins.report.jtreg.arguments.CommonArgParser;
 import io.jenkins.plugins.report.jtreg.formatters.BasicFormatter;
 
-public class TraceDiffArgParser extends CommonArgParser {
-    public TraceDiffArgParser(CommonOptions options, String[] arguments) {
+public class DiffArgParser extends CommonArgParser {
+    public DiffArgParser(CommonOptions options, String[] arguments) {
         super(options, arguments);
     }
 
@@ -29,25 +29,25 @@ public class TraceDiffArgParser extends CommonArgParser {
             }
 
             // parsing the arguments:
-            if (currentArg.equals(TraceDiffArgDeclaration.traceFromArg.getName())) {
+            if (currentArg.equals(DiffArgDeclaration.traceFromArg.getName())) {
                 // --trace-from
                 String[] values = getArgumentValue(i++).split(":");
                 if (values.length != 2) {
-                    throw new RuntimeException("Wrong value format for " + TraceDiffArgDeclaration.traceFromArg.getName() + " argument.");
+                    throw new RuntimeException("Wrong value format for " + DiffArgDeclaration.traceFromArg.getName() + " argument.");
                 } else {
                     localDiffInfo.setBuildOne(values[0], values[1]);
                 }
 
-            } else if (currentArg.equals(TraceDiffArgDeclaration.traceToArg.getName())) {
+            } else if (currentArg.equals(DiffArgDeclaration.traceToArg.getName())) {
                 // --trace-to
                 String[] values = getArgumentValue(i++).split(":");
                 if (values.length != 2) {
-                    throw new RuntimeException("Wrong value format for " + TraceDiffArgDeclaration.traceToArg.getName() + " argument.");
+                    throw new RuntimeException("Wrong value format for " + DiffArgDeclaration.traceToArg.getName() + " argument.");
                 } else {
                     localDiffInfo.setBuildTwo(values[0], values[1]);
                 }
 
-            } else if (currentArg.equals(TraceDiffArgDeclaration.diffFormatArg.getName())) {
+            } else if (currentArg.equals(DiffArgDeclaration.diffFormatArg.getName())) {
                 // --diff-format
                 String format = getArgumentValue(i++).toLowerCase();
                 if (format.equals("inline")) {

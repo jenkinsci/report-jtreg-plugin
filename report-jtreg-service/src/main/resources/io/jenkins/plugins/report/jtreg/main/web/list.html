@@ -134,29 +134,27 @@
             function firstLoad() {
                 var urlParams = new URLSearchParams(window.location.search);
                 if (urlParams.toString().length > 0) {
-                    //not yet used
                     //unset all
-                    //var elements = document.getElementById("views").options;
-                    //for(var i = 0; i < elements.length; i++){
-                    //    elements[i].selected = false;
-                    //}
-                    //var elements = document.getElementById("outputs").options;
-                    //for(var i = 0; i < elements.length; i++){
-                    //    if (elements[i].text=="") {
-                    //      elements[i].selected = true;
-                    //    } else {
-                    //      elements[i].selected = false;
-                    //    }
-                    //}
-                    //document.getElementById("-keep-failed").checked=false;
-                    //document.getElementById("-fill").checked=false;
+                    var elements = document.getElementById("views").options;
+                    for(var i = 0; i < elements.length; i++){
+                        elements[i].selected = false;
+                    }
+                    var elements = document.getElementById("outputs").options;
+                    for(var i = 0; i < elements.length; i++){
+                        if (elements[i].text=="") {
+                          elements[i].selected = true;
+                        } else {
+                          elements[i].selected = false;
+                        }
+                    }
+                    document.getElementById("-keep-failed").checked=false;
+                    document.getElementById("-fill").checked=false;
                     for(var pair of urlParams.entries()) {
                         console.log(pair[0]+ ', '+ pair[1]);
                         if (pair[0] == "custom-part") {
                             document.getElementById("customCmd").value=pair[1]
                         }
                         if (pair[0] == "generated-part") {
-                            continue ; //not yet used
                             //pair[1] must be processed manually
                             var spaces = new RegExp(" +"); 
                             var sa = pair[1].split(spaces);
@@ -217,23 +215,29 @@
         <div id="reset1" style="clear:left">
         </div>
         <div id="in" style="display:block;border:solid;">
-            <h4>A webui for a tool for creating a diff between two stack traces</h4>
+            <h4>webui for cmdl tool to diff jck/jtreg reuslts in job and among jobs in jenkins_home/jobss on server</h4>
             <p>
                 If you need some grepping, you may want to run <a href="https://github.com/judovana/jenkins-report-jtreg/blob/master/src/main/resources/io/jenkins/plugins/report/jtreg/JenkinsReportJckGlobalConfig/config.jelly#L4">custom shell wrapper around</a> commandline application. <br/>
                 This page is wrapper around that  anyway.
             </p>
             <p>
-            <pre style="height: 300;overflow:auto;">
+            <pre>
 <!--help-->
-note:
-    --path path_to_the_jenkins_jobs_directory is already preset, no need to  set it
-examples:
-    --trace-from a-jenkins-job:210 --trace-to a-jenkins-job:211 --diff-format inline --formatting html
-    --trace-from first-job:105 --trace-to second-job:166 --exact-tests .*compilation.* --cut-trace headEach:2500 --formatting html
+ options DIR1 DIR2 DIR3 ... DIRn
+  or  
+ options JOB_NAME-1 buildPointer1.1 buildPointer1.2  ... jobPointer1.N JOB_NAME-2 buildPointer2.1 buildPointer2.2  ... jobPointer2.N ... JOB_NAME-N ...jobPointerN.N
+  options:  
+ -output=color|html|html2
+ default output is 'plain text'. 0-1 of -output is allowed.
+ -view=info-summary|info-summary-suites|info-problems|info-hide-details|diff-summary|diff-summary-suites|diff-details|diff-list|hide-positives|hide-negatives|hide-misses|hide-totals|diff|info
+ default view is 'all'. 0-N of -view is allowed.
+ job pointers are numbers. If zero or negative, then it is 0 for last one, -1 for one beofre last ...
+ When using even number of build pointers, you can use -fill switch to consider them as rows
+ Another strange argument is -keep-failed which will include failed/aborted/not-existing builds/dirs during listing.
 <!--helpEnd-->
             </pre>
         </p>
-        <form action="trace.html">
+        <form action="list.html">
             Generated command:  <input style="width:80%" type="text" id="genCmd" name="generated-part" value="" readonly></input><br/>
             Custom command:  <input style="width:80%" type="text" id="customCmd" name="custom-part" value=""></input><br/>
             <div style="text-align:center; border:dotted" style="width:100%">
@@ -241,11 +245,77 @@ examples:
             </div>
         </form> 
 
+        <div style="float:left;margin:15px" >
+            View (0-n)</br>
+            <small>Nothing == show all</small></br>
+            <select id="views" multiple size=20  onclick="generateComand();">
+                <!--views-->
+                <option value="view1">info-summary</option>
+                <option value="view2">info-summary-suites</option>
+                <option value="view3">info-problems</option>
+                <option value="view4">info-hide-details</option>
+                <option value="view5">diff-summary</option>
+                <option value="view6">diff-summary-suites</option>
+                <option value="view7">diff-details</option>
+                <option value="view8">diff-list</option>
+                <option value="view9">hide-positives</option>
+                <option value="view10">hide-negatives</option>
+                <option value="view11">hide-misses</option>
+                <option value="view12">hide-totals</option>
+                <option value="view13">diff</option>
+                <option value="view14">info</option>
+                <!--viewsEnd-->
+            </select> 
+        </div>
+        <div style="float:left;margin:15px" >
+            Output 0 or 1.</br>
+            <small>It is strongly recommneded to keep html:))</small></br>
+            <small>Nothing is plain text</small></br>
+            <select id="outputs" onclick="generateComand();">
+                <!--outputs-->
+                <option value="output1"    >color</option>
+                <option value="output2"  selected  >html</option>
+                <option value="output3"    >html2</option>
+                <option value="output4" ></option>
+                <!--outputsEnd-->
+            </select> 
+        </div>
+
+        <div style="float:left;margin:15px" >
+            additional switches</br>
+            <small>Fill is powerfull, keep-failed useless!</small></br>
+            <!--swithces-->
+            <input onclick="generateComand();" type="checkbox" class="switch" id="-keep-failed" value=-keep-failed>-keep-failed</input><br/>
+            <input onclick="generateComand();" type="checkbox" class="switch" id="-fill" value=-fill>-fill</input>
+            <!--swithcesEnd-->
+        </div>
+
+
+        <div style="float:left;margin:15px" >
+            Jobs</br>
+            <small>Each can be added more then once,. but mostly dont have sense</small></br>
+            <select id="jobs">
+                <!--jobs-->
+                <option value="jobs should reload dynaically">jobs should reload dynaically</option>
+                <!--jobsEnd-->
+            </select> 
+            <div id="addJob"  style="border:double; text-align: center; margin:5px" onClick="addJob()">Add -> </div>
+            <div id="copyJob"  style="border:double; text-align: center;" onClick="adjustComand()">just put to custom cmdline</div>
+            <input type="checkbox" class="ajaxEanbled" id="ajaxEanbled" value="ajaxEanbled" checked >enable ajax</input>
+        </div>
+
+
+        <div style="float:left;margin:15px" >
+            Selected Jobs</br>
+            <small>Add build ids (negatives are going from top, zero is newest)</small></br>
+            <small>Try click to <b>sout</b> in ajax help</small></br>
+            <div id="selectedJobs" >
+            </div>
+        </div>
         <div style="clear:left" >
         </div>
     </div>
     <div id="out" style="border:solid;">
-        <pre>
         <!--
         *** Closing and serr is generated, to allow live streaming of results ***
             </div>

@@ -1,4 +1,4 @@
-package io.jenkins.plugins.report.jtreg.main.tracediff;
+package io.jenkins.plugins.report.jtreg.main.diff;
 
 import io.jenkins.plugins.report.jtreg.CommonOptions;
 import io.jenkins.plugins.report.jtreg.formatters.BasicFormatter;

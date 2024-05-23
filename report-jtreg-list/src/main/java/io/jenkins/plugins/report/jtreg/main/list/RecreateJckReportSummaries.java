@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.jenkins.plugins.report.jtreg.main.diff;
+package io.jenkins.plugins.report.jtreg.main.list;
 
 import com.google.gson.GsonBuilder;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -29,6 +29,7 @@ import io.jenkins.plugins.report.jtreg.model.Report;
 import io.jenkins.plugins.report.jtreg.model.ReportFull;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.model.SuiteTests;
+import io.jenkins.plugins.report.jtreg.parsers.JckReportParser;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -40,20 +41,14 @@ import java.util.stream.Stream;
 
 import static io.jenkins.plugins.report.jtreg.Constants.REPORT_JSON;
 import static io.jenkins.plugins.report.jtreg.Constants.REPORT_TESTS_LIST_JSON;
-import io.jenkins.plugins.report.jtreg.parsers.JtregReportParser;
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
 
-public class RecreateJtregReportSummaries {
+public class RecreateJckReportSummaries {
 
     public static void main(String[] args) throws Exception {
-        new RecreateJtregReportSummaries().work();
+        new RecreateJckReportSummaries().work();
     }
 
     @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
@@ -61,69 +56,28 @@ public class RecreateJtregReportSummaries {
         try (Stream<Path> dirsStream = Files.list(Paths.get("").toAbsolutePath().normalize())) {
             dirsStream.sequential()
                     .filter(d -> !Files.isSymbolicLink(d))
-                    .forEach(this::recreateJtregReportSummaryForBuild);
+                    .forEach(this::recreateJckReportSummaryForBuild);
         }
-    }
-
-    private static final String sfxs = "zip,tar,tar.gz,tar.bz2,tar.xz";
-
-    private static boolean isJtregArchive(String s){
-        String[] ss = sfxs.split(",");
-        for (String s1 : ss) {
-            if (s.endsWith(s1)){
-                return true;
-            }
-        }
-        return false;
     }
 
     @SuppressFBWarnings(value = {"REC_CATCH_EXCEPTION", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
-    private void recreateJtregReportSummaryForBuild(Path buildPath) {
-        Path tckReportsArchive = buildPath.resolve("archive");
+    private void recreateJckReportSummaryForBuild(Path buildPath) {
+        Path tckReportsArchive = buildPath.resolve("archive").resolve("tck");
         if (!Files.exists(tckReportsArchive)) {
             return;
         }
-        final List<Path> archives = new ArrayList<>();
-        try {
-            Files.walkFileTree(buildPath, new FileVisitor<Path>() {
-                @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                    return FileVisitResult.CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    if (isJtregArchive(file.toString())) {
-                        archives.add(file);
-                    }
-                    return FileVisitResult.CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                    return FileVisitResult.CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-        String prefix = "jtreg";
-        try (Stream<Path> tckReportsStream = archives.stream()) {
+        try (Stream<Path> tckReportsStream = Files.list(tckReportsArchive)) {
 
             List<Suite> suitesList = tckReportsStream.sequential()
-                    .map(this::jtregReportToSuite)
+                    .filter(p -> p.toString().endsWith(".xml") || p.toString().endsWith(".xml.gz"))
+                    .map(this::jckReportToSuite)
                     .filter(s -> s != null)
                     .collect(Collectors.toList());
 
             {
-                Path summaryPath = buildPath.resolve(prefix + "-" + REPORT_JSON);
+                Path summaryPath = buildPath.resolve("jck-" + REPORT_JSON);
                 if (Files.exists(summaryPath)) {
-                    Files.move(summaryPath, buildPath.resolve("backup_" + prefix + "-" + REPORT_JSON), REPLACE_EXISTING);
+                    Files.move(summaryPath, buildPath.resolve("backup_" + "jck-" + REPORT_JSON), REPLACE_EXISTING);
                 }
                 List<Suite> reportShort = suitesList.stream()
                         .sequential()
@@ -143,9 +97,9 @@ public class RecreateJtregReportSummaries {
                 }
             }
             {
-                Path testsListPath = buildPath.resolve(prefix + "-" + REPORT_TESTS_LIST_JSON);
+                Path testsListPath = buildPath.resolve("jck-" + REPORT_TESTS_LIST_JSON);
                 if (Files.exists(testsListPath)) {
-                    Files.move(testsListPath, buildPath.resolve("backup_" + prefix + "-" + REPORT_TESTS_LIST_JSON),
+                    Files.move(testsListPath, buildPath.resolve("backup_" + "jck-" + REPORT_TESTS_LIST_JSON),
                             REPLACE_EXISTING);
                 }
                 List<SuiteTests> suites = suitesList.stream()
@@ -166,7 +120,7 @@ public class RecreateJtregReportSummaries {
         }
     }
 
-    private Suite jtregReportToSuite(Path path) {
-        return new JtregReportParser().parsePath(path);
+    private Suite jckReportToSuite(Path path) {
+        return new JckReportParser().parsePath(path);
     }
 }

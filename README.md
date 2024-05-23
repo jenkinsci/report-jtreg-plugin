@@ -73,7 +73,7 @@ View settigns are fully inherited from project settings. So the only thing you d
 The imitations are clear from shared settings with all pros and cons and quite clumsy comparsion of exact jobs (w/b lists) and impossible comparsion between jobs.
 
 ## Diff cli tool
-To workaround limitations, and add possibility to post-process results, the hpi and jars contains main class of ``` io.jenkins.plugins.report.jtreg.main.diff.CompareBuilds``` whcih allows (based on the director with yor jobs) to comapre or list practically anything.  The launcher can look like:
+To workaround limitations, and add possibility to post-process results, the hpi and jars contains main class of ``` io.jenkins.plugins.report.jtreg.main.list.CompareBuilds``` whcih allows (based on the director with yor jobs) to comapre or list practically anything.  The launcher can look like:
 ```
 set -x
 set -e
@@ -93,7 +93,7 @@ CP=\$CP\":\"$jenkins_main_dir/jenkins-report-jck-jar-with-dependencies.jar
 
 set -x
 
-/opt/jdk/bin/java -cp \$CP -Djenkins_home=$jenkins_main_home  io.jenkins.plugins.report.jtreg.main.diff.CompareBuilds  $@
+/opt/jdk/bin/java -cp \$CP -Djenkins_home=$jenkins_main_home  io.jenkins.plugins.report.jtreg.main.list.CompareBuilds  $@
 ```
 It can spwn plain tex, colored tex, or even html, so it i easy to be deployed as service (there is a wrapper for this too - ```Service``` ) together with  jenkins.
 ```
@@ -122,7 +122,7 @@ diff:
 ![cli-dif1-cli-dif3](https://user-images.githubusercontent.com/2904395/43448359-0b793672-94ae-11e8-9285-a837f4a4b8b9.png)
 
 html view:
-web-cli - ```Service``` - is nothing more then wrapper around ``` io.jenkins.plugins.report.jtreg.main.diff.CompareBuilds``` and is doing nothing more then resending stdout/err to browser request!! There is hardcoded port of 9090 in Sevice class.
+web-cli - ```Service``` - is nothing more then wrapper around ``` io.jenkins.plugins.report.jtreg.main.list.CompareBuilds``` and is doing nothing more then resending stdout/err to browser request!! There is hardcoded port of 9090 in Sevice class.
 ![wb1-web3](https://user-images.githubusercontent.com/2904395/43450562-4346fab2-94b3-11e8-931a-bb26456d8aac.png)
 Html output is much more clumsy, but the listing of switches and jobs is live, and also ajax is helping here a bit. Also yu can send results as URL, so it have its cases
 

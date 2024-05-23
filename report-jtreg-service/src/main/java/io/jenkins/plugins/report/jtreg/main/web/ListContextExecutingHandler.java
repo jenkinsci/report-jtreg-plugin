@@ -23,30 +23,25 @@
  */
 package io.jenkins.plugins.report.jtreg.main.web;
 
-import io.jenkins.plugins.report.jtreg.main.tracediff.DiffHelp;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-public class TraceDiffContextExecutingHandler extends ContextExecutingHandler {
+import io.jenkins.plugins.report.jtreg.main.list.cmdline.Arguments;
 
-    public TraceDiffContextExecutingHandler(File targetProgram) throws IOException {
+public class ListContextExecutingHandler extends ContextExecutingHandler {
+
+    public ListContextExecutingHandler(File targetProgram) throws IOException {
         super(targetProgram);
     }
-
     @Override
     protected String loadDifTemplate() throws IOException {
-        return loadTemplate("/io/jenkins/plugins/report/jtreg/main/web/trace.html");
+        return loadTemplate("/io/jenkins/plugins/report/jtreg/main/web/list.html");
     }
 
     @Override
     protected String pritnHelp() throws UnsupportedEncodingException {
-        return sanitizeHtml(DiffHelp.HELP_MESSAGE) + "\n" +
-                "note:\n" +
-                "    --path path_to_the_jenkins_jobs_directory is already preset, no need to  set it\n" +
-                "examples:\n" +
-                "    --trace-from a-jenkins-job:210 --trace-to a-jenkins-job:211 --diff-format inline --formatting html\n" +
-                "    --trace-from first-job:105 --trace-to second-job:166 --exact-tests .*compilation.* --cut-trace headEach:2500 --formatting html\n";
+        return  Arguments.printHelp();
     }
+
 }
