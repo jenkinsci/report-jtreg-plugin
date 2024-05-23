@@ -29,7 +29,7 @@ public final class UrlsProviderPlugin implements UrlsProvider {
 
     @Override
     public String getDiffServer() {
-        return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + "/diff.html";
+        return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + "/list.html";
     }
     @Override
     public  String getCompServer() {

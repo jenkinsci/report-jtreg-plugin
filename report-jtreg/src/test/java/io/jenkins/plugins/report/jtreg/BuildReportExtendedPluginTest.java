@@ -20,7 +20,7 @@ public class BuildReportExtendedPluginTest {
                 new UrlsProvider() {
                     @Override
                     public String getDiffServer() {
-                        return "http://mylocal/diff.html";
+                        return "http://mylocal/list.html";
                     }
 
                     @Override

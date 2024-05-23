@@ -1,4 +1,4 @@
-package io.jenkins.plugins.report.jtreg.main.tracediff;
+package io.jenkins.plugins.report.jtreg.main.diff;
 
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TraceDiff {
+public class StackTraceDiff {
     public static void main(String[] args) {
-        TraceDiffArgParser comparatorArgParser = new TraceDiffArgParser(new DiffInfo(), args);
+        DiffArgParser comparatorArgParser = new DiffArgParser(new DiffInfo(), args);
         DiffInfo diffInfo = comparatorArgParser.parseAndGetOptions();
 
         if(diffInfo.isDie()) {

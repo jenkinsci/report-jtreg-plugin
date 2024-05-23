@@ -37,8 +37,8 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.jenkins.plugins.report.jtreg.main.diff.cmdline.Arguments;
-import io.jenkins.plugins.report.jtreg.main.diff.cmdline.JobsRecognition;
+import io.jenkins.plugins.report.jtreg.main.list.cmdline.Arguments;
+import io.jenkins.plugins.report.jtreg.main.list.cmdline.JobsRecognition;
 
 /**
  *

@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.jenkins.plugins.report.jtreg.main.diff;
+package io.jenkins.plugins.report.jtreg.main.list;
 
-import io.jenkins.plugins.report.jtreg.main.diff.cmdline.Arguments;
+import io.jenkins.plugins.report.jtreg.main.list.cmdline.Arguments;
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
-import io.jenkins.plugins.report.jtreg.main.diff.cmdline.JobsRecognition;
-import io.jenkins.plugins.report.jtreg.main.diff.cmdline.Options;
+import io.jenkins.plugins.report.jtreg.main.list.cmdline.JobsRecognition;
+import io.jenkins.plugins.report.jtreg.main.list.cmdline.Options;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import io.jenkins.plugins.report.jtreg.model.Report;

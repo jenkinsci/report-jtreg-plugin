@@ -1,7 +1,7 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
     <f:section title="Jenkins Report Jtreg Plugin">
-        <f:entry title="Diff-tool url (eg http://server.my:9090)" field="diffToolUrl">
+        <f:entry title="Comparator/list/diff tools' URL (eg. http://server.my:9090)" field="toolsUrl">
             <f:textbox/>
         </f:entry>
     </f:section>
