@@ -10,4 +10,5 @@ report-jtreg-lib/config.xml
 report-jtreg-lib/target/
 report-jtreg-service/target/
 report-jtreg/target/
+report-jtreg-list/target/
 
