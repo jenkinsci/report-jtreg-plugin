@@ -159,7 +159,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
     }
 
     private String getDiffUrlStub(){
-        return urlsProvider.getDiffServer() + "?generated-part=+-view%3Ddiff-list+++-view%3Ddiff-summary+++-view%3Ddiff-summary-suites+++-view%3Dinfo-problems+++-view%3Dinfo-summary+++-output%3Dhtml++-fill++&custom-part=";//+job+numbers //eg as above;
+        return urlsProvider.getListServer() + "?generated-part=+-view%3Ddiff-list+++-view%3Ddiff-summary+++-view%3Ddiff-summary-suites+++-view%3Dinfo-problems+++-view%3Dinfo-summary+++-output%3Dhtml++-fill++&custom-part=";//+job+numbers //eg as above;
     }
 
     public String getLinkDiff() {
@@ -175,7 +175,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
     }
 
     private String getTracesUrlStub() {
-        return urlsProvider.getDiffServer() + "?generated-part=+-view%3Dinfo+++-output%3Dhtml++&custom-part=";//+job+numbers //eg as above;
+        return urlsProvider.getListServer() + "?generated-part=+-view%3Dinfo+++-output%3Dhtml++&custom-part=";//+job+numbers //eg as above;
     }
 
     public String getCompUrlStub() {
@@ -191,7 +191,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
     }
 
     private String createDiffUrl() {
-        return urlsProvider.getDiffServer() + "?generated-part=+-view%3Dall-tests+++-output%3Dhtml++-fill++";
+        return urlsProvider.getListServer() + "?generated-part=+-view%3Dall-tests+++-output%3Dhtml++-fill++";
     }
 
     public String getTrackingUrl(Test test) {

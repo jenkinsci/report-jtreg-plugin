@@ -4,7 +4,9 @@ import java.io.Serializable;
 
 public interface UrlsProvider extends Serializable {
 
-    String getDiffServer();
+    String getListServer();
     String getCompServer();
+
+    String getDiffServer();
 
 }

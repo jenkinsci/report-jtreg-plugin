@@ -28,11 +28,16 @@ import io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig;
 public final class UrlsProviderPlugin implements UrlsProvider {
 
     @Override
-    public String getDiffServer() {
+    public String getListServer() {
         return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + "/list.html";
     }
     @Override
     public  String getCompServer() {
         return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + "/comp.html";
     }
- }
+
+    @Override
+    public String getDiffServer() {
+        return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + "/diff.html";
+    }
+}

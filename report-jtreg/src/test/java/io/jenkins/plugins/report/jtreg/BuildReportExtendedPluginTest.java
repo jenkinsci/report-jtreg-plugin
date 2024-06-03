@@ -19,13 +19,18 @@ public class BuildReportExtendedPluginTest {
                 "tck-jp17-ojdk17~rpms-el8.aarch64-fastdebug.sdk-el8.aarch64.beaker-x11.defaultgc.fips.lnxagent.jfroff",
                 new UrlsProvider() {
                     @Override
-                    public String getDiffServer() {
+                    public String getListServer() {
                         return "http://mylocal/list.html";
                     }
 
                     @Override
                     public String getCompServer() {
                         return "http://mylocal/comp.html";
+                    }
+
+                    @Override
+                    public String getDiffServer() {
+                        return "http://mylocal/diff.html";
                     }
                 });
 

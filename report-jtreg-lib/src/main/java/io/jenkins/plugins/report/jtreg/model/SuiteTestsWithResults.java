@@ -84,7 +84,7 @@ public class SuiteTestsWithResults implements java.io.Serializable {
     }
 
     private String getDiffUrlStub() {
-        return urlsProvider.getDiffServer() + "?generated-part=+-view%3Dall-tests+++-view%3Dinfo-summary+++-view%3Dinfo-summary"
+        return urlsProvider.getListServer() + "?generated-part=+-view%3Dall-tests+++-view%3Dinfo-summary+++-view%3Dinfo-summary"
                 + "-suites+++-output"
                 + "%3Dhtml++&custom-part=";//+job+number //eg as above;
     }
