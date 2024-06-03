@@ -23,21 +23,22 @@
  */
 package io.jenkins.plugins.report.jtreg.model;
 
+import io.jenkins.plugins.report.jtreg.Constants;
 import io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig;
 
 public final class UrlsProviderPlugin implements UrlsProvider {
 
     @Override
     public String getListServer() {
-        return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + "/list.html";
+        return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()    + Constants.LIST_BACKEND;
     }
     @Override
     public  String getCompServer() {
-        return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + "/comp.html";
+        return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + Constants.COMPARATOR_BACKEND;
     }
 
     @Override
     public String getDiffServer() {
-        return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + "/diff.html";
+        return JenkinsReportJckGlobalConfig.getGlobalDiffUrl()  + Constants.DIFF_BACKEND;
     }
 }

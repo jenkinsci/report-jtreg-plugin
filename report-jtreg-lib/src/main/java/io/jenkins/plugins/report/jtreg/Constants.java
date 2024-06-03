@@ -28,16 +28,20 @@ final public class Constants {
     public static final String REPORT_JSON = "report.json";
     public static final String REPORT_TESTS_LIST_JSON = "tests-list.json";
     public static final String IRRELEVANT_GLOB_STRING = "report-{runtime,devtools,compiler}.xml.gz";
+
+    public static final String LIST_BACKEND = "/list.html";
+    public static final String COMPARATOR_BACKEND = "/comp.html";
+    public static final String DIFF_BACKEND = "/diff.html";
     public static final double VAGUE_QUERY_THRESHOLD = 0.5;
     public static final int VAGUE_QUERY_LENGTH_THRESHOLD = 4;
     public static final String COMPARATOR_TABLE_CSS =
-                    "<style>\n" +
-                            ".tooltip {\n" +
-                            "  position: relative;\n" +
-                            "  display: inline-block;\n" +
-                            "}\n" +
-                            ".tooltip .tooltiptext {\n" +
-                            "  visibility: hidden;\n" +
+            "<style>\n" +
+                    ".tooltip {\n" +
+                    "  position: relative;\n" +
+                    "  display: inline-block;\n" +
+                    "}\n" +
+                    ".tooltip .tooltiptext {\n" +
+                    "  visibility: hidden;\n" +
                             "  width: 240px;\n" +
                             "  background-color: grey;\n" +
                             "  color: #fff;\n" +

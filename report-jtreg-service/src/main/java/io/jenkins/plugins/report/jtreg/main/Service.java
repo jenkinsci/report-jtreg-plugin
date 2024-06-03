@@ -25,6 +25,7 @@ package io.jenkins.plugins.report.jtreg.main;
 
 import com.sun.net.httpserver.HttpServer;
 
+import io.jenkins.plugins.report.jtreg.Constants;
 import io.jenkins.plugins.report.jtreg.main.web.ComapreContextExecutingHandler;
 import io.jenkins.plugins.report.jtreg.main.web.ListContextExecutingHandler;
 import io.jenkins.plugins.report.jtreg.main.web.DiffContextExecutingHandler;
@@ -58,9 +59,9 @@ public class Service {
             help();
             throw new RuntimeException("0,1,3 or 4 args expected. Is " + args.length);
         }
-        String b1 = "/list.html";
-        String b2 = "/comp.html";
-        String b3 = "/diff.html";
+        String b1 = Constants.LIST_BACKEND;
+        String b2 = Constants.COMPARATOR_BACKEND;
+        String b3 = Constants.DIFF_BACKEND;
         HttpServer hs = HttpServer.create(new InetSocketAddress(port), 0);
         hs.createContext(b1, new ListContextExecutingHandler(
                 new File(file1)));

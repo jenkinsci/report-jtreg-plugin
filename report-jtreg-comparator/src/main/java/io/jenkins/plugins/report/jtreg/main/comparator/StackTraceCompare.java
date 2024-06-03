@@ -1,6 +1,7 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
 import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
+import io.jenkins.plugins.report.jtreg.CommonOptions;
 import io.jenkins.plugins.report.jtreg.ConfigFinder;
 import io.jenkins.plugins.report.jtreg.utils.StackTraceTools;
 import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesCell;
@@ -101,7 +102,7 @@ public class StackTraceCompare {
                 String jobId = Builds.getBuildNumber(new File(jobBuilds.get(column-1)));
                 String id = "comapre-" + test + "-" + buildName + "-" + jobId;
                 List<JtregPluginServicesLinkWithTooltip> maybeSeveralComaprisons = new ArrayList<>();
-                maybeSeveralComaprisons.add(new JtregPluginServicesLinkWithTooltip(stringToPut, null, id, createTooltip(test, buildName, jobId, column, id, options.getJenkinsUrl()), true));
+                maybeSeveralComaprisons.add(new JtregPluginServicesLinkWithTooltip(stringToPut, null, id, createTooltip(test, buildName, jobId, test, column, id, options.getJenkinsUrl(), options.getDiffUrl()), true));
                 //you can add more links simply by
                 //maybeSeveralComaprisons.add(new JtregPluginServicesLinkWithTooltip("X2", "test", null, getLinksTooltip(), true));
                 //maybeSeveralComaprisons.add(new JtregPluginServicesLinkWithTooltip("X3", "test", null, getLinksTooltip(), true));
@@ -113,7 +114,7 @@ public class StackTraceCompare {
             }
 
             // TODO delete, just for debug logging
-            System.err.println("Test " + (i - 1) + "/" + failedTests.size() + " - " + (int)((i - 1)/(double)failedTests.size() * 100) + "%");
+            System.err.println("Test " + (i - 1) + "/" + failedTests.size() + " - " + (int) ((i - 1) / (double) failedTests.size() * 100) + "%");
 
             i++;
         }
@@ -122,13 +123,28 @@ public class StackTraceCompare {
         options.getFormatter().printTable(table, failedTests.size() + 1, jobBuilds.size() + 1);
     }
 
-    private static List<JtregPluginServicesLinkWithTooltip> createTooltip(String result, String buildName, String buildId, int column, String id, String url) {
-        List<JtregPluginServicesLinkWithTooltip> list = VirtualJobsResults.createTooltip(result, buildName, buildId, column, id, url);
+    private static List<JtregPluginServicesLinkWithTooltip> createTooltip(String result, String buildName, String buildId, String test, int column, String id, String jenkinsUrl, String comapratorUrl) {
+        List<JtregPluginServicesLinkWithTooltip> list = VirtualJobsResults.createTooltip(result, buildName, buildId, column, id, jenkinsUrl);
         list.add(new JtregPluginServicesLinkWithTooltip("*** comapre links ***"));
-        list.add(new JtregPluginServicesLinkWithTooltip(" * use this as base", "some link", null));
-        list.add(new JtregPluginServicesLinkWithTooltip(" * show diff agaisnt base", "some otjer link", null));
-        list.add(new JtregPluginServicesLinkWithTooltip(" * show diff in different setup", "other link", null));
+        list.add(new JtregPluginServicesLinkWithTooltip(" * show diff against self", getSelfDiffLink(buildName, buildId, test, comapratorUrl)));
+        list.add(new JtregPluginServicesLinkWithTooltip(" * show diff against base", "other link", null));
+        list.add(new JtregPluginServicesLinkWithTooltip(" * show diff against right one", "other link", null));
+        list.add(new JtregPluginServicesLinkWithTooltip(" * show diff against left one", "other link", null));
+        list.add(new JtregPluginServicesLinkWithTooltip(" * use this as base (not yet working)", "must reconstruct parameters map, and add/replace ++--set-referential+build:id. May be good idea to append anchor of #test-job-id (where #==%23", null));
         return list;
+    }
+
+    private static String getSelfDiffLink(String buildName, String buildId, String test, String comapratorUrl) {
+        return getDiffLink(buildName, buildId, buildName, buildId, test, comapratorUrl);
+    }
+
+    private static String getDiffLink(String buildName1, String buildId1, String buildName2, String buildId2, String test, String comapratorUrl) {
+        return comapratorUrl + "?generated-part=&custom-part=" +
+                "++--formatting+html" +
+                "++--diff-format+sidebyside" +
+                "++--trace-from+" + buildName1 + "%3A"/*:*/ + buildId1 +
+                "++--trace-to+" + buildName2 + "%3A"/*:*/ + buildId2 +
+                "++--exact-tests+" + test.replaceAll("#", "%23");
     }
 
     private static int getTraceSimilarity(String one, String two) {

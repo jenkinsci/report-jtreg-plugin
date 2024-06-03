@@ -20,17 +20,17 @@ public class BuildReportExtendedPluginTest {
                 new UrlsProvider() {
                     @Override
                     public String getListServer() {
-                        return "http://mylocal/list.html";
+                        return "http://mylocal" + Constants.LIST_BACKEND;
                     }
 
                     @Override
                     public String getCompServer() {
-                        return "http://mylocal/comp.html";
+                        return "http://mylocal" + Constants.COMPARATOR_BACKEND;
                     }
 
                     @Override
                     public String getDiffServer() {
-                        return "http://mylocal/diff.html";
+                        return "http://mylocal" + Constants.DIFF_BACKEND;
                     }
                 });
 

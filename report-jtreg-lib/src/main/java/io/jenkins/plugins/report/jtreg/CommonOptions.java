@@ -76,6 +76,37 @@ public class CommonOptions {
         this.jenkinsUrl = jenkinsUrl;
     }
 
+    /**
+     * FIXME; this is terribly hackish an incredibnly wrong
+     * But considering the nature of our CGI wrapper, th "self" url is not bubblibng down
+     * unless it would be passed in similarly as jenkins url.
+     * <p>
+     * Already port is out of scope here:(
+     *
+     * @return nonsense
+     */
+    public String getSelfUrl() {
+        final String wrongGuessedDefaultPort = "9090";
+        if (jenkinsUrl != null) {
+            if (jenkinsUrl.contains(":")) {
+                return jenkinsUrl.replaceAll(":8080.*", ":" + wrongGuessedDefaultPort);
+            } else {
+                return jenkinsUrl + ":" + wrongGuessedDefaultPort;
+            }
+        } else {
+            return "http://localhost:" + wrongGuessedDefaultPort;
+        }
+    }
+
+    public String getDiffUrl() {
+        return getSelfUrl() + Constants.DIFF_BACKEND;
+    }
+
+    public String getComparatorUrl() {
+        return getSelfUrl() + Constants.COMPARATOR_BACKEND;
+    }
+
+
     public enum Side {
         Head, HeadEach, Tail, TailEach
     }
