@@ -1,7 +1,7 @@
 # jenkins-report-jtreg
 Jenkins plugin to show unit-test, tesng, jtreg and JCK reports summaries, diffs and details
 
-Plugin is build `report-jtreg` module. `report-jtreg-lib` is code share by plugin and other modules. `report-jtreg-comparator`, `report-jtreg-list`, `report-jtreg-diff` are standalone CLI programs, which can operate overresults. See lower for individual descriptions. See -h/--hel "in themselves".  The `report-jtreg-service` is CGI (yes, cgi) html wrapper around all three cli tools.  Although you can setup `plugin` to link to them (and it is awesome) it is not exactly safe, so we reocmmend to not run those services on public network. IN addition, the `services` are really clumsy to set up, refer to the source code of `io.jenkins.plugins.report.jtreg.main.Service` for details
+Plugin is in `report-jtreg` module. `report-jtreg-lib` is code share by plugin and other modules. `report-jtreg-comparator`, `report-jtreg-list`, `report-jtreg-diff` are standalone CLI programs, which can operate overresults. See lower for individual descriptions. See -h/--hel "in themselves".  The `report-jtreg-service` is CGI (yes, cgi) html wrapper around all three cli tools.  Although you can setup `plugin` to link to them (and it is awesome) it is not exactly safe, so we reocmmend to not run those services on public network. IN addition, the `services` are really clumsy to set up, refer to the source code of `io.jenkins.plugins.report.jtreg.main.Service` for details
 
 The plugin reads archived gzipped xml files prdoduced by junit/testng/jtreg/jck suites  ([or anyhow else generated](https://github.com/rh-openjdk/run-folder-as-tests/blob/main/jtreg-shell-xml.sh)) runs.
 
