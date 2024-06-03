@@ -89,7 +89,7 @@ It can spwn plain tex, colored tex, or even html, so it i easy to be deployed as
 All cli/services return their switches if no parameter or -h/--help is present
 ```
 ### List
-module report-jtreg-list, main class: 
+module `report-jtreg-list`, main class: `io.jenkins.plugins.report.jtreg.main.list.CompareBuilds`
 
 The cli works with absolute and relative job IDs, and strictly cooperates with stdout/err (so consider  2>/dev/null sometimes)
 * with no param it prints name
@@ -107,7 +107,7 @@ web-cli - ```Service``` - is nothing more then wrapper around ``` io.jenkins.plu
 Html output is much more clumsy, but the listing of switches and jobs is live, and also ajax is helping here a bit. Also yu can send results as URL, so it have its cases
 
 ### Comparator
-module report-jtreg-comparator, main class:  
+module `report-jtreg-comparator`, main class:  `io.jenkins.plugins.report.jtreg.main.comparator.VariantComparator`
 
 FIXME
 
@@ -116,7 +116,7 @@ copares individual variants of test runs
 It compares by both status, and stack trace. 
 
 ### Diff
-module report-jtreg-diff, main class: 
+module `report-jtreg-diff`, main class: `io.jenkins.plugins.report.jtreg.main.diff.StackTraceDiff`
 
 FIXME
 
