@@ -83,7 +83,9 @@
         <div>
             <p>
                 This section is used for generating automatic links which will be shown next to all failed tests on the jtreg report page.
-                It uses the same macro system as described in the <i>Comparator Links</i> section, however, these links can lead to any tool, not just the comparator.
+                It uses the same macro system as described in the <i>Comparator Links</i> section
+                (there is a new specific macro, <code>%{TESTNAME}</code> for getting a name of the test),
+                however, these links can lead to any tool, not just the comparator.
             </p>
             <p>
                 <i>Each field in the form below has a help button describing what should be filled in.</i>
