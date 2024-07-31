@@ -34,7 +34,7 @@
                     <f:textbox />
                 </f:entry>
                 <f:entry field="comparatorArguments" title="Comparator tool arguments (one on each line)"
-                         help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/comparatorArguments">
+                         help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/arguments">
                     <f:textarea />
                 </f:entry>
                 <f:repeatableDeleteButton/>
@@ -74,6 +74,37 @@
             <f:entry field="findQuery" title="XPath/JSON query/properties key to find the item in the config file"
                      help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/findQuery">
                 <f:textbox />
+            </f:entry>
+            <f:repeatableDeleteButton/>
+        </f:repeatable>
+    </f:section>
+
+    <f:section title="Failed Test Links">
+        <div>
+            <p>
+                This section is used for generating automatic links which will be shown next to all failed tests on the jtreg report page.
+                It uses the same macro system as described in the <i>Comparator Links</i> section, however, these links can lead to any tool, not just the comparator.
+            </p>
+            <p>
+                <i>Each field in the form below has a help button describing what should be filled in.</i>
+            </p>
+        </div>
+        <f:repeatable field="testLinks">
+            <f:entry field="label" title="Link label"
+                     help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/failedTestLinkLabel">
+                <f:textbox />
+            </f:entry>
+            <f:entry field="basePage" title="Base tool page"
+                     help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/failedTestLinkUrl">
+                <f:textbox />
+            </f:entry>
+            <f:entry field="spliterator" title="A spliterator to split the job names"
+                     help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/spliterator">
+                <f:textbox />
+            </f:entry>
+            <f:entry field="arguments" title="Tool arguments (one on each line)"
+                     help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/arguments">
+                <f:textarea />
             </f:entry>
             <f:repeatableDeleteButton/>
         </f:repeatable>
