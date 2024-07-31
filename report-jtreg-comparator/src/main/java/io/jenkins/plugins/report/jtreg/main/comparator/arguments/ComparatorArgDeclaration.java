@@ -9,7 +9,7 @@ public final class ComparatorArgDeclaration extends CommonArgDeclaration {
   public static final Argument enumerateArg = new Argument("--enumerate", "Print lists of all variants of jobs (that match the rest of arguments).", "");
   public static final Argument compareArg = new Argument("--compare", "Print a table of all failed tests (of matched job builds) and the builds where they failed.", "");
   public static final Argument printArg = new Argument("--print", "Print all jobs and their builds that match the rest of arguments, without actually doing any operation on the builds or tests.", "");
-  public static final Argument virtualArg = new Argument("--virtual", "Print a table of all matched jobs' builds and their result (e.g. SUCCESS, UNSTABLE, etc.). Can be used as standalone operation or combined with any other operation. Probably should be run with --skip-failed=false switch.", "");
+  public static final Argument virtualArg = new Argument("--virtual", "Print a table of all matched jobs' builds and their result (e.g. SUCCESS, UNSTABLE, etc.). Can be used as standalone operation or combined with any other operation. Overrides the default of --skip-failed switch to false.", "");
   public static final Argument historyArg = new Argument("--history", "To specify the maximum number of builds to look in.", " <number>");
   public static final Argument skipFailedArg = new Argument("--skip-failed", "Specify whether the comparator should skip failed tests (only take successful and unstable) or take all. The default value is true.", " <true/false>");
   public static final Argument forceArg = new Argument("--force", "Used for forcing vague requests, that could potentially take a long time.", "");
