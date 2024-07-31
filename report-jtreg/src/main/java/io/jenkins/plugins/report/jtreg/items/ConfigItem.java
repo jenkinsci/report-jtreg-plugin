@@ -1,4 +1,4 @@
-package io.jenkins.plugins.report.jtreg;
+package io.jenkins.plugins.report.jtreg.items;
 
 import hudson.Extension;
 import hudson.model.AbstractDescribableImpl;
