@@ -1,6 +1,9 @@
 package io.jenkins.plugins.report.jtreg;
 
 
+import io.jenkins.plugins.report.jtreg.items.ComparatorLinksGroup;
+import io.jenkins.plugins.report.jtreg.items.ConfigItem;
+import io.jenkins.plugins.report.jtreg.items.TestLink;
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -20,6 +23,7 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
     String toolsUrl;
     List<ComparatorLinksGroup> comparatorLinksGroups;
     List<ConfigItem> configItems;
+    List<TestLink> testLinks;
 
     public static JenkinsReportJckGlobalConfig getInstance() {
         return GlobalConfiguration.all().get(JenkinsReportJckGlobalConfig.class);
@@ -76,11 +80,25 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
         this.configItems = configItems;
     }
 
+    public static List<TestLink> getGlobalTestLinks() {
+        return getInstance().getTestLinks();
+    }
+
+    public List<TestLink> getTestLinks() {
+        return testLinks;
+    }
+
+    @DataBoundSetter
+    public void setTestLinks(List<TestLink> testLinks) {
+        this.testLinks = testLinks;
+    }
+
     @DataBoundConstructor
-    public JenkinsReportJckGlobalConfig(String toolsUrl, List<ComparatorLinksGroup> comparatorLinksGroups, List<ConfigItem> configItems) {
+    public JenkinsReportJckGlobalConfig(String toolsUrl, List<ComparatorLinksGroup> comparatorLinksGroups, List<ConfigItem> configItems, List<TestLink> testLinks) {
         this.toolsUrl = toolsUrl;
         this.comparatorLinksGroups = comparatorLinksGroups;
         this.configItems = configItems;
+        this.testLinks = testLinks;
     }
 
     public JenkinsReportJckGlobalConfig() {

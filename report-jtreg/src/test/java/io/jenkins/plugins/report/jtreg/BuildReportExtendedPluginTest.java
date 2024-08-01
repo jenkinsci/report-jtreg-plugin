@@ -1,5 +1,6 @@
 package io.jenkins.plugins.report.jtreg;
 
+import io.jenkins.plugins.report.jtreg.items.LinkToComparator;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.model.SuiteTestChanges;
 import io.jenkins.plugins.report.jtreg.model.SuiteTestsWithResults;

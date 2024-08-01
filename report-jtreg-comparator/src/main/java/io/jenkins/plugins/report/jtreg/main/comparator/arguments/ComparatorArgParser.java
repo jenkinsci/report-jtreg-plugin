@@ -27,6 +27,8 @@ public class ComparatorArgParser extends CommonArgParser {
 
         Map<String, String> otherArgs = new HashMap<>(); // a list for unmatched (for now) arguments
 
+        boolean manualSkipFailed = false; // variable to know if user set --skip-failed manually
+
         for (int i = 0; i < arguments.length; i++) {
             // delete all leading - characters
             String currentArg = arguments[i].replaceAll("^-+", "--");
@@ -74,6 +76,9 @@ public class ComparatorArgParser extends CommonArgParser {
             } else if (currentArg.equals(ComparatorArgDeclaration.virtualArg.getName())) {
                 // --virtual
                 localOptions.setPrintVirtual(true);
+                if (!manualSkipFailed) {
+                    localOptions.getConfiguration("result").setValue(".*"); // takes all values, even failed (see --skip-failed)
+                }
 
             } else if (currentArg.equals(ComparatorArgDeclaration.historyArg.getName())) {
                 // --history
@@ -81,10 +86,14 @@ public class ComparatorArgParser extends CommonArgParser {
 
             } else if (currentArg.equals(ComparatorArgDeclaration.skipFailedArg.getName())) {
                 // --skip-failed
-                if (!Boolean.parseBoolean(getArgumentValue(i++))) {
+                if (Boolean.parseBoolean(getArgumentValue(i++))) {
+                    // if skip failed = true, only take not-failed values
+                    localOptions.getConfiguration("result").setValue("{SUCCESS,UNSTABLE}");
+                } else {
                     // if skip failed = false, any result value is taken, so .*
                     localOptions.getConfiguration("result").setValue(".*");
                 }
+                manualSkipFailed = true; // --skip-failed was called manually
 
             } else if (currentArg.equals(ComparatorArgDeclaration.forceArg.getName())) {
                 // --force

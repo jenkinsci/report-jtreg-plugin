@@ -1,6 +1,6 @@
 <div>
     <p>
-        As the label suggests, you can write any command line argument of the comparator tool here. Each argument
+        As the label suggests, you can write any command line argument of the comparator tool (or other tool in the case of failed test links) here. Each argument
         should be on its own separate line. The available arguments can be seen in the comparator help message (you can
         see this message when running comparator with the <code>--help</code> argument).
     </p>
@@ -21,6 +21,11 @@
 
         <li>"<code>%{S}</code>" or "<code>%{SPLIT}</code>" will be replaced with the spliterator specified in the field
             above.</li>
+
+        <li>"<code>%{JOBNAME}</code>" will be replaced with the full job name.</li>
+
+        <li>"<code>%{TESTNAME}</code>" will be replaced with a name of a test
+            (only works when specifying links next to tests - not links to comparator tool).</li>
 
         <li>"<code>%{dynamic}</code>", where you replace <code>dynamic</code> with a name of an item specified in the
             <i>config items</i> section (specifically the name from the <i>Name of the item to find</i> field).

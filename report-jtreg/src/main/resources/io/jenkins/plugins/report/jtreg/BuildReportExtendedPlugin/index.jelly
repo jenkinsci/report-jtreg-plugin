@@ -70,7 +70,9 @@
                                                 document.getElementById('button_expand_${suitesStatus.count}_${testStatus.count}').style.display = 'inline';
                                                 return false;">(collapse)</a>
                                         <j:if test="${it.isDiffTool()}">
-                                          <a target="_blank" href="${it.getTrackingUrl(t)}" style="font-size: smaller;" >(track)</a>
+                                            <j:forEach var="tl" items="${it.getAllTestLinks()}">
+                                                <a target="_blank" href="${it.createTestLinkUrl(tl, t.name)}" style="font-size: smaller;" >(${tl.getLabel()})</a>
+                                            </j:forEach>
                                         </j:if>
                                         <div id="details_${suitesStatus.count}_${testStatus.count}" style="display: none">
                                             <ul>

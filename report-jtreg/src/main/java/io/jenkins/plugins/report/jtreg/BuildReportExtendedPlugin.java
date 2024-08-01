@@ -23,6 +23,10 @@
  */
 package io.jenkins.plugins.report.jtreg;
 
+import io.jenkins.plugins.report.jtreg.items.ComparatorLinksGroup;
+import io.jenkins.plugins.report.jtreg.items.ConfigItem;
+import io.jenkins.plugins.report.jtreg.items.LinkToComparator;
+import io.jenkins.plugins.report.jtreg.items.TestLink;
 import io.jenkins.plugins.report.jtreg.model.*;
 
 import java.io.File;
@@ -60,7 +64,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         StringBuilder url = new StringBuilder();
 
         for (String arg : ltc.getComparatorArguments().split("(\\n|\\r\\n)")) {
-            url.append(parseQueryToText(ltc.getSpliterator(), arg));
+            url.append(parseQueryToText(ltc.getSpliterator(), arg, null));
             url.append(" ");
         }
 
@@ -74,7 +78,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         return comparatorUrl + URLEncoder.encode(url.toString(), StandardCharsets.UTF_8);
     }
 
-    private String parseQueryToText(String spliterator, String query) {
+    private String parseQueryToText(String spliterator, String query, String testName) {
         String[] splitJob = job.split(spliterator);
 
         String converted = query;
@@ -89,6 +93,8 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
             String replacement = "";
             if (insideBrackets.equals("S") || insideBrackets.equals("SPLIT")) {
                 replacement = spliterator;
+            } else if (insideBrackets.equals("JOBNAME")) {
+                replacement = job;
             } else if (insideBrackets.matches("N?[+-]?[0-9]+|N")) {
                 int number;
                 if (insideBrackets.charAt(0) == 'N' && insideBrackets.length() > 1) {
@@ -105,6 +111,13 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
                 }
 
                 replacement = splitJob[number];
+            } else if (insideBrackets.equals("TESTNAME")) {
+                if (testName == null) {
+                    System.err.println("WARNING: Cannot get test name here!");
+                    return "Cannot get test name here!";
+                } else {
+                    replacement = testName;
+                }
             } else {
                 List<ConfigItem> configItems = JenkinsReportJckGlobalConfig.getGlobalConfigItems();
                 boolean found = false;
@@ -156,6 +169,21 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
             throw new RuntimeException("The file " + path + item.getConfigFileName() + " was not found.");
         }
         return configFile;
+    }
+
+    public List<TestLink> getAllTestLinks() {
+        return JenkinsReportJckGlobalConfig.getGlobalTestLinks();
+    }
+
+    public String createTestLinkUrl(TestLink testLink, String testName) {
+        StringBuilder url = new StringBuilder();
+
+        for (String arg : testLink.getArguments().split("(\\n|\\r\\n)")) {
+            url.append(parseQueryToText(testLink.getSpliterator(), arg, testName));
+            url.append(" ");
+        }
+
+        return JenkinsReportJckGlobalConfig.getGlobalDiffUrl() + "/" + testLink.getBasePage() + URLEncoder.encode(url.toString(), StandardCharsets.UTF_8);
     }
 
     private String getDiffUrlStub(){
