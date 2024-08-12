@@ -98,9 +98,6 @@ public class JckReportParser implements ReportParser {
         List<String> fullTestsList = new ArrayList<>();
         while (in.hasNext()) {
             int event = in.next();
-            if (event == END_ELEMENT && "TestResults".equals(in.getLocalName())) {
-                break;
-            }
             if (event == START_ELEMENT && "TestResult".equals(in.getLocalName())) {
                 String testStatus = findAttributeValue(in, "status");
                 incrementCounters(testStatus, countersMap);
