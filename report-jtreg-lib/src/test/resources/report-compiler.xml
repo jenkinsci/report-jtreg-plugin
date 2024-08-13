@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Report.xsd" formatVersion="v1" generatedTime="2018-03-19T22:43:49+00:00">
+<?xml version="1.0" encoding="UTF-8"?><Report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Report.xsd" formatVersion="v1" generatedTime="2018-03-19T22:43:49+00:00">
         <TestResults>
           <TestResult url="api/java_rmi/Naming/index.html#Bind" status="PASSED" workDirID="1">
             <DescriptionData>
