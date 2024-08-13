@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><Report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Report.xsd" formatVersion="v1" generatedTime="2018-03-20T04:30:31+00:00">
-<TestResults>
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Report.xsd" formatVersion="v1" generatedTime="2018-03-20T04:30:31+00:00">
+    <TestResults>
         <TestResult url="java2schema/CustomizedMapping/classes/XmlTransient/XmlTransient002.html#testCase0002" status="PASSED" workDirID="1">
             <DescriptionData>
                 <Property name="$root" value="/jck/10/JCK-devtools-10/tests"/>
@@ -368,4 +369,5 @@ public class Handler implements javax.xml.ws.handler.LogicalHandler<LogicalMessa
                 </Section>
             </Sections>
         </TestResult>
-</TestResults>
+    </TestResults>
+</Report>
