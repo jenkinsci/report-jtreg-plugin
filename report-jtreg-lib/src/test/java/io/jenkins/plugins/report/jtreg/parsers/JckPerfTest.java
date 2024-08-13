@@ -6,6 +6,7 @@ import io.jenkins.plugins.report.jtreg.model.Test;
 import io.jenkins.plugins.report.jtreg.model.TestOutput;
 import org.apache.commons.io.input.ReaderInputStream;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -42,9 +43,11 @@ public class JckPerfTest {
         String content;
         XPath xPath = XPathFactory.newInstance().newXPath();
         try {
-            content = (String) xPath.evaluate(xPathExpr, document, XPathConstants.STRING);
+            Object raw =  xPath.evaluate(xPathExpr, document, XPathConstants.NODESET);
+            NodeList rraw = (NodeList) raw;
+            content = "found statuses: " + (rraw.getLength());
         } catch (XPathExpressionException e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
         return content.trim();
     }
