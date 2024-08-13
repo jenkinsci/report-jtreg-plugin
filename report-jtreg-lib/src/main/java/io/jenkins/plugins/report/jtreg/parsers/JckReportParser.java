@@ -49,7 +49,7 @@ public class JckReportParser implements ReportParser {
         return stream;
     }
 
-    @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "We desrve to die")
+    @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "We deserve to die")
     private String suiteName(Path path) {
         String fullName = path.getFileName().toString();
         if (fullName.endsWith(".xml.xz")) {
@@ -74,57 +74,44 @@ public class JckReportParser implements ReportParser {
      * and if it founds ?> it inserts new line
      */
     static class FixingReader extends InputStreamReader {
-        private int evilDone = 0;
-        private int evilAttempted = 0;
 
-        public FixingReader(InputStream in, String charsetName) throws UnsupportedEncodingException {
-            super(in, charsetName);
+        boolean fixed = false;
+        boolean buffered = false;
+        int prevChar = 0;
+
+        public FixingReader(InputStream is, String charsetName) throws UnsupportedEncodingException {
+            super(is, charsetName);
         }
 
-        private int insertNewLine(int read, char[] cbuf, int off, int len) throws IOException {
-            int origRead=read;
-            if (read < 0) {
-                return read;
+        public int read() throws IOException {
+            if (buffered) {
+                buffered = false;
+                return prevChar;
             }
-            for (int x = off + 1; x < off + Math.min(len, read); x++) {
-                if (cbuf[x - 1] == '?' && cbuf[x] == '>') {
-                    System.out.println("Evil found! - " + evilDone + "/" + evilAttempted);
-                    char[] combinedArray = new char[cbuf.length + 1];
-                    System.arraycopy(cbuf, 0, combinedArray, 0, x + 1);
-                    combinedArray[x + 1] = '\n';
-                    System.arraycopy(cbuf, x + 1, combinedArray, x + 2, cbuf.length - x - 1);
-                    len++;
-                    read++;
-                    //now replace original buffer and pray that the last char in it was useless
-                    System.arraycopy(combinedArray, off, cbuf, off, Math.min(len-off, cbuf.length-1));
-                    evilDone++;
-                }
+            int c = super.read();
+            if (!fixed && prevChar == '>') {
+                fixed = true;
+                buffered = true;
+                prevChar = c;
+                return '\n';
             }
-            evilAttempted++;
-            //we really can not return more then needed
-            //so this is working just by accident, as it usually ends in middle of some string
-            return origRead;
-            //return read; //lets see what ahppens when more then wanted is read
+            prevChar = c;
+            return c;
         }
 
-        /**
-         * It seems that this is the only used method during xml parsing. This may change in jdk lifetime.
-         * In that case all tests will probnably fail
-         *
-         * @param cbuf- Destination buffer
-         * @param off   - Offset at which to start storing characters
-         * @param len   - Maximum number of characters to read
-         * @return The number of characters read, or -1 if the end of the stream has been reached
-         * @throws IOException
-         */
-        @Override
         public int read(char[] cbuf, int off, int len) throws IOException {
-            if (evilAttempted < 3 && evilDone < 1) {
-                return insertNewLine(super.read(cbuf, off, len), cbuf, off, len);
-            } else {
-                System.out.println("no evil operations");
-                return super.read(cbuf, off, len);
+            if (prevChar < 0) {
+                return -1;
             }
+            if (len == 0) {
+                return 0;
+            }
+            int c = read();
+            if (c < 0) {
+                return -1;
+            }
+            cbuf[off] = (char) c;
+            return 1;
         }
     }
 
