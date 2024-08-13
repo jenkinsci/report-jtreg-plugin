@@ -51,7 +51,7 @@ public class JckReportParserTest {
         documentBuilderFactory.setNamespaceAware(true);
         try {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/" + xmlFileName), "UTF-8"));
+            BufferedReader reader = new BufferedReader(new JckReportParser.FixingReader(this.getClass().getResourceAsStream("/" + xmlFileName), "UTF-8"));
             reader.readLine();
             return documentBuilder.parse(new ReaderInputStream(reader, StandardCharsets.UTF_8));
         } catch (SAXException | IOException | ParserConfigurationException e) {

@@ -2,13 +2,13 @@ package io.jenkins.plugins.report.jtreg.parsers;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jenkins.plugins.report.jtreg.model.*;
-import org.tukaani.xz.XZInputStream;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -64,8 +64,72 @@ public class JckReportParser implements ReportParser {
         throw new IllegalArgumentException("file name does not end with either .xml or .xml.gz extension: " + fullName);
     }
 
+    /**
+     * Unluckkily JCK generates invalid xml which have invalid header of"
+     * <?xml....?><Report>...
+     * It should be
+     * <?xml....?>
+     * <Report>...
+     * Jdk parser then fails to read it. This parser is fixing first and second buffer,
+     * and if it founds ?> it inserts new line
+     */
+    static class FixingReader extends InputStreamReader {
+        private int evilDone = 0;
+        private int evilAttempted = 0;
+
+        public FixingReader(InputStream in, String charsetName) throws UnsupportedEncodingException {
+            super(in, charsetName);
+        }
+
+        private int insertNewLine(int read, char[] cbuf, int off, int len) throws IOException {
+            int origRead=read;
+            if (read < 0) {
+                return read;
+            }
+            for (int x = off + 1; x < off + Math.min(len, read); x++) {
+                if (cbuf[x - 1] == '?' && cbuf[x] == '>') {
+                    System.out.println("Evil found! - " + evilDone + "/" + evilAttempted);
+                    char[] combinedArray = new char[cbuf.length + 1];
+                    System.arraycopy(cbuf, 0, combinedArray, 0, x + 1);
+                    combinedArray[x + 1] = '\n';
+                    System.arraycopy(cbuf, x + 1, combinedArray, x + 2, cbuf.length - x - 1);
+                    len++;
+                    read++;
+                    //now replace original buffer and pray that the last char in it was useless
+                    System.arraycopy(combinedArray, off, cbuf, off, Math.min(len-off, cbuf.length-1));
+                    evilDone++;
+                }
+            }
+            evilAttempted++;
+            //we really can not return more then needed
+            //so this is working just by accident, as it usually ends in middle of some string
+            return origRead;
+            //return read; //lets see what ahppens when more then wanted is read
+        }
+
+        /**
+         * It seems that this is the only used method during xml parsing. This may change in jdk lifetime.
+         * In that case all tests will probnably fail
+         *
+         * @param cbuf- Destination buffer
+         * @param off   - Offset at which to start storing characters
+         * @param len   - Maximum number of characters to read
+         * @return The number of characters read, or -1 if the end of the stream has been reached
+         * @throws IOException
+         */
+        @Override
+        public int read(char[] cbuf, int off, int len) throws IOException {
+            if (evilAttempted < 3 && evilDone < 1) {
+                return insertNewLine(super.read(cbuf, off, len), cbuf, off, len);
+            } else {
+                System.out.println("no evil operations");
+                return super.read(cbuf, off, len);
+            }
+        }
+    }
+
     ReportFull parseReport(InputStream reportStream) throws Exception {
-        try (Reader reader = new InputStreamReader(reportStream, "UTF-8")) {
+        try (Reader reader = new FixingReader(reportStream, "UTF-8")) {
             ReportFull report = parseReport(reader);
             return report;
         }
