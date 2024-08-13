@@ -369,11 +369,11 @@ public class JckReportParserTest {
     }
 
     private String getExecStatusExpr(String testUrl) {
-        return "/TestResults/TestResult[@url='" + testUrl + "']/ResultProperties/Property[@name='execStatus']/@value";
+        return "/Report/TestResults/TestResult[@url='" + testUrl + "']/ResultProperties/Property[@name='execStatus']/@value";
     }
 
     private String getResultOutputExpr(String testUrl, String sectionTitle, String outputTitle) {
-        return "/TestResults/TestResult[@url='" + testUrl + "']/Sections/Section[@title='" + sectionTitle + "']/Output[@title='" + outputTitle + "']/text()";
+        return "/Report/TestResults/TestResult[@url='" + testUrl + "']/Sections/Section[@title='" + sectionTitle + "']/Output[@title='" + outputTitle + "']/text()";
     }
 
     private TestOutput createTestOutput(Document document, String testUrl, String title, String outputType) {
