@@ -55,7 +55,7 @@ public class JckReportParserTest {
             reader.readLine();
             return documentBuilder.parse(new ReaderInputStream(reader, StandardCharsets.UTF_8));
         } catch (SAXException | IOException | ParserConfigurationException e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -65,7 +65,7 @@ public class JckReportParserTest {
         try {
             content = (String) xPath.evaluate(xPathExpr, document, XPathConstants.STRING);
         } catch (XPathExpressionException e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
         return content.trim();
     }
