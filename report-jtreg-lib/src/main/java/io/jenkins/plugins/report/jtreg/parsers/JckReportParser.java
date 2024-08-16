@@ -91,7 +91,7 @@ public class JckReportParser implements ReportParser {
         private boolean fixed = false;
         private boolean buffered = false;
         private int prevChar = 0;
-        //private int maxCharsToReadInBadMode = 10000;
+        private int maxCharsToReadInBadMode = 10000;
 
         public FixingReader(InputStream is, String charsetName) throws UnsupportedEncodingException {
             super(is, charsetName);
@@ -114,11 +114,10 @@ public class JckReportParser implements ReportParser {
         }
 
         public int read(char[] cbuf, int off, int len) throws IOException {
-            //if (maxCharsToReadInBadMode <= 0) {
-            //    return super.read(cbuf, off, len);
-            //} else {
-            //    maxCharsToReadInBadMode--;
-            {
+            if (maxCharsToReadInBadMode <= 0) {
+                return super.read(cbuf, off, len);
+            } else {
+                maxCharsToReadInBadMode--;
                 if (prevChar < 0) {
                     return -1;
                 }
