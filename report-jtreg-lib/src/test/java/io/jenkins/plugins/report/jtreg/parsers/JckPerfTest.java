@@ -14,22 +14,77 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
+import io.jenkins.plugins.report.jtreg.model.Suite;
+
 
 public class JckPerfTest {
 
+    public static final String BIG_OLD_BROKEN_XML_XZ = "big-old-broken.xml.xz";
+    public static final String BIG_NEW_FIXED_XML_XZ="big-new-fixed.xml.xz";
+
     @org.junit.Test
-    public void xpathSpeedTest() {
-        //Document document = createDocument("big-new-fixed.xml.xz");
-        Document document = createDocument("big-old-broken.xml.xz");
-        int statuses = getTSatuses("//Report/TestResults/TestResult/@status", document);
-        Assert.assertTrue(statuses > 64700);
+    public void xpathSpeedTestOldBroken() {
+        xpathSpeedTest(BIG_OLD_BROKEN_XML_XZ);
     }
 
-    private int getTSatuses(String xPathExpr, Document document) {
+    @org.junit.Test
+    public void xpathSpeedTestNewFixed() {
+        xpathSpeedTest(BIG_NEW_FIXED_XML_XZ);
+    }
+
+    @org.junit.Test
+    public void ourSuiteSpeedTestOldBroken() {
+        ourSuiteSpeedTest(BIG_OLD_BROKEN_XML_XZ);
+    }
+
+    @org.junit.Test
+    public void ourSuiteSpeedTestNewFixed() {
+        ourSuiteSpeedTest(BIG_NEW_FIXED_XML_XZ);
+    }
+
+    private void xpathSpeedTest(String file) {
+        long duration1 = measureXpath(file, false);
+        long duration2 = measureXpath(file, true);
+        Assert.assertTrue(
+                "Is performance of fixstream - " + (duration2 / 1000) + ", not twice as worse as normal - " + (duration1 / 1000),
+                duration2 < duration1 * 2);
+        System.err.println("Congratulation, our impl is just " + ((float)duration2/(float)duration1) + "x worse thanx to the disc caching");
+    }
+
+    private long measureXpath(String file, boolean fixStream) {
+        long start = System.currentTimeMillis();
+        Document document = createDocument(file, fixStream);
+        int statuses = getTSatuses("//Report/TestResults/TestResult/@status", document);
+        long duration = System.currentTimeMillis() - start;
+        Assert.assertTrue(statuses > 64700);
+        return duration;
+    }
+
+    private static long measureOurSuite(String file, boolean fixing) {
+        long start1 = System.currentTimeMillis();
+        JckReportParser jck1 = new JckReportParser(fixing);
+        Suite report1 = jck1.parsePath(new File(System.getProperty("user.dir") + "/src/test/resources/"+file).toPath());
+        int tests1 = report1.getReport().getTestsTotal();
+        long duration1 = System.currentTimeMillis() - start1;
+        Assert.assertTrue(tests1 > 64700);
+        return duration1;
+    }
+
+    private static void ourSuiteSpeedTest(String file) {
+        long duration1 = measureOurSuite(file, false);
+        long duration2 = measureOurSuite(file, true);
+        Assert.assertTrue(
+                "Is performance of fixstream - " + (duration2 / 1000) + ", not twice as worse as normal - " + (duration1 / 1000),
+                duration2 < duration1 * 2);
+        System.err.println("Congratulation, our impl is just " + ((float)duration2/(float)duration1) + "x worse thanx to the disc caching");
+    }
+
+    private static int getTSatuses(String xPathExpr, Document document) {
         String content;
         XPath xPath = XPathFactory.newInstance().newXPath();
         try {
@@ -40,13 +95,21 @@ public class JckPerfTest {
             throw new RuntimeException(e);
         }
     }
-        private Document createDocument(String xmlFileName) {
+
+    private Document createDocument(String xmlFileName, boolean fixStream) {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
         try {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            //BufferedReader reader = new BufferedReader(new JckReportParser.FixingReader(new  org.tukaani.xz.XZInputStream(this.getClass().getResourceAsStream("/" + xmlFileName)), "UTF-8"));
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new  org.tukaani.xz.XZInputStream(this.getClass().getResourceAsStream("/" + xmlFileName)), "UTF-8"));
+            BufferedReader reader;
+            if (fixStream) {
+                reader = new BufferedReader(new JckReportParser.FixingReader(
+                        new org.tukaani.xz.XZInputStream(this.getClass().getResourceAsStream("/" + xmlFileName)), "UTF-8"));
+            } else {
+                reader = new BufferedReader(
+                        new InputStreamReader(new org.tukaani.xz.XZInputStream(this.getClass().getResourceAsStream("/" + xmlFileName)),
+                                "UTF-8"));
+            }
             return documentBuilder.parse(new ReaderInputStream(reader, StandardCharsets.UTF_8));
         } catch (SAXException | IOException | ParserConfigurationException e) {
             throw new RuntimeException(e);

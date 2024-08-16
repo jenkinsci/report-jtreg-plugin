@@ -27,6 +27,19 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 public class JckReportParser implements ReportParser {
+
+    private final boolean fixing;
+
+    public JckReportParser() {
+        super();
+        fixing = true;
+    }
+
+    public JckReportParser(boolean fixing) {
+        super();
+        this.fixing = fixing;
+    }
+
     @Override
     public Suite parsePath(Path path) {
         try (InputStream in = streamPath(path)) {
@@ -75,9 +88,10 @@ public class JckReportParser implements ReportParser {
      */
     static class FixingReader extends InputStreamReader {
 
-        boolean fixed = false;
-        boolean buffered = false;
-        int prevChar = 0;
+        private boolean fixed = false;
+        private boolean buffered = false;
+        private int prevChar = 0;
+        //private int maxCharsToReadInBadMode = 10000;
 
         public FixingReader(InputStream is, String charsetName) throws UnsupportedEncodingException {
             super(is, charsetName);
@@ -100,25 +114,42 @@ public class JckReportParser implements ReportParser {
         }
 
         public int read(char[] cbuf, int off, int len) throws IOException {
-            if (prevChar < 0) {
-                return -1;
+            //if (maxCharsToReadInBadMode <= 0) {
+            //    return super.read(cbuf, off, len);
+            //} else {
+            //    maxCharsToReadInBadMode--;
+            {
+                if (prevChar < 0) {
+                    return -1;
+                }
+                if (len == 0) {
+                    return 0;
+                }
+                int c = read();
+                if (c < 0) {
+                    return -1;
+                }
+                cbuf[off] = (char) c;
+                return 1;
             }
-            if (len == 0) {
-                return 0;
-            }
-            int c = read();
-            if (c < 0) {
-                return -1;
-            }
-            cbuf[off] = (char) c;
-            return 1;
         }
     }
 
     ReportFull parseReport(InputStream reportStream) throws Exception {
-        try (Reader reader = new FixingReader(reportStream, "UTF-8")) {
-            ReportFull report = parseReport(reader);
-            return report;
+        return parseReport(reportStream, fixing);
+    }
+
+    private ReportFull parseReport(InputStream reportStream, boolean fix) throws Exception {
+        if (fixing) {
+            try (Reader reader = new FixingReader(reportStream, "UTF-8")) {
+                ReportFull report = parseReport(reader);
+                return report;
+            }
+        } else {
+            try (Reader reader = new InputStreamReader(reportStream, "UTF-8")) {
+                ReportFull report = parseReport(reader);
+                return report;
+            }
         }
     }
 
