@@ -23,8 +23,8 @@ public class JckPerfTest {
 
     @org.junit.Test
     public void xpathSpeedTest() {
-        //Document document = createDocument("big-new-fixed.xz");
-        Document document = createDocument("big-old-broken.xz");
+        //Document document = createDocument("big-new-fixed.xml.xz");
+        Document document = createDocument("big-old-broken.xml.xz");
         int statuses = getTSatuses("//Report/TestResults/TestResult/@status", document);
         Assert.assertTrue(statuses > 64700);
     }
