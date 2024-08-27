@@ -88,6 +88,20 @@
                 however, these links can lead to any tool, not just the comparator.
             </p>
             <p>
+                <b>Examples:</b>
+                <ul>
+                    <li>
+                        Track a failed test with the list tool
+                        <ul>
+                            <li><i>Link label:</i> track</li>
+                            <li><i>Base tool page:</i> list.html?=</li>
+                            <li><i>Spliterator:</i> -</li>
+                            <li><i>Tool arguments:</i> <code>-view=all-tests, -output=html, -fill, -track=%{TESTNAME}  %{JOBNAME}  0, -365</code></li>
+                        </ul>
+                    </li>
+                </ul>
+            </p>
+            <p>
                 <i>Each field in the form below has a help button describing what should be filled in.</i>
             </p>
         </div>
