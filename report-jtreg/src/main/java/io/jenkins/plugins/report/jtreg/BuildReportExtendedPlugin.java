@@ -202,27 +202,12 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         }
     }
 
-    private String getTracesUrlStub() {
-        return urlsProvider.getListServer() + "?generated-part=+-view%3Dinfo+++-output%3Dhtml++&custom-part=";//+job+numbers //eg as above;
-    }
-
     public String getCompUrlStub() {
         return urlsProvider.getCompServer() + "?generated-part=&custom-part=";
-    }
-
-    public String getLinkTraces() {
-        return getTracesUrlStub() + getJob() + "+" + getBuildNumber();
     }
 
     public boolean isDiffTool() {
         return JenkinsReportJckGlobalConfig.isGlobalDiffUrl();
     }
 
-    private String createDiffUrl() {
-        return urlsProvider.getListServer() + "?generated-part=+-view%3Dall-tests+++-output%3Dhtml++-fill++";
-    }
-
-    public String getTrackingUrl(Test test) {
-        return (createDiffUrl()+"&custom-part=-track%3D"+test.getName()+"++"+getJob()+"++0+-365").replaceAll("#", "%23");
-    }
 }
