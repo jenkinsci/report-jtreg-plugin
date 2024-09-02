@@ -94,9 +94,9 @@
                         Track a failed test with the list tool
                         <ul>
                             <li><i>Link label:</i> track</li>
-                            <li><i>Base tool page:</i> list.html?=</li>
-                            <li><i>Spliterator:</i> -</li>
-                            <li><i>Tool arguments:</i> <code>-view=all-tests, -output=html, -fill, -track=%{TESTNAME}  %{JOBNAME}  0, -365</code></li>
+                            <li><i>Base tool page:</i> list.html?generated-part=&amp;custom-part=</li>
+                            <li><i>Spliterator:</i> [.-]</li>
+                            <li><i>Tool arguments:</i> <code>-view=all-tests, -output=html, -fill, -track=%{TESTNAME}, %{JOBNAME}, 0, -50</code></li>
                         </ul>
                     </li>
                 </ul>
