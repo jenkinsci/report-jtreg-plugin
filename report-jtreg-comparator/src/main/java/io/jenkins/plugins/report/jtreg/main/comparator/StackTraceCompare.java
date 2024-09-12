@@ -2,6 +2,7 @@ package io.jenkins.plugins.report.jtreg.main.comparator;
 
 import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
 import io.jenkins.plugins.report.jtreg.ConfigFinder;
+import io.jenkins.plugins.report.jtreg.main.comparator.arguments.ComparatorArgDeclaration;
 import io.jenkins.plugins.report.jtreg.utils.StackTraceTools;
 import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesCell;
 import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesLinkWithTooltip;
@@ -104,7 +105,12 @@ public class StackTraceCompare {
                 String jobId = Builds.getBuildNumber(new File(jobBuilds.get(column-1)));
                 String id = "comapre-" + test + "-" + buildName + "-" + jobId;
                 List<JtregPluginServicesLinkWithTooltip> maybeSeveralComaprisons = new ArrayList<>();
-                maybeSeveralComaprisons.add(new JtregPluginServicesLinkWithTooltip(stringToPut, null, id, createTooltip(test, buildName, jobId, test, column, jobBuilds, id, referenceFile, options.getJenkinsUrl(), options.getDiffUrl()), true));
+                maybeSeveralComaprisons.add(new JtregPluginServicesLinkWithTooltip(
+                        stringToPut,
+                        null,
+                        id,
+                        createTooltip(test, buildName, jobId, test, column, jobBuilds, id, referenceFile, options.getJenkinsUrl(), options.getDiffUrl(), options.getComparatorUrl()),
+                        true));
                 //you can add more links simply by
                 //maybeSeveralComaprisons.add(new JtregPluginServicesLinkWithTooltip("X2", "test", null, getLinksTooltip(), true));
                 //maybeSeveralComaprisons.add(new JtregPluginServicesLinkWithTooltip("X3", "test", null, getLinksTooltip(), true));
@@ -134,7 +140,8 @@ public class StackTraceCompare {
                                                                           String id,
                                                                           String reference,
                                                                           String jenkinsUrl,
-                                                                          String diffUrl) {
+                                                                          String diffUrl,
+                                                                          String comparatorUrl) {
         List<JtregPluginServicesLinkWithTooltip> list = VirtualJobsResults.createTooltip(result, buildName, buildId, column, id, jenkinsUrl);
         int jobBuildsId = column - 1;
         list.add(new JtregPluginServicesLinkWithTooltip("*** comapre links ***"));
@@ -154,8 +161,26 @@ public class StackTraceCompare {
             String jobId2 = Builds.getBuildNumber(new File(jobBuilds.get(x)));
             list.add(new JtregPluginServicesLinkWithTooltip(" * show diff against " + (x + 1), getDiffLink(buildName, buildId, buildName2, jobId2, test, diffUrl), null));
         }
-        list.add(new JtregPluginServicesLinkWithTooltip(" * use this as base (not yet working properly)",
-                "http://copy.this/--set-referential " + buildName + ":" + buildId + "#" + id.replaceAll("#", "%23"),
+
+        List<String> mutableArg = new ArrayList<>(VariantComparator.copyOfArgs);
+        for (int x = 0; x < mutableArg.size(); x++) {
+            mutableArg.set(x,  mutableArg.get(x).replaceAll("#", "%23"));
+            if (mutableArg.get(x).equals(ComparatorArgDeclaration.setReferentialArg.getName())) {
+                mutableArg.remove(x);
+                //Fragile but we expected parser did job correctly
+                mutableArg.remove(x);
+                x = x - 1;
+            }
+
+        }
+        mutableArg.add(ComparatorArgDeclaration.setReferentialArg.getName());
+        mutableArg.add(buildName + ":" + buildId);
+
+        String strArgs = String.join(" ", mutableArg);
+        strArgs = strArgs.replace(' ', '+');
+
+        list.add(new JtregPluginServicesLinkWithTooltip(" * use this as base",
+                comparatorUrl + strArgs,
                 null));
         return list;
     }
