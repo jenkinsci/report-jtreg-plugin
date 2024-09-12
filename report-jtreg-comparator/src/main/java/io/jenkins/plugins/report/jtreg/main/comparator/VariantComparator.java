@@ -6,13 +6,20 @@ import io.jenkins.plugins.report.jtreg.main.comparator.listing.FsDirListing;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class VariantComparator {
+
+    static List<String> copyOfArgs;
+
     public static void main(String[] args) throws Exception {
+        copyOfArgs = Collections.unmodifiableList(Arrays.asList(args));
+
         ComparatorArgParser comparatorArgParser = new ComparatorArgParser(new Options(), args);
         Options options = comparatorArgParser.parseAndGetOptions();
-        
+
         if(options.isDie()) {
             System.out.print(HelpMessage.HELP_MESSAGE);
             return;
