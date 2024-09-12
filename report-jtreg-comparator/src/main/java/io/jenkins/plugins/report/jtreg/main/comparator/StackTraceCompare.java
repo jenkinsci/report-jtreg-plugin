@@ -125,25 +125,34 @@ public class StackTraceCompare {
         options.getFormatter().printTable(table, failedTests.size() + 1, jobBuilds.size() + 1);
     }
 
-    private static List<JtregPluginServicesLinkWithTooltip> createTooltip(String result, String buildName, String buildId, String test, int column, List<String> jobBuilds, String id, String reference, String jenkinsUrl, String comapratorUrl) {
+    private static List<JtregPluginServicesLinkWithTooltip> createTooltip(String result,
+                                                                          String buildName,
+                                                                          String buildId,
+                                                                          String test,
+                                                                          int column,
+                                                                          List<String> jobBuilds,
+                                                                          String id,
+                                                                          String reference,
+                                                                          String jenkinsUrl,
+                                                                          String diffUrl) {
         List<JtregPluginServicesLinkWithTooltip> list = VirtualJobsResults.createTooltip(result, buildName, buildId, column, id, jenkinsUrl);
         int jobBuildsId = column - 1;
         list.add(new JtregPluginServicesLinkWithTooltip("*** comapre links ***"));
         if (reference != null) {
             String buildName2 = Builds.getJobName(new File(reference));
             String jobId2 = Builds.getBuildNumber(new File(reference));
-            list.add(new JtregPluginServicesLinkWithTooltip(" * show diff against base", getDiffLink(buildName, buildId, buildName2, jobId2, test, comapratorUrl), null));
+            list.add(new JtregPluginServicesLinkWithTooltip(" * show diff against base", getDiffLink(buildName, buildId, buildName2, jobId2, test, diffUrl), null));
         }
         for (int x = Math.max(0, jobBuildsId - 3); x < jobBuildsId; x++) {
             String buildName2 = Builds.getJobName(new File(jobBuilds.get(x)));
             String jobId2 = Builds.getBuildNumber(new File(jobBuilds.get(x)));
-            list.add(new JtregPluginServicesLinkWithTooltip(" * show diff against " + (x + 1), getDiffLink(buildName, buildId, buildName2, jobId2, test, comapratorUrl), null));
+            list.add(new JtregPluginServicesLinkWithTooltip(" * show diff against " + (x + 1), getDiffLink(buildName, buildId, buildName2, jobId2, test, diffUrl), null));
         }
-        list.add(new JtregPluginServicesLinkWithTooltip(" * show diff against self", getSelfDiffLink(buildName, buildId, test, comapratorUrl)));
+        list.add(new JtregPluginServicesLinkWithTooltip(" * show diff against self", getSelfDiffLink(buildName, buildId, test, diffUrl)));
         for (int x = jobBuildsId + 1; x < Math.min(jobBuilds.size(), jobBuildsId + 4); x++) {
             String buildName2 = Builds.getJobName(new File(jobBuilds.get(x)));
             String jobId2 = Builds.getBuildNumber(new File(jobBuilds.get(x)));
-            list.add(new JtregPluginServicesLinkWithTooltip(" * show diff against " + (x + 1), getDiffLink(buildName, buildId, buildName2, jobId2, test, comapratorUrl), null));
+            list.add(new JtregPluginServicesLinkWithTooltip(" * show diff against " + (x + 1), getDiffLink(buildName, buildId, buildName2, jobId2, test, diffUrl), null));
         }
         list.add(new JtregPluginServicesLinkWithTooltip(" * use this as base (not yet working properly)",
                 "http://copy.this/--set-referential " + buildName + ":" + buildId + "#" + id.replaceAll("#", "%23"),
