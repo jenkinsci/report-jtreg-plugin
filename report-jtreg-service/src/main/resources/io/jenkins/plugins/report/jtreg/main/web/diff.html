@@ -1,7 +1,8 @@
 <!-- WARNING -->
 <!-- the comments around various outputs are marks fro preprocessor! -->
-<html>
+<html lang="en">
     <head>
+        <title>report-jtreg-plugin</title>
         <meta charset="UTF-8"/>
         <script type="text/javascript">
             function show(id_show) {
@@ -30,11 +31,11 @@
             }
 
             function getSelectValues(select) {
-                var result = [];
-                var options = select && select.options;
-                var opt;
+                let result = [];
+                let options = select && select.options;
+                let opt;
 
-                for (var i = 0, iLen = options.length; i < iLen; i++) {
+                for (let i = 0, iLen = options.length; i < iLen; i++) {
                     opt = options[i];
 
                     if (opt.selected) {
@@ -46,8 +47,8 @@
             }
 
             function deletElementByID() {
-                var elementID = this.id
-                var element = document.getElementById("DIV" + elementID)
+                let elementID = this.id
+                let element = document.getElementById("DIV" + elementID)
                 element.parentNode.removeChild(element);
                 generateComand()
             }
@@ -58,14 +59,14 @@
             }
 
             function addJob() {
-                var id = new Date().getTime();
-                var futureParent = document.getElementById("selectedJobs")
-                var jobs = document.getElementById("jobs");
-                var selJob = jobs.options[jobs.selectedIndex].text;
-                var mainWrapper = document.createElement("div")
-                var title = document.createElement("h5")
-                var input = document.createElement("input")
-                var jobsDiv = document.createElement("div")
+                let id = new Date().getTime();
+                let futureParent = document.getElementById("selectedJobs")
+                let jobs = document.getElementById("jobs");
+                let selJob = jobs.options[jobs.selectedIndex].text;
+                let mainWrapper = document.createElement("div")
+                let title = document.createElement("h5")
+                let input = document.createElement("input")
+                let jobsDiv = document.createElement("div")
 
                 mainWrapper.id = "DIV" + id;
                 title.id = id;
@@ -93,30 +94,30 @@
             }
 
             function generateComand() {
-                var views = getSelectValues(document.getElementById("views"))
-                var genCmd = "";
-                for (var i = 0; i < views.length; i++) {
+                let views = getSelectValues(document.getElementById("views"))
+                let genCmd = "";
+                for (let i = 0; i < views.length; i++) {
                     genCmd = genCmd + " -view=" + views[i] + "  ";
                 }
 
-                var e = document.getElementById("outputs");
+                let e = document.getElementById("outputs");
                 //var value = e.options[e.selectedIndex].value;
-                var text = e.options[e.selectedIndex].text;
+                let text = e.options[e.selectedIndex].text;
                 if (text != "") {
                     genCmd = genCmd + " -output=" + text + "  ";
                 }
 
-                var kfe = document.getElementById("-keep-failed");
+                let kfe = document.getElementById("-keep-failed");
                 if (kfe.checked) {
                     genCmd = genCmd + "-keep-failed  ";
                 }
-                var fe = document.getElementById("-fill");
+                let fe = document.getElementById("-fill");
                 if (fe.checked) {
                     genCmd = genCmd + "-fill  ";
                 }
 
-                var magicJobs = document.getElementsByClassName("dynamicJobs");
-                for (var i = 0; i < magicJobs.length; i++) {
+                let magicJobs = document.getElementsByClassName("dynamicJobs");
+                for (let i = 0; i < magicJobs.length; i++) {
                     genCmd = genCmd + " " + magicJobs[i].value;
                 }
 
@@ -125,15 +126,16 @@
             }
 
             function adjustComand() {
-                var jobs = document.getElementById("jobs");
-                var initValue = document.getElementById("customCmd").value;
-                var selJob = jobs.options[jobs.selectedIndex].text;
+                let jobs = document.getElementById("jobs");
+                let initValue = document.getElementById("customCmd").value;
+                let selJob = jobs.options[jobs.selectedIndex].text;
                 document.getElementById("customCmd").value = initValue + "  " + selJob + "  ";
             }
 
             function firstLoad() {
-                var urlParams = new URLSearchParams(window.location.search);
+                let urlParams = new URLSearchParams(window.location.search);
                 if (urlParams.toString().length > 0) {
+
                     //not yet used
                     //unset all
                     //var elements = document.getElementById("views").options;
@@ -158,20 +160,20 @@
                         if (pair[0] == "generated-part") {
                             continue ; //not yet used
                             //pair[1] must be processed manually
-                            var spaces = new RegExp(" +"); 
-                            var sa = pair[1].split(spaces);
-                            for(var ii=0;ii<sa.length;ii++){
+                            let spaces = new RegExp(" +");
+                            let sa = pair[1].split(spaces);
+                            for(let ii=0; ii<sa.length; ii++){
                                 item=sa[ii]
                                 if(item.trim().length>0) {
                                     console.log(item) //usually something like -param=value or -param or -param
-                                    var custompair = item.split("=");
+                                    let custompair = item.split("=");
                                     if (custompair[0] == "-fill") {
                                         document.getElementById("-fill").checked=true;
                                     } else  if (custompair[0] == "-keep-failed") {
                                         document.getElementById("-keep-failed").checked=true;
                                     } else  if (custompair[0] == "-output") {
-                                        var elements = document.getElementById("outputs").options;
-                                        for(var i = 0; i < elements.length; i++){
+                                        let elements = document.getElementById("outputs").options;
+                                        for(let i = 0; i < elements.length; i++){
                                             if (elements[i].text==custompair[1]) {
                                               elements[i].selected = true;
                                             } else {
@@ -179,8 +181,8 @@
                                             }
                                         }
                                     } else  if (custompair[0] == "-view") {
-                                        var elements = document.getElementById("views").options;
-                                        for(var i = 0; i < elements.length; i++) {
+                                        let elements = document.getElementById("views").options;
+                                        for(let i = 0; i < elements.length; i++) {
                                             if (elements[i].text==custompair[1]) {
                                               elements[i].selected = true;
                                             }
@@ -223,7 +225,7 @@
                 This page is wrapper around that  anyway.
             </p>
             <p>
-            <pre style="height: 300;overflow:auto;">
+            <pre style="height: 300; overflow:auto;">
 <!--help-->
 note:
     --path path_to_the_jenkins_jobs_directory is already preset, no need to  set it
@@ -254,4 +256,4 @@ examples:
         </body>
         </html>
         -->
-
+            <!-- do not close the div and pre - they are really appended -->
