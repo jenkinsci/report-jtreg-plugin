@@ -109,7 +109,17 @@ public class StackTraceCompare {
                         stringToPut,
                         null,
                         id,
-                        createTooltip(test, buildName, jobId, test, column, jobBuilds, id, referenceFile, options.getJenkinsUrl(), options.getDiffUrl(), options.getComparatorUrl()),
+                        createTooltip(test,
+                                buildName,
+                                jobId,
+                                test,
+                                column,
+                                jobBuilds,
+                                id,
+                                referenceFile,
+                                options.getJenkinsUrl(),
+                                options.getDiffUrl(),
+                                options.getComparatorUrl()),
                         true));
                 //you can add more links simply by
                 //maybeSeveralComaprisons.add(new JtregPluginServicesLinkWithTooltip("X2", "test", null, getLinksTooltip(), true));
