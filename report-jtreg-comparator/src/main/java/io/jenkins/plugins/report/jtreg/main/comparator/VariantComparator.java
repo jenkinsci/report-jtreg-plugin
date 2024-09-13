@@ -15,6 +15,7 @@ public class VariantComparator {
     static List<String> copyOfArgs;
 
     public static void main(String[] args) throws Exception {
+        //IF we do not make a copy of original arguments, we would need to reconstruct the it back from (generic)options and from ComapratorOption, which would be a lot of work
         copyOfArgs = Collections.unmodifiableList(Arrays.asList(args));
 
         ComparatorArgParser comparatorArgParser = new ComparatorArgParser(new Options(), args);
