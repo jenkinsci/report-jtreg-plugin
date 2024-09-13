@@ -172,17 +172,7 @@ public class StackTraceCompare {
             list.add(new JtregPluginServicesLinkWithTooltip(" * show diff against " + (x + 1), getDiffLink(buildName, buildId, buildName2, jobId2, test, diffUrl), null));
         }
 
-        List<String> mutableArg = new ArrayList<>(VariantComparator.copyOfArgs);
-        for (int x = 0; x < mutableArg.size(); x++) {
-            mutableArg.set(x,  mutableArg.get(x).replaceAll("#", "%23"));
-            if (mutableArg.get(x).equals(ComparatorArgDeclaration.setReferentialArg.getName())) {
-                mutableArg.remove(x);
-                //Fragile but we expected parser did job correctly
-                mutableArg.remove(x);
-                x = x - 1;
-            }
-
-        }
+        List<String> mutableArg = removeReferentialFromArgs(VariantComparator.copyOfArgs);
         mutableArg.add(ComparatorArgDeclaration.setReferentialArg.getName());
         mutableArg.add(buildName + ":" + buildId);
 
@@ -194,6 +184,22 @@ public class StackTraceCompare {
                 null));
         return list;
     }
+
+    static List<String> removeReferentialFromArgs(List<String> originalArgs) {
+        List<String> mutableArg = new ArrayList<>(originalArgs);
+        for (int x = 0; x < mutableArg.size(); x++) {
+            mutableArg.set(x,  mutableArg.get(x).replaceAll("#", "%23"));
+            if (mutableArg.get(x).equals(ComparatorArgDeclaration.setReferentialArg.getName())) {
+                mutableArg.remove(x);
+                //Fragile but we expected parser did job correctly
+                mutableArg.remove(x);
+                x = x - 1;
+            }
+
+        }
+        return mutableArg;
+    }
+
 
     private static String getSelfDiffLink(String buildName, String buildId, String test, String comapratorUrl) {
         return getDiffLink(buildName, buildId, buildName, buildId, test, comapratorUrl);
