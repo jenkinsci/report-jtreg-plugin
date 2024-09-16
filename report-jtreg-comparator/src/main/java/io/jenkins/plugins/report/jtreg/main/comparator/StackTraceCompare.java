@@ -172,17 +172,22 @@ public class StackTraceCompare {
             list.add(new JtregPluginServicesLinkWithTooltip(" * show diff against " + (x + 1), getDiffLink(buildName, buildId, buildName2, jobId2, test, diffUrl), null));
         }
 
-        List<String> mutableArg = removeReferentialFromArgs(VariantComparator.copyOfArgs);
-        mutableArg.add(ComparatorArgDeclaration.setReferentialArg.getName());
-        mutableArg.add(buildName + ":" + buildId);
-
-        String strArgs = String.join(" ", mutableArg);
-        strArgs = strArgs.replace(' ', '+');
+        String strArgs = addSetReferentialSwitch(buildName, buildId, VariantComparator.copyOfArgs);
 
         list.add(new JtregPluginServicesLinkWithTooltip(" * use this as base",
                 comparatorUrl + strArgs,
                 null));
         return list;
+    }
+
+    static String addSetReferentialSwitch(String buildName, String buildId, List<String> list) {
+        List<String> mutableArg = removeReferentialFromArgs(list);
+        mutableArg.add(ComparatorArgDeclaration.setReferentialArg.getName());
+        mutableArg.add(buildName + ":" + buildId);
+
+        String strArgs = String.join(" ", mutableArg);
+        strArgs = strArgs.replace(' ', '+');
+        return strArgs;
     }
 
     static List<String> removeReferentialFromArgs(List<String> originalArgs) {
