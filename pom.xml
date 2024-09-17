@@ -26,7 +26,7 @@
     </modules>
 
     <properties>
-        <revision>4.7</revision>
+        <revision>4.8</revision>
         <changelist>-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/report-jtreg</gitHubRepo>
         <chartjs.version>4.2.1.5</chartjs.version>
@@ -34,11 +34,6 @@
     </properties>
 
     <developers>
-        <developer>
-            <id>baiduzhyi.devel</id>
-            <name>Stanislav Baiduzhyi</name>
-            <email>baiduzhyi.devel@gmail.com</email>
-        </developer>
         <developer>
             <id>jvanek</id>
             <name>Jiri Vanek</name>
