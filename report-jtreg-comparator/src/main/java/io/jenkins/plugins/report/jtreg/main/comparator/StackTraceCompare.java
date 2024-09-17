@@ -175,7 +175,7 @@ public class StackTraceCompare {
         String strArgs = addSetReferentialSwitch(buildName, buildId, VariantComparator.copyOfArgs);
 
         list.add(new JtregPluginServicesLinkWithTooltip(" * use this as base",
-                comparatorUrl + strArgs,
+                comparatorUrl + "?generated-part=&custom-part=" + strArgs,
                 null));
         return list;
     }
