@@ -6,10 +6,10 @@
         </f:entry>
     </f:section>
 
-    <f:section title="Comparator Links">
+    <f:section title="Custom Tool Links (on top of a the report page)">
         <div>
             <p>
-                This section is used for generating automatic links to the comparator tool with prefilled arguments.
+                This section is used for generating automatic links to the tools with prefilled arguments.
                 These links will be shown on top of any jtreg report page that matches the set criteria.
                 You can set those links to basically anything you wish, an example of this can be a link that automatically
                 compares given job with its variants on different operating systems or architectures.
@@ -27,6 +27,18 @@
             <f:repeatable field="links">
                 <f:entry field="label" title="Link label"
                          help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/label">
+                    <f:textbox />
+                </f:entry>
+                <f:entry title="Preset tools" field="basePage"
+                         help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/presetTools">
+                    <select name="basePage">
+                        <option value="comparator" selected="${instance.BasePage.equals('comparator') ? 'true' : null}">Comparator</option>
+                        <option value="diff" selected="${instance.BasePage.equals('diff') ? 'true' : null}">Diff</option>
+                        <option value="list" selected="${instance.BasePage.equals('list') ? 'true' : null}">List</option>
+                    </select>
+                </f:entry>
+                <f:entry title="Custom tool endpoint (OVERWRITES PRESET TOOLS, IF NOT EMPTY!)" field="basePageCustom"
+                         help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/customEndpoint">
                     <f:textbox />
                 </f:entry>
                 <f:entry field="spliterator" title="A spliterator to split the job names"
@@ -79,7 +91,7 @@
         </f:repeatable>
     </f:section>
 
-    <f:section title="Failed Test Links">
+    <f:section title="Failed Test Links (next to failed tests)">
         <div>
             <p>
                 This section is used for generating automatic links which will be shown next to all failed tests on the jtreg report page.
@@ -87,8 +99,8 @@
                 (there is a specific macro, <code>%{TESTNAME}</code> for getting a name of the test),
                 however, these links can lead to any tool, not just the comparator.
             </p>
-            <p>
-                <b>Examples:</b>
+            <details>
+                <summary><b>Examples:</b></summary>
                 <ul>
                     <li>
                         Track a failed test with the list tool
@@ -100,7 +112,7 @@
                         </ul>
                     </li>
                 </ul>
-            </p>
+            </details>
             <p>
                 <i>Each field in the form below has a help button describing what should be filled in.</i>
             </p>
@@ -110,8 +122,16 @@
                      help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/failedTestLinkLabel">
                 <f:textbox />
             </f:entry>
-            <f:entry field="basePage" title="Base tool page"
-                     help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/failedTestLinkUrl">
+            <f:entry title="Preset tools" field="basePage"
+                     help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/presetTools">
+                <select name="basePage">
+                    <option value="comparator" selected="${instance.BasePage.equals('comparator') ? 'true' : null}">Comparator</option>
+                    <option value="diff" selected="${instance.BasePage.equals('diff') ? 'true' : null}">Diff</option>
+                    <option value="list" selected="${instance.BasePage.equals('list') ? 'true' : null}">List</option>
+                </select>
+            </f:entry>
+            <f:entry title="Custom tool endpoint (OVERWRITES PRESET TOOLS, IF NOT EMPTY!)" field="basePageCustom"
+                     help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/customEndpoint">
                 <f:textbox />
             </f:entry>
             <f:entry field="spliterator" title="A spliterator to split the job names"

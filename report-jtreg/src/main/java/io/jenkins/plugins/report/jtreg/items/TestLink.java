@@ -9,12 +9,15 @@ import org.kohsuke.stapler.DataBoundSetter;
 public class TestLink extends AbstractDescribableImpl<TestLink> {
     private String label;
     private String basePage;
+    private String basePageCustom;
     private String spliterator;
     private String arguments;
 
     @DataBoundConstructor
-    public TestLink(String label, String spliterator, String arguments) {
+    public TestLink(String label, String basePage, String basePageCustom, String spliterator, String arguments) {
         this.label = label;
+        this.basePage = basePage;
+        this.basePageCustom = basePageCustom;
         this.spliterator = spliterator;
         this.arguments = arguments;
     }
@@ -35,6 +38,15 @@ public class TestLink extends AbstractDescribableImpl<TestLink> {
     @DataBoundSetter
     public void setBasePage(String basePage) {
         this.basePage = basePage;
+    }
+
+    public String getBasePageCustom() {
+        return basePageCustom;
+    }
+
+    @DataBoundSetter
+    public void setBasePageCustom(String basePageCustom) {
+        this.basePageCustom = basePageCustom;
     }
 
     public String getSpliterator() {
