@@ -36,34 +36,34 @@ public class BuildReportExtendedPluginTest {
                 });
 
         // arguments without any wildcard
-        LinkToComparator ltc = new LinkToComparator("", "[.-]", "--arguments\n--without\n--any\n--wildcard");
-        String output = bre.createComparatorLinkUrl("", ltc, false);
-        Assert.assertEquals("--arguments+--without+--any+--wildcard+", output);
+        LinkToComparator ltc = new LinkToComparator("", "comparator", "", "[.-]", "--arguments\n--without\n--any\n--wildcard");
+        String output = bre.createComparatorLinkUrl(ltc, false);
+        Assert.assertEquals("http://mylocal/comp.html?generated-part=&custom-part=--arguments+--without+--any+--wildcard+", output);
 
         // arguments with valid wildcards
-        ltc = new LinkToComparator("", "[.-]", "--something-%{1}-something\n--%{N-2}\n--%{SPLIT}");
-        output = bre.createComparatorLinkUrl("", ltc, false);
-        Assert.assertEquals("--something-tck-something+--lnxagent+--%5B.-%5D+", output);
+        ltc = new LinkToComparator("", "comparator", "", "[.-]", "--something-%{1}-something\n--%{N-2}\n--%{SPLIT}");
+        output = bre.createComparatorLinkUrl(ltc, false);
+        Assert.assertEquals("http://mylocal/comp.html?generated-part=&custom-part=--something-tck-something+--lnxagent+--%5B.-%5D+", output);
 
         // arguments with invalid wildcards (out of range of the job name)
-        ltc = new LinkToComparator("", "[.-]", "--%{20}");
-        output = bre.createComparatorLinkUrl("", ltc, false);
-        Assert.assertEquals("The+number+given+is+out+of+range+of+the+job+name%21+", output);
+        ltc = new LinkToComparator("", "comparator", "", "[.-]", "--%{20}");
+        output = bre.createComparatorLinkUrl(ltc, false);
+        Assert.assertEquals("http://mylocal/comp.html?generated-part=&custom-part=The+number+given+is+out+of+range+of+the+job+name%21+", output);
 
-        ltc = new LinkToComparator("", "[.-]", "--%{-1}");
-        output = bre.createComparatorLinkUrl("", ltc, false);
-        Assert.assertEquals("The+number+given+is+out+of+range+of+the+job+name%21+", output);
+        ltc = new LinkToComparator("", "comparator", "", "[.-]", "--%{-1}");
+        output = bre.createComparatorLinkUrl(ltc, false);
+        Assert.assertEquals("http://mylocal/comp.html?generated-part=&custom-part=The+number+given+is+out+of+range+of+the+job+name%21+", output);
 
-        ltc = new LinkToComparator("", "[.-]", "--%{N-20}");
-        output = bre.createComparatorLinkUrl("", ltc, false);
-        Assert.assertEquals("The+number+given+is+out+of+range+of+the+job+name%21+", output);
+        ltc = new LinkToComparator("", "comparator", "", "[.-]", "--%{N-20}");
+        output = bre.createComparatorLinkUrl(ltc, false);
+        Assert.assertEquals("http://mylocal/comp.html?generated-part=&custom-part=The+number+given+is+out+of+range+of+the+job+name%21+", output);
 
-        ltc = new LinkToComparator("", "[.-]", "--%{N}");
-        output = bre.createComparatorLinkUrl("", ltc, false);
-        Assert.assertEquals("The+number+given+is+out+of+range+of+the+job+name%21+", output);
+        ltc = new LinkToComparator("", "comparator", "", "[.-]", "--%{N}");
+        output = bre.createComparatorLinkUrl(ltc, false);
+        Assert.assertEquals("http://mylocal/comp.html?generated-part=&custom-part=The+number+given+is+out+of+range+of+the+job+name%21+", output);
 
-        ltc = new LinkToComparator("", "[.-]", "--%{N+5}");
-        output = bre.createComparatorLinkUrl("", ltc, false);
-        Assert.assertEquals("The+number+given+is+out+of+range+of+the+job+name%21+", output);
+        ltc = new LinkToComparator("", "comparator", "", "[.-]", "--%{N+5}");
+        output = bre.createComparatorLinkUrl(ltc, false);
+        Assert.assertEquals("http://mylocal/comp.html?generated-part=&custom-part=The+number+given+is+out+of+range+of+the+job+name%21+", output);
     }
 }

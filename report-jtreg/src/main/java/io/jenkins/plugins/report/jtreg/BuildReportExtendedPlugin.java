@@ -60,7 +60,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
         return matchedComparatorLinksGroup;
     }
 
-    public String createComparatorLinkUrl(String comparatorUrl, LinkToComparator ltc, boolean configArgs) {
+    public String createComparatorLinkUrl(LinkToComparator ltc, boolean configArgs) {
         StringBuilder url = new StringBuilder();
 
         for (String arg : ltc.getComparatorArguments().split("(\\n|\\r\\n)")) {
@@ -75,7 +75,7 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
             }
         }
 
-        return comparatorUrl + URLEncoder.encode(url.toString(), StandardCharsets.UTF_8);
+        return createBaseUrl(ltc.getBasePage(), ltc.getBasePageCustom()) + URLEncoder.encode(url.toString(), StandardCharsets.UTF_8);
     }
 
     private String parseQueryToText(String spliterator, String query, String testName) {
@@ -183,31 +183,38 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
             url.append(" ");
         }
 
-        return JenkinsReportJckGlobalConfig.getGlobalDiffUrl() + "/" + testLink.getBasePage() + URLEncoder.encode(url.toString(), StandardCharsets.UTF_8);
-    }
-
-    private String getDiffUrlStub(){
-        return urlsProvider.getListServer() + "?generated-part=+-view%3Ddiff-list+++-view%3Ddiff-summary+++-view%3Ddiff-summary-suites+++-view%3Dinfo-problems+++-view%3Dinfo-summary+++-output%3Dhtml++-fill++&custom-part=";//+job+numbers //eg as above;
-    }
-
-    public String getLinkDiff() {
-        return getDiffUrlStub() + getJob() + "+" + getBuildNumber() + "+" + lowestBuildForFil();
-    }
-
-    private int lowestBuildForFil() {
-        if (getBuildNumber() > 10) {
-            return getBuildNumber() - 10;
-        } else {
-            return 1;
-        }
-    }
-
-    public String getCompUrlStub() {
-        return urlsProvider.getCompServer() + "?generated-part=&custom-part=";
+        return createBaseUrl(testLink.getBasePage(), testLink.getBasePageCustom()) + URLEncoder.encode(url.toString(), StandardCharsets.UTF_8);
     }
 
     public boolean isDiffTool() {
         return JenkinsReportJckGlobalConfig.isGlobalDiffUrl();
+    }
+
+    private String createBaseUrl(String presetTool, String customUrl) {
+        if (!customUrl.isEmpty()) {
+            return JenkinsReportJckGlobalConfig.getGlobalDiffUrl() + "/" + customUrl;
+        } else {
+            String url = "";
+
+            switch (presetTool) {
+                case "comparator":
+                    url = urlsProvider.getCompServer();
+                    break;
+
+                case "diff":
+                    url = urlsProvider.getDiffServer();
+                    break;
+
+                case "list":
+                    url = urlsProvider.getListServer();
+                    break;
+
+                default:
+                    throw new RuntimeException("Unknown tool selected in the Jenkins config.");
+            }
+
+            return url + "?generated-part=&custom-part=";
+        }
     }
 
 }
