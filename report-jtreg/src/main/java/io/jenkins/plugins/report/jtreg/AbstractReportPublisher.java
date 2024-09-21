@@ -83,6 +83,7 @@ abstract public class AbstractReportPublisher extends Recorder {
         }
         if (report.stream().anyMatch(
                 s -> s.getReport() != null && (s.getReport().getTestsTotal() <= 0 || s.getReport().getTestsTotal() == s.getReport().getTestsNotRun()))) {
+            System.err.println("no file byu glob, no jtr.xml file in tar.xz, wrong xml.xz fot jck or no test runs");
             build.setResult(Result.FAILURE);
         }
         storeFailuresSummary(report, new File(build.getRootDir(), prefix() + "-" + Constants.REPORT_JSON));
