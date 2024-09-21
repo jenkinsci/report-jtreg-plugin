@@ -29,8 +29,8 @@ The xml reports you recieve, should be post processed a bit, and compressed. Zip
 ![suites](https://user-images.githubusercontent.com/2904395/43016538-6c5141aa-8c53-11e8-8b6f-2eb45ebcaf01.png)
 The level of granularity is up to you. The tar.gz archvies are later cached as two relatively small json files - one with listing for diff, one with stack traces of failures.  Latest cache is the properties file with total/run/passed/failed/error/skipp keys to be reused via https://github.com/judovana/jenkins-report-generic-chart-column (and used for quicker renderig of graphs of this plugin itself)
 
-Note, that jtreg parser is reading for jtr.xml files, not just .xml, because we hit issue that ntot all xml files in results archives are desired. Thus, if you are using this to parse junit.xml compatible files, renam,e them to jtr.xml. TODO, we really should make this configurable.
-
+**Note, that jtreg parser is reading for jtr.xml files, not just .xml, because we hit issue that ntot all xml files in results archives are desired. Thus, if you are using this to parse junit.xml compatible files, renam,e them to jtr.xml. TODO, we really should make this configurable.
+**
 ## Job run details
 
 ### run page
