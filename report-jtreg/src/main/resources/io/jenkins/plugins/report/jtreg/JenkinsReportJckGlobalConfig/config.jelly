@@ -14,6 +14,249 @@
                 You can set those links to basically anything you wish, an example of this can be a link that automatically
                 compares given job with its variants on different operating systems or architectures.
             </p>
+            <details>
+                <summary><b>Examples:</b></summary>
+                <details>
+                    <summary>Jobs with 15 elements in their name:</summary>
+                    <p><b>Regex for matching jobs: </b><code>^([a-zA-Z0-9_~]+[.-]){14}[a-zA-Z0-9_~]+$</code></p>
+                    <p><i>You can leave the </i><code>--nvr ...</code><i> arguments, if your infrastructure does not have it.</i></p>
+
+                    <ul>
+                        <li>
+                            A link to compare the job with its variant on different operating systems
+                            <ul>
+                                <li><i>Link label:</i> Compare OSs</li>
+                                <li><i>Preset tools:</i> Comparator</li>
+                                <li><i>Custom tool endpoint:</i></li>
+                                <li><i>A spliterator to split the job names:</i> [.-]</li>
+                                <li><i>Tool arguments (one on each line):</i>
+                                    <ul>
+                                        <li><code>--compare</code></li>
+                                        <li><code>--history 5</code></li>
+                                        <li><code>--nvr %{nvr}</code></li>
+                                        <li><code>--formatting html</code></li>
+                                        <li><code>--regex %{1}%{S}%{2}%{S}%{3}%{S}.*%{S}%{5}%{S}%{6}%{S}%{7}%{S}.*%{S}%{9}%{S}%{10}%{S}%{11}%{S}%{12}%{S}%{13}%{S}%{14}%{S}%{15}</code></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            A link to compare the job with its variant on different architectures (x86/ARM/...)
+                            <ul>
+                                <li><i>Link label:</i> Compare architectures</li>
+                                <li><i>Preset tools:</i> Comparator</li>
+                                <li><i>Custom tool endpoint:</i></li>
+                                <li><i>A spliterator to split the job names:</i> [.-]</li>
+                                <li><i>Tool arguments (one on each line):</i>
+                                    <ul>
+                                        <li><code>--compare</code></li>
+                                        <li><code>--history 5</code></li>
+                                        <li><code>--nvr %{nvr}</code></li>
+                                        <li><code>--formatting html</code></li>
+                                        <li><code>--regex %{1}%{S}%{2}%{S}%{3}%{S}%{4}%{S}.*%{S}%{6}%{S}%{7}%{S}%{8}%{S}.*%{S}%{10}%{S}%{11}%{S}%{12}%{S}%{13}%{S}%{14}%{S}%{15}</code></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            A link to compare the job with its variant with different OpenJDK versions
+                            <ul>
+                                <li><i>Link label:</i> Compare versions</li>
+                                <li><i>Preset tools:</i> Comparator</li>
+                                <li><i>Custom tool endpoint:</i></li>
+                                <li><i>A spliterator to split the job names:</i> [.-]</li>
+                                <li><i>Tool arguments (one on each line):</i>
+                                    <ul>
+                                        <li><code>--compare</code></li>
+                                        <li><code>--history 5</code></li>
+                                        <li><code>--nvr %{nvr}</code></li>
+                                        <li><code>--formatting html</code></li>
+                                        <li><code>--regex %{1}%{S}.*%{S}.*%{S}%{4}%{S}%{5}%{S}%{6}%{S}%{7}%{S}%{8}%{S}%{9}%{S}%{10}%{S}%{11}%{S}%{12}%{S}%{13}%{S}%{14}%{S}%{15}</code></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            A link to compare the job with its different variant (other than the ones mentioned above)
+                            <ul>
+                                <li><i>Link label:</i> Compare variants</li>
+                                <li><i>Preset tools:</i> Comparator</li>
+                                <li><i>Custom tool endpoint:</i></li>
+                                <li><i>A spliterator to split the job names:</i> [.-]</li>
+                                <li><i>Tool arguments (one on each line):</i>
+                                    <ul>
+                                        <li><code>--compare</code></li>
+                                        <li><code>--history 3</code></li>
+                                        <li><code>--formatting html</code></li>
+                                        <li><code>--regex %{1}%{S}%{2}%{S}%{3}%{S}%{4}%{S}%{5}%{S}.*%{S}.*%{S}%{8}%{S}%{9}%{S}.*%{S}.*%{S}.*%{S}.*%{S}.*%{S}.*</code></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </details>
+
+                <details>
+                    <summary>Jobs with 16 elements in their name:</summary>
+                    <p><b>Regex for matching jobs: </b><code>^([a-zA-Z0-9_~]+[.-]){15}[a-zA-Z0-9_~]+$</code></p>
+                    <p><i>You can leave the </i><code>--nvr ...</code><i> arguments, if your infrastructure does not have it.</i></p>
+
+                    <ul>
+                        <li>
+                            A link to compare the job with its variant on different operating systems
+                            <ul>
+                                <li><i>Link label:</i> Compare OSs</li>
+                                <li><i>Preset tools:</i> Comparator</li>
+                                <li><i>Custom tool endpoint:</i></li>
+                                <li><i>A spliterator to split the job names:</i> [.-]</li>
+                                <li><i>Tool arguments (one on each line):</i>
+                                    <ul>
+                                        <li><code>--compare</code></li>
+                                        <li><code>--history 5</code></li>
+                                        <li><code>--nvr %{nvr}</code></li>
+                                        <li><code>--formatting html</code></li>
+                                        <li><code>--regex %{1}%{S}%{2}%{S}%{3}%{S}.*%{S}%{5}%{S}%{6}%{S}%{7}%{S}%{8}%{S}.*%{S}%{10}%{S}%{11}%{S}%{12}%{S}%{13}%{S}%{14}%{S}%{15}%{S}%{16}</code></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            A link to compare the job with its variant on different architectures (x86/ARM/...)
+                            <ul>
+                                <li><i>Link label:</i> Compare architectures</li>
+                                <li><i>Preset tools:</i> Comparator</li>
+                                <li><i>Custom tool endpoint:</i></li>
+                                <li><i>A spliterator to split the job names:</i> [.-]</li>
+                                <li><i>Tool arguments (one on each line):</i>
+                                    <ul>
+                                        <li><code>--compare</code></li>
+                                        <li><code>--history 5</code></li>
+                                        <li><code>--nvr %{nvr}</code></li>
+                                        <li><code>--formatting html</code></li>
+                                        <li><code>--regex %{1}%{S}%{2}%{S}%{3}%{S}%{4}%{S}.*%{S}%{6}%{S}%{7}%{S}%{8}%{S}%{9}%{S}.*%{S}%{11}%{S}%{12}%{S}%{13}%{S}%{14}%{S}%{15}%{S}%{16}</code></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            A link to compare the job with its variant with different OpenJDK versions
+                            <ul>
+                                <li><i>Link label:</i> Compare versions</li>
+                                <li><i>Preset tools:</i> Comparator</li>
+                                <li><i>Custom tool endpoint:</i></li>
+                                <li><i>A spliterator to split the job names:</i> [.-]</li>
+                                <li><i>Tool arguments (one on each line):</i>
+                                    <ul>
+                                        <li><code>--compare</code></li>
+                                        <li><code>--history 5</code></li>
+                                        <li><code>--nvr %{nvr}</code></li>
+                                        <li><code>--formatting html</code></li>
+                                        <li><code>--regex %{1}%{S}.*%{S}.*%{S}%{4}%{S}%{5}%{S}%{6}%{S}%{7}%{S}%{8}%{S}%{9}%{S}%{10}%{S}%{11}%{S}%{12}%{S}%{13}%{S}%{14}%{S}%{15}%{S}%{16}</code></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            A link to compare the job with its different variant (other than the ones mentioned above)
+                            <ul>
+                                <li><i>Link label:</i> Compare variants</li>
+                                <li><i>Preset tools:</i> Comparator</li>
+                                <li><i>Custom tool endpoint:</i></li>
+                                <li><i>A spliterator to split the job names:</i> [.-]</li>
+                                <li><i>Tool arguments (one on each line):</i>
+                                    <ul>
+                                        <li><code>--compare</code></li>
+                                        <li><code>--history 3</code></li>
+                                        <li><code>--formatting html</code></li>
+                                        <li><code>--regex %{1}%{S}%{2}%{S}%{3}%{S}%{4}%{S}%{5}%{S}.*%{S}.*%{S}.*%{S}%{9}%{S}%{10}%{S}.*%{S}.*%{S}.*%{S}.*%{S}.*%{S}.*</code></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            A link to check builds of the current job
+                            <ul>
+                                <li><i>Link label:</i> Check builds this</li>
+                                <li><i>Preset tools:</i> Comparator</li>
+                                <li><i>Custom tool endpoint:</i></li>
+                                <li><i>A spliterator to split the job names:</i> [.-]</li>
+                                <li><i>Tool arguments (one on each line):</i>
+                                    <ul>
+                                        <li><code>--virtual</code></li>
+                                        <li><code>--history 3</code></li>
+                                        <li><code>--nvr %{nvr}</code></li>
+                                        <li><code>--formatting html</code></li>
+                                        <li><code>--regex build%{S}%{2}%{S}%{3}%{S}%{4}%{S}%{5}%{S}.*</code></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            A link to check and compare builds of the current job with different operating systems
+                            <ul>
+                                <li><i>Link label:</i> Check builds os</li>
+                                <li><i>Preset tools:</i> Comparator</li>
+                                <li><i>Custom tool endpoint:</i></li>
+                                <li><i>A spliterator to split the job names:</i> [.-]</li>
+                                <li><i>Tool arguments (one on each line):</i>
+                                    <ul>
+                                        <li><code>--virtual</code></li>
+                                        <li><code>--history 3</code></li>
+                                        <li><code>--nvr %{nvr}</code></li>
+                                        <li><code>--formatting html</code></li>
+                                        <li><code>--regex build%{S}%{2}%{S}%{3}%{S}%{4}%{S}[a-zA-Z0-9_~]*%{S}.*</code></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            A link to check and compare builds of the current job with different architectures
+                            <ul>
+                                <li><i>Link label:</i> Check builds arch</li>
+                                <li><i>Preset tools:</i> Comparator</li>
+                                <li><i>Custom tool endpoint:</i></li>
+                                <li><i>A spliterator to split the job names:</i> [.-]</li>
+                                <li><i>Tool arguments (one on each line):</i>
+                                    <ul>
+                                        <li><code>--virtual</code></li>
+                                        <li><code>--history 3</code></li>
+                                        <li><code>--nvr %{nvr}</code></li>
+                                        <li><code>--formatting html</code></li>
+                                        <li><code>--regex build%{S}%{2}%{S}%{3}%{S}[a-zA-Z0-9_~]*%{S}%{5}%{S}.*</code></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            A link to check and compare builds of the current job with all variants
+                            <ul>
+                                <li><i>Link label:</i> Check builds all</li>
+                                <li><i>Preset tools:</i> Comparator</li>
+                                <li><i>Custom tool endpoint:</i></li>
+                                <li><i>A spliterator to split the job names:</i> [.-]</li>
+                                <li><i>Tool arguments (one on each line):</i>
+                                    <ul>
+                                        <li><code>--virtual</code></li>
+                                        <li><code>--history 3</code></li>
+                                        <li><code>--formatting html</code></li>
+                                        <li><code>--regex build%{S}%{2}%{S}%{3}%{S}.*</code></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </details>
+            </details>
             <p>
                 <i>Each field in the form below has a help button describing what should be filled in.</i>
             </p>
@@ -37,7 +280,7 @@
                         <option value="list" selected="${instance.BasePage.equals('list') ? 'true' : null}">List</option>
                     </select>
                 </f:entry>
-                <f:entry title="Custom tool endpoint (OVERWRITES PRESET TOOLS, IF NOT EMPTY!)" field="basePageCustom"
+                <f:entry title="Custom tool endpoint (OVERWRITES 'Preset tools', IF NOT EMPTY!)" field="basePageCustom"
                          help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/customEndpoint">
                     <f:textbox />
                 </f:entry>
@@ -45,7 +288,7 @@
                          help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/spliterator">
                     <f:textbox />
                 </f:entry>
-                <f:entry field="comparatorArguments" title="Comparator tool arguments (one on each line)"
+                <f:entry field="comparatorArguments" title="Tool arguments (one on each line)"
                          help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/arguments">
                     <f:textarea />
                 </f:entry>
@@ -63,6 +306,20 @@
                 very easily. Each of these will generate the arguments into EVERY link specified above. After specifying them,
                 you can also use them as a macro in the arguments field in the <i>comparator links</i> section.
             </p>
+            <details>
+                <summary><b>Examples:</b></summary>
+                <ul>
+                    <li>
+                        Sets a config item looking for <i>NVR</i> in the build config file (needs to be set for the <code>--nvr ...</code> switch to work in other examples)
+                        <ul>
+                            <li><i>Config filename:</i> build.xml</li>
+                            <li><i>The directory with the config file:</i> Build directory</li>
+                            <li><i>Name of the item to find:</i> nvr</li>
+                            <li><i>XPath/JSON query/properties key to find the item in the config file:</i> <code>/build/displayName</code></li>
+                        </ul>
+                    </li>
+                </ul>
+            </details>
             <p>
                 <i>Each field in the form below has a help button describing what should be filled in.</i>
             </p>
@@ -103,12 +360,42 @@
                 <summary><b>Examples:</b></summary>
                 <ul>
                     <li>
-                        Track a failed test with the list tool
+                        Track a specific failed test with the "list" tool
                         <ul>
                             <li><i>Link label:</i> track</li>
-                            <li><i>Base tool page:</i> list.html?generated-part=&amp;custom-part=</li>
-                            <li><i>Spliterator:</i> [.-]</li>
-                            <li><i>Tool arguments:</i> <code>-view=all-tests, -output=html, -fill, -track=%{TESTNAME}, %{JOBNAME}, 0, -50</code></li>
+                            <li><i>Preset tools:</i> List</li>
+                            <li><i>Custom tool endpoint:</i></li>
+                            <li><i>A spliterator to split the job names:</i> [.-]</li>
+                            <li><i>Tool arguments (one on each line):</i>
+                                <ul>
+                                    <li><code>-view=all-tests</code></li>
+                                    <li><code>-output=html</code></li>
+                                    <li><code>-fill</code></li>
+                                    <li><code>-track=%{TESTNAME}</code></li>
+                                    <li><code>%{JOBNAME}</code></li>
+                                    <li><code>0</code></li>
+                                    <li><code>-50</code></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        Compare stack traces of a specific failed test with the stack traces of the test in other jobs
+                        <ul>
+                            <li><i>Link label:</i> check traces</li>
+                            <li><i>Preset tools:</i> Comparator</li>
+                            <li><i>Custom tool endpoint:</i></li>
+                            <li><i>A spliterator to split the job names:</i> [.-]</li>
+                            <li><i>Tool arguments (one on each line):</i>
+                                <ul>
+                                    <li><code>--compare-traces</code></li>
+                                    <li><code>--history 3</code></li>
+                                    <li><code>--formatting html</code></li>
+                                    <li><code>--exact-tests "%{TESTNAME}"</code></li>
+                                    <li><code>--regex %{1}%{S}%{2}%{S}%{3}%{S}%{4}%{S}%{5}%{S}.*</code></li>
+                                </ul>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -130,7 +417,7 @@
                     <option value="list" selected="${instance.BasePage.equals('list') ? 'true' : null}">List</option>
                 </select>
             </f:entry>
-            <f:entry title="Custom tool endpoint (OVERWRITES PRESET TOOLS, IF NOT EMPTY!)" field="basePageCustom"
+            <f:entry title="Custom tool endpoint (OVERWRITES 'Preset tools', IF NOT EMPTY!)" field="basePageCustom"
                      help="/descriptor/io.jenkins.plugins.report.jtreg.JenkinsReportJckGlobalConfig/help/customEndpoint">
                 <f:textbox />
             </f:entry>
