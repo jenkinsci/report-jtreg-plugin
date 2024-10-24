@@ -41,6 +41,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.kohsuke.stapler.DataBoundSetter;
@@ -54,6 +55,7 @@ abstract public class AbstractReportPublisher extends Recorder {
     private String resultsAllowList;
     private String maxBuilds;
     private int rangeAroundAlist;
+    private static Logger logger = Logger.getLogger(AbstractReportPublisher.class.getName());
 
     public AbstractReportPublisher(String reportFileGlob) {
         this.reportFileGlob = reportFileGlob;
@@ -83,7 +85,9 @@ abstract public class AbstractReportPublisher extends Recorder {
         }
         if (report.stream().anyMatch(
                 s -> s.getReport() != null && (s.getReport().getTestsTotal() <= 0 || s.getReport().getTestsTotal() == s.getReport().getTestsNotRun()))) {
-            System.err.println("no file byu glob, no jtr.xml file in tar.xz, wrong xml.xz fot jck or no test runs");
+            String s ="no file by glob " + reportFileGlob + ", no jtr.xml file in tar.xz, wrong xml.xz for jck or no test runs";
+            System.err.println(s);
+            logger.severe(s);
             build.setResult(Result.FAILURE);
         }
         storeFailuresSummary(report, new File(build.getRootDir(), prefix() + "-" + Constants.REPORT_JSON));
