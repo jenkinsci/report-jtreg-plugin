@@ -71,11 +71,15 @@ public interface Formatter {
     public void startTitle1();
 
     public void closeBuildsList();
+
     public void small();
+
     public void pre();
+
     public void preClose();
 
     public void printTable(JtregPluginServicesCell[][] table, int rowSize, int columnSize);
+
     public String generateTableHeaderItem(String jobName, String buildId, List<String> otherLines, String urlStub);
 
     public void printDiff(String traceOne, String traceTwo, String nameOne, String nameTwo, BasicFormatter.TypeOfDiff typeOfDiff);
@@ -91,4 +95,13 @@ public interface Formatter {
         return createCell(Arrays.asList((content)));
     }
 
+    public static String append(String s, int lenght) {
+        StringBuilder sb = new StringBuilder(s);
+        while (sb.length() < lenght) {
+            sb.append(" ");
+        }
+        return sb.toString();
+    }
+
+    public void printColumns(String[] titles, List<String>... columns);
 }

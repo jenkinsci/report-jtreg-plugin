@@ -32,7 +32,6 @@ import io.jenkins.plugins.report.jtreg.Constants;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -137,11 +136,11 @@ public class HtmlFormatter extends StringMappedFormatter {
         clossingBuffer.add("</h1>");
     }
 
-    public void pre(){
+    public void pre() {
         print("<pre>");
     }
 
-    public void preClose(){
+    public void preClose() {
         print("</pre>");
     }
 
@@ -158,7 +157,7 @@ public class HtmlFormatter extends StringMappedFormatter {
             super.println("<li><b id='legend-" + i + "'><a href='#table-" + i + "'>" + i + ":</a></b> " + table[0][i].renderCell() + "</li>");
             table[0][i] =
                     this.createCell(new JtregPluginServicesLinkWithTooltip("<b id='table-" + i + "'><a href='#legend-" + i +
-                            "'>" + i +"</a></b>")); // replace the item with its definition (number)
+                            "'>" + i + "</a></b>")); // replace the item with its definition (number)
         }
         super.println("</ul>");
 
@@ -207,12 +206,12 @@ public class HtmlFormatter extends StringMappedFormatter {
     @Override
     public String generateTableHeaderItem(String jobName, String buildId, List<String> otherLines, String urlStub) {
         if (urlStub == null) {
-            urlStub="..";
+            urlStub = "..";
         }
         StringBuilder headerItem = new StringBuilder();
         // main line
         String mainLine =
-                "<a class='NameBuildLine' href='" + urlStub + "/job/"+jobName+"'>"
+                "<a class='NameBuildLine' href='" + urlStub + "/job/" + jobName + "'>"
                         + jobName + "</a>" + " - " + "<a class='NameBuildLine' href='" + urlStub + "/job/" + jobName + "/" + buildId + "'>build</a>"
                         + ":" + "<a class='NameBuildLine' href='" + urlStub + "/job/" + jobName + "/" + buildId + "/java-reports'>" + buildId +
                         "</a>";
@@ -309,6 +308,41 @@ public class HtmlFormatter extends StringMappedFormatter {
             return null;
         }
         return new JtregPluginServicesCell(content);
+    }
+
+    @Override
+    public void println() {
+        //this is just adding new line to source code.
+        //for <br>. use println("");
+        super.println();
+    }
+
+    @Override
+    public void printColumns(String[] titles, List<String>... columns) {
+        if (titles.length != columns.length) {
+            throw new RuntimeException("Different number of titles and columns");
+        }
+        print("<div id='finalColumns' class='finalColumnsHolder'>");
+        println();
+        println();
+        int w = (100 / columns.length) - 2;
+        for (int i = 0; i < columns.length; i++) {
+            String flow = "left";
+            if (i == columns.length - 1) {
+                flow = "reset";
+            }
+            print("<div id='finalColumn" + i + "' class='finalColumn' style='width:" + w + "%;overflow-x: scroll; white-space:nowrap; float: " + flow + "; margin:2px'>");
+            println();
+            print("<b>" + titles[i] + "</b>");
+            println();
+            for (String s : columns[i]) {
+                println(s);
+            }
+            print("</div>");
+            println();
+        }
+        print("</div>");
+        println();
     }
 
 }
