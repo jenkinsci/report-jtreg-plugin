@@ -212,6 +212,6 @@ public class FailedTests {
                 failures.add(nice);
             }
         }
-        options.getFormatter().printColumns(new String[]{"Failed at:", "No failures at:"}, failures, allPased);
+        options.getFormatter().printColumns(new String[]{"Failed at(" + failures.size() + "):", "No failures at(" + allPased.size() + "):"}, failures, allPased);
     }
 }
