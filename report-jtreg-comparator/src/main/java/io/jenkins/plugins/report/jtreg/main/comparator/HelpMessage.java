@@ -53,7 +53,7 @@ final public class HelpMessage {
             "    " + ComparatorArgDeclaration.onlyVolatileArg.getName() + ComparatorArgDeclaration.onlyVolatileArg.getUsage() + "\n" +
             "                  " + ComparatorArgDeclaration.onlyVolatileArg.getHelp() + "\n" +"                  " + ComparatorArgDeclaration.historyArg.getHelp() + "\n" +
             "    " + ComparatorArgDeclaration.finalColumns.getName() + ComparatorArgDeclaration.finalColumns.getUsage() + "\n" +
-            "                  " + ComparatorArgDeclaration.finalColumns    .getHelp() + "\n" +
+            "                  " + ComparatorArgDeclaration.finalColumns.getHelp() + "\n" +
             "    " + ComparatorArgDeclaration.forceArg.getName() + "\n" +
             "                  " + ComparatorArgDeclaration.forceArg.getHelp() + "\n" +
             "    " + ComparatorArgDeclaration.formattingArg.getName() + ComparatorArgDeclaration.formattingArg.getUsage() + "\n" +
