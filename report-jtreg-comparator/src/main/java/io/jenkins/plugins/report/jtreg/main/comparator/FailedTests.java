@@ -12,6 +12,13 @@ import java.io.File;
 import java.util.*;
 
 public class FailedTests {
+    private Map<String, ArrayList<String>> cachedFailedMap;
+    private final Options options;
+
+    public FailedTests(Options options) {
+        this.options = options;
+    }
+
     // function for getting failed tests into an ArrayList
     private static ArrayList<String> getBuildFailedTests(File build, String exactTestsRegex) throws Exception {
         ArrayList<String> failedTests = new ArrayList<>();
@@ -39,7 +46,7 @@ public class FailedTests {
     }
 
     // function for creating a HashMap of "build info - list of its failed tests" pair
-    public static HashMap<String, ArrayList<String>> createFailedMap(ArrayList<File> buildsToCompare, Options options) throws Exception {
+    public HashMap<String, ArrayList<String>> createFailedMap(ArrayList<File> buildsToCompare) throws Exception {
 
         HashMap<String, ArrayList<String>> failedMap = new HashMap<>();
 
@@ -75,11 +82,24 @@ public class FailedTests {
             }
         }
 
+        this.cachedFailedMap = failedMap;
         return failedMap;
     }
 
+    public void printFailedTable() throws Exception {
+        if (cachedFailedMap == null) {
+            throw new RuntimeException("To use cached failures map, you have to runn createFailedMap first");
+        }
+        printFailedTable(null);
+    }
+
     // function for getting the HashMap of failed tests ready for printing to console
-    public static void printFailedTable(HashMap<String, ArrayList<String>> failedMap, Options options) {
+    public void printFailedTable(ArrayList<File> buildsToCompare) throws Exception {
+        if (cachedFailedMap == null) {
+            createFailedMap(buildsToCompare);
+        }
+        Map<String, ArrayList<String>> failedMap = cachedFailedMap;
+
         // by default, all builds are shown, this makes the table less "cluttery" by deleting builds with no failed tests
         if (options.isHidePasses()) {
             failedMap.entrySet().removeIf(entry -> entry.getValue().isEmpty());
@@ -154,8 +174,8 @@ public class FailedTests {
             // put the Xs itself
             for (String value : putXList) {
                 int column = sortedValues.indexOf(value) + 1;
-                String buildName = Builds.getJobName(orderedBuilds.get(column-1));
-                String jobId = Builds.getBuildNumber(orderedBuilds.get(column-1));
+                String buildName = Builds.getJobName(orderedBuilds.get(column - 1));
+                String jobId = Builds.getBuildNumber(orderedBuilds.get(column - 1));
                 String id = "failed-" + key + "-" + buildName + "-" + jobId;
                 table[i][column] =
                         options.getFormatter().createCell(new JtregPluginServicesLinkWithTooltip("X", null, id, VirtualJobsResults.createTooltip(key, buildName, jobId, column, id, options.getJenkinsUrl()), true));
@@ -166,5 +186,32 @@ public class FailedTests {
 
         // print the table into stdout
         options.getFormatter().printTable(table, keys.size() + 1, sortedValues.size() + 1);
+    }
+
+
+    public void printColumns(ArrayList<File> buildsToCompare) throws Exception {
+        if (cachedFailedMap == null) {
+            createFailedMap(buildsToCompare);
+        }
+        Map<String, Integer> failuresPerBuild = new TreeMap<>();//the builds should be sorted already
+        for (File build : buildsToCompare) {
+            if (build != null) {
+                failuresPerBuild.put(build.getAbsolutePath(), 0);
+            }
+        }
+        for (Map.Entry<String, ArrayList<String>> testInBuilds : cachedFailedMap.entrySet()) {
+            failuresPerBuild.put(testInBuilds.getKey(), testInBuilds.getValue().size());
+        }
+        List<String> allPased = new ArrayList<>();
+        List<String> failures = new ArrayList<>();
+        for (Map.Entry<String, Integer> buildAndFailures : failuresPerBuild.entrySet()) {
+            String nice = Builds.getJobName(new File(buildAndFailures.getKey())) + " - build:" + Builds.getBuildNumber(new File(buildAndFailures.getKey())) + " (" + buildAndFailures.getValue() + ")";
+            if (buildAndFailures.getValue() == 0) {
+                allPased.add(nice);
+            } else {
+                failures.add(nice);
+            }
+        }
+        options.getFormatter().printColumns(new String[]{"Failed at(" + failures.size() + "):", "No failures at(" + allPased.size() + "):"}, failures, allPased);
     }
 }

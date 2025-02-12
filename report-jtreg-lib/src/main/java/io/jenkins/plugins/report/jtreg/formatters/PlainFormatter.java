@@ -159,7 +159,7 @@ public class PlainFormatter extends BasicFormatter {
 
     @Override
     public JtregPluginServicesCell generateTableHeaderItemAsCell(String jobName, String buildId, List<String> otherLines, String urlStub) {
-        return this.createCell(new JtregPluginServicesLinkWithTooltip(generateTableHeaderItem(jobName, buildId,otherLines, urlStub)));
+        return this.createCell(new JtregPluginServicesLinkWithTooltip(generateTableHeaderItem(jobName, buildId, otherLines, urlStub)));
     }
 
     @Override
@@ -169,6 +169,5 @@ public class PlainFormatter extends BasicFormatter {
         }
         return new JtregPluginServicesCell(JtregPluginServicesLinkWithTooltip.toPlainList(content));
     }
-
 
 }

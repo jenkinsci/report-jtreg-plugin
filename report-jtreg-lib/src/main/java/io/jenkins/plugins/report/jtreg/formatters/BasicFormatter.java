@@ -60,17 +60,17 @@ public abstract class BasicFormatter implements Formatter {
     }
 
     @Override
-    public void small(){
+    public void small() {
 
     }
 
     @Override
-    public void pre(){
+    public void pre() {
 
     }
 
     @Override
-    public void preClose(){
+    public void preClose() {
 
     }
 
@@ -87,5 +87,42 @@ public abstract class BasicFormatter implements Formatter {
     @Override
     public void printDiff(String traceOne, String traceTwo, String nameOne, String nameTwo, BasicFormatter.TypeOfDiff typeOfDiff) {
 
+    }
+
+    @Override
+    public void printColumns(String[] titles, List<String>... columns) {
+        if (titles.length != columns.length) {
+            throw new RuntimeException("Different number of titles and columns");
+        }
+        int maxColumnLines = 0;
+        int[] maximumLenghts = new int[titles.length];
+        for (int i = 0; i < titles.length; i++) {
+            maximumLenghts[i] = titles.length;
+        }
+        for (int i = 0; i < columns.length; i++) {
+            List<String> column = columns[i];
+            if (column.size() > maxColumnLines) {
+                maxColumnLines = column.size();
+            }
+            for (String line : column) {
+                if (line.length() > maximumLenghts[i]) {
+                    maximumLenghts[i] = line.length();
+                }
+            }
+        }
+        for (int i = 0; i < titles.length; i++) {
+            print(Formatter.append(titles[i], maximumLenghts[i]));
+        }
+        println();
+        for (int linenumber = 0; linenumber < maxColumnLines; linenumber++) {
+            for (int i = 0; i < columns.length; i++) {
+                String s = "";
+                if (linenumber < columns[i].size()) {
+                    s = columns[i].get(linenumber);
+                }
+                print(Formatter.append(s, maximumLenghts[i]));
+            }
+            println();
+        }
     }
 }

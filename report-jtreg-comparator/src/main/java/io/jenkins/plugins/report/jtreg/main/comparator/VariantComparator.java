@@ -21,7 +21,7 @@ public class VariantComparator {
         ComparatorArgParser comparatorArgParser = new ComparatorArgParser(new Options(), args);
         Options options = comparatorArgParser.parseAndGetOptions();
 
-        if(options.isDie()) {
+        if (options.isDie()) {
             System.out.print(HelpMessage.HELP_MESSAGE);
             return;
         }
@@ -44,13 +44,18 @@ public class VariantComparator {
         if (!buildsToCompare.isEmpty()) {
             // do the chosen operation
             if (options.getOperation() == Options.Operations.List || options.getOperation() == Options.Operations.Compare) {
-                FailedTests.printFailedTable(FailedTests.createFailedMap(buildsToCompare, options), options);
+                FailedTests failedTests = new FailedTests(options);
+                failedTests.printFailedTable(buildsToCompare);
+                if (options.isPrintFinalColumns()) {
+                    options.getFormatter().println();
+                    failedTests.printColumns(buildsToCompare);
+                }
             } else if (options.getOperation() == Options.Operations.Enumerate) {
                 JobsPrinting.printVariants(options.getJobsProvider().getJobs(), options.getFormatter());
             } else if (options.getOperation() == Options.Operations.Print) {
                 JobsPrinting.printJobs(options.getJobsProvider().getJobs(), options);
             } else if (options.getOperation() == Options.Operations.TraceCompare) {
-                StackTraceCompare.compareTraces(FailedTests.createFailedMap(buildsToCompare, options), options);
+                StackTraceCompare.compareTraces(new FailedTests(options).createFailedMap(buildsToCompare), options);
             }
 
             // print virtual table

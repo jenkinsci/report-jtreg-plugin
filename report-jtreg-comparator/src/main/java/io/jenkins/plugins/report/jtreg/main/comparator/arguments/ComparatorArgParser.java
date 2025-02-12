@@ -1,6 +1,7 @@
 package io.jenkins.plugins.report.jtreg.main.comparator.arguments;
 
 import io.jenkins.plugins.report.jtreg.arguments.CommonArgParser;
+import io.jenkins.plugins.report.jtreg.main.comparator.HelpMessage;
 import io.jenkins.plugins.report.jtreg.main.comparator.Options;
 import io.jenkins.plugins.report.jtreg.main.comparator.jobs.DefaultProvider;
 import io.jenkins.plugins.report.jtreg.main.comparator.jobs.JobsByQuery;
@@ -15,9 +16,14 @@ public class ComparatorArgParser extends CommonArgParser {
     }
 
     public Options parseAndGetOptions() {
-        parseCommonArguments();
-        if (!options.isDie()) {
-            parseComparatorArguments();
+        try {
+            parseCommonArguments();
+            if (!options.isDie()) {
+                parseComparatorArguments();
+            }
+        } catch (IllegalArgumentException ex) {
+            System.err.print(HelpMessage.HELP_MESSAGE);
+            throw ex;
         }
         return (Options) options;
     }
@@ -133,13 +139,13 @@ public class ComparatorArgParser extends CommonArgParser {
                     throw new RuntimeException("The configuration for " + values[1] + " already exists.");
                 }
 
-            // parsing arguments of the jobs providers
+                // parsing arguments of the jobs providers
             } else if (JobsByQuery.getSupportedArgsStatic().contains(currentArg) || JobsByRegex.getSupportedArgsStatic().contains(currentArg)) {
                 // add a jobs provider to options, if there is none
                 if (localOptions.getJobsProvider() == null) {
                     if (JobsByQuery.getSupportedArgsStatic().contains(currentArg)) {
                         localOptions.setJobsProvider(new JobsByQuery());
-                    } else if (JobsByRegex.getSupportedArgsStatic().contains(currentArg)){
+                    } else if (JobsByRegex.getSupportedArgsStatic().contains(currentArg)) {
                         localOptions.setJobsProvider(new JobsByRegex());
                     }
                 }
@@ -151,6 +157,8 @@ public class ComparatorArgParser extends CommonArgParser {
                     throw new RuntimeException("Cannot combine arguments from multiple job providers.");
                 }
 
+            } else if (currentArg.equals(ComparatorArgDeclaration.finalColumns.getName())) {
+                localOptions.setPrintFinalColumns(Boolean.parseBoolean(getArgumentValue(i++)));
             } else {
                 if (!arguments[i + 1].matches("^--.*")) {
                     // these arguments can be dynamic arguments, that were not defined yet
@@ -171,8 +179,7 @@ public class ComparatorArgParser extends CommonArgParser {
             if (configuration != null) {
                 configuration.setValue(entry.getValue());
             } else {
-                // unknown argument
-                throw new RuntimeException("Unknown argument " + entry.getKey() + ", run with --help for info.");
+                throw new IllegalArgumentException("Unknown argument " + entry.getKey() + ", run with --help for info.");
             }
         }
 

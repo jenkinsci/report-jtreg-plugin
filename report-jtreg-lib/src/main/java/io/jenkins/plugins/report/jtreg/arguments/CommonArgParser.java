@@ -23,7 +23,7 @@ public abstract class CommonArgParser {
 
     protected void parseCommonArguments() {
         if (arguments.length == 0) {
-            throw new RuntimeException("Expected some arguments.");
+            throw new IllegalArgumentException("Expected some arguments.");
         }
 
         List<String> unparsedArgs = new ArrayList<>();

@@ -16,6 +16,7 @@ public class Options extends CommonOptions {
     private JobsProvider jobsProvider;
     private boolean printVirtual;
     private boolean hidePasses;
+    private boolean printFinalColumns;
     private final Map<String, Configuration> configurations;
     private String referentialJobName;
     private int referentialBuildNumber;
@@ -28,6 +29,7 @@ public class Options extends CommonOptions {
         this.jobsProvider = null;
         this.printVirtual = false;
         this.hidePasses = false;
+        this.printFinalColumns = false;
         this.configurations = new HashMap<>();
         this.referentialJobName = null;
         this.referentialBuildNumber = -1;
@@ -129,6 +131,14 @@ public class Options extends CommonOptions {
         this.configurations.put(whatToFind, configuration);
     }
 
+    public void setPrintFinalColumns(boolean b) {
+        this.printFinalColumns = b;
+    }
+
+    public boolean isPrintFinalColumns() {
+        return printFinalColumns;
+    }
+
     // enum of all available operations
     public enum Operations {
         List, Enumerate, Compare, Print, TraceCompare
@@ -154,12 +164,15 @@ public class Options extends CommonOptions {
         public String getConfigFileName() {
             return configFileName;
         }
+
         public String getFindQuery() {
             return findQuery;
         }
+
         public Locations getLocation() {
             return location;
         }
+
         public File findConfigFile(File buildDir) {
             // This method takes a build directory as an argument.
             // If the user used --job-config-find, the method returns the config file in the job directory.
