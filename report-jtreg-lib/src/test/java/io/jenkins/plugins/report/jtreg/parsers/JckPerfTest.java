@@ -1,7 +1,7 @@
 package io.jenkins.plugins.report.jtreg.parsers;
 
 import org.apache.commons.io.input.ReaderInputStream;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -21,47 +21,49 @@ import java.nio.charset.StandardCharsets;
 
 import io.jenkins.plugins.report.jtreg.model.Suite;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JckPerfTest {
 
-    public static final String BIG_OLD_BROKEN_XML_XZ = "big-old-broken.xml.xz";
-    public static final String BIG_NEW_FIXED_XML_XZ="big-new-fixed.xml.xz";
+class JckPerfTest {
 
-    @org.junit.Test
-    public void xpathSpeedTestOldBroken() {
+    private static final String BIG_OLD_BROKEN_XML_XZ = "big-old-broken.xml.xz";
+    private static final String BIG_NEW_FIXED_XML_XZ="big-new-fixed.xml.xz";
+
+    @Test
+    void xpathSpeedTestOldBroken() {
         xpathSpeedTest(BIG_OLD_BROKEN_XML_XZ);
     }
 
-    @org.junit.Test
-    public void xpathSpeedTestNewFixed() {
+    @Test
+    void xpathSpeedTestNewFixed() {
         xpathSpeedTest(BIG_NEW_FIXED_XML_XZ);
     }
 
-    @org.junit.Test
-    public void ourSuiteSpeedTestOldBroken() {
+    @Test
+    void ourSuiteSpeedTestOldBroken() {
         ourSuiteSpeedTest(BIG_OLD_BROKEN_XML_XZ);
     }
 
-    @org.junit.Test
-    public void ourSuiteSpeedTestNewFixed() {
+    @Test
+    void ourSuiteSpeedTestNewFixed() {
         ourSuiteSpeedTest(BIG_NEW_FIXED_XML_XZ);
     }
 
     private void xpathSpeedTest(String file) {
         long duration1 = measureXpath(file, false);
         long duration2 = measureXpath(file, true);
-        Assert.assertTrue(
-                "Is performance of fixstream - " + (duration2 / 1000) + ", not twice as worse as normal - " + (duration1 / 1000),
-                duration2 < duration1 * 2);
+        assertTrue(
+                duration2 < duration1 * 2,
+                "Is performance of fixstream - " + (duration2 / 1000) + ", not twice as worse as normal - " + (duration1 / 1000));
         System.err.println("Congratulation, our impl is just " + ((float)duration2/(float)duration1) + "x worse thanx to the disc caching");
     }
 
     private long measureXpath(String file, boolean fixStream) {
         long start = System.currentTimeMillis();
         Document document = createDocument(file, fixStream);
-        int statuses = getTSatuses("//Report/TestResults/TestResult/@status", document);
+        int statuses = getStatuses("//Report/TestResults/TestResult/@status", document);
         long duration = System.currentTimeMillis() - start;
-        Assert.assertTrue(statuses > 64700);
+        assertTrue(statuses > 64700);
         return duration;
     }
 
@@ -71,21 +73,20 @@ public class JckPerfTest {
         Suite report1 = jck1.parsePath(new File(System.getProperty("user.dir") + "/src/test/resources/"+file).toPath());
         int tests1 = report1.getReport().getTestsTotal();
         long duration1 = System.currentTimeMillis() - start1;
-        Assert.assertTrue(tests1 > 64700);
+        assertTrue(tests1 > 64700);
         return duration1;
     }
 
     private static void ourSuiteSpeedTest(String file) {
         long duration1 = measureOurSuite(file, false);
         long duration2 = measureOurSuite(file, true);
-        Assert.assertTrue(
-                "Is performance of fixstream - " + (duration2 / 1000) + ", not twice as worse as normal - " + (duration1 / 1000),
-                duration2 < duration1 * 2);
+        assertTrue(
+                duration2 < duration1 * 2,
+                "Is performance of fixstream - " + (duration2 / 1000) + ", not twice as worse as normal - " + (duration1 / 1000));
         System.err.println("Congratulation, our impl is just " + ((float)duration2/(float)duration1) + "x worse thanx to the disc caching");
     }
 
-    private static int getTSatuses(String xPathExpr, Document document) {
-        String content;
+    private static int getStatuses(String xPathExpr, Document document) {
         XPath xPath = XPathFactory.newInstance().newXPath();
         try {
             Object raw =  xPath.evaluate(xPathExpr, document, XPathConstants.NODESET);
@@ -108,7 +109,7 @@ public class JckPerfTest {
             } else {
                 reader = new BufferedReader(
                         new InputStreamReader(new org.tukaani.xz.XZInputStream(this.getClass().getResourceAsStream("/" + xmlFileName)),
-                                "UTF-8"));
+                                StandardCharsets.UTF_8));
             }
             return documentBuilder.parse(new ReaderInputStream(reader, StandardCharsets.UTF_8));
         } catch (SAXException | IOException | ParserConfigurationException e) {

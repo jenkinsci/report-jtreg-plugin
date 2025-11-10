@@ -6,14 +6,16 @@ import io.jenkins.plugins.report.jtreg.formatters.HtmlFormatter;
 import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesCell;
 import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesLinkWithTooltip;
 import io.jenkins.plugins.report.jtreg.formatters.PlainFormatter;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-public class PrintTableTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    public JtregPluginServicesCell[][] updateTable(Formatter pf) {
+class PrintTableTest {
+
+    private static JtregPluginServicesCell[][] updateTable(Formatter pf) {
         return new JtregPluginServicesCell[][]{
                 {create(pf, null),         create(pf, "first item"), create(pf, "second item"), create(pf, "third item")},
                 {create(pf, "second row"), create(pf, "X"),          create(pf, "this is a very long text in a center cell of a table"), create(pf, "X")},
@@ -26,14 +28,14 @@ public class PrintTableTest {
         return pf.createCell(new JtregPluginServicesLinkWithTooltip(content));
     }
 
-    private String crlfToLf(String s) {
+    private static String crlfToLf(String s) {
         // replaces windows CRLF newline to unix LF newline
         // needed for the tests to pass both on linux and windows
         return s.replace("\r\n", "\n");
     }
 
     @Test
-    public void testPlainTablePrinting() {
+    void testPlainTablePrinting() {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(outStream);
         Formatter f = new PlainFormatter(printStream);
@@ -42,7 +44,7 @@ public class PrintTableTest {
 
         f.printTable(table, 4, 4);
 
-        Assertions.assertEquals("1) first item\n" +
+        assertEquals("1) first item\n" +
                         "2) second item\n" +
                         "3) third item\n" +
                         "           | 1 | 2                                                    | 3 | \n" +
@@ -53,14 +55,14 @@ public class PrintTableTest {
     }
 
     @Test
-    public void testColorTablePrinting() {
+    void testColorTablePrinting() {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(outStream);
         Formatter f = new ColorFormatter(printStream);
         JtregPluginServicesCell[][] table = updateTable(f);
         f.printTable(table, 4, 4);
 
-        Assertions.assertEquals("\u001B[1m1) \u001B[0mfirst item\n" +
+        assertEquals("\u001B[1m1) \u001B[0mfirst item\n" +
                         "\u001B[1m2) \u001B[0msecond item\n" +
                         "\u001B[1m3) \u001B[0mthird item\n" +
                         "\u001B[1m\u001B[0m           | \u001B[1m1\u001B[0m | \u001B[1m2\u001B[0m                                                    | \u001B[1m3\u001B[0m | \n" +
@@ -71,14 +73,14 @@ public class PrintTableTest {
     }
 
     @Test
-    public void testHtmlTablePrinting() {
+    void testHtmlTablePrinting() {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(outStream);
         Formatter f = new HtmlFormatter(printStream);
         JtregPluginServicesCell[][] table = updateTable(f);
         f.printTable(table, 4, 4);
 
-        Assertions.assertEquals("<style>\n" +
+        assertEquals("<style>\n" +
                 ".tooltip {\n" + "  position: relative;\n" + "  display: inline-block;\n" + "}\n" + ".tooltip .tooltiptext {\n"
                         + "  visibility: hidden;\n" + "  width: 240px;\n" + "  background-color: grey;\n" + "  color: #fff;\n"
                         + "  text-align: left;\n" + "  border-radius: 6px;\n" + "  padding: 5px 0;\n" + "  /* Position the tooltip */\n"
