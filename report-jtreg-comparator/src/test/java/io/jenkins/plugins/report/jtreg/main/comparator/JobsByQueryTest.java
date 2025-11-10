@@ -5,20 +5,25 @@ import io.jenkins.plugins.report.jtreg.main.comparator.listing.DirListing;
 import io.jenkins.plugins.report.jtreg.main.comparator.listing.ListDirListing;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 import io.jenkins.plugins.report.jtreg.formatters.PlainFormatter;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.Files;
 import java.util.ArrayList;
 
-public class JobsByQueryTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class JobsByQueryTest {
+
     private static ArrayList<File> dummyJobs;
 
     @BeforeAll
-    public static void createDummyJobs() {
+    static void beforeAll() {
         ArrayList<String> dummyJobsStrings = new ArrayList<>();
         dummyJobsStrings.add("crypto~tests-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.fips.lnxagent.jfroff");
         dummyJobsStrings.add("jtreg~full-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff");
@@ -45,7 +50,7 @@ public class JobsByQueryTest {
     }
 
     @Test
-    public void testFullCorrectQueryWithJob() {
+    void testFullCorrectQueryWithJob() {
         String queryString = "jtreg~full jp17 ojdk17~rpms f36 x86_64 fastdebug sdk f36 x86_64 testfarm x11 shenandoah ignorecp lnxagent jfroff";
         JobsByQuery jbq = new JobsByQuery();
         jbq.parseArguments("--query", queryString);
@@ -54,12 +59,12 @@ public class JobsByQueryTest {
 
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
 
-        Assertions.assertEquals(1, containsJobs.size());
-        Assertions.assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.shenandoah.ignorecp.lnxagent.jfroff"));
+        assertEquals(1, containsJobs.size());
+        assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.shenandoah.ignorecp.lnxagent.jfroff"));
     }
 
     @Test
-    public void testFullWrongQueryWithJob() {
+    void testFullWrongQueryWithJob() {
         String queryString = "jtreg~tier1 jp17 ojdk17~rpms f36 x86_64 fastdebug sdk f36 x86_64 testfarm x11 shenandoah ignorecp lnxagent jfroff";
         JobsByQuery jbq = new JobsByQuery();
         jbq.parseArguments("--query", queryString);
@@ -68,11 +73,11 @@ public class JobsByQueryTest {
 
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
 
-        Assertions.assertFalse(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.shenandoah.ignorecp.lnxagent.jfroff"));
+        assertFalse(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.shenandoah.ignorecp.lnxagent.jfroff"));
     }
 
     @Test
-    public void testQueryWithAsterisks() {
+    void testQueryWithAsterisks() {
         String queryString = "jtreg~full * * * * * * * * * * defaultgc * * jfroff";
 
         JobsByQuery jbq = new JobsByQuery();
@@ -83,14 +88,14 @@ public class JobsByQueryTest {
 
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
 
-        Assertions.assertEquals(3, containsJobs.size());
-        Assertions.assertTrue(containsJobs.contains("jtreg~full-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
-        Assertions.assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
-        Assertions.assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-release.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
+        assertEquals(3, containsJobs.size());
+        assertTrue(containsJobs.contains("jtreg~full-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
+        assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
+        assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-release.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
     }
 
     @Test
-    public void testQueryWithSets() {
+    void testQueryWithSets() {
         String queryString = "jtreg~full jp17 ojdk17~rpms f36 x86_64 {fastdebug,release} sdk f36 x86_64 {testfarm,vagrant} {x11,wayland} defaultgc ignorecp lnxagent {jfroff,jfron}";
 
         JobsByQuery jbq = new JobsByQuery();
@@ -100,30 +105,25 @@ public class JobsByQueryTest {
 
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
 
-        Assertions.assertEquals(3, containsJobs.size());
-        Assertions.assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
-        Assertions.assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-release.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
-        Assertions.assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-release.sdk-f36.x86_64.vagrant-wayland.defaultgc.ignorecp.lnxagent.jfron"));
+        assertEquals(3, containsJobs.size());
+        assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
+        assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-release.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
+        assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-release.sdk-f36.x86_64.vagrant-wayland.defaultgc.ignorecp.lnxagent.jfron"));
     }
 
     @Test
-    public void testQueryWithUnclosedSet() {
+    void testQueryWithUnclosedSet() {
         // should throw en exception
         String queryString = "jtreg~full jp17 ojdk17~rpms f36 x86_64 fastdebug sdk f36 x86_64 testfarm x11 {defaultgc,shenandoah ignorecp lnxagent jfroff";
-        try {
-            JobsByQuery jbq = new JobsByQuery();
-            jbq.parseArguments("--query", queryString);
-            jbq.addJobs(dummyJobs);
-            jbq.filterJobs();
 
-            Assertions.fail("The test did not threw an exception.");
-        } catch (Exception e) {
-            // expected
-        }
+        JobsByQuery jbq = new JobsByQuery();
+        jbq.parseArguments("--query", queryString);
+        jbq.addJobs(dummyJobs);
+        assertThrows(Exception.class, jbq::filterJobs);
     }
 
     @Test
-    public void testQueryWithExclamationMarks() {
+    void testQueryWithExclamationMarks() {
         String queryString = "jtreg~full !jp8 !ojdk8~rpms f36 x86_64 fastdebug sdk f36 x86_64 testfarm x11 !shenandoah ignorecp lnxagent jfroff";
 
         JobsByQuery jbq = new JobsByQuery();
@@ -133,13 +133,13 @@ public class JobsByQueryTest {
 
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
 
-        Assertions.assertEquals(2, containsJobs.size());
-        Assertions.assertTrue(containsJobs.contains("jtreg~full-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
-        Assertions.assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
+        assertEquals(2, containsJobs.size());
+        assertTrue(containsJobs.contains("jtreg~full-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
+        assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
     }
 
     @Test
-    public void testQueryWithExclamationMarksWithSets() {
+    void testQueryWithExclamationMarksWithSets() {
         String queryString = "!{reproducers~regular,crypto~tests} jp17 ojdk17~rpms f36 x86_64 fastdebug sdk f36 x86_64 testfarm x11 defaultgc !{defaultcp,fips} lnxagent jfroff";
 
         JobsByQuery jbq = new JobsByQuery();
@@ -149,13 +149,13 @@ public class JobsByQueryTest {
 
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
 
-        Assertions.assertEquals(2, containsJobs.size());
-        Assertions.assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
-        Assertions.assertTrue(containsJobs.contains("jtreg~tier1-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
+        assertEquals(2, containsJobs.size());
+        assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
+        assertTrue(containsJobs.contains("jtreg~tier1-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
     }
 
     @Test
-    public void testShorterQueryWithLongerJob() {
+    void testShorterQueryWithLongerJob() {
         String queryString = "jtreg~full jp17 ojdk17~rpms f36 x86_64 fastdebug sdk";
 
         JobsByQuery jbq = new JobsByQuery();
@@ -165,13 +165,13 @@ public class JobsByQueryTest {
 
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
 
-        Assertions.assertEquals(2, containsJobs.size());
-        Assertions.assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
-        Assertions.assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.shenandoah.ignorecp.lnxagent.jfroff"));
+        assertEquals(2, containsJobs.size());
+        assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.defaultgc.ignorecp.lnxagent.jfroff"));
+        assertTrue(containsJobs.contains("jtreg~full-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.testfarm-x11.shenandoah.ignorecp.lnxagent.jfroff"));
     }
 
     @Test
-    public void testQueryWithShorterJob() {
+    void testQueryWithShorterJob() {
         String queryString = "rhqe jp11 ojdk11~rpms f36 x86_64 slowdebug sdk f36 x86_64 vagrant x11 defaultgc legacy lnxagent jfroff";
 
         JobsByQuery jbq = new JobsByQuery();
@@ -181,12 +181,12 @@ public class JobsByQueryTest {
 
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
 
-        Assertions.assertEquals(1, containsJobs.size());
-        Assertions.assertTrue(containsJobs.contains("rhqe-jp11-ojdk11~rpms-f36.x86_64-slowdebug.sdk"));
+        assertEquals(1, containsJobs.size());
+        assertTrue(containsJobs.contains("rhqe-jp11-ojdk11~rpms-f36.x86_64-slowdebug.sdk"));
     }
 
     @Test
-    public void testQueryWithCombinationOfAll() {
+    void testQueryWithCombinationOfAll() {
         String queryString = "!{jtreg~full,jtreg~tier1} {jp11,jp17} {ojdk11~rpms,ojdk17~rpms} f36 x86_64 fastdebug sdk f36 x86_64 vagrant x11 !shenandoah * *";
 
         JobsByQuery jbq = new JobsByQuery();
@@ -197,19 +197,19 @@ public class JobsByQueryTest {
         ArrayList<String> containsJobs = convertJobsListToNamesList(jbq.getJobs());
         System.out.println(containsJobs);
 
-        Assertions.assertEquals(2, containsJobs.size());
-        Assertions.assertTrue(containsJobs.contains("crypto~tests-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.fips.lnxagent.jfroff"));
-        Assertions.assertTrue(containsJobs.contains("reproducers~regular-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.defaultcp.lnxagent.jfroff"));
+        assertEquals(2, containsJobs.size());
+        assertTrue(containsJobs.contains("crypto~tests-jp11-ojdk11~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.fips.lnxagent.jfroff"));
+        assertTrue(containsJobs.contains("reproducers~regular-jp17-ojdk17~rpms-f36.x86_64-fastdebug.sdk-f36.x86_64.vagrant-x11.defaultgc.defaultcp.lnxagent.jfroff"));
     }
 
-    private String crlfToLf(String s) {
+    private static String crlfToLf(String s) {
         // replaces windows CRLF newline to unix LF newline
         // needed for the tests to pass both on linux and windows
         return s.replace("\r\n", "\n");
     }
 
     @Test
-    public void testPrintVariants() {
+    void testPrintVariants() {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(outStream);
         Formatter formatter = new PlainFormatter(printStream);
@@ -223,7 +223,7 @@ public class JobsByQueryTest {
 
         JobsPrinting.printVariants(jbq.getJobs(), formatter);
 
-        Assertions.assertEquals("1) jtreg~full, jtreg~tier1, \n" +
+        assertEquals("1) jtreg~full, jtreg~tier1, \n" +
                 "2) jp11, jp17, \n" +
                 "3) ojdk11~rpms, ojdk17~rpms, \n" +
                 "4) f36, \n" +
