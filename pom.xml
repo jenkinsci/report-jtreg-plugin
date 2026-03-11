@@ -49,13 +49,13 @@
     </licenses>
 
     <!-- we release only from report-jtreg-plugin submodule, so no -plugin append needed-->
-    <url>https://github.com/jenkinsci/report-jtreg-plugin</url>
+    <url>https://github.com/jenkinsci/${project.artifactId}</url>
 	<scm child.scm.connection.inherit.append.path="false"
 		 child.scm.developerConnection.inherit.append.path="false"
 		 child.scm.url.inherit.append.path="false">
         <connection>scm:git:https://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
-        <url>https://github.com/jenkinsci/report-jtreg-plugin</url>
+        <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
         <tag>report-jtreg-2.3</tag>
     </scm>
 

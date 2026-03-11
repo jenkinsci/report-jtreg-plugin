@@ -12,6 +12,7 @@
     <version>${revision}${changelist}</version>
 
     <packaging>hpi</packaging>
+    <url>https://github.com/jenkinsci/report-jtreg-plugin</url>
 
     <dependencies>
         <dependency>
