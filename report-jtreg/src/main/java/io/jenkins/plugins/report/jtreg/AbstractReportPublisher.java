@@ -23,7 +23,6 @@
  */
 package io.jenkins.plugins.report.jtreg;
 
-import com.google.gson.GsonBuilder;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -31,18 +30,13 @@ import hudson.model.BuildListener;
 import hudson.model.Result;
 import io.jenkins.plugins.report.jtreg.model.*;
 import io.jenkins.plugins.report.jtreg.parsers.ReportParser;
+import io.jenkins.plugins.report.jtreg.utils.JsonReportWriter;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -108,24 +102,8 @@ abstract public class AbstractReportPublisher extends Recorder {
     }
 
     void storeFailuresSummary(List<Suite> reportFull, File jsonFile) throws IOException {
-        List<Suite> reportShort = reportFull.stream()
-                .sequential()
-                .map(s -> new Suite(
-                        s.getName(),
-                        new Report(
-                                s.getReport().getTestsPassed(),
-                                s.getReport().getTestsNotRun(),
-                                s.getReport().getTestsFailed(),
-                                s.getReport().getTestsError(),
-                                s.getReport().getTestsTotal(),
-                                s.getReport().getTestProblems())))
-                .sorted()
-                .collect(Collectors.toList());
-        try (Writer out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(jsonFile)),
-                StandardCharsets.UTF_8)) {
-            new GsonBuilder().setPrettyPrinting().create().toJson(reportShort, out);
-        }
-        cacheReport(reportShort, jsonFile);
+        JsonReportWriter.writeSummaryReport(reportFull, jsonFile);
+        cacheReport(reportFull, jsonFile);
     }
 
     private void cacheReport(List<Suite> reportShort, File jsonFile) {
@@ -154,17 +132,7 @@ abstract public class AbstractReportPublisher extends Recorder {
     }
 
     private void storeFullTestsList(List<Suite> reportFull, File jsonFile) throws IOException {
-        List<SuiteTests> suites = reportFull.stream()
-                .sequential()
-                .map(s -> new SuiteTests(
-                        s.getName(),
-                        s.getReport() instanceof ReportFull ? ((ReportFull) s.getReport()).getTestsList() : null))
-                .sorted()
-                .collect(Collectors.toList());
-        try (Writer out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(jsonFile)),
-                StandardCharsets.UTF_8)) {
-            new GsonBuilder().create().toJson(suites, out);
-        }
+        JsonReportWriter.writeTestListReport(reportFull, jsonFile);
     }
 
     @Override

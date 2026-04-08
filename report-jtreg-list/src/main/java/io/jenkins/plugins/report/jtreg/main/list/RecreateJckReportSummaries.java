@@ -23,15 +23,10 @@
  */
 package io.jenkins.plugins.report.jtreg.main.list;
 
-import com.google.gson.GsonBuilder;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.jenkins.plugins.report.jtreg.model.Report;
-import io.jenkins.plugins.report.jtreg.model.ReportFull;
 import io.jenkins.plugins.report.jtreg.model.Suite;
-import io.jenkins.plugins.report.jtreg.model.SuiteTests;
 import io.jenkins.plugins.report.jtreg.parsers.JckReportParser;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
+import io.jenkins.plugins.report.jtreg.utils.JsonReportWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,8 +37,6 @@ import java.util.stream.Stream;
 import static io.jenkins.plugins.report.jtreg.Constants.REPORT_JSON;
 import static io.jenkins.plugins.report.jtreg.Constants.REPORT_TESTS_LIST_JSON;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 public class RecreateJckReportSummaries {
 
@@ -79,22 +72,7 @@ public class RecreateJckReportSummaries {
                 if (Files.exists(summaryPath)) {
                     Files.move(summaryPath, buildPath.resolve("backup_" + "jck-" + REPORT_JSON), REPLACE_EXISTING);
                 }
-                List<Suite> reportShort = suitesList.stream()
-                        .sequential()
-                        .map(s -> new Suite(
-                                s.getName(),
-                                new Report(
-                                        s.getReport().getTestsPassed(),
-                                        s.getReport().getTestsNotRun(),
-                                        s.getReport().getTestsFailed(),
-                                        s.getReport().getTestsError(),
-                                        s.getReport().getTestsTotal(),
-                                        s.getReport().getTestProblems())))
-                        .sorted()
-                        .collect(Collectors.toList());
-                try (Writer out = Files.newBufferedWriter(summaryPath, StandardCharsets.UTF_8, TRUNCATE_EXISTING, CREATE)) {
-                    new GsonBuilder().setPrettyPrinting().create().toJson(reportShort, out);
-                }
+                JsonReportWriter.writeSummaryReport(suitesList, summaryPath);
             }
             {
                 Path testsListPath = buildPath.resolve("jck-" + REPORT_TESTS_LIST_JSON);
@@ -102,17 +80,7 @@ public class RecreateJckReportSummaries {
                     Files.move(testsListPath, buildPath.resolve("backup_" + "jck-" + REPORT_TESTS_LIST_JSON),
                             REPLACE_EXISTING);
                 }
-                List<SuiteTests> suites = suitesList.stream()
-                        .sequential()
-                        .map(s -> new SuiteTests(
-                                s.getName(),
-                                s.getReport() instanceof ReportFull ? ((ReportFull) s.getReport()).getTestsList() : null))
-                        .sorted()
-                        .collect(Collectors.toList());
-                try (Writer out = Files.newBufferedWriter(testsListPath, StandardCharsets.UTF_8, TRUNCATE_EXISTING,
-                        CREATE)) {
-                    new GsonBuilder().create().toJson(suites, out);
-                }
+                JsonReportWriter.writeTestListReport(suitesList, testsListPath);
             }
 
         } catch (Exception ex) {
