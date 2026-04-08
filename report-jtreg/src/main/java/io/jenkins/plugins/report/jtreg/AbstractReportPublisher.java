@@ -31,6 +31,7 @@ import hudson.model.Result;
 import io.jenkins.plugins.report.jtreg.model.*;
 import io.jenkins.plugins.report.jtreg.parsers.ReportParser;
 import io.jenkins.plugins.report.jtreg.utils.JsonReportWriter;
+import io.jenkins.plugins.report.jtreg.utils.PropertiesWriter;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
 import java.io.File;
@@ -39,8 +40,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.kohsuke.stapler.DataBoundSetter;
-
-import java.util.Arrays;
 
 abstract public class AbstractReportPublisher extends Recorder {
 
@@ -103,32 +102,7 @@ abstract public class AbstractReportPublisher extends Recorder {
 
     void storeFailuresSummary(List<Suite> reportFull, File jsonFile) throws IOException {
         JsonReportWriter.writeSummaryReport(reportFull, jsonFile);
-        cacheReport(reportFull, jsonFile);
-    }
-
-    private void cacheReport(List<Suite> reportShort, File jsonFile) {
-        try {
-            int passedSumm = 0;
-            int notRunSumm = 0;
-            int failedSumm = 0;
-            int errorSumm = 0;
-            int totalSumm = 0;
-            StringBuilder nameb = new StringBuilder();
-            for (Suite s : reportShort) {
-                passedSumm += s.getReport().getTestsPassed();
-                notRunSumm += s.getReport().getTestsNotRun();
-                failedSumm += s.getReport().getTestsFailed();
-                errorSumm += s.getReport().getTestsError();
-                totalSumm += s.getReport().getTestsTotal();
-                nameb.append(s.getName()).append(" ");
-            }
-            File buildDir = jsonFile.getParentFile();
-            int buildNumber = Integer.parseInt(buildDir.getName());
-            BuildReport br = new BuildReportPlugin(buildNumber, nameb.toString().trim(), passedSumm, failedSumm, errorSumm, reportShort, totalSumm, notRunSumm);
-            ReportProjectAction.cacheSumms(buildDir.getParentFile().getParentFile(), Arrays.asList(new BuildReport[]{br}));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        PropertiesWriter.cacheReport(reportFull, jsonFile);
     }
 
     private void storeFullTestsList(List<Suite> reportFull, File jsonFile) throws IOException {

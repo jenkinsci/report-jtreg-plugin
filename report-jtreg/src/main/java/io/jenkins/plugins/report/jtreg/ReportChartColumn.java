@@ -34,6 +34,8 @@ import java.util.UUID;
 
 import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import io.jenkins.plugins.report.jtreg.model.BuildReportPlugin;
+import io.jenkins.plugins.report.jtreg.utils.PropertiesWriter;
+
 import org.kohsuke.stapler.DataBoundConstructor;
 
 public class ReportChartColumn extends ListViewColumn {
@@ -46,7 +48,7 @@ public class ReportChartColumn extends ListViewColumn {
         AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(((Project) job).getPublishersList());
         List<BuildReportPlugin> r = new BuildSummaryParserPlugin(Arrays.asList("jck", "jtreg"), settings).parseJobReports(job);
         try {
-            ReportProjectAction.cacheSumms(job.getRootDir(), r);
+            PropertiesWriter.cacheSumms(job.getRootDir(), r);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
