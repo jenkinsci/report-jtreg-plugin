@@ -23,14 +23,11 @@
  */
 package io.jenkins.plugins.report.jtreg.main.list;
 
-import com.google.gson.GsonBuilder;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.jenkins.plugins.report.jtreg.model.Report;
-import io.jenkins.plugins.report.jtreg.model.ReportFull;
 import io.jenkins.plugins.report.jtreg.model.Suite;
-import io.jenkins.plugins.report.jtreg.model.SuiteTests;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
+import io.jenkins.plugins.report.jtreg.parsers.JtregReportParser;
+import io.jenkins.plugins.report.jtreg.writers.WritersManager;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,13 +37,10 @@ import java.util.stream.Stream;
 
 import static io.jenkins.plugins.report.jtreg.Constants.REPORT_JSON;
 import static io.jenkins.plugins.report.jtreg.Constants.REPORT_TESTS_LIST_JSON;
-import io.jenkins.plugins.report.jtreg.parsers.JtregReportParser;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 
@@ -112,55 +106,26 @@ public class RecreateJtregReportSummaries {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+
         String prefix = "jtreg";
         try (Stream<Path> tckReportsStream = archives.stream()) {
-
             List<Suite> suitesList = tckReportsStream.sequential()
+                    .filter(p -> p.toString().endsWith(".xml") || p.toString().endsWith(".xml.gz") || p.toString().endsWith(".xml.xz"))
                     .map(this::jtregReportToSuite)
                     .filter(s -> s != null)
                     .collect(Collectors.toList());
-
-            {
+            try {
                 Path summaryPath = buildPath.resolve(prefix + "-" + REPORT_JSON);
                 if (Files.exists(summaryPath)) {
                     Files.move(summaryPath, buildPath.resolve("backup_" + prefix + "-" + REPORT_JSON), REPLACE_EXISTING);
                 }
-                List<Suite> reportShort = suitesList.stream()
-                        .sequential()
-                        .map(s -> new Suite(
-                                s.getName(),
-                                new Report(
-                                        s.getReport().getTestsPassed(),
-                                        s.getReport().getTestsNotRun(),
-                                        s.getReport().getTestsFailed(),
-                                        s.getReport().getTestsError(),
-                                        s.getReport().getTestsTotal(),
-                                        s.getReport().getTestProblems())))
-                        .sorted()
-                        .collect(Collectors.toList());
-                try (Writer out = Files.newBufferedWriter(summaryPath, StandardCharsets.UTF_8, TRUNCATE_EXISTING, CREATE)) {
-                    new GsonBuilder().setPrettyPrinting().create().toJson(reportShort, out);
-                }
-            }
-            {
                 Path testsListPath = buildPath.resolve(prefix + "-" + REPORT_TESTS_LIST_JSON);
                 if (Files.exists(testsListPath)) {
-                    Files.move(testsListPath, buildPath.resolve("backup_" + prefix + "-" + REPORT_TESTS_LIST_JSON),
-                            REPLACE_EXISTING);
+                    Files.move(testsListPath, buildPath.resolve("backup_" + prefix + "-" + REPORT_TESTS_LIST_JSON), REPLACE_EXISTING);
                 }
-                List<SuiteTests> suites = suitesList.stream()
-                        .sequential()
-                        .map(s -> new SuiteTests(
-                                s.getName(),
-                                s.getReport() instanceof ReportFull ? ((ReportFull) s.getReport()).getTestsList() : null))
-                        .sorted()
-                        .collect(Collectors.toList());
-                try (Writer out = Files.newBufferedWriter(testsListPath, StandardCharsets.UTF_8, TRUNCATE_EXISTING,
-                        CREATE)) {
-                    new GsonBuilder().create().toJson(suites, out);
-                }
+            } finally {
+                WritersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile());
             }
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -28,12 +28,8 @@ import hudson.model.Job;
 import hudson.model.Project;
 import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import io.jenkins.plugins.report.jtreg.model.ProjectReport;
+import io.jenkins.plugins.report.jtreg.writers.PropertiesWriter;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -90,6 +86,11 @@ public class ReportProjectAction implements Action {
         return "java-reports";
     }
 
+    // This is called when chart is shown on main page
+    // we currently recreate the  writeReportSummaryPropertiesWithRegressions
+    // here, because it is the only place where the regressions are computed.
+    // This should happen elsewhere. Not e that there is bug,
+    // which recreates regressions properties  on some jobs
     public ProjectReport getChartData() {
         AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(((Project) job).getPublishersList());
         List<? extends BuildReport> reports = new BuildSummaryParserPlugin(prefixes, settings).parseJobReports(job);
@@ -97,7 +98,7 @@ public class ReportProjectAction implements Action {
                 reports,
                 collectImprovements(reports),
                 collectRegressions(reports));
-        cacheTotals(((Project) job).getRootDir(), report);
+        PropertiesWriter.writeReportSummaryPropertiesWithRegressions(job.getRootDir(), report);
         return report;
     }
 
@@ -160,69 +161,4 @@ public class ReportProjectAction implements Action {
                 .collect(Collectors.toSet());
     }
 
-    public static void cacheTotals(File rootBuild, ProjectReport projectRreport) {
-        try {
-            cacheTotalsImpl(rootBuild, projectRreport);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private static final String CACHEDSUMMREGRESSIONSPROPERTIES = "cached-summ-regressions.properties";
-    private static final String CACHEDSUMMRESULTSPROPERTIES = "cached-summ-results.properties";
-
-    //this happily ignores combined jck+jtreg reporting, but as it is never used, it may be already corupted elsewhere
-    static void cacheTotalsImpl(File rootBuild, ProjectReport projectRreport) throws IOException {
-        cacheSumms(rootBuild, projectRreport.getReports());
-        for (int i = 0; i < projectRreport.getReports().size(); i++) {
-            BuildReport buildReport = projectRreport.getReports().get(i);
-            File cachedRegressions = getCachedRegressionsFile(rootBuild, buildReport);
-            if (!cachedRegressions.exists()) {
-                try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cachedRegressions), "utf-8"))) {
-                    bw.write("jrp.improvements=" + projectRreport.getImprovements().get(i));
-                    bw.newLine();
-                    bw.write("jrp.regressions=" + projectRreport.getRegressions().get(i));
-                    bw.newLine();
-                }
-
-            }
-
-        }
-
-    }
-
-    private static File getCachedRegressionsFile(File rootBuild, BuildReport buildReport) {
-        return getCachedFile(rootBuild, buildReport, CACHEDSUMMREGRESSIONSPROPERTIES);
-    }
-
-    private static File getCachedResultsFile(File rootBuild, BuildReport report) {
-        return getCachedFile(rootBuild, report, CACHEDSUMMRESULTSPROPERTIES);
-    }
-
-    private static File getCachedFile(File root, BuildReport report, String name) {
-        return new File(new File(new File(root, "builds"), report.getBuildNumber() + ""), name);
-    }
-
-//this happily ignores combined jck+jtreg reporting, but as it is never used, it may be already corupted elsewhere
-    static void cacheSumms(File rootBuild, List<? extends BuildReport> reports) throws IOException {
-        for (BuildReport report : reports) {
-            File cachedResults = getCachedResultsFile(rootBuild, report);
-            if (!cachedResults.exists()) {
-                try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cachedResults), "utf-8"))) {
-                    bw.write("jrp.errors=" + report.getError());
-                    bw.newLine();
-                    bw.write("jrp.failures=" + report.getFailed());
-                    bw.newLine();
-                    bw.write("jrp.notrun=" + report.getNotRun());
-                    bw.newLine();
-                    bw.write("jrp.passed=" + report.getPassed());
-                    bw.newLine();
-                    bw.write("jrp.total=" + report.getTotal());
-                    bw.newLine();
-                    bw.write("jrp.failedAndErrors=" + (report.getFailed() + report.getError()));
-                    bw.newLine();
-                }
-            }
-        }
-    }
 }

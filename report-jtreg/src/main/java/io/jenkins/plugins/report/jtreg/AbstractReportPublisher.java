@@ -23,7 +23,6 @@
  */
 package io.jenkins.plugins.report.jtreg;
 
-import com.google.gson.GsonBuilder;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -33,20 +32,14 @@ import io.jenkins.plugins.report.jtreg.model.*;
 import io.jenkins.plugins.report.jtreg.parsers.ReportParser;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
-import java.io.BufferedOutputStream;
+import io.jenkins.plugins.report.jtreg.writers.WritersManager;
+
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import org.kohsuke.stapler.DataBoundSetter;
-
-import java.util.Arrays;
 
 abstract public class AbstractReportPublisher extends Recorder {
 
@@ -90,9 +83,8 @@ abstract public class AbstractReportPublisher extends Recorder {
             logger.severe(s);
             build.setResult(Result.FAILURE);
         }
-        storeFailuresSummary(report, new File(build.getRootDir(), prefix() + "-" + Constants.REPORT_JSON));
-        storeFullTestsList(report, new File(build.getRootDir(), prefix() + "-" + Constants.REPORT_TESTS_LIST_JSON));
-        addReportAction(build);
+        storeSummary(report, build.getRootDir());
+                addReportAction(build);
         return true;
     }
 
@@ -107,65 +99,11 @@ abstract public class AbstractReportPublisher extends Recorder {
         }
     }
 
-    void storeFailuresSummary(List<Suite> reportFull, File jsonFile) throws IOException {
-        List<Suite> reportShort = reportFull.stream()
-                .sequential()
-                .map(s -> new Suite(
-                        s.getName(),
-                        new Report(
-                                s.getReport().getTestsPassed(),
-                                s.getReport().getTestsNotRun(),
-                                s.getReport().getTestsFailed(),
-                                s.getReport().getTestsError(),
-                                s.getReport().getTestsTotal(),
-                                s.getReport().getTestProblems())))
-                .sorted()
-                .collect(Collectors.toList());
-        try (Writer out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(jsonFile)),
-                StandardCharsets.UTF_8)) {
-            new GsonBuilder().setPrettyPrinting().create().toJson(reportShort, out);
-        }
-        cacheReport(reportShort, jsonFile);
+    private void storeSummary(List<Suite> reportFull, File rootDir) throws IOException {
+        WritersManager.storeAllSummaries(prefix(), reportFull, rootDir);
     }
 
-    private void cacheReport(List<Suite> reportShort, File jsonFile) {
-        try {
-            int passedSumm = 0;
-            int notRunSumm = 0;
-            int failedSumm = 0;
-            int errorSumm = 0;
-            int totalSumm = 0;
-            StringBuilder nameb = new StringBuilder();
-            for (Suite s : reportShort) {
-                passedSumm += s.getReport().getTestsPassed();
-                notRunSumm += s.getReport().getTestsNotRun();
-                failedSumm += s.getReport().getTestsFailed();
-                errorSumm += s.getReport().getTestsError();
-                totalSumm += s.getReport().getTestsTotal();
-                nameb.append(s.getName()).append(" ");
-            }
-            File buildDir = jsonFile.getParentFile();
-            int buildNumber = Integer.parseInt(buildDir.getName());
-            BuildReport br = new BuildReportPlugin(buildNumber, nameb.toString().trim(), passedSumm, failedSumm, errorSumm, reportShort, totalSumm, notRunSumm);
-            ReportProjectAction.cacheSumms(buildDir.getParentFile().getParentFile(), Arrays.asList(new BuildReport[]{br}));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
 
-    private void storeFullTestsList(List<Suite> reportFull, File jsonFile) throws IOException {
-        List<SuiteTests> suites = reportFull.stream()
-                .sequential()
-                .map(s -> new SuiteTests(
-                        s.getName(),
-                        s.getReport() instanceof ReportFull ? ((ReportFull) s.getReport()).getTestsList() : null))
-                .sorted()
-                .collect(Collectors.toList());
-        try (Writer out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(jsonFile)),
-                StandardCharsets.UTF_8)) {
-            new GsonBuilder().create().toJson(suites, out);
-        }
-    }
 
     @Override
     final public BuildStepMonitor getRequiredMonitorService() {

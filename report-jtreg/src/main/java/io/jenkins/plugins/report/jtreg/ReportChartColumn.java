@@ -28,12 +28,15 @@ import hudson.model.Job;
 import hudson.model.Project;
 import hudson.views.ListViewColumn;
 import hudson.views.ListViewColumnDescriptor;
+
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import io.jenkins.plugins.report.jtreg.model.BuildReportPlugin;
+
 import org.kohsuke.stapler.DataBoundConstructor;
 
 public class ReportChartColumn extends ListViewColumn {
@@ -45,11 +48,6 @@ public class ReportChartColumn extends ListViewColumn {
     public List<BuildReportPlugin> getJckReport(Job<?, ?> job) {
         AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(((Project) job).getPublishersList());
         List<BuildReportPlugin> r = new BuildSummaryParserPlugin(Arrays.asList("jck", "jtreg"), settings).parseJobReports(job);
-        try {
-            ReportProjectAction.cacheSumms(job.getRootDir(), r);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
         return r;
     }
 
