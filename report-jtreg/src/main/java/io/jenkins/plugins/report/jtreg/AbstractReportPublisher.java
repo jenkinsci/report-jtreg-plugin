@@ -89,10 +89,6 @@ abstract public class AbstractReportPublisher extends Recorder {
         WritersManager.storeAllSummaries(prefix(),report, build.getRootDir(),
                 new Metadata(build.getDisplayName(), build.getId(), build.getProject().getName()));
         //now we can reuse them to compute diff
-        ProjectReport reports = ReportProjectActionUtils.getReport(Set.of(prefix()), (Project) build.getProject(), 2);
-        WritersManager.storeAllSummaries(prefix(),report, reports, build.getRootDir(),
-                new Metadata(build.getDisplayName(), build.getId(), build.getProject().getName()));
-
         BuildSummaryParserPlugin bsp = new BuildSummaryParserPlugin(Arrays.asList(prefix()), ReportAction.getAbstractReportPublisher(build.getProject().getPublishersList()));
         try {
             BuildReportExtended br = bsp.parseBuildReportExtended(build);
@@ -111,7 +107,8 @@ abstract public class AbstractReportPublisher extends Recorder {
                     br.getNotRun(),
                     null,
                     br.getJob());
-            WritersManager.saveBuildReportExtended(prefix(), build.getRootDir(), br);
+            WritersManager.storeAllSummaries(prefix(),report, br, build.getRootDir(),
+                    new Metadata(build.getDisplayName(), build.getId(), build.getProject().getName()));
         }catch ( Exception e) {
             e.printStackTrace();
         }

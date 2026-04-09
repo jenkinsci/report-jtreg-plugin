@@ -31,7 +31,6 @@ import java.util.List;
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.Constants;
 import io.jenkins.plugins.report.jtreg.model.Metadata;
-import io.jenkins.plugins.report.jtreg.model.ProjectReport;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 
 public class WritersManager {
@@ -41,9 +40,14 @@ public class WritersManager {
         PropertiesWriter.writeReportSummaryProperties(reportFull, rootDir);
     }
 
-    public static void storeAllSummaries(String prefix, List<Suite> reportFull, ProjectReport projectReport, File rootDir, Metadata metadata) throws IOException {
+    public static void storeAllSummaries(String prefix, List<Suite> reportFull, BuildReportExtended buildReportExtended, File rootDir, Metadata metadata) throws IOException {
         writeJsons(prefix, reportFull, rootDir, metadata);
-        PropertiesWriter.writeReportSummaryPropertiesWithRegressions(rootDir, projectReport);
+        if (buildReportExtended != null) {
+            File diffJson = new File(rootDir, prefix + "-" + Constants.REPORT_DIFF);
+            JsonReportWriter.writeBuildReportExtended(diffJson, buildReportExtended);
+            PropertiesWriter.writeReportPropertiesRegressions(rootDir, buildReportExtended);
+        }
+
     }
 
     private static void writeJsons(String prefix, List<Suite> reportFull, File rootDir, Metadata metadata) throws IOException {
@@ -57,8 +61,4 @@ public class WritersManager {
         }
     }
 
-    public static void saveBuildReportExtended(String prefix, File rootDir, BuildReportExtended br) throws IOException {
-        File diffJson = new File(rootDir, prefix + "-" + Constants.REPORT_DIFF);
-        JsonReportWriter.writeBuildReportExtended(diffJson, br);
-    }
 }

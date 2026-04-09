@@ -23,9 +23,11 @@
  */
 package io.jenkins.plugins.report.jtreg.writers;
 
+import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import io.jenkins.plugins.report.jtreg.model.ProjectReport;
 import io.jenkins.plugins.report.jtreg.model.Suite;
+import io.jenkins.plugins.report.jtreg.model.SuiteTestChanges;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -63,22 +65,11 @@ public class PropertiesWriter {
      * @param rootBuild the root build directory
      * @param projectReport the project report to cache
      */
-    public static void writeReportSummaryPropertiesWithRegressions(File rootBuild, ProjectReport projectReport) {
+    public static void writeReportPropertiesRegressions(File rootBuild, BuildReportExtended buildReportExtended) {
         try {
-            //first report is latest passed, second is "ours"
-            if (projectReport.getReports().size() != 2) {
-                throw new IOException("Project report in this stage must contain exactly two reports, is not: " + projectReport.getReports().size());
-            }
-            BuildReport buildReport = projectReport.getReports().get(1);
-            String cwd = rootBuild.getName();
-            if (!cwd.equals("" + buildReport.getBuildNumber())) {
-                throw new IOException("Processed build is not current one! " + cwd + " x " + buildReport.getBuildNumber());
-            }
             File buildParent = rootBuild.getParentFile().getParentFile();
-            File cachedResults = getCachedResultsFile(buildParent, buildReport.getBuildNumber());
-            writeReportSummaryPropertiesImpl(cachedResults, Arrays.asList(projectReport.getReports().get(1)));
-            File cachedRegressions = getCachedRegressionsFile(buildParent, buildReport.getBuildNumber());
-            cacheRegressionsImpl(cachedRegressions, projectReport);
+            File cachedRegressions = getCachedRegressionsFile(buildParent, buildReportExtended.getBuildNumber());
+            cacheRegressionsImpl(cachedRegressions, buildReportExtended);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -113,21 +104,71 @@ public class PropertiesWriter {
      * This happily ignores combined jck+jtreg reporting, but as this feature is never used, it may be already corrupted elsewhere.
      *
      * @param cachedRegressions file forsecondary report
-     * @param projectReport the project report to cache
+     * @param br the project report to cache
      * @throws IOException if an I/O error occurs
      */
-    private static void cacheRegressionsImpl(File cachedRegressions, ProjectReport projectReport) throws IOException {
-        for (int i = 1; i < projectReport.getReports().size(); i++) {
+    private static void cacheRegressionsImpl(File cachedRegressions, BuildReportExtended br) throws IOException {
             if (!cachedRegressions.exists()) {
                 try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cachedRegressions), "utf-8"))) {
-                    bw.write("jrp.improvements=" + projectReport.getImprovements().get(i));
+                    bw.write("jrp.improvements=" + allImprovements(br.getTestChanges()));
                     bw.newLine();
-                    bw.write("jrp.regressions=" + projectReport.getRegressions().get(i));
+                    bw.write("jrp.regressions=" + allFailures(br.getTestChanges()));
+                    bw.newLine();
+                    bw.write("jrp.nwerrors=" + allErrors(br.getTestChanges()));
+                    bw.newLine();
+                    bw.write("jrp.added=" + allAdded(br.getTestChanges()));
+                    bw.newLine();
+                    bw.write("jrp.removes=" + allRemoved(br.getTestChanges()));
+                    bw.newLine();
+                    bw.write("jrp.addedSuites=" + br.getAddedSuites().size());
+                    bw.newLine();
+                    bw.write("jrp.removedSuites=" + br.getRemovedSuites().size());
                     bw.newLine();
                 }
             }
-        }
     }
+
+    private static int allImprovements(List<SuiteTestChanges> testChanges) {
+        int i = 0;
+        for (SuiteTestChanges testChange : testChanges) {
+            i += testChange.getFixes().size();
+        }
+        return i;
+    }
+
+    private static int allFailures(List<SuiteTestChanges> testChanges) {
+        int i = 0;
+        for (SuiteTestChanges testChange : testChanges) {
+            i += testChange.getFailures().size();
+        }
+        return i;
+    }
+
+    private static int allErrors(List<SuiteTestChanges> testChanges) {
+        int i = 0;
+        for (SuiteTestChanges testChange : testChanges) {
+            i += testChange.getErrors().size();
+        }
+        return i;
+    }
+
+    private static int allAdded(List<SuiteTestChanges> testChanges) {
+        int i = 0;
+        for (SuiteTestChanges testChange : testChanges) {
+            i += testChange.getAdded().size();
+        }
+        return i;
+    }
+
+    private static int allRemoved(List<SuiteTestChanges> testChanges) {
+        int i = 0;
+        for (SuiteTestChanges testChange : testChanges) {
+            i += testChange.getRemoved().size();
+        }
+        return i;
+    }
+
+
 
     /**
      * Caches build report summaries to properties files.
