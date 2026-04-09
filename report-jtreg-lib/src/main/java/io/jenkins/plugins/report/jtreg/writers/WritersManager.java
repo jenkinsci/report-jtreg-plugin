@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.Constants;
 import io.jenkins.plugins.report.jtreg.model.Metadata;
 import io.jenkins.plugins.report.jtreg.model.ProjectReport;
@@ -54,5 +55,10 @@ public class WritersManager {
         if (metadata != null) {
             JsonReportWriter.writeMetadataReport(metadata, jsonFile3.toPath());
         }
+    }
+
+    public static void saveBuildReportExtended(String prefix, File rootDir, BuildReportExtended br) throws IOException {
+        File diffJson = new File(rootDir, prefix + "-" + Constants.REPORT_DIFF);
+        JsonReportWriter.writeBuildReportExtended(diffJson, br);
     }
 }

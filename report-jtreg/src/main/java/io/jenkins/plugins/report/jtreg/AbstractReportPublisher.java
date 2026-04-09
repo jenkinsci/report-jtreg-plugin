@@ -36,6 +36,7 @@ import hudson.tasks.Recorder;
 import io.jenkins.plugins.report.jtreg.writers.WritersManager;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -91,6 +92,29 @@ abstract public class AbstractReportPublisher extends Recorder {
         ProjectReport reports = ReportProjectActionUtils.getReport(Set.of(prefix()), (Project) build.getProject(), 2);
         WritersManager.storeAllSummaries(prefix(),report, reports, build.getRootDir(),
                 new Metadata(build.getDisplayName(), build.getId(), build.getProject().getName()));
+
+        BuildSummaryParserPlugin bsp = new BuildSummaryParserPlugin(Arrays.asList(prefix()), ReportAction.getAbstractReportPublisher(build.getProject().getPublishersList()));
+        try {
+            BuildReportExtended br = bsp.parseBuildReportExtended(build);
+            //recreating without full listings
+            br = new BuildReportExtended(
+                    br.getBuildNumber(),
+                    br.getBuildName(),
+                    br.getPassed(),
+                    br.getFailed(),
+                    br.getError(),
+                    null,
+                    br.getAddedSuites(),
+                    br.getRemovedSuites(),
+                    br.getTestChanges(),
+                    br.getTotal(),
+                    br.getNotRun(),
+                    null,
+                    br.getJob());
+            WritersManager.saveBuildReportExtended(prefix(), build.getRootDir(), br);
+        }catch ( Exception e) {
+            e.printStackTrace();
+        }
         addReportAction(build);
         return true;
     }
