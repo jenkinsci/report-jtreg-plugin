@@ -27,6 +27,9 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.parsers.JckReportParser;
 import io.jenkins.plugins.report.jtreg.utils.JsonReportWriter;
+import io.jenkins.plugins.report.jtreg.utils.PropertiesWriter;
+import io.jenkins.plugins.report.jtreg.utils.writers.WrittersManager;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -60,29 +63,24 @@ public class RecreateJckReportSummaries {
             return;
         }
         try (Stream<Path> tckReportsStream = Files.list(tckReportsArchive)) {
-
             List<Suite> suitesList = tckReportsStream.sequential()
-                    .filter(p -> p.toString().endsWith(".xml") || p.toString().endsWith(".xml.gz"))
+                    .filter(p -> p.toString().endsWith(".xml") || p.toString().endsWith(".xml.gz") || p.toString().endsWith(".xml.xz"))
                     .map(this::jckReportToSuite)
                     .filter(s -> s != null)
                     .collect(Collectors.toList());
-
-            {
-                Path summaryPath = buildPath.resolve("jck-" + REPORT_JSON);
+            String prefix = "jck";
+            try {
+                Path summaryPath = buildPath.resolve(prefix + "-" + REPORT_JSON);
                 if (Files.exists(summaryPath)) {
-                    Files.move(summaryPath, buildPath.resolve("backup_" + "jck-" + REPORT_JSON), REPLACE_EXISTING);
+                    Files.move(summaryPath, buildPath.resolve("backup_" + prefix + "-" + REPORT_JSON), REPLACE_EXISTING);
                 }
-                JsonReportWriter.writeSummaryReport(suitesList, summaryPath);
-            }
-            {
-                Path testsListPath = buildPath.resolve("jck-" + REPORT_TESTS_LIST_JSON);
+                Path testsListPath = buildPath.resolve(prefix + "-" + REPORT_TESTS_LIST_JSON);
                 if (Files.exists(testsListPath)) {
-                    Files.move(testsListPath, buildPath.resolve("backup_" + "jck-" + REPORT_TESTS_LIST_JSON),
-                            REPLACE_EXISTING);
+                    Files.move(testsListPath, buildPath.resolve("backup_" + prefix + "-" + REPORT_TESTS_LIST_JSON), REPLACE_EXISTING);
                 }
-                JsonReportWriter.writeTestListReport(suitesList, testsListPath);
+            } finally {
+                WrittersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile());
             }
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }

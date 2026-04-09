@@ -29,11 +29,7 @@ import io.jenkins.plugins.report.jtreg.model.ReportFull;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.model.SuiteTests;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -50,40 +46,10 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  */
 public class JsonReportWriter {
 
-    /**
-     * Writes a summary report to a file with pretty printing.
-     * The summary includes only the test counts (passed, failed, error, total, not run)
-     * without the full test details.
-     *
-     * @param suites the list of suites to write
-     * @param outputFile the output file
-     * @throws IOException if an I/O error occurs
-     */
-    public static void writeSummaryReport(List<Suite> suites, File outputFile) throws IOException {
-        List<Suite> reportShort = suites.stream()
-                .sequential()
-                .map(s -> new Suite(
-                        s.getName(),
-                        new Report(
-                                s.getReport().getTestsPassed(),
-                                s.getReport().getTestsNotRun(),
-                                s.getReport().getTestsFailed(),
-                                s.getReport().getTestsError(),
-                                s.getReport().getTestsTotal(),
-                                s.getReport().getTestProblems())))
-                .sorted()
-                .collect(Collectors.toList());
-        
-        try (Writer out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(outputFile)),
-                StandardCharsets.UTF_8)) {
-            new GsonBuilder().setPrettyPrinting().create().toJson(reportShort, out);
-        }
-    }
-
-    /**
+      /**
      * Writes a summary report to a path with pretty printing.
-     * The summary includes only the test counts (passed, failed, error, total, not run)
-     * without the full test details.
+     * The summary includes test counts (passed, failed, error, total, not run)
+     * with the full test details.
      *
      * @param suites the list of suites to write
      * @param outputPath the output path
@@ -103,36 +69,12 @@ public class JsonReportWriter {
                                 s.getReport().getTestProblems())))
                 .sorted()
                 .collect(Collectors.toList());
-        
         try (Writer out = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8, TRUNCATE_EXISTING, CREATE)) {
             new GsonBuilder().setPrettyPrinting().create().toJson(reportShort, out);
         }
     }
 
-    /**
-     * Writes a full test list report to a file without pretty printing.
-     * The report includes the complete list of tests for each suite.
-     *
-     * @param suites the list of suites to write
-     * @param outputFile the output file
-     * @throws IOException if an I/O error occurs
-     */
-    public static void writeTestListReport(List<Suite> suites, File outputFile) throws IOException {
-        List<SuiteTests> suiteTests = suites.stream()
-                .sequential()
-                .map(s -> new SuiteTests(
-                        s.getName(),
-                        s.getReport() instanceof ReportFull ? ((ReportFull) s.getReport()).getTestsList() : null))
-                .sorted()
-                .collect(Collectors.toList());
-        
-        try (Writer out = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(outputFile)),
-                StandardCharsets.UTF_8)) {
-            new GsonBuilder().create().toJson(suiteTests, out);
-        }
-    }
-
-    /**
+     /**
      * Writes a full test list report to a path without pretty printing.
      * The report includes the complete list of tests for each suite.
      *
@@ -148,7 +90,6 @@ public class JsonReportWriter {
                         s.getReport() instanceof ReportFull ? ((ReportFull) s.getReport()).getTestsList() : null))
                 .sorted()
                 .collect(Collectors.toList());
-        
         try (Writer out = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8, TRUNCATE_EXISTING, CREATE)) {
             new GsonBuilder().create().toJson(suiteTests, out);
         }

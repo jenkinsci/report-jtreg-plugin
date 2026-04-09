@@ -34,6 +34,8 @@ import io.jenkins.plugins.report.jtreg.utils.JsonReportWriter;
 import io.jenkins.plugins.report.jtreg.utils.PropertiesWriter;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
+import io.jenkins.plugins.report.jtreg.utils.writers.WrittersManager;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -83,9 +85,8 @@ abstract public class AbstractReportPublisher extends Recorder {
             logger.severe(s);
             build.setResult(Result.FAILURE);
         }
-        storeFailuresSummary(report, new File(build.getRootDir(), prefix() + "-" + Constants.REPORT_JSON));
-        storeFullTestsList(report, new File(build.getRootDir(), prefix() + "-" + Constants.REPORT_TESTS_LIST_JSON));
-        addReportAction(build);
+        storeSummary(report, build.getRootDir());
+                addReportAction(build);
         return true;
     }
 
@@ -100,14 +101,11 @@ abstract public class AbstractReportPublisher extends Recorder {
         }
     }
 
-    void storeFailuresSummary(List<Suite> reportFull, File jsonFile) throws IOException {
-        JsonReportWriter.writeSummaryReport(reportFull, jsonFile);
-        PropertiesWriter.cacheReport(reportFull, jsonFile);
+    private void storeSummary(List<Suite> reportFull, File rootDir) throws IOException {
+        WrittersManager.storeAllSummaries(prefix(), reportFull, rootDir);
     }
 
-    private void storeFullTestsList(List<Suite> reportFull, File jsonFile) throws IOException {
-        JsonReportWriter.writeTestListReport(reportFull, jsonFile);
-    }
+
 
     @Override
     final public BuildStepMonitor getRequiredMonitorService() {

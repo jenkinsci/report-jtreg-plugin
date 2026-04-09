@@ -27,6 +27,9 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.parsers.JtregReportParser;
 import io.jenkins.plugins.report.jtreg.utils.JsonReportWriter;
+import io.jenkins.plugins.report.jtreg.utils.PropertiesWriter;
+import io.jenkins.plugins.report.jtreg.utils.writers.WrittersManager;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -105,30 +108,26 @@ public class RecreateJtregReportSummaries {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+
         String prefix = "jtreg";
         try (Stream<Path> tckReportsStream = archives.stream()) {
-
             List<Suite> suitesList = tckReportsStream.sequential()
+                    .filter(p -> p.toString().endsWith(".xml") || p.toString().endsWith(".xml.gz") || p.toString().endsWith(".xml.xz"))
                     .map(this::jtregReportToSuite)
                     .filter(s -> s != null)
                     .collect(Collectors.toList());
-
-            {
+            try {
                 Path summaryPath = buildPath.resolve(prefix + "-" + REPORT_JSON);
                 if (Files.exists(summaryPath)) {
                     Files.move(summaryPath, buildPath.resolve("backup_" + prefix + "-" + REPORT_JSON), REPLACE_EXISTING);
                 }
-                JsonReportWriter.writeSummaryReport(suitesList, summaryPath);
-            }
-            {
                 Path testsListPath = buildPath.resolve(prefix + "-" + REPORT_TESTS_LIST_JSON);
                 if (Files.exists(testsListPath)) {
-                    Files.move(testsListPath, buildPath.resolve("backup_" + prefix + "-" + REPORT_TESTS_LIST_JSON),
-                            REPLACE_EXISTING);
+                    Files.move(testsListPath, buildPath.resolve("backup_" + prefix + "-" + REPORT_TESTS_LIST_JSON), REPLACE_EXISTING);
                 }
-                JsonReportWriter.writeTestListReport(suitesList, testsListPath);
+            } finally {
+                WrittersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile());
             }
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }

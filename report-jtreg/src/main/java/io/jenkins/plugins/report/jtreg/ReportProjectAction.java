@@ -30,7 +30,6 @@ import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import io.jenkins.plugins.report.jtreg.model.ProjectReport;
 import io.jenkins.plugins.report.jtreg.utils.PropertiesWriter;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -87,6 +86,11 @@ public class ReportProjectAction implements Action {
         return "java-reports";
     }
 
+    // This is called when chart is shown on main page
+    // we currently recreate the  writeReportSummaryPropertiesWithRegressions
+    // here, because it is the only place where the regressions are computed.
+    // This should happen elsewhere. Not e that there is bug,
+    // which recreates regressions properties  on some jobs
     public ProjectReport getChartData() {
         AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(((Project) job).getPublishersList());
         List<? extends BuildReport> reports = new BuildSummaryParserPlugin(prefixes, settings).parseJobReports(job);
@@ -94,7 +98,7 @@ public class ReportProjectAction implements Action {
                 reports,
                 collectImprovements(reports),
                 collectRegressions(reports));
-        PropertiesWriter.cacheTotals(((Project) job).getRootDir(), report);
+        PropertiesWriter.writeReportSummaryPropertiesWithRegressions(job.getRootDir(), report);
         return report;
     }
 
