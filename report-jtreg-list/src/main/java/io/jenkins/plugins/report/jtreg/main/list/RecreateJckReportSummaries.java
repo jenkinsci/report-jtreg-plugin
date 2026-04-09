@@ -26,9 +26,7 @@ package io.jenkins.plugins.report.jtreg.main.list;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.parsers.JckReportParser;
-import io.jenkins.plugins.report.jtreg.utils.JsonReportWriter;
-import io.jenkins.plugins.report.jtreg.utils.PropertiesWriter;
-import io.jenkins.plugins.report.jtreg.utils.writers.WrittersManager;
+import io.jenkins.plugins.report.jtreg.writers.WritersManager;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -79,7 +77,7 @@ public class RecreateJckReportSummaries {
                     Files.move(testsListPath, buildPath.resolve("backup_" + prefix + "-" + REPORT_TESTS_LIST_JSON), REPLACE_EXISTING);
                 }
             } finally {
-                WrittersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile());
+                WritersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile());
             }
         } catch (Exception ex) {
             ex.printStackTrace();

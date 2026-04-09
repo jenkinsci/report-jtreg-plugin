@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package io.jenkins.plugins.report.jtreg.utils.writers;
+package io.jenkins.plugins.report.jtreg.writers;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,10 +30,8 @@ import java.util.List;
 
 import io.jenkins.plugins.report.jtreg.Constants;
 import io.jenkins.plugins.report.jtreg.model.Suite;
-import io.jenkins.plugins.report.jtreg.utils.JsonReportWriter;
-import io.jenkins.plugins.report.jtreg.utils.PropertiesWriter;
 
-public class WrittersManager {
+public class WritersManager {
 
     public static void storeAllSummaries(String prefix, List<Suite> reportFull, File rootDir) throws IOException {
         File jsonFile1 = new File(rootDir, prefix + "-" + Constants.REPORT_JSON);

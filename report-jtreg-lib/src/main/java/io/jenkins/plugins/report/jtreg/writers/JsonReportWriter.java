@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.jenkins.plugins.report.jtreg.utils;
+package io.jenkins.plugins.report.jtreg.writers;
 
 import com.google.gson.GsonBuilder;
 import io.jenkins.plugins.report.jtreg.model.Report;

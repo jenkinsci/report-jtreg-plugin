@@ -36,7 +36,6 @@ import java.util.UUID;
 
 import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import io.jenkins.plugins.report.jtreg.model.BuildReportPlugin;
-import io.jenkins.plugins.report.jtreg.utils.PropertiesWriter;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 

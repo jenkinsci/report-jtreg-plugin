@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.jenkins.plugins.report.jtreg.parsers.JtregReportParser;
-import io.jenkins.plugins.report.jtreg.utils.writers.WrittersManager;
+import io.jenkins.plugins.report.jtreg.writers.WritersManager;
 
 class JtregReportParserTest {
 
@@ -55,7 +55,7 @@ class JtregReportParserTest {
         tmpJMainDir.deleteOnExit();
         File tmpDir2 = new File(tmpJMainDir, "jobs/builds/5");
         tmpDir2.mkdirs();
-        WrittersManager.storeAllSummaries("jtreg", List.of(actualReport), tmpDir2);
+        WritersManager.storeAllSummaries("jtreg", List.of(actualReport), tmpDir2);
         String s = String.join("\n", Files.readAllLines(new File(tmpDir2,"jtreg-" + Constants.REPORT_JSON).toPath()));
         assertTrue(s.contains("grep"));
         assertTrue(s.contains("Pack"));

@@ -30,11 +30,9 @@ import hudson.model.BuildListener;
 import hudson.model.Result;
 import io.jenkins.plugins.report.jtreg.model.*;
 import io.jenkins.plugins.report.jtreg.parsers.ReportParser;
-import io.jenkins.plugins.report.jtreg.utils.JsonReportWriter;
-import io.jenkins.plugins.report.jtreg.utils.PropertiesWriter;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
-import io.jenkins.plugins.report.jtreg.utils.writers.WrittersManager;
+import io.jenkins.plugins.report.jtreg.writers.WritersManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -102,7 +100,7 @@ abstract public class AbstractReportPublisher extends Recorder {
     }
 
     private void storeSummary(List<Suite> reportFull, File rootDir) throws IOException {
-        WrittersManager.storeAllSummaries(prefix(), reportFull, rootDir);
+        WritersManager.storeAllSummaries(prefix(), reportFull, rootDir);
     }
 
 
