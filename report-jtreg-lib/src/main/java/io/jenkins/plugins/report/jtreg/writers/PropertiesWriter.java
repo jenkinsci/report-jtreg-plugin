@@ -65,10 +65,19 @@ public class PropertiesWriter {
      */
     public static void writeReportSummaryPropertiesWithRegressions(File rootBuild, ProjectReport projectReport) {
         try {
-            BuildReport buildReport = projectReport.getReports().get(0);
-            File cachedResults = getCachedResultsFile(rootBuild, buildReport.getBuildNumber());
-            writeReportSummaryPropertiesImpl(cachedResults, projectReport.getReports());
-            File cachedRegressions = getCachedRegressionsFile(rootBuild, buildReport.getBuildNumber());
+            //first report is latest passed, second is "ours"
+            if (projectReport.getReports().size() != 2) {
+                throw new IOException("Project report in this stage must contain exactly two reports, is not: " + projectReport.getReports().size());
+            }
+            BuildReport buildReport = projectReport.getReports().get(1);
+            String cwd = rootBuild.getName();
+            if (!cwd.equals("" + buildReport.getBuildNumber())) {
+                throw new IOException("Processed build is not current one! " + cwd + " x " + buildReport.getBuildNumber());
+            }
+            File buildParent = rootBuild.getParentFile().getParentFile();
+            File cachedResults = getCachedResultsFile(buildParent, buildReport.getBuildNumber());
+            writeReportSummaryPropertiesImpl(cachedResults, Arrays.asList(projectReport.getReports().get(1)));
+            File cachedRegressions = getCachedRegressionsFile(buildParent, buildReport.getBuildNumber());
             cacheRegressionsImpl(cachedRegressions, projectReport);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -108,7 +117,7 @@ public class PropertiesWriter {
      * @throws IOException if an I/O error occurs
      */
     private static void cacheRegressionsImpl(File cachedRegressions, ProjectReport projectReport) throws IOException {
-        for (int i = 0; i < projectReport.getReports().size(); i++) {
+        for (int i = 1; i < projectReport.getReports().size(); i++) {
             if (!cachedRegressions.exists()) {
                 try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cachedRegressions), "utf-8"))) {
                     bw.write("jrp.improvements=" + projectReport.getImprovements().get(i));

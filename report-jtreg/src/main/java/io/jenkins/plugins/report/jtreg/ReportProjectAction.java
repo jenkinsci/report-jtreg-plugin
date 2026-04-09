@@ -26,11 +26,9 @@ package io.jenkins.plugins.report.jtreg;
 import hudson.model.Action;
 import hudson.model.Job;
 import hudson.model.Project;
-import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import io.jenkins.plugins.report.jtreg.model.ProjectReport;
 import io.jenkins.plugins.report.jtreg.writers.PropertiesWriter;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -87,78 +85,8 @@ public class ReportProjectAction implements Action {
     }
 
     // This is called when chart is shown on main page
-    // we currently recreate the  writeReportSummaryPropertiesWithRegressions
-    // here, because it is the only place where the regressions are computed.
-    // This should happen elsewhere. Not e that there is bug,
-    // which recreates regressions properties  on some jobs
     public ProjectReport getChartData() {
-        AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(((Project) job).getPublishersList());
-        List<? extends BuildReport> reports = new BuildSummaryParserPlugin(prefixes, settings).parseJobReports(job);
-        ProjectReport report = new ProjectReport(
-                reports,
-                collectImprovements(reports),
-                collectRegressions(reports));
-        PropertiesWriter.writeReportSummaryPropertiesWithRegressions(job.getRootDir(), report);
+        ProjectReport report = ReportProjectActionUtils.getReport(prefixes, (Project) job, 0);
         return report;
     }
-
-    private List<Integer> collectImprovements(List<? extends BuildReport> reports) {
-        List<Integer> result = new ArrayList<>();
-
-        Set<String> prev = null;
-        for (BuildReport report : reports) {
-            if (prev == null) {
-                prev = collectTestNames(report);
-                result.add(0);
-                continue;
-            }
-            Set<String> current = collectTestNames(report);
-
-            long count = prev.stream()
-                    .sequential()
-                    .filter(s -> !current.contains(s))
-                    .count();
-            result.add((int) count);
-
-            prev = current;
-        }
-
-        return result;
-    }
-
-    private List<Integer> collectRegressions(List<? extends BuildReport> reports) {
-        List<Integer> result = new ArrayList<>();
-        Set<String> prev = null;
-        for (BuildReport report : reports) {
-            if (prev == null) {
-                prev = collectTestNames(report);
-                result.add(0);
-                continue;
-            }
-            Set<String> current = collectTestNames(report);
-            Set<String> finalPrev = new HashSet<>(prev);
-
-            long count = current.stream()
-                    .sequential()
-                    .filter(s -> !finalPrev.contains(s))
-                    .count();
-            result.add((int) count);
-
-            prev = current;
-        }
-
-        return result;
-    }
-
-    private Set<String> collectTestNames(BuildReport report) {
-        return report.getSuites().stream()
-                .sequential()
-                .filter(s -> s.getReport().getTestProblems() != null)
-                .filter(s -> s.getReport().getTestProblems().size() > 0)
-                .flatMap(s -> s.getReport().getTestProblems().stream()
-                        .sequential()
-                        .map(t -> s.getName() + " / " + t.getName()))
-                .collect(Collectors.toSet());
-    }
-
 }

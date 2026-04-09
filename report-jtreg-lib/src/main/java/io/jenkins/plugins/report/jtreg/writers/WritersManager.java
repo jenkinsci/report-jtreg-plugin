@@ -30,17 +30,27 @@ import java.util.List;
 
 import io.jenkins.plugins.report.jtreg.Constants;
 import io.jenkins.plugins.report.jtreg.model.Metadata;
+import io.jenkins.plugins.report.jtreg.model.ProjectReport;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 
 public class WritersManager {
 
     public static void storeAllSummaries(String prefix, List<Suite> reportFull, File rootDir, Metadata metadata) throws IOException {
+        writeJsons(prefix, reportFull, rootDir, metadata);
+        PropertiesWriter.writeReportSummaryProperties(reportFull, rootDir);
+    }
+
+    public static void storeAllSummaries(String prefix, List<Suite> reportFull, ProjectReport projectReport, File rootDir, Metadata metadata) throws IOException {
+        writeJsons(prefix, reportFull, rootDir, metadata);
+        PropertiesWriter.writeReportSummaryPropertiesWithRegressions(rootDir, projectReport);
+    }
+
+    private static void writeJsons(String prefix, List<Suite> reportFull, File rootDir, Metadata metadata) throws IOException {
         File jsonFile1 = new File(rootDir, prefix + "-" + Constants.REPORT_JSON);
         File jsonFile2 = new File(rootDir, prefix + "-" + Constants.REPORT_TESTS_LIST_JSON);
         File jsonFile3 = new File(rootDir, prefix + "-" + Constants.REPORT_METADATA);
         JsonReportWriter.writeSummaryReport(reportFull, jsonFile1.toPath());
         JsonReportWriter.writeTestListReport(reportFull, jsonFile2.toPath());
-        PropertiesWriter.writeReportSummaryProperties(reportFull, rootDir);
         if (metadata != null) {
             JsonReportWriter.writeMetadataReport(metadata, jsonFile3.toPath());
         }
