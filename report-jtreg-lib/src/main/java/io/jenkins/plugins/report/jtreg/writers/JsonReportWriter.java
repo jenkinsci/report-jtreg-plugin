@@ -24,6 +24,8 @@
 package io.jenkins.plugins.report.jtreg.writers;
 
 import com.google.gson.GsonBuilder;
+
+import io.jenkins.plugins.report.jtreg.model.Metadata;
 import io.jenkins.plugins.report.jtreg.model.Report;
 import io.jenkins.plugins.report.jtreg.model.ReportFull;
 import io.jenkins.plugins.report.jtreg.model.Suite;
@@ -92,6 +94,12 @@ public class JsonReportWriter {
                 .collect(Collectors.toList());
         try (Writer out = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8, TRUNCATE_EXISTING, CREATE)) {
             new GsonBuilder().create().toJson(suiteTests, out);
+        }
+    }
+
+    public static void writeMetadataReport(Metadata metadata, Path outputPath) throws IOException {
+        try (Writer out = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8, TRUNCATE_EXISTING, CREATE)) {
+            new GsonBuilder().setPrettyPrinting().create().toJson(metadata, out);
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015-2026 report-jtreg plugin contributors
+ * Copyright 2015-2023 report-jtreg plugin contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,28 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package io.jenkins.plugins.report.jtreg.model;
 
-package io.jenkins.plugins.report.jtreg.writers;
+public class Metadata implements java.io.Serializable {
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
+    private final String buildName;
+    private final String buildNumber;
+    private final String jobName;
 
-import io.jenkins.plugins.report.jtreg.Constants;
-import io.jenkins.plugins.report.jtreg.model.Metadata;
-import io.jenkins.plugins.report.jtreg.model.Suite;
-
-public class WritersManager {
-
-    public static void storeAllSummaries(String prefix, List<Suite> reportFull, File rootDir, Metadata metadata) throws IOException {
-        File jsonFile1 = new File(rootDir, prefix + "-" + Constants.REPORT_JSON);
-        File jsonFile2 = new File(rootDir, prefix + "-" + Constants.REPORT_TESTS_LIST_JSON);
-        File jsonFile3 = new File(rootDir, prefix + "-" + Constants.REPORT_METADATA);
-        JsonReportWriter.writeSummaryReport(reportFull, jsonFile1.toPath());
-        JsonReportWriter.writeTestListReport(reportFull, jsonFile2.toPath());
-        PropertiesWriter.writeReportSummaryProperties(reportFull, rootDir);
-        if (metadata != null) {
-            JsonReportWriter.writeMetadataReport(metadata, jsonFile3.toPath());
-        }
+    public Metadata(String buildName, String buildNumber, String jobName) {
+        this.buildName = buildName;
+        this.buildNumber = buildNumber;
+        this.jobName = jobName;
     }
+
 }

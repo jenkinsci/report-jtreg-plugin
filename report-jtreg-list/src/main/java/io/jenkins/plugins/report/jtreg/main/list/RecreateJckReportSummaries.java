@@ -24,6 +24,7 @@
 package io.jenkins.plugins.report.jtreg.main.list;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.jenkins.plugins.report.jtreg.model.Metadata;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.parsers.JckReportParser;
 import io.jenkins.plugins.report.jtreg.writers.WritersManager;
@@ -77,7 +78,9 @@ public class RecreateJckReportSummaries {
                     Files.move(testsListPath, buildPath.resolve("backup_" + prefix + "-" + REPORT_TESTS_LIST_JSON), REPLACE_EXISTING);
                 }
             } finally {
-                WritersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile());
+                //the metadata would be missing displayName. It is (optionally) hidden in build.xml as /build/displayName
+                //buildId is directory name, project s ../../name
+                WritersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile(), null);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -83,8 +83,9 @@ abstract public class AbstractReportPublisher extends Recorder {
             logger.severe(s);
             build.setResult(Result.FAILURE);
         }
-        storeSummary(report, build.getRootDir());
-                addReportAction(build);
+        WritersManager.storeAllSummaries(prefix(),report,build.getRootDir(),
+                new Metadata(build.getDisplayName(), build.getId(), build.getProject().getName()));
+        addReportAction(build);
         return true;
     }
 
@@ -98,12 +99,6 @@ abstract public class AbstractReportPublisher extends Recorder {
             action.addPrefix(prefix());
         }
     }
-
-    private void storeSummary(List<Suite> reportFull, File rootDir) throws IOException {
-        WritersManager.storeAllSummaries(prefix(), reportFull, rootDir);
-    }
-
-
 
     @Override
     final public BuildStepMonitor getRequiredMonitorService() {
