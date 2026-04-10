@@ -86,6 +86,13 @@ public class JsonReportWriter {
      * @throws IOException if an I/O error occurs
      */
     public static void writeTestListReport(List<Suite> suites, Path outputPath) throws IOException {
+        List<SuiteTests> suiteTests = suitesToTests(suites);
+        try (Writer out = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8, TRUNCATE_EXISTING, CREATE)) {
+            new GsonBuilder().create().toJson(suiteTests, out);
+        }
+    }
+
+    static List<SuiteTests> suitesToTests(List<Suite> suites) {
         List<SuiteTests> suiteTests = suites.stream()
                 .sequential()
                 .map(s -> new SuiteTests(
@@ -93,9 +100,7 @@ public class JsonReportWriter {
                         s.getReport() instanceof ReportFull ? ((ReportFull) s.getReport()).getTestsList() : null))
                 .sorted()
                 .collect(Collectors.toList());
-        try (Writer out = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8, TRUNCATE_EXISTING, CREATE)) {
-            new GsonBuilder().create().toJson(suiteTests, out);
-        }
+        return suiteTests;
     }
 
 

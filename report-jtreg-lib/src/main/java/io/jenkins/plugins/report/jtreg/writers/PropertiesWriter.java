@@ -25,7 +25,6 @@ package io.jenkins.plugins.report.jtreg.writers;
 
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.model.BuildReport;
-import io.jenkins.plugins.report.jtreg.model.ProjectReport;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.model.SuiteTestChanges;
 

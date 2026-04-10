@@ -55,7 +55,7 @@ class JtregReportParserTest {
         tmpJMainDir.deleteOnExit();
         File tmpDir2 = new File(tmpJMainDir, "jobs/builds/5");
         tmpDir2.mkdirs();
-        WritersManager.storeAllSummaries("jtreg", List.of(actualReport), tmpDir2);
+        WritersManager.storeAllSummaries("jtreg", List.of(actualReport), tmpDir2, "testBuild5", null);
         String s = String.join("\n", Files.readAllLines(new File(tmpDir2,"jtreg-" + Constants.REPORT_JSON).toPath()));
         assertTrue(s.contains("grep"));
         assertTrue(s.contains("Pack"));

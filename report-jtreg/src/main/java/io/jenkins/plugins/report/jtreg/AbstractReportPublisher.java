@@ -33,6 +33,7 @@ import io.jenkins.plugins.report.jtreg.parsers.ReportParser;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
 import io.jenkins.plugins.report.jtreg.writers.WritersManager;
+import jenkins.model.Jenkins;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -84,7 +85,7 @@ abstract public class AbstractReportPublisher extends Recorder {
             build.setResult(Result.FAILURE);
         }
         //first we create the jsons for this run
-        WritersManager.storeAllSummaries(prefix(),report, build.getRootDir());
+        WritersManager.storeAllSummaries(prefix(),report, build.getRootDir(), build.getDisplayName(), Jenkins.get().getRootUrl());
         //now we can reuse them to compute diff
         BuildSummaryParserPlugin bsp = new BuildSummaryParserPlugin(Arrays.asList(prefix()), ReportAction.getAbstractReportPublisher(build.getProject().getPublishersList()));
         try {
@@ -104,7 +105,7 @@ abstract public class AbstractReportPublisher extends Recorder {
                     br.getNotRun(),
                     null,
                     br.getJob());
-            WritersManager.storeAllDiffs(prefix(),report, br, build.getRootDir());
+            WritersManager.storeAllDiffs(prefix(),report, br, build.getRootDir(), Jenkins.get().getRootUrl());
         }catch ( Exception e) {
             e.printStackTrace();
         }
