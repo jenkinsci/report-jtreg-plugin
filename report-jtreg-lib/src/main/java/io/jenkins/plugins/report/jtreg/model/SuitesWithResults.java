@@ -46,14 +46,21 @@ public class SuitesWithResults implements java.io.Serializable {
         return new SuitesWithResults(futureSuitests);
     }
 
-    private static boolean isProblem(String suiteName, String test, List<Suite> probelms) {
+    public static boolean isProblem(String suiteName, String test, List<Suite> probelms) {
         for (Suite probelm : probelms) {
             if (probelm.getName().equals(suiteName)) {
-                for (Test t : probelm.getReport().getTestProblems()) {
-                    if (t.getName().equals(test)) {
-                        return true;
-                    }
+                if (isProblem(test, probelm.getReport().getTestProblems())) {
+                    return true;
                 }
+            }
+        }
+        return false;
+    }
+
+    public static boolean isProblem(String test, List<Test> probelms) {
+        for (Test t : probelms) {
+            if (t.getName().equals(test)) {
+                return true;
             }
         }
         return false;

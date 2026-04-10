@@ -126,7 +126,7 @@ public class RecreateJtregReportSummaries {
             } finally {
                 //the metadata would be missing displayName. It is (optionally) hidden in build.xml as /build/displayName
                 //buildId is directory name, project s ../../name
-                WritersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile());
+                WritersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile(), "unknown", null);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -24,21 +24,23 @@
 package io.jenkins.plugins.report.jtreg.writers;
 
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
+import io.jenkins.plugins.report.jtreg.model.ReportFull;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.model.SuiteTestChanges;
-import io.jenkins.plugins.report.jtreg.model.SuiteTestsWithResults;
+import io.jenkins.plugins.report.jtreg.model.SuiteTests;
+import io.jenkins.plugins.report.jtreg.model.SuitesWithResults;
 import io.jenkins.plugins.report.jtreg.model.Test;
 import io.jenkins.plugins.report.jtreg.model.TestOutput;
 import io.jenkins.plugins.report.jtreg.model.TestStatus;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
@@ -64,29 +66,29 @@ public class PlainTextWriter {
      * @param outputPath the output file path
      * @throws IOException if an I/O error occurs
      */
-    public static void writeSummaryReport(List<Suite> suites, String jobName, String buildName, 
-                                         int buildNumber, Path outputPath) throws IOException {
-        try (BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8, 
-                                                             TRUNCATE_EXISTING, CREATE)) {
-            // Calculate totals
-            int totalTests = 0;
-            int passedTests = 0;
-            int failedTests = 0;
-            int errorTests = 0;
-            int skippedTests = 0;
-            
-            List<Test> allFailedTests = new ArrayList<>();
-            List<Test> allErrorTests = new ArrayList<>();
-            List<Test> allSkippedTests = new ArrayList<>();
-            
-            for (Suite suite : suites) {
-                totalTests += suite.getReport().getTestsTotal();
-                passedTests += suite.getReport().getTestsPassed();
-                failedTests += suite.getReport().getTestsFailed();
-                errorTests += suite.getReport().getTestsError();
-                skippedTests += suite.getReport().getTestsNotRun();
-                
-                // Collect problem tests
+    public static void writeSummaryReport(List<Suite> suites, String jobName, String buildName, int buildNumber, Path outputPath, String url) throws IOException {
+
+        // Calculate totals
+        int totalTests = 0;
+        int passedTests = 0;
+        int failedTests = 0;
+        int errorTests = 0;
+        int skippedTests = 0;
+
+        List<Test> allFailedTests = new ArrayList<>();
+        List<Test> allErrorTests = new ArrayList<>();
+        List<Test> allSkippedTests = new ArrayList<>();
+
+        for (Suite suite : suites) {
+            totalTests += suite.getReport().getTestsTotal();
+            passedTests += suite.getReport().getTestsPassed();
+            failedTests += suite.getReport().getTestsFailed();
+            errorTests += suite.getReport().getTestsError();
+            skippedTests += suite.getReport().getTestsNotRun();
+
+            // Collect problem tests
+
+            if (suite.getReport().getTestProblems() != null) {
                 for (Test test : suite.getReport().getTestProblems()) {
                     if (test.getStatus() == TestStatus.FAILED) {
                         allFailedTests.add(test);
@@ -97,22 +99,25 @@ public class PlainTextWriter {
                     }
                 }
             }
-            
+        }
+
+        try (BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8, 
+                                                             TRUNCATE_EXISTING, CREATE)) {
             // Write header
-            writeHeader(writer, jobName, buildName, buildNumber);
+            writeHeader(writer, jobName, buildName, buildNumber, url);
             
             // Write summary
             writer.write(String.format("We ran %d test%s in total. ", totalTests, pluralize(totalTests)));
             writer.write(String.format("From those, %d test%s passed, ", passedTests, pluralize(passedTests)));
             writer.write(String.format("%d test%s failed, ", failedTests, pluralize(failedTests)));
             writer.write(String.format("%d test%s had errors, ", errorTests, pluralize(errorTests)));
-            writer.write(String.format("and %d test%s %s skipped.\n\n", 
+            writer.write(String.format("and %d test%s %s skipped.%n%n",
                                       skippedTests, pluralize(skippedTests), 
                                       skippedTests == 1 ? "was" : "were"));
             
             // Write failed tests
             if (!allFailedTests.isEmpty()) {
-                writer.write(String.format("The following %d test%s failed:\n", 
+                writer.write(String.format("The following %d test%s failed:%n",
                                           allFailedTests.size(), pluralize(allFailedTests.size())));
                 for (Test test : allFailedTests) {
                     writer.write("  - " + test.getName() + "\n");
@@ -122,7 +127,7 @@ public class PlainTextWriter {
             
             // Write error tests
             if (!allErrorTests.isEmpty()) {
-                writer.write(String.format("The following %d test%s had errors:\n", 
+                writer.write(String.format("The following %d test%s had errors:%n",
                                           allErrorTests.size(), pluralize(allErrorTests.size())));
                 for (Test test : allErrorTests) {
                     writer.write("  - " + test.getName() + "\n");
@@ -132,7 +137,7 @@ public class PlainTextWriter {
             
             // Write skipped tests
             if (!allSkippedTests.isEmpty()) {
-                writer.write(String.format("The following %d test%s %s skipped:\n", 
+                writer.write(String.format("The following %d test%s %s skipped:%n",
                                           allSkippedTests.size(), pluralize(allSkippedTests.size()),
                                           allSkippedTests.size() == 1 ? "was" : "were"));
                 for (Test test : allSkippedTests) {
@@ -145,14 +150,15 @@ public class PlainTextWriter {
             writer.write("\nTest Suite Breakdown:\n");
             writer.write("=====================\n\n");
             for (Suite suite : suites) {
-                writer.write(String.format("Suite: %s\n", suite.getName()));
-                writer.write(String.format("  Total: %d, Passed: %d, Failed: %d, Errors: %d, Skipped: %d\n\n",
+                writer.write(String.format("Suite: %s%n", suite.getName()));
+                writer.write(String.format("  Total: %d, Passed: %d, Failed: %d, Errors: %d, Skipped: %d%n%n",
                                           suite.getReport().getTestsTotal(),
                                           suite.getReport().getTestsPassed(),
                                           suite.getReport().getTestsFailed(),
                                           suite.getReport().getTestsError(),
                                           suite.getReport().getTestsNotRun()));
             }
+            footer(writer, jobName, buildNumber, url);
         }
     }
 
@@ -166,24 +172,24 @@ public class PlainTextWriter {
      * @param outputPath the output file path
      * @throws IOException if an I/O error occurs
      */
-    public static void writeProblemsReport(List<Suite> suites, String jobName, String buildName, 
-                                          int buildNumber, Path outputPath) throws IOException {
-        try (BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8, 
+    public static void writeProblemsReport(List<Suite> suites, String jobName, String buildName, int buildNumber, Path outputPath, String url) throws IOException {
+
+        // Calculate totals
+        int failedTests = 0;
+        int errorTests = 0;
+
+        for (Suite suite : suites) {
+            failedTests += suite.getReport().getTestsFailed();
+            errorTests += suite.getReport().getTestsError();
+        }
+        try (BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8,
                                                              TRUNCATE_EXISTING, CREATE)) {
-            // Calculate totals
-            int failedTests = 0;
-            int errorTests = 0;
-            
-            for (Suite suite : suites) {
-                failedTests += suite.getReport().getTestsFailed();
-                errorTests += suite.getReport().getTestsError();
-            }
-            
+
             // Write header
-            writeHeader(writer, jobName, buildName, buildNumber);
+            writeHeader(writer, jobName, buildName, buildNumber, url);
             
             // Write summary
-            writer.write(String.format("This report focuses on the %d failed test%s and %d test%s with errors.\n\n",
+            writer.write(String.format("This report focuses on the %d failed test%s and %d test%s with errors.%n%n",
                                       failedTests, pluralize(failedTests),
                                       errorTests, pluralize(errorTests)));
             
@@ -193,38 +199,43 @@ public class PlainTextWriter {
             // Write detailed information for each problem test
             for (Suite suite : suites) {
                 boolean suiteHeaderWritten = false;
-                
-                for (Test test : suite.getReport().getTestProblems()) {
-                    if (test.getStatus() == TestStatus.FAILED || test.getStatus() == TestStatus.ERROR) {
-                        if (!suiteHeaderWritten) {
-                            writer.write(String.format("\n--- Suite: %s ---\n\n", suite.getName()));
-                            suiteHeaderWritten = true;
-                        }
-                        
-                        writer.write(String.format("Test: %s\n", test.getName()));
-                        writer.write(String.format("Status: %s\n", test.getStatus()));
-                        
-                        if (test.getStatusLine() != null && !test.getStatusLine().isEmpty()) {
-                            writer.write(String.format("Status Line: %s\n", test.getStatusLine()));
-                        }
-                        
-                        // Write outputs (stack traces, logs, etc.)
-                        if (test.getOutputs() != null && !test.getOutputs().isEmpty()) {
-                            writer.write("\nOutputs:\n");
-                            for (TestOutput output : test.getOutputs()) {
-                                writer.write(String.format("\n  [%s]:\n", output.getName()));
-                                writer.write("  " + output.getValue().replace("\n", "\n  ") + "\n");
+
+                if  (suite.getReport().getTestProblems() != null ) {
+                    for (Test test : suite.getReport().getTestProblems()) {
+                        if (test.getStatus() == TestStatus.FAILED || test.getStatus() == TestStatus.ERROR) {
+                            if (!suiteHeaderWritten) {
+                                writer.write(String.format("%n=== Suite: %s ===%n%n", suite.getName()));
+                                suiteHeaderWritten = true;
                             }
+
+                            writer.write(String.format("Test: %s%n", test.getName()));
+                            writer.write(String.format("Status: %s%n", test.getStatus()));
+
+                            if (test.getStatusLine() != null && !test.getStatusLine().isEmpty()) {
+                                writer.write(String.format("Status Line: %s%n", test.getStatusLine()));
+                            }
+
+                            // Write outputs (stack traces, logs, etc.)
+                            if (test.getOutputs() != null && !test.getOutputs().isEmpty()) {
+                                writer.write("\nOutputs:\n");
+                                for (TestOutput output : test.getOutputs()) {
+                                    writer.write(String.format("%n  [%s]:%n", output.getName()));
+                                    writer.write("  " + output.getValue().replace("\n", "\n  ") + "\n");
+                                }
+                            }
+
+                            writer.write("\n" + "=".repeat(80) + "\n\n");
                         }
-                        
-                        writer.write("\n" + "=".repeat(80) + "\n\n");
                     }
+                } else {
+                    writer.write("\nAll good!\n");
                 }
             }
             
             if (failedTests == 0 && errorTests == 0) {
                 writer.write("No failed or errored tests to report. All tests passed successfully!\n");
             }
+            footer(writer, jobName, buildNumber, url);
         }
     }
 
@@ -236,40 +247,40 @@ public class PlainTextWriter {
      * @param outputPath the output file path
      * @throws IOException if an I/O error occurs
      */
-    public static void writeDiffReport(BuildReportExtended buildReportExtended, Path outputPath) throws IOException {
-        try (BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8, 
+    public static void writeDiffReport(BuildReportExtended buildReportExtended, Path outputPath, String url) throws IOException {
+
+        // Calculate totals
+        int totalImprovements = 0;
+        int totalRegressions = 0;
+        int totalNewErrors = 0;
+        int totalAdded = 0;
+        int totalRemoved = 0;
+
+        for (SuiteTestChanges changes : buildReportExtended.getTestChanges()) {
+            totalImprovements += changes.getFixes().size();
+            totalRegressions += changes.getFailures().size();
+            totalNewErrors += changes.getErrors().size();
+            totalAdded += changes.getAdded().size();
+            totalRemoved += changes.getRemoved().size();
+        }
+
+        try (BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8,
                                                              TRUNCATE_EXISTING, CREATE)) {
             // Write header
-            writeHeader(writer, buildReportExtended.getJob(), buildReportExtended.getBuildName(), 
-                       buildReportExtended.getBuildNumber());
-            
-            // Calculate totals
-            int totalImprovements = 0;
-            int totalRegressions = 0;
-            int totalNewErrors = 0;
-            int totalAdded = 0;
-            int totalRemoved = 0;
-            
-            for (SuiteTestChanges changes : buildReportExtended.getTestChanges()) {
-                totalImprovements += changes.getFixes().size();
-                totalRegressions += changes.getFailures().size();
-                totalNewErrors += changes.getErrors().size();
-                totalAdded += changes.getAdded().size();
-                totalRemoved += changes.getRemoved().size();
-            }
-            
-            writer.write("This report shows changes compared to the previous build.\n\n");
+            writeHeader(writer, buildReportExtended.getJob(), buildReportExtended.getBuildName(), buildReportExtended.getBuildNumber(), url);
+
+            writer.write("This report shows changes compared to the previous, latest stable or unstable, build.\n\n");
             
             // Write summary
             writer.write("Summary of Changes:\n");
             writer.write("===================\n\n");
-            writer.write(String.format("Test Improvements (fixes): %d\n", totalImprovements));
-            writer.write(String.format("Test Regressions (new failures): %d\n", totalRegressions));
-            writer.write(String.format("New Errors: %d\n", totalNewErrors));
-            writer.write(String.format("Tests Added: %d\n", totalAdded));
-            writer.write(String.format("Tests Removed: %d\n", totalRemoved));
-            writer.write(String.format("Suites Added: %d\n", buildReportExtended.getAddedSuites().size()));
-            writer.write(String.format("Suites Removed: %d\n\n", buildReportExtended.getRemovedSuites().size()));
+            writer.write(String.format("Test Improvements (new fixes): %d%n", totalImprovements));
+            writer.write(String.format("Test Regressions (new failures): %d%n", totalRegressions));
+            writer.write(String.format("New Regressions (new errors): %d%n", totalNewErrors));
+            writer.write(String.format("Tests Added: %d%n", totalAdded));
+            writer.write(String.format("Tests Removed: %d%n", totalRemoved));
+            writer.write(String.format("Suites Added: %d%n", buildReportExtended.getAddedSuites().size()));
+            writer.write(String.format("Suites Removed: %d%n%n", buildReportExtended.getRemovedSuites().size()));
             
             // Write detailed changes per suite
             writer.write("Detailed Changes by Suite:\n");
@@ -281,12 +292,12 @@ public class PlainTextWriter {
                                     !changes.getRemoved().isEmpty();
                 
                 if (hasChanges) {
-                    writer.write(String.format("Suite: %s\n", changes.getName()));
+                    writer.write(String.format("Suite: %s%n", changes.getName()));
                     writer.write("-".repeat(changes.getName().length() + 7) + "\n\n");
                     
                     // Improvements
                     if (!changes.getFixes().isEmpty()) {
-                        writer.write(String.format("  Improvements (%d test%s now passing):\n", 
+                        writer.write(String.format("  Improvements (%d test%s now passing):%n",
                                                   changes.getFixes().size(), pluralize(changes.getFixes().size())));
                         for (String test : changes.getFixes()) {
                             writer.write("    ✓ " + test + "\n");
@@ -296,7 +307,7 @@ public class PlainTextWriter {
                     
                     // Regressions
                     if (!changes.getFailures().isEmpty()) {
-                        writer.write(String.format("  Regressions (%d test%s now failing):\n", 
+                        writer.write(String.format("  Regressions (%d test%s now failing):%n",
                                                   changes.getFailures().size(), pluralize(changes.getFailures().size())));
                         for (String test : changes.getFailures()) {
                             writer.write("    ✗ " + test + "\n");
@@ -306,7 +317,7 @@ public class PlainTextWriter {
                     
                     // New errors
                     if (!changes.getErrors().isEmpty()) {
-                        writer.write(String.format("  New Errors (%d test%s with new errors):\n", 
+                        writer.write(String.format("  New Errors (%d test%s with new errors):%n",
                                                   changes.getErrors().size(), pluralize(changes.getErrors().size())));
                         for (String test : changes.getErrors()) {
                             writer.write("    ⚠ " + test + "\n");
@@ -316,7 +327,7 @@ public class PlainTextWriter {
                     
                     // Added tests
                     if (!changes.getAdded().isEmpty()) {
-                        writer.write(String.format("  Added Tests (%d new test%s):\n", 
+                        writer.write(String.format("  Added Tests (%d new test%s):%n",
                                                   changes.getAdded().size(), pluralize(changes.getAdded().size())));
                         for (String test : changes.getAdded()) {
                             writer.write("    + " + test + "\n");
@@ -326,7 +337,7 @@ public class PlainTextWriter {
                     
                     // Removed tests
                     if (!changes.getRemoved().isEmpty()) {
-                        writer.write(String.format("  Removed Tests (%d test%s removed):\n", 
+                        writer.write(String.format("  Removed Tests (%d test%s removed):%n",
                                                   changes.getRemoved().size(), pluralize(changes.getRemoved().size())));
                         for (String test : changes.getRemoved()) {
                             writer.write("    - " + test + "\n");
@@ -359,73 +370,79 @@ public class PlainTextWriter {
                 totalAdded == 0 && totalRemoved == 0 && 
                 buildReportExtended.getAddedSuites().isEmpty() && 
                 buildReportExtended.getRemovedSuites().isEmpty()) {
-                writer.write("No changes detected compared to the previous build.\n");
+                writer.write("No changes detected compared to the previous, latest stable or unstable, build.\n");
             }
+            footer(writer, buildReportExtended.getJob(), buildReportExtended.getBuildNumber(), url);
         }
     }
 
     /**
      * Writes a complete listing of all tests that were run.
      *
-     * @param buildReportExtended the extended build report with all test information
+     * @param reportFull the extended build report with all test information
      * @param outputPath the output file path
      * @throws IOException if an I/O error occurs
      */
-    public static void writeAllTestsReport(BuildReportExtended buildReportExtended, Path outputPath) throws IOException {
+    public static void writeAllTestsReport(List<Suite> reportFull, String jobName, String buildName, int buildNumber, Path outputPath, String url) throws IOException {
         try (BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8, 
                                                              TRUNCATE_EXISTING, CREATE)) {
             // Write header
-            writeHeader(writer, buildReportExtended.getJob(), buildReportExtended.getBuildName(), 
-                       buildReportExtended.getBuildNumber());
-            
-            writer.write(String.format("This report lists all %d test%s that were run in this build.\n\n",
-                                      buildReportExtended.getTotal(), pluralize(buildReportExtended.getTotal())));
-            
+            writeHeader(writer, jobName, buildName, buildNumber, url);
+            List<String> testsSum = JsonReportWriter.suitesToTests(reportFull).stream().flatMap( s -> s.getTests() == null?new ArrayList<String>().stream():s.getTests().stream()).collect(Collectors.toList());
+            writer.write(String.format("This report lists all %d test%s that were run in this build in %d suite%s.%n%n", testsSum.size(), pluralize(testsSum.size()), reportFull.size(), pluralize(reportFull.size())));
+
             writer.write("Complete Test Listing:\n");
             writer.write("======================\n\n");
-            
+
             // Write all tests by suite
-            if (buildReportExtended.getAllTests() != null) {
-                for (SuiteTestsWithResults suite : buildReportExtended.getAllTests().getAllTestsAndSuites()) {
-                    writer.write(String.format("Suite: %s\n", suite.getName()));
-                    writer.write("-".repeat(suite.getName().length() + 7) + "\n");
-                    
-                    List<SuiteTestsWithResults.StringWithResult> tests = suite.getTests();
-                    writer.write(String.format("  Total tests in this suite: %d\n\n", tests.size()));
-                    
-                    for (SuiteTestsWithResults.StringWithResult test : tests) {
-                        String statusSymbol = test.getResult() == SuiteTestsWithResults.TestStatusSimplified.PASSED_OR_MISSING
-                                            ? "✓" : "✗";
-                        writer.write(String.format("  %s %s\n", statusSymbol, test.getName()));
+            for (Suite suite : reportFull) {
+                writer.write(String.format("Suite: %s%n", suite.getName()));
+                writer.write("-".repeat(suite.getName().length() + 7) + "\n");
+                List<String> tests;
+                if (suite.getReport() instanceof  ReportFull) {
+                    tests = ((ReportFull) suite.getReport()).getTestsList();
+                } else {
+                    tests = new ArrayList<>();
+                }
+                writer.write(String.format("  Total tests in this suite: %d%n%n", tests.size()));
+
+                for (String test : tests) {
+                    String statusSymbol = SuitesWithResults.isProblem(test, suite.getReport().getTestProblems()) ? "✗" : "✓";
+                    writer.write(String.format("  %s %s%n", statusSymbol, test));
                     }
-                    
+
                     writer.write("\n");
                 }
-            } else {
-                // Fallback if getAllTests is not available
-                for (Suite suite : buildReportExtended.getSuites()) {
-                    writer.write(String.format("Suite: %s\n", suite.getName()));
-                    writer.write("-".repeat(suite.getName().length() + 7) + "\n");
-                    writer.write(String.format("  Total tests: %d (Passed: %d, Failed: %d, Errors: %d, Skipped: %d)\n\n",
-                                              suite.getReport().getTestsTotal(),
-                                              suite.getReport().getTestsPassed(),
-                                              suite.getReport().getTestsFailed(),
-                                              suite.getReport().getTestsError(),
-                                              suite.getReport().getTestsNotRun()));
-                }
-            }
+            footer(writer, jobName, buildNumber, url);
         }
     }
 
     /**
      * Writes the common header for all report types.
      */
-    private static void writeHeader(BufferedWriter writer, String jobName, String buildName, 
-                                   int buildNumber) throws IOException {
+    private static void writeHeader(BufferedWriter writer, String jobName, String buildName, int buildNumber, String url) throws IOException {
         writer.write("=" .repeat(80) + "\n");
-        writer.write(String.format("Test Report for %s\n", jobName));
-        writer.write(String.format("Build: %s (Build #%d)\n", buildName, buildNumber));
+        writer.write(String.format("Test Report for %s%n", jobName));
+        writer.write(String.format("Build name: %s (ID %d)%n", buildName, buildNumber));
         writer.write("=".repeat(80) + "\n\n");
+    }
+
+    private static void footer(BufferedWriter writer, String jobName, int buildNumber, String url) throws IOException {
+        if (url != null) {
+            writer.write("=".repeat(80) + "\n\n");
+            String page = url + "/job/" + jobName;
+            writer.write("You can see the job page at: " + page + "\n");
+            String build = page + "/" + buildNumber;
+            writer.write("You can see the build  page at: " + build + "\n");
+            writer.write("You can see the build artifacts at: " + build + "/artifact" + "\n");
+            writer.write("You can see the build log at: " + build + "/console" + "\n");
+            writer.write("You can see the build full log at: " + build + "/consoleFull" + "\n");
+            String java = build + "/java-reports";
+            writer.write("You can see the report: " + java + "\n");
+            writer.write("You can see the report's problems: " + java + "#problems\n");
+            writer.write("You can see the report's diff: " + java + "#diff\n");
+            writer.write("You can see the report's listing: " + java + "#all\n");
+        }
     }
 
     /**
