@@ -124,6 +124,8 @@ public class RecreateJtregReportSummaries {
                     Files.move(testsListPath, buildPath.resolve("backup_" + prefix + "-" + REPORT_TESTS_LIST_JSON), REPLACE_EXISTING);
                 }
             } finally {
+                //the metadata would be missing displayName. It is (optionally) hidden in build.xml as /build/displayName
+                //buildId is directory name, project s ../../name
                 WritersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile());
             }
         } catch (Exception ex) {

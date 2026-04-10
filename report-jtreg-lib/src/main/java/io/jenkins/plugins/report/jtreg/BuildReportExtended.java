@@ -36,8 +36,8 @@ public class BuildReportExtended extends BuildReport {
     private final List<String> addedSuites;
     private final List<String> removedSuites;
     private final List<SuiteTestChanges> testChanges;
-    private final int total;
-    private final int notRun;
+    private final int totalEx;
+    private final int notRunEx;
     private final SuitesWithResults allTests;
     protected final String job;
 
@@ -48,8 +48,8 @@ public class BuildReportExtended extends BuildReport {
         this.addedSuites = addedSuites;
         this.removedSuites = removedSuites;
         this.testChanges = testChanges;
-        this.total = total;
-        this.notRun = notRun;
+        this.totalEx = total;
+        this.notRunEx = notRun;
         this.allTests = allTests;
     }
 
@@ -87,12 +87,12 @@ public class BuildReportExtended extends BuildReport {
 
     @Override
     public int getTotal() {
-        return total;
+        return totalEx;
     }
 
     @Override
     public int getNotRun() {
-        return notRun;
+        return notRunEx;
     }
 
     public SuitesWithResults getAllTests() {

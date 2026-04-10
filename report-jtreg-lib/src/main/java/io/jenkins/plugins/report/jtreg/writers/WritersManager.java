@@ -28,16 +28,29 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.Constants;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 
 public class WritersManager {
 
     public static void storeAllSummaries(String prefix, List<Suite> reportFull, File rootDir) throws IOException {
+        writeJsons(prefix, reportFull, rootDir);
+        PropertiesWriter.writeReportSummaryProperties(reportFull, rootDir);
+    }
+
+    //Note, that this diff is not, and should not be, used in comparison - that should remain dynamic
+    public static void storeAllDiffs(String prefix, List<Suite> reportFull, BuildReportExtended buildReportExtended, File rootDir) throws IOException {
+        File diffJson = new File(rootDir, prefix + "-" + Constants.REPORT_DIFF);
+        JsonReportWriter.writeBuildReportExtended(diffJson, buildReportExtended);
+        PropertiesWriter.writeReportPropertiesRegressions(rootDir, buildReportExtended);
+    }
+
+    private static void writeJsons(String prefix, List<Suite> reportFull, File rootDir) throws IOException {
         File jsonFile1 = new File(rootDir, prefix + "-" + Constants.REPORT_JSON);
         File jsonFile2 = new File(rootDir, prefix + "-" + Constants.REPORT_TESTS_LIST_JSON);
         JsonReportWriter.writeSummaryReport(reportFull, jsonFile1.toPath());
         JsonReportWriter.writeTestListReport(reportFull, jsonFile2.toPath());
-        PropertiesWriter.writeReportSummaryProperties(reportFull, rootDir);
     }
+
 }

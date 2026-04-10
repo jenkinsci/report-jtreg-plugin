@@ -23,9 +23,11 @@
  */
 package io.jenkins.plugins.report.jtreg.writers;
 
+import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import io.jenkins.plugins.report.jtreg.model.ProjectReport;
 import io.jenkins.plugins.report.jtreg.model.Suite;
+import io.jenkins.plugins.report.jtreg.model.SuiteTestChanges;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -61,15 +63,13 @@ public class PropertiesWriter {
      * Caches project report totals (results and regressions) to properties files.
      *
      * @param rootBuild the root build directory
-     * @param projectReport the project report to cache
+     * @param buildReportExtended the project report to cache
      */
-    public static void writeReportSummaryPropertiesWithRegressions(File rootBuild, ProjectReport projectReport) {
+    public static void writeReportPropertiesRegressions(File rootBuild, BuildReportExtended buildReportExtended) {
         try {
-            BuildReport buildReport = projectReport.getReports().get(0);
-            File cachedResults = getCachedResultsFile(rootBuild, buildReport.getBuildNumber());
-            writeReportSummaryPropertiesImpl(cachedResults, projectReport.getReports());
-            File cachedRegressions = getCachedRegressionsFile(rootBuild, buildReport.getBuildNumber());
-            cacheRegressionsImpl(cachedRegressions, projectReport);
+            File buildParent = rootBuild.getParentFile().getParentFile();
+            File cachedRegressions = getCachedRegressionsFile(buildParent, buildReportExtended.getBuildNumber());
+            cacheRegressionsImpl(cachedRegressions, buildReportExtended);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -104,21 +104,77 @@ public class PropertiesWriter {
      * This happily ignores combined jck+jtreg reporting, but as this feature is never used, it may be already corrupted elsewhere.
      *
      * @param cachedRegressions file forsecondary report
-     * @param projectReport the project report to cache
+     * @param br the project report to cache
      * @throws IOException if an I/O error occurs
      */
-    private static void cacheRegressionsImpl(File cachedRegressions, ProjectReport projectReport) throws IOException {
-        for (int i = 0; i < projectReport.getReports().size(); i++) {
+    private static void cacheRegressionsImpl(File cachedRegressions, BuildReportExtended br) throws IOException {
             if (!cachedRegressions.exists()) {
                 try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cachedRegressions), "utf-8"))) {
-                    bw.write("jrp.improvements=" + projectReport.getImprovements().get(i));
+                    bw.write("jrp.improvements=" + allImprovements(br.getTestChanges()));
                     bw.newLine();
-                    bw.write("jrp.regressions=" + projectReport.getRegressions().get(i));
+                    bw.write("jrp.regressions=" + allFailures(br.getTestChanges()));
+                    bw.newLine();
+                    bw.write("jrp.nwerrors=" + allErrors(br.getTestChanges()));
+                    bw.newLine();
+                    bw.write("jrp.added=" + allAdded(br.getTestChanges()));
+                    bw.newLine();
+                    bw.write("jrp.removes=" + allRemoved(br.getTestChanges()));
+                    bw.newLine();
+                    bw.write("jrp.addedSuites=" + br.getAddedSuites().size());
+                    bw.newLine();
+                    bw.write("jrp.removedSuites=" + br.getRemovedSuites().size());
+                    bw.newLine();
+                    bw.write("jrp.job=" + br.getJob());
+                    bw.newLine();
+                    bw.write("jrp.buildNumber=" + br.getBuildNumber());
+                    bw.newLine();
+                    bw.write("jrp.displayName=" + br.getBuildName());
                     bw.newLine();
                 }
             }
-        }
     }
+
+    private static int allImprovements(List<SuiteTestChanges> testChanges) {
+        int i = 0;
+        for (SuiteTestChanges testChange : testChanges) {
+            i += testChange.getFixes().size();
+        }
+        return i;
+    }
+
+    private static int allFailures(List<SuiteTestChanges> testChanges) {
+        int i = 0;
+        for (SuiteTestChanges testChange : testChanges) {
+            i += testChange.getFailures().size();
+        }
+        return i;
+    }
+
+    private static int allErrors(List<SuiteTestChanges> testChanges) {
+        int i = 0;
+        for (SuiteTestChanges testChange : testChanges) {
+            i += testChange.getErrors().size();
+        }
+        return i;
+    }
+
+    private static int allAdded(List<SuiteTestChanges> testChanges) {
+        int i = 0;
+        for (SuiteTestChanges testChange : testChanges) {
+            i += testChange.getAdded().size();
+        }
+        return i;
+    }
+
+    private static int allRemoved(List<SuiteTestChanges> testChanges) {
+        int i = 0;
+        for (SuiteTestChanges testChange : testChanges) {
+            i += testChange.getRemoved().size();
+        }
+        return i;
+    }
+
+
 
     /**
      * Caches build report summaries to properties files.

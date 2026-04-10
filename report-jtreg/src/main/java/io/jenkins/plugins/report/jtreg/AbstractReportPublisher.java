@@ -34,8 +34,8 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
 import io.jenkins.plugins.report.jtreg.writers.WritersManager;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -83,8 +83,32 @@ abstract public class AbstractReportPublisher extends Recorder {
             logger.severe(s);
             build.setResult(Result.FAILURE);
         }
-        storeSummary(report, build.getRootDir());
-                addReportAction(build);
+        //first we create the jsons for this run
+        WritersManager.storeAllSummaries(prefix(),report, build.getRootDir());
+        //now we can reuse them to compute diff
+        BuildSummaryParserPlugin bsp = new BuildSummaryParserPlugin(Arrays.asList(prefix()), ReportAction.getAbstractReportPublisher(build.getProject().getPublishersList()));
+        try {
+            BuildReportExtended br = bsp.parseBuildReportExtended(build);
+            //recreating without full listings
+            br = new BuildReportExtended(
+                    br.getBuildNumber(),
+                    br.getBuildName(),
+                    br.getPassed(),
+                    br.getFailed(),
+                    br.getError(),
+                    null,
+                    br.getAddedSuites(),
+                    br.getRemovedSuites(),
+                    br.getTestChanges(),
+                    br.getTotal(),
+                    br.getNotRun(),
+                    null,
+                    br.getJob());
+            WritersManager.storeAllDiffs(prefix(),report, br, build.getRootDir());
+        }catch ( Exception e) {
+            e.printStackTrace();
+        }
+        addReportAction(build);
         return true;
     }
 
@@ -98,12 +122,6 @@ abstract public class AbstractReportPublisher extends Recorder {
             action.addPrefix(prefix());
         }
     }
-
-    private void storeSummary(List<Suite> reportFull, File rootDir) throws IOException {
-        WritersManager.storeAllSummaries(prefix(), reportFull, rootDir);
-    }
-
-
 
     @Override
     final public BuildStepMonitor getRequiredMonitorService() {
