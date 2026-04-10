@@ -37,6 +37,7 @@ public class WritersManager {
     public static void storeAllSummaries(String prefix, List<Suite> reportFull, File rootDir) throws IOException {
         writeJsons(prefix, reportFull, rootDir);
         PropertiesWriter.writeReportSummaryProperties(reportFull, rootDir);
+        writePlainTextSummaries(prefix, reportFull, rootDir);
     }
 
     //Note, that this diff is not, and should not be, used in comparison - that should remain dynamic
@@ -44,6 +45,7 @@ public class WritersManager {
         File diffJson = new File(rootDir, prefix + "-" + Constants.REPORT_DIFF);
         JsonReportWriter.writeBuildReportExtended(diffJson, buildReportExtended);
         PropertiesWriter.writeReportPropertiesRegressions(rootDir, buildReportExtended);
+        writePlainTextDiffs(prefix, buildReportExtended, rootDir);
     }
 
     private static void writeJsons(String prefix, List<Suite> reportFull, File rootDir) throws IOException {
@@ -51,6 +53,35 @@ public class WritersManager {
         File jsonFile2 = new File(rootDir, prefix + "-" + Constants.REPORT_TESTS_LIST_JSON);
         JsonReportWriter.writeSummaryReport(reportFull, jsonFile1.toPath());
         JsonReportWriter.writeTestListReport(reportFull, jsonFile2.toPath());
+    }
+
+    private static void writePlainTextSummaries(String prefix, List<Suite> reportFull, File rootDir) throws IOException {
+        // Extract job name and build info from rootDir structure
+        // rootDir is typically: /path/to/job/builds/buildNumber
+        int buildNumber = Integer.parseInt(rootDir.getName());
+        File jobDir = rootDir.getParentFile().getParentFile();
+        String jobName = jobDir.getName();
+        
+        // Create a simple build name from the build number
+        String buildName = "Build #" + buildNumber;
+        
+        // Write summary report
+        File summaryFile = new File(rootDir, prefix + "-" + Constants.REPORT_SUMMARY_TXT);
+        PlainTextWriter.writeSummaryReport(reportFull, jobName, buildName, buildNumber, summaryFile.toPath());
+        
+        // Write problems report
+        File problemsFile = new File(rootDir, prefix + "-" + Constants.REPORT_PROBLEMS_TXT);
+        PlainTextWriter.writeProblemsReport(reportFull, jobName, buildName, buildNumber, problemsFile.toPath());
+    }
+
+    private static void writePlainTextDiffs(String prefix, BuildReportExtended buildReportExtended, File rootDir) throws IOException {
+        // Write diff report
+        File diffFile = new File(rootDir, prefix + "-" + Constants.REPORT_DIFF_TXT);
+        PlainTextWriter.writeDiffReport(buildReportExtended, diffFile.toPath());
+        
+        // Write all tests report
+        File allTestsFile = new File(rootDir, prefix + "-" + Constants.REPORT_ALL_TESTS_TXT);
+        PlainTextWriter.writeAllTestsReport(buildReportExtended, allTestsFile.toPath());
     }
 
 }

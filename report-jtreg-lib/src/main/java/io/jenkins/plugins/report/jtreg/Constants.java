@@ -28,6 +28,10 @@ final public class Constants {
     public static final String REPORT_JSON = "report.json";
     public static final String REPORT_TESTS_LIST_JSON = "tests-list.json";
     public static final String REPORT_DIFF = "jr-diff.json";
+    public static final String REPORT_SUMMARY_TXT = "report-summary.txt";
+    public static final String REPORT_PROBLEMS_TXT = "report-problems.txt";
+    public static final String REPORT_DIFF_TXT = "report-diff.txt";
+    public static final String REPORT_ALL_TESTS_TXT = "report-all-tests.txt";
     public static final String IRRELEVANT_GLOB_STRING = "report-{runtime,devtools,compiler}.xml.gz";
 
     public static final String LIST_BACKEND = "/list.html";
