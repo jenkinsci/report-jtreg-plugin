@@ -63,7 +63,7 @@ public class PropertiesWriter {
      * Caches project report totals (results and regressions) to properties files.
      *
      * @param rootBuild the root build directory
-     * @param projectReport the project report to cache
+     * @param buildReportExtended the project report to cache
      */
     public static void writeReportPropertiesRegressions(File rootBuild, BuildReportExtended buildReportExtended) {
         try {
@@ -123,6 +123,12 @@ public class PropertiesWriter {
                     bw.write("jrp.addedSuites=" + br.getAddedSuites().size());
                     bw.newLine();
                     bw.write("jrp.removedSuites=" + br.getRemovedSuites().size());
+                    bw.newLine();
+                    bw.write("jrp.job=" + br.getJob());
+                    bw.newLine();
+                    bw.write("jrp.buildNumber=" + br.getBuildNumber());
+                    bw.newLine();
+                    bw.write("jrp.displayName=" + br.getBuildName());
                     bw.newLine();
                 }
             }

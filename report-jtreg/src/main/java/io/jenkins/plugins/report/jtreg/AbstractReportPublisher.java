@@ -27,7 +27,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
-import hudson.model.Project;
 import hudson.model.Result;
 import io.jenkins.plugins.report.jtreg.model.*;
 import io.jenkins.plugins.report.jtreg.parsers.ReportParser;
@@ -38,7 +37,6 @@ import io.jenkins.plugins.report.jtreg.writers.WritersManager;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.kohsuke.stapler.DataBoundSetter;
@@ -86,8 +84,7 @@ abstract public class AbstractReportPublisher extends Recorder {
             build.setResult(Result.FAILURE);
         }
         //first we create the jsons for this run
-        WritersManager.storeAllSummaries(prefix(),report, build.getRootDir(),
-                new Metadata(build.getDisplayName(), build.getId(), build.getProject().getName()));
+        WritersManager.storeAllSummaries(prefix(),report, build.getRootDir());
         //now we can reuse them to compute diff
         BuildSummaryParserPlugin bsp = new BuildSummaryParserPlugin(Arrays.asList(prefix()), ReportAction.getAbstractReportPublisher(build.getProject().getPublishersList()));
         try {
@@ -107,8 +104,7 @@ abstract public class AbstractReportPublisher extends Recorder {
                     br.getNotRun(),
                     null,
                     br.getJob());
-            WritersManager.storeAllSummaries(prefix(),report, br, build.getRootDir(),
-                    new Metadata(build.getDisplayName(), build.getId(), build.getProject().getName()));
+            WritersManager.storeAllDiffs(prefix(),report, br, build.getRootDir());
         }catch ( Exception e) {
             e.printStackTrace();
         }

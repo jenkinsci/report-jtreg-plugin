@@ -1,6 +1,5 @@
 package io.jenkins.plugins.report.jtreg;
 
-import io.jenkins.plugins.report.jtreg.model.Metadata;
 import io.jenkins.plugins.report.jtreg.model.Test;
 import io.jenkins.plugins.report.jtreg.model.TestOutput;
 import org.tukaani.xz.LZMA2Options;
@@ -56,7 +55,7 @@ class JtregReportParserTest {
         tmpJMainDir.deleteOnExit();
         File tmpDir2 = new File(tmpJMainDir, "jobs/builds/5");
         tmpDir2.mkdirs();
-        WritersManager.storeAllSummaries("jtreg", List.of(actualReport), tmpDir2, new Metadata("displayName", "5", "jobName"));
+        WritersManager.storeAllSummaries("jtreg", List.of(actualReport), tmpDir2);
         String s = String.join("\n", Files.readAllLines(new File(tmpDir2,"jtreg-" + Constants.REPORT_JSON).toPath()));
         assertTrue(s.contains("grep"));
         assertTrue(s.contains("Pack"));
