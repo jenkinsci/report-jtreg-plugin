@@ -26,7 +26,6 @@ package io.jenkins.plugins.report.jtreg.main.list;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.parsers.JckReportParser;
-import io.jenkins.plugins.report.jtreg.writers.WritersManager;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,10 +33,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static io.jenkins.plugins.report.jtreg.Constants.REPORT_JSON;
-import static io.jenkins.plugins.report.jtreg.Constants.REPORT_TESTS_LIST_JSON;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class RecreateJckReportSummaries {
 
@@ -66,21 +61,7 @@ public class RecreateJckReportSummaries {
                     .map(this::jckReportToSuite)
                     .filter(s -> s != null)
                     .collect(Collectors.toList());
-            String prefix = "jck";
-            try {
-                Path summaryPath = buildPath.resolve(prefix + "-" + REPORT_JSON);
-                if (Files.exists(summaryPath)) {
-                    Files.move(summaryPath, buildPath.resolve("backup_" + prefix + "-" + REPORT_JSON), REPLACE_EXISTING);
-                }
-                Path testsListPath = buildPath.resolve(prefix + "-" + REPORT_TESTS_LIST_JSON);
-                if (Files.exists(testsListPath)) {
-                    Files.move(testsListPath, buildPath.resolve("backup_" + prefix + "-" + REPORT_TESTS_LIST_JSON), REPLACE_EXISTING);
-                }
-            } finally {
-                //the metadata would be missing displayName. It is (optionally) hidden in build.xml as /build/displayName
-                //buildId is directory name, project s ../../name
-                WritersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile(), "unknown", null);
-            }
+            ReportSummaryUtil.backupAndStoreSummaries("jck", suitesList, buildPath);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

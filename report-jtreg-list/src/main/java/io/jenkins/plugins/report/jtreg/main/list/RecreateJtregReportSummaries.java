@@ -26,7 +26,6 @@ package io.jenkins.plugins.report.jtreg.main.list;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.parsers.JtregReportParser;
-import io.jenkins.plugins.report.jtreg.writers.WritersManager;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,12 +34,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static io.jenkins.plugins.report.jtreg.Constants.REPORT_JSON;
-import static io.jenkins.plugins.report.jtreg.Constants.REPORT_TESTS_LIST_JSON;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 
@@ -107,27 +103,13 @@ public class RecreateJtregReportSummaries {
             throw new RuntimeException(ex);
         }
 
-        String prefix = "jtreg";
         try (Stream<Path> tckReportsStream = archives.stream()) {
             List<Suite> suitesList = tckReportsStream.sequential()
                     .filter(p -> p.toString().endsWith(".xml") || p.toString().endsWith(".xml.gz") || p.toString().endsWith(".xml.xz"))
                     .map(this::jtregReportToSuite)
                     .filter(s -> s != null)
                     .collect(Collectors.toList());
-            try {
-                Path summaryPath = buildPath.resolve(prefix + "-" + REPORT_JSON);
-                if (Files.exists(summaryPath)) {
-                    Files.move(summaryPath, buildPath.resolve("backup_" + prefix + "-" + REPORT_JSON), REPLACE_EXISTING);
-                }
-                Path testsListPath = buildPath.resolve(prefix + "-" + REPORT_TESTS_LIST_JSON);
-                if (Files.exists(testsListPath)) {
-                    Files.move(testsListPath, buildPath.resolve("backup_" + prefix + "-" + REPORT_TESTS_LIST_JSON), REPLACE_EXISTING);
-                }
-            } finally {
-                //the metadata would be missing displayName. It is (optionally) hidden in build.xml as /build/displayName
-                //buildId is directory name, project s ../../name
-                WritersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile(), "unknown", null);
-            }
+            ReportSummaryUtil.backupAndStoreSummaries("jtreg", suitesList, buildPath);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
