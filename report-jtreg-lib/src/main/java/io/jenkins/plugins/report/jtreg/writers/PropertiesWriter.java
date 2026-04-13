@@ -91,7 +91,7 @@ public class PropertiesWriter {
                 totalSumm += s.getReport().getTestsTotal();
                 nameb.append(s.getName()).append(" ");
             }
-            BuildReport br = new BuildReport(buildNumber, nameb.toString().trim(), passedSumm, failedSumm, errorSumm, reportShort, totalSumm, notRunSumm);
+            BuildReport br = new BuildReport(buildNumber, nameb.toString().trim(), passedSumm, failedSumm, errorSumm, reportShort, totalSumm, notRunSumm, -1, -1);
             writeReportSummaryPropertiesImpl(cachedResults, Arrays.asList(new BuildReport[]{br}));
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -128,6 +128,14 @@ public class PropertiesWriter {
                     bw.write("jrp.buildNumber=" + br.getBuildNumber());
                     bw.newLine();
                     bw.write("jrp.displayName=" + br.getBuildName());
+                    bw.newLine();
+                    bw.write("jrp.timestamp=" + br.getTimestamp());
+                    bw.newLine();
+                    bw.write("jrp.duration=" + br.getDuration());
+                    bw.newLine();
+                    bw.write("jrp.timestampNice=" + br.getDateIso());
+                    bw.newLine();
+                    bw.write("jrp.durationNice=" + br.getDurationIso());
                     bw.newLine();
                 }
             }

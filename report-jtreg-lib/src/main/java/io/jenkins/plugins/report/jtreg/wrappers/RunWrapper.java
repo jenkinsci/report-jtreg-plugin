@@ -33,4 +33,8 @@ public interface RunWrapper {
 
     public String getName();
 
+    public long getTimestamp();
+
+    public long getDuration();
+
 }

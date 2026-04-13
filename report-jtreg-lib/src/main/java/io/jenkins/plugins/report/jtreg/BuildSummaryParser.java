@@ -99,7 +99,7 @@ public class BuildSummaryParser {
         //https://github.com/judovana/jenkins-report-jck/pull/7/files#diff-bac5b237e72448e452669002e9d2eac1R74
         //in addition this chunk seems not fixing the issue of:
         //jtregs currenlty do not have any excluded tests. Once thy have, the graph will probably become broken
-        return new BuildReport(build.getNumber(), build.getName(), passed, failed, error, suites, total, notRun);
+        return new BuildReport(build.getNumber(), build.getName(), passed, failed, error, suites, total, notRun, build.getTimestamp(), build.getDuration());
     }
 
     public BuildReportExtended parseBuildReportExtended(RunWrapper build, RunWrapper previousPassedOrUnstable) throws Exception {
@@ -245,7 +245,7 @@ public class BuildSummaryParser {
                 currentReport.getTotal(),
                 currentReport.getNotRun(),
                 allTests,
-                job);
+                job, currentReport.getTimestamp(), currentReport.getDuration());
     }
 
     protected List<Suite> parseBuildSummary(File rootDir) throws Exception {

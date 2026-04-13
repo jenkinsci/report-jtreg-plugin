@@ -104,7 +104,9 @@ abstract public class AbstractReportPublisher extends Recorder {
                     br.getTotal(),
                     br.getNotRun(),
                     null,
-                    br.getJob());
+                    br.getJob(),
+                    br.getTimestamp(),
+                    br.getDuration());
             WritersManager.storeAllDiffs(prefix(),report, br, build.getRootDir(), Jenkins.get().getRootUrl());
         }catch ( Exception e) {
             e.printStackTrace();

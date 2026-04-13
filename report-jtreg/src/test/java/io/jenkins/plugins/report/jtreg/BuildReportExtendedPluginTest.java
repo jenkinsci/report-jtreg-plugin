@@ -17,6 +17,7 @@ class BuildReportExtendedPluginTest {
                 new ArrayList<>(), new ArrayList<>(), 0, 0,
                 new SuitesWithResults(new ArrayList<>()),
                 "tck-jp17-ojdk17~rpms-el8.aarch64-fastdebug.sdk-el8.aarch64.beaker-x11.defaultgc.fips.lnxagent.jfroff",
+                -1, -1,
                 new UrlsProvider() {
                     @Override
                     public String getListServer() {

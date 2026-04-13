@@ -219,7 +219,9 @@ public class BuildSummaryParserPlugin extends BuildSummaryParser {
                             report.getError(),
                             report.getSuites(),
                             report.getTotal(),
-                            report.getNotRun()
+                            report.getNotRun(),
+                            report.getTimestamp(),
+                            report.getDuration()
                     ));
                 }
             } catch (Exception ignore) {

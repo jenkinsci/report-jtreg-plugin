@@ -38,7 +38,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -104,7 +106,7 @@ public class PlainTextWriter {
         try (BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8, 
                                                              TRUNCATE_EXISTING, CREATE)) {
             // Write header
-            writeHeader(writer, jobName, buildName, buildNumber, url);
+            writeHeader(writer, jobName, buildName, buildNumber, url, -1, -1);
             
             // Write summary
             writer.write(String.format("We ran %d test%s in total. ", totalTests, pluralize(totalTests)));
@@ -158,7 +160,7 @@ public class PlainTextWriter {
                                           suite.getReport().getTestsError(),
                                           suite.getReport().getTestsNotRun()));
             }
-            footer(writer, jobName, buildNumber, url);
+            footer(writer, jobName, buildName, buildNumber, url, "summary report", "unknown");
         }
     }
 
@@ -186,7 +188,7 @@ public class PlainTextWriter {
                                                              TRUNCATE_EXISTING, CREATE)) {
 
             // Write header
-            writeHeader(writer, jobName, buildName, buildNumber, url);
+            writeHeader(writer, jobName, buildName, buildNumber, url, -1, -1);
             
             // Write summary
             writer.write(String.format("This report focuses on the %d failed test%s and %d test%s with errors.%n%n",
@@ -235,7 +237,7 @@ public class PlainTextWriter {
             if (failedTests == 0 && errorTests == 0) {
                 writer.write("No failed or errored tests to report. All tests passed successfully!\n");
             }
-            footer(writer, jobName, buildNumber, url);
+            footer(writer, jobName, buildName, buildNumber, url, "failures report", "unknown");
         }
     }
 
@@ -267,7 +269,7 @@ public class PlainTextWriter {
         try (BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8,
                                                              TRUNCATE_EXISTING, CREATE)) {
             // Write header
-            writeHeader(writer, buildReportExtended.getJob(), buildReportExtended.getBuildName(), buildReportExtended.getBuildNumber(), url);
+            writeHeader(writer, buildReportExtended.getJob(), buildReportExtended.getBuildName(), buildReportExtended.getBuildNumber(), url, buildReportExtended.getTimestamp(), buildReportExtended.getDuration());
 
             writer.write("This report shows changes compared to the previous, latest stable or unstable, build.\n\n");
             
@@ -372,7 +374,7 @@ public class PlainTextWriter {
                 buildReportExtended.getRemovedSuites().isEmpty()) {
                 writer.write("No changes detected compared to the previous, latest stable or unstable, build.\n");
             }
-            footer(writer, buildReportExtended.getJob(), buildReportExtended.getBuildNumber(), url);
+            footer(writer, buildReportExtended.getJob(), buildReportExtended.getBuildName(), buildReportExtended.getBuildNumber(), url, "detailed diff report", buildReportExtended.getDateIso());
         }
     }
 
@@ -387,7 +389,7 @@ public class PlainTextWriter {
         try (BufferedWriter writer = Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8, 
                                                              TRUNCATE_EXISTING, CREATE)) {
             // Write header
-            writeHeader(writer, jobName, buildName, buildNumber, url);
+            writeHeader(writer, jobName, buildName, buildNumber, url, -1, -1);
             List<String> testsSum = JsonReportWriter.suitesToTests(reportFull).stream().flatMap( s -> s.getTests() == null?new ArrayList<String>().stream():s.getTests().stream()).collect(Collectors.toList());
             writer.write(String.format("This report lists all %d test%s that were run in this build in %d suite%s.%n%n", testsSum.size(), pluralize(testsSum.size()), reportFull.size(), pluralize(reportFull.size())));
 
@@ -413,21 +415,56 @@ public class PlainTextWriter {
 
                     writer.write("\n");
                 }
-            footer(writer, jobName, buildNumber, url);
+            footer(writer, jobName, buildName, buildNumber, url, "complete test listing", "unknown");
         }
     }
 
     /**
      * Writes the common header for all report types.
      */
-    private static void writeHeader(BufferedWriter writer, String jobName, String buildName, int buildNumber, String url) throws IOException {
+    private static void writeHeader(BufferedWriter writer, String jobName, String buildName, int buildNumber, String url, long buildtime, long duration) throws IOException {
         writer.write("=" .repeat(80) + "\n");
         writer.write(String.format("Test Report for %s%n", jobName));
         writer.write(String.format("Build name: %s (ID %d)%n", buildName, buildNumber));
+        writer.write(String.format("Build timestamp: %s ms%n", toKnown(buildtime, false, false)));
+        writer.write(String.format("Build duration: %s ms%n", toKnown(duration, false, false)));
         writer.write("=".repeat(80) + "\n\n");
+        introduction(writer, jobName, buildName, buildNumber, url, buildtime, duration);
+
     }
 
-    private static void footer(BufferedWriter writer, String jobName, int buildNumber, String url) throws IOException {
+    private static void introduction(BufferedWriter writer, String jobName, String buildName, int buildNumber, String url, long buildtime, long duration) throws IOException {
+        String s = "This results are related to build of " + buildName + "/" + buildNumber + " in test of " + jobName + ". It started at " + toKnown(buildtime, true, false) + " and had duration of " + toKnown(duration, true, true) + ".";
+        writer.write(s + "\n\n");
+    }
+
+    private static void footerr(BufferedWriter writer, String jobName, String buildName, int buildNumber, String url, long buildtime, long duration) throws IOException {
+        {
+            writer.write("=".repeat(80) + "\\n");
+            String s = "This results are related to build of " + buildName + "/" + buildNumber + " in test of " + jobName + "." + "It started at " + toKnown(buildtime, true, true) + " and had duration of " + toKnown(duration, true, true) + ".";
+            writer.write(s + "\n\n");
+            writer.write("=".repeat(80) + "\n\n\n");
+        }
+    }
+
+
+    private static String toKnown(long time, boolean port, boolean duration) {
+        if (time <= 0) {
+            return "unknown";
+        } else {
+            if (!port) {
+                return "" + time;
+            } else {
+                if (duration) {
+                    return Duration.ofMillis(time).toString();
+                } else {
+                    return new Date(time).toInstant().toString();
+                }
+            }
+        }
+    }
+
+    private static void footer(BufferedWriter writer, String jobName, String buildName, int buildNumber, String url, String testType, String date) throws IOException {
         if (url != null) {
             writer.write("=".repeat(80) + "\n\n");
             String page = url + "/job/" + jobName;
@@ -443,6 +480,9 @@ public class PlainTextWriter {
             writer.write("You can see the report's diff: " + java + "#diff\n");
             writer.write("You can see the report's listing: " + java + "#all\n");
         }
+        writer.write("\n" + "=".repeat(80) + "\n\n");
+        writer.write("End of " + testType + " of build " + buildName + "/" + buildNumber + " in job " + jobName + " from " + date + ".\n");
+        writer.write("\n" + "=".repeat(80) + "\n\n");
     }
 
     /**

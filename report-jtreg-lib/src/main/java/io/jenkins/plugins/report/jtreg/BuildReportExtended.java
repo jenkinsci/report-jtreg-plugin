@@ -26,10 +26,13 @@ package io.jenkins.plugins.report.jtreg;
 import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.model.SuiteTestChanges;
-import io.jenkins.plugins.report.jtreg.model.SuiteTestsWithResults;
 import io.jenkins.plugins.report.jtreg.model.SuitesWithResults;
 
+import java.time.Duration;
+import java.util.Date;
 import java.util.List;
+
+
 
 public class BuildReportExtended extends BuildReport {
 
@@ -41,9 +44,10 @@ public class BuildReportExtended extends BuildReport {
     private final SuitesWithResults allTests;
     protected final String job;
 
+
     public BuildReportExtended(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites,
-                               List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges, int total, int notRun, SuitesWithResults allTests, String job) {
-        super(buildNumber, buildName, passed, failed, error, suites, total, notRun);
+                               List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges, int total, int notRun, SuitesWithResults allTests, String job, long timestamp, long duration) {
+        super(buildNumber, buildName, passed, failed, error, suites, total, notRun, timestamp, duration);
         this.job = job;
         this.addedSuites = addedSuites;
         this.removedSuites = removedSuites;

@@ -23,6 +23,8 @@
  */
 package io.jenkins.plugins.report.jtreg.model;
 
+import java.time.Duration;
+import java.util.Date;
 import java.util.List;
 
 public class BuildReport implements java.io.Serializable {
@@ -35,9 +37,13 @@ public class BuildReport implements java.io.Serializable {
     private final int total;
     private final int notRun;
     private final int run;
+    protected final String dateIso; //for serialization
+    protected final long timestamp;
+    protected final String durationIso;
+    protected final long duration;
     private final List<Suite> suites;
 
-    public BuildReport(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites, int total, int notRun) {
+    public BuildReport(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites, int total, int notRun, long timestamp, long duration) {
         this.buildNumber = buildNumber;
         this.buildName = buildName;
         this.passed = passed;
@@ -47,6 +53,10 @@ public class BuildReport implements java.io.Serializable {
         this.total = total;
         this.notRun = notRun;
         this.run = total - notRun;
+        this.timestamp = timestamp;
+        this.duration = duration;
+        this.dateIso = new Date(timestamp).toInstant().toString();
+        this.durationIso = Duration.ofMillis(duration).toString();
     }
 
     public int getBuildNumber() {
@@ -83,6 +93,22 @@ public class BuildReport implements java.io.Serializable {
 
     public int getRun() {
         return run;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public String getDurationIso() {
+        return durationIso;
+    }
+
+    public String getDateIso() {
+        return dateIso;
     }
 
     public boolean isInvalid() {

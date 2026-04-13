@@ -52,4 +52,13 @@ public class RunWrapperFromDir implements RunWrapper {
         return back.getAbsolutePath();
     }
 
+    @Override
+    public long getTimestamp() {
+        return -1;
+    }
+
+    @Override
+    public long getDuration() {
+        return -1;
+    }
 }

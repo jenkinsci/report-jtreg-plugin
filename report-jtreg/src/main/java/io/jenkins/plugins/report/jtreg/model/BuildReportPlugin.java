@@ -29,8 +29,8 @@ import java.util.List;
 public class BuildReportPlugin extends BuildReport {
     private final String buildNameShortened;
 
-    public BuildReportPlugin(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites, int total, int notRun) {
-        super(buildNumber, buildName, passed, failed, error, suites, total, notRun);
+    public BuildReportPlugin(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites, int total, int notRun, long timestamp, long duration) {
+        super(buildNumber, buildName, passed, failed, error, suites, total, notRun, timestamp, duration);
         this.buildNameShortened=Chartjs.getShortName(buildName, buildNumber);
     }
 

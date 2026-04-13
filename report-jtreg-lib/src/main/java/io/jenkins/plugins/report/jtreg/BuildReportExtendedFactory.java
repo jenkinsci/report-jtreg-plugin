@@ -10,7 +10,8 @@ public class BuildReportExtendedFactory {
     public BuildReportExtended createBuildReportExtended(int buildNumber, String buildName, int passed, int failed,
                                                          int error, List<Suite> suites, List<String> addedSuites,
                                                          List<String> removedSuites, List<SuiteTestChanges> testChanges,
-                                                         int total, int notRun, SuitesWithResults allTests, String job) {
-        return new BuildReportExtended(buildNumber, buildName, passed, failed, error, suites, addedSuites, removedSuites, testChanges, total, notRun, allTests, job);
+                                                         int total, int notRun, SuitesWithResults allTests,
+                                                         String job, long timestamp, long duration) {
+        return new BuildReportExtended(buildNumber, buildName, passed, failed, error, suites, addedSuites, removedSuites, testChanges, total, notRun, allTests, job, timestamp, duration);
     }
 }

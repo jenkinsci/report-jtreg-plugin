@@ -52,5 +52,15 @@ public class RunWrapperFromRun implements RunWrapper{
     public String getName() {
         return job.getDisplayName();
     }
-    
+
+    @Override
+    public long getDuration() {
+        //job.getDuration() is set once job finishes (so does getTime...)
+        return System.currentTimeMillis() - job.getStartTimeInMillis();
+    }
+
+    @Override
+    public long getTimestamp() {
+        return job.getTimestamp().getTimeInMillis();
+    }
 }
