@@ -51,7 +51,7 @@ public class RecreateJckReportSummaries {
 
     @SuppressFBWarnings(value = {"REC_CATCH_EXCEPTION", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
     private void recreateJckReportSummaryForBuild(Path buildPath) {
-        Path tckReportsArchive = buildPath.resolve("archive").resolve("tck");
+        Path tckReportsArchive = buildPath.resolve("archive").resolve("tck");//!!
         if (!Files.exists(tckReportsArchive)) {
             return;
         }
@@ -61,7 +61,7 @@ public class RecreateJckReportSummaries {
                     .map(this::jckReportToSuite)
                     .filter(s -> s != null)
                     .collect(Collectors.toList());
-            ReportSummaryUtil.backupAndStoreSummaries("jck", suitesList, buildPath);
+            ReportSummaryUtil.backupAndStoreSummaries("jck", suitesList, buildPath, null);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

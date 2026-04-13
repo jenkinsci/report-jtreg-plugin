@@ -91,29 +91,14 @@ abstract public class AbstractReportPublisher extends Recorder {
         try {
             BuildReportExtended br = bsp.parseBuildReportExtended(build);
             //recreating without full listings
-            br = new BuildReportExtended(
-                    br.getBuildNumber(),
-                    br.getBuildName(),
-                    br.getPassed(),
-                    br.getFailed(),
-                    br.getError(),
-                    null,
-                    br.getAddedSuites(),
-                    br.getRemovedSuites(),
-                    br.getTestChanges(),
-                    br.getTotal(),
-                    br.getNotRun(),
-                    null,
-                    br.getJob(),
-                    br.getTimestamp(),
-                    br.getDuration());
-            WritersManager.storeAllDiffs(prefix(),report, br, build.getRootDir(), Jenkins.get().getRootUrl());
+            WritersManager.storeAllDiffs(prefix(), br, build.getRootDir(), Jenkins.get().getRootUrl());
         }catch ( Exception e) {
             e.printStackTrace();
         }
         addReportAction(build);
         return true;
     }
+
 
     private void addReportAction(AbstractBuild<?, ?> build) {
         ReportAction action = build.getAction(ReportAction.class);

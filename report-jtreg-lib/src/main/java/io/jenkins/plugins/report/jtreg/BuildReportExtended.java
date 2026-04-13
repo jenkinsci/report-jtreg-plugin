@@ -102,4 +102,5 @@ public class BuildReportExtended extends BuildReport {
     public SuitesWithResults getAllTests() {
         return allTests;
     }
+
 }

@@ -41,7 +41,8 @@ public class WritersManager {
     }
 
     //Note, that this diff is not, and should not be, used in comparison - that should remain dynamic
-    public static void storeAllDiffs(String prefix, List<Suite> reportFull, BuildReportExtended buildReportExtended, File rootDir, String url) throws IOException {
+    public static void storeAllDiffs(String prefix, BuildReportExtended buildReportExtended, File rootDir, String url) throws IOException {
+        buildReportExtended = purify(buildReportExtended);
         File diffJson = new File(rootDir, prefix + "-" + Constants.REPORT_DIFF);
         JsonReportWriter.writeBuildReportExtended(diffJson, buildReportExtended);
         PropertiesWriter.writeReportPropertiesRegressions(rootDir, buildReportExtended);
@@ -76,6 +77,10 @@ public class WritersManager {
         // Write diff report
         File diffFile = new File(rootDir, prefix + "-" + Constants.REPORT_DIFF_TXT);
         PlainTextWriter.writeDiffReport(buildReportExtended, diffFile.toPath(), url);
+    }
+
+    private static BuildReportExtended purify(BuildReportExtended br) {
+        return new BuildReportExtended(br.getBuildNumber(), br.getBuildName(), br.getPassed(), br.getFailed(), br.getError(), null, br.getAddedSuites(), br.getRemovedSuites(), br.getTestChanges(), br.getTotal(), br.getNotRun(), null, br.getJob(), br.getTimestamp(), br.getDuration());
     }
 
 }

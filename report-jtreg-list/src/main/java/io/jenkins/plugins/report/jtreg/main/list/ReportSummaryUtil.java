@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015-2023 report-jtreg plugin contributors
+ * Copyright 2015-2026 report-jtreg plugin contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,24 +23,42 @@
  */
 package io.jenkins.plugins.report.jtreg.main.list;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.jenkins.plugins.report.jtreg.BuildReportExtended;
+import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
+import io.jenkins.plugins.report.jtreg.ConfigFinder;
 import io.jenkins.plugins.report.jtreg.model.Suite;
+import io.jenkins.plugins.report.jtreg.wrappers.RunWrapper;
+import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromDir;
+import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromDirWithName;
 import io.jenkins.plugins.report.jtreg.writers.WritersManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static io.jenkins.plugins.report.jtreg.Constants.REPORT_JSON;
-import static io.jenkins.plugins.report.jtreg.Constants.REPORT_TESTS_LIST_JSON;
+import static io.jenkins.plugins.report.jtreg.Constants.prefixedFiles;
+import static io.jenkins.plugins.report.jtreg.Constants.unprefixedFiles;
 
 /**
  * Utility class for backing up and storing report summaries.
  */
 public class ReportSummaryUtil {
+
+
+    static boolean isBuildDir(File dir) {
+        try {
+            return new File(dir, "archive").exists() && (dir.getCanonicalFile().getName().matches("[0-9]+"));
+        }catch (IOException e){
+            return false;
+        }
+    }
 
     /**
      * Backs up existing report files to a zip archive and stores new summaries.
@@ -52,19 +70,22 @@ public class ReportSummaryUtil {
      * @param buildPath the path to the build directory
      * @throws IOException if an I/O error occurs during file operations
      */
-    public static void backupAndStoreSummaries(String prefix, List<Suite> suitesList, Path buildPath) throws IOException {
+    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
+    static void backupAndStoreSummaries(String prefix, List<Suite> suitesList, Path buildPath, String url) throws Exception {
         try {
-            Path summaryPath = buildPath.resolve(prefix + "-" + REPORT_JSON);
-            Path testsListPath = buildPath.resolve(prefix + "-" + REPORT_TESTS_LIST_JSON);
-            
             List<Path> filesToBackup = new ArrayList<>();
-            if (Files.exists(summaryPath)) {
-                filesToBackup.add(summaryPath);
+            for(String file: prefixedFiles) {
+                Path path = buildPath.resolve(prefix + "-" + file);
+                if (Files.exists(path)) {
+                    filesToBackup.add(path);
+                }
             }
-            if (Files.exists(testsListPath)) {
-                filesToBackup.add(testsListPath);
+            for(String file: unprefixedFiles) {
+                Path path = buildPath.resolve(file);
+                if (Files.exists(path)) {
+                    filesToBackup.add(path);
+                }
             }
-            
             if (!filesToBackup.isEmpty()) {
                 long timestamp = System.currentTimeMillis();
                 String zipFileName = "backup_" + prefix + "_" + timestamp + ".zip";
@@ -85,7 +106,30 @@ public class ReportSummaryUtil {
         } finally {
             //the metadata would be missing displayName. It is (optionally) hidden in build.xml as /build/displayName
             //buildId is directory name, project s ../../name
-            WritersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile(), "unknown", null);
+            String displayName = ConfigFinder.findInConfigStatic(new File( buildPath.toFile(), "build.xml"),"nvr", "/build/displayName" );
+            String result  = ConfigFinder.findInConfigStatic(new File( buildPath.toFile(), "build.xml"),"nvr", "/build/result" );
+            if (!"SUCCESS".equals(result) &&  !"UNSTABLE".equals(result)) {
+                System.err.println("Warning, processing invalid job. Result is " + result);
+            }
+            int jobId =  Integer.valueOf(buildPath.toFile().getName());
+            if (displayName == null) {
+                displayName = "# " + jobId;
+            }
+            WritersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile(), displayName, url);
+            RunWrapper found = null;
+            for(int i = jobId-1; i >= 0; i--) {
+                File oldDir = new File( buildPath.toFile().getParentFile(), ""+i);
+                String resultOld  = ConfigFinder.findInConfigStatic(new File( oldDir, "build.xml"),"nvr", "/build/result" );
+                if ("SUCCESS".equals(result) || "UNSTABLE".equals(result)) {
+                    found = new RunWrapperFromDir(oldDir);
+                    break;
+                }
+            }
+            long timeStamp = Long.valueOf(ConfigFinder.findInConfigStatic(new File( buildPath.toFile(), "build.xml"),"timestamp", "/build/timestamp" ));
+            //warning, duration will change
+            long duration  = Long.valueOf(ConfigFinder.findInConfigStatic(new File( buildPath.toFile(), "build.xml"),"duration", "/build/duration" ));
+            BuildReportExtended br = new BuildSummaryParser(Arrays.asList(prefix), null/*?*/).parseBuildReportExtended(new RunWrapperFromDirWithName(buildPath.toFile(), timeStamp, duration, displayName), found);
+            WritersManager.storeAllDiffs(prefix, br, buildPath.toFile(), url);
         }
     }
 }

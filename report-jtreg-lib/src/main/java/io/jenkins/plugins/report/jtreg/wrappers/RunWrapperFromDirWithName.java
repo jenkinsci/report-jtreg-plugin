@@ -29,46 +29,20 @@ import java.io.File;
  *
  * @author jvanek
  */
-public class RunWrapperFromDir implements RunWrapper {
+public class RunWrapperFromDirWithName extends RunWrapperFromDir {
 
-    private final File back;
-    private final long timeStamp;
-    private final long duration;
+private final String name;
 
-    public RunWrapperFromDir(File back) {
-        this.back = back;
-        this.timeStamp = -1;
-        this.duration = -1;
+   public RunWrapperFromDirWithName(File back, long timestamp, long duration, String name) {
+        super(back, timestamp, duration);
+        this.name = name;
     }
 
-    public RunWrapperFromDir(File back, long timestamp, long duration) {
-        this.back = back;
-        this.timeStamp = timestamp;
-        this.duration = duration;
-    }
-
-    @Override
-    public File getRoot() {
-        return back.getAbsoluteFile();
-    }
-
-    @Override
-    public int getNumber() {
-        return Integer.parseInt(back.getName());
-    }
 
     @Override
     public String getName() {
-        return back.getAbsolutePath();
+        return name;
     }
 
-    @Override
-    public long getTimestamp() {
-        return timeStamp;
-    }
 
-    @Override
-    public long getDuration() {
-        return duration;
-    }
 }

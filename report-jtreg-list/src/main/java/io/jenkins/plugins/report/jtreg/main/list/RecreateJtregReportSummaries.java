@@ -27,6 +27,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.parsers.JtregReportParser;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,16 +43,24 @@ import java.util.ArrayList;
 
 public class RecreateJtregReportSummaries {
 
+    //FIXME the isResultsArchive - despite the parser is later searrching for jtr.xml -
+    // the initial pattern may be to vague. The cmdline mus accept parameter to narrow that
+    //Also note that sfxs are doing the same...
+    //TODO allow alternative path for backup
+    //TODO allow alternative path for new files (then do not delete)
+    //TODO FIXME add setup-able top-level URL for future usage
     public static void main(String[] args) throws Exception {
         new RecreateJtregReportSummaries().work();
     }
 
     @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
     private void work() throws Exception {
-        try (Stream<Path> dirsStream = Files.list(Paths.get("").toAbsolutePath().normalize())) {
-            dirsStream.sequential()
-                    .filter(d -> !Files.isSymbolicLink(d))
-                    .forEach(this::recreateJtregReportSummaryForBuild);
+        if (ReportSummaryUtil.isBuildDir(new File("."))) {
+            recreateJtregReportSummaryForBuild(new File(".").getCanonicalFile().toPath());
+        } else {
+            try (Stream<Path> dirsStream = Files.list(Paths.get(".").toAbsolutePath().normalize())) {
+                dirsStream.sequential().filter(d -> !Files.isSymbolicLink(d)).forEach(this::recreateJtregReportSummaryForBuild);
+            }
         }
     }
 
@@ -69,13 +78,13 @@ public class RecreateJtregReportSummaries {
 
     @SuppressFBWarnings(value = {"REC_CATCH_EXCEPTION", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
     private void recreateJtregReportSummaryForBuild(Path buildPath) {
-        Path tckReportsArchive = buildPath.resolve("archive");
-        if (!Files.exists(tckReportsArchive)) {
+        if (!ReportSummaryUtil.isBuildDir(buildPath.toFile())){
             return;
         }
+        System.err.println("Processing: " + buildPath);
         final List<Path> archives = new ArrayList<>();
         try {
-            Files.walkFileTree(buildPath, new FileVisitor<Path>() {
+            Files.walkFileTree(buildPath.resolve("archive"), new FileVisitor<Path>() {
                 @Override
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                     return FileVisitResult.CONTINUE;
@@ -105,17 +114,30 @@ public class RecreateJtregReportSummaries {
 
         try (Stream<Path> tckReportsStream = archives.stream()) {
             List<Suite> suitesList = tckReportsStream.sequential()
-                    .filter(p -> p.toString().endsWith(".xml") || p.toString().endsWith(".xml.gz") || p.toString().endsWith(".xml.xz"))
+                    .filter(p -> isResultsArchive(p))
                     .map(this::jtregReportToSuite)
                     .filter(s -> s != null)
                     .collect(Collectors.toList());
-            ReportSummaryUtil.backupAndStoreSummaries("jtreg", suitesList, buildPath);
+            ReportSummaryUtil.backupAndStoreSummaries("jtreg", suitesList, buildPath, null);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
+    private static boolean isResultsArchive(Path p) {
+        return p.toString().endsWith(".xml") ||
+                p.toString().endsWith(".xml.gz") ||
+                p.toString().endsWith(".xml.xz") ||
+                p.toString().endsWith(".tar.gz") ||
+                p.toString().endsWith(".tar.xz");
+    }
+
     private Suite jtregReportToSuite(Path path) {
-        return new JtregReportParser().parsePath(path);
+        try {
+            return new JtregReportParser().parsePath(path);
+        }catch ( Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 }

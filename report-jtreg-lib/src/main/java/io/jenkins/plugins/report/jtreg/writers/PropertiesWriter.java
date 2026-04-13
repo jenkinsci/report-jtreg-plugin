@@ -24,6 +24,7 @@
 package io.jenkins.plugins.report.jtreg.writers;
 
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
+import io.jenkins.plugins.report.jtreg.Constants;
 import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.model.SuiteTestChanges;
@@ -211,15 +212,12 @@ public class PropertiesWriter {
         }
     }
 
-    private static final String CACHED_SUMM_RESULTS_PROPERTIES = "cached-summ-results.properties";
-    private static final String CACHED_SUMM_REGRESSIONS_PROPERTIES = "cached-summ-regressions.properties";
-
     private static File getCachedRegressionsFile(File rootBuild, int buildNumber) {
-        return getCachedFile(rootBuild, buildNumber, CACHED_SUMM_REGRESSIONS_PROPERTIES);
+        return getCachedFile(rootBuild, buildNumber, Constants.CACHED_SUMM_REGRESSIONS_PROPERTIES);
     }
 
     private static File getCachedResultsFile(File rootBuild, int buildNumber) {
-        return getCachedFile(rootBuild, buildNumber, CACHED_SUMM_RESULTS_PROPERTIES);
+        return getCachedFile(rootBuild, buildNumber, Constants.CACHED_SUMM_RESULTS_PROPERTIES);
     }
 
     private static File getCachedFile(File root,int buildNumber, String name) {
