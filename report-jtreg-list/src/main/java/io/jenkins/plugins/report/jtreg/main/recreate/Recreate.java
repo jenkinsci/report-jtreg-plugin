@@ -106,7 +106,7 @@ public class Recreate {
 
         try (Stream<Path> tckReportsStream = archives.stream()) {
             List<Suite> suitesList = tckReportsStream.sequential().filter(p -> isResultsArchive(p.toString())).map(this::recreateImpl).filter(s -> s != null).collect(Collectors.toList());
-            ReportSummaryUtil.backupAndStoreSummaries(getPrefix(), suitesList, buildPath, args.getUrl());
+            ReportSummaryUtil.backupAndStoreSummaries(getPrefix(), suitesList, buildPath, args);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
