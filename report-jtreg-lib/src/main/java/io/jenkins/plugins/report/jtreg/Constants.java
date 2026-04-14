@@ -23,6 +23,9 @@
  */
 package io.jenkins.plugins.report.jtreg;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -138,4 +141,22 @@ final public class Constants {
             "    padding: 0.25em;\n" +
             "}\n" +
             "</style>";
+
+
+    public static List<Path> getAllFiles(String prefix, Path buildPath) {
+        List<Path> filesToBackup = new ArrayList<>();
+        for(String file: prefixedFiles) {
+            Path path = buildPath.resolve(prefix + "-" + file);
+            if (Files.exists(path)) {
+                filesToBackup.add(path);
+            }
+        }
+        for(String file: unprefixedFiles) {
+            Path path = buildPath.resolve(file);
+            if (Files.exists(path)) {
+                filesToBackup.add(path);
+            }
+        }
+        return filesToBackup;
+    }
 }

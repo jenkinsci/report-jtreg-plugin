@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.jenkins.plugins.report.jtreg.main.list;
+package io.jenkins.plugins.report.jtreg.main.recreate;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
@@ -37,14 +37,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static io.jenkins.plugins.report.jtreg.Constants.prefixedFiles;
-import static io.jenkins.plugins.report.jtreg.Constants.unprefixedFiles;
+import static io.jenkins.plugins.report.jtreg.Constants.getAllFiles;
 
 /**
  * Utility class for backing up and storing report summaries.
@@ -73,19 +71,7 @@ public class ReportSummaryUtil {
     @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
     static void backupAndStoreSummaries(String prefix, List<Suite> suitesList, Path buildPath, String url) throws Exception {
         try {
-            List<Path> filesToBackup = new ArrayList<>();
-            for(String file: prefixedFiles) {
-                Path path = buildPath.resolve(prefix + "-" + file);
-                if (Files.exists(path)) {
-                    filesToBackup.add(path);
-                }
-            }
-            for(String file: unprefixedFiles) {
-                Path path = buildPath.resolve(file);
-                if (Files.exists(path)) {
-                    filesToBackup.add(path);
-                }
-            }
+            List<Path> filesToBackup = getAllFiles(prefix, buildPath);
             if (!filesToBackup.isEmpty()) {
                 long timestamp = System.currentTimeMillis();
                 String zipFileName = "backup_" + prefix + "_" + timestamp + ".zip";
@@ -113,11 +99,11 @@ public class ReportSummaryUtil {
             }
             int jobId =  Integer.valueOf(buildPath.toFile().getName());
             if (displayName == null) {
-                displayName = "# " + jobId;
+                displayName = "#" + jobId;
             }
             WritersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile(), displayName, url);
             RunWrapper found = null;
-            for(int i = jobId-1; i >= 0; i--) {
+            for(int i = jobId-1; i > 0; i--) {
                 File oldDir = new File( buildPath.toFile().getParentFile(), ""+i);
                 String resultOld  = ConfigFinder.findInConfigStatic(new File( oldDir, "build.xml"),"nvr", "/build/result" );
                 if ("SUCCESS".equals(result) || "UNSTABLE".equals(result)) {
