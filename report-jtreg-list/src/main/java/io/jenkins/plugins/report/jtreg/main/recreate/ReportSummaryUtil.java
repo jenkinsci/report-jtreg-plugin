@@ -51,6 +51,9 @@ import static io.jenkins.plugins.report.jtreg.Constants.getAllFiles;
 public class ReportSummaryUtil {
 
 
+    public static final String SUCCESS_DUPLICATE = "SUCCESS";
+    public static final String UNSTABLE_DUPLICATE = "UNSTABLE";
+
     static boolean isBuildDir(File dir) {
         try {
             return new File(dir, "archive").exists() && (dir.getCanonicalFile().getName().matches("[0-9]+"));
@@ -72,6 +75,74 @@ public class ReportSummaryUtil {
     @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
     static void backupAndStoreSummaries(String prefix, List<Suite> suitesList, Path buildPath, RecreateArgs params) throws Exception {
         List<Path> filesToBackup = getAllFiles(prefix, buildPath);
+        Path zipPath = backup(prefix, buildPath, filesToBackup, true);
+        checkResultOfCurrentBuild(buildPath);
+        int jobId = Integer.valueOf(buildPath.toFile().getName());
+        String displayName = getDisplayName(buildPath, jobId);
+        // write static files
+        WritersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile(), displayName, params.getUrl());
+        RunWrapper found = findPreviousBuild(buildPath, jobId);
+        long timeStamp = Long.valueOf(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "timestamp", "/build/timestamp"));
+        //warning, duration will change (to better), that is correct
+        long duration = Long.valueOf(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "duration", "/build/duration"));
+        BuildReportExtended br = new BuildSummaryParser(Arrays.asList(prefix), null/*?*/).parseBuildReportExtended(new RunWrapperFromDirWithName(buildPath.toFile(), timeStamp, duration, displayName), found);
+        // write diff with all metadata
+        WritersManager.storeAllDiffs(prefix, br, buildPath.toFile(), params.getUrl());
+        if (params.getOut() != null) {
+            export(buildPath, params, filesToBackup, zipPath, displayName, br, jobId);
+        }
+
+    }
+
+    private static void checkResultOfCurrentBuild(Path buildPath) {
+        String result = ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "nvr", "/build/result");
+        if (!SUCCESS_DUPLICATE.equals(result) && !UNSTABLE_DUPLICATE.equals(result)) {
+            System.err.println("Warning, processing invalid job. Result is " + result);
+        }
+    }
+
+    private static RunWrapper findPreviousBuild(Path buildPath, int jobId) {
+        //find previous build (if any)
+        RunWrapper found = null;
+        for (int i = jobId - 1; i > 0; i--) {
+            File oldDir = new File(buildPath.toFile().getParentFile(), "" + i);
+            String resultOld = ConfigFinder.findInConfigStatic(new File(oldDir, "build.xml"), "nvr", "/build/result");
+            if (SUCCESS_DUPLICATE.equals(resultOld) || UNSTABLE_DUPLICATE.equals(resultOld)) {
+                found = new RunWrapperFromDir(oldDir);
+                break;
+            }
+        }
+        return found;
+    }
+
+    private static String getDisplayName(Path buildPath, int jobId) {
+        String displayName = ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "nvr", "/build/displayName");
+        if (displayName == null) {
+            displayName = "#" + jobId;
+        }
+        return displayName;
+    }
+
+    private static void export(Path buildPath, RecreateArgs params, List<Path> filesToBackup, Path zipPath, String displayName, BuildReportExtended br, int jobId) throws IOException {
+        Path outDir = new File(params.getOut()).toPath();
+        if (!Files.exists(outDir)) {
+            Files.createDirectories(outDir);
+        }
+        for (Path file : filesToBackup) {
+            Path targetPath = outDir.resolve(file.getFileName());
+            Files.copy(file, targetPath);
+        }
+        //restore originals
+        if (!params.isNoRestore()) {
+            restoreBackup(buildPath, zipPath, true);
+        }
+        //postprocess the copy
+        System.out.println(" - " + displayName);
+        System.out.println(" - " + br.getJob());
+        System.out.println(" - " + jobId);
+    }
+
+    private static Path backup(String prefix, Path buildPath, List<Path> filesToBackup, boolean delete) throws IOException {
         long timestamp = System.currentTimeMillis();
         String zipFileName = "backup_" + prefix + "_" + timestamp + ".zip";
         Path zipPath = buildPath.resolve(zipFileName);
@@ -85,67 +156,28 @@ public class ReportSummaryUtil {
                 }
             }
         }
-        // Delete the original files after successful backup
-        for (Path file : filesToBackup) {
-            Files.deleteIfExists(file);
-        }
-        // regenerate all data files
-        String displayName = ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "nvr", "/build/displayName");
-        String result = ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "nvr", "/build/result");
-        if (!"SUCCESS".equals(result) && !"UNSTABLE".equals(result)) {
-            System.err.println("Warning, processing invalid job. Result is " + result);
-        }
-        int jobId = Integer.valueOf(buildPath.toFile().getName());
-        if (displayName == null) {
-            displayName = "#" + jobId;
-        }
-        // write static files
-        WritersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile(), displayName, params.getUrl());
-        //find previous build (if any)
-        RunWrapper found = null;
-        for (int i = jobId - 1; i > 0; i--) {
-            File oldDir = new File(buildPath.toFile().getParentFile(), "" + i);
-            String resultOld = ConfigFinder.findInConfigStatic(new File(oldDir, "build.xml"), "nvr", "/build/result");
-            if ("SUCCESS".equals(result) || "UNSTABLE".equals(result)) {
-                found = new RunWrapperFromDir(oldDir);
-                break;
-            }
-        }
-        long timeStamp = Long.valueOf(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "timestamp", "/build/timestamp"));
-        //warning, duration will change (to better), that is correct
-        long duration = Long.valueOf(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "duration", "/build/duration"));
-        BuildReportExtended br = new BuildSummaryParser(Arrays.asList(prefix), null/*?*/).parseBuildReportExtended(new RunWrapperFromDirWithName(buildPath.toFile(), timeStamp, duration, displayName), found);
-        // write diff with all metadata
-        WritersManager.storeAllDiffs(prefix, br, buildPath.toFile(), params.getUrl());
-        if (params.getOut() != null) {
-            Path outDir = new File(params.getOut()).toPath();
-            if (!Files.exists(outDir)) {
-                Files.createDirectories(outDir);
-            }
+        if (delete) {
             for (Path file : filesToBackup) {
-                Path targetPath = outDir.resolve(file.getFileName());
-                Files.copy(file, targetPath);
+                Files.deleteIfExists(file);
             }
-            //restore originals
-            if (!params.isNoRestore()) {
-                if (zipPath != null && Files.exists(zipPath)) {
-                    try (ZipInputStream zis = new ZipInputStream(Files.newInputStream(zipPath))) {
-                        ZipEntry zipEntry;
-                        while ((zipEntry = zis.getNextEntry()) != null) {
-                            Path extractedFile = buildPath.resolve(zipEntry.getName());
-                            Files.deleteIfExists(extractedFile);
-                            Files.copy(zis, extractedFile);
-                            zis.closeEntry();
-                        }
-                    }
-                    Files.deleteIfExists(zipPath);
+        }
+        return zipPath;
+    }
+
+    private static void restoreBackup(Path buildPath, Path zipPath, boolean delete) throws IOException {
+        if (zipPath != null && Files.exists(zipPath)) {
+            try (ZipInputStream zis = new ZipInputStream(Files.newInputStream(zipPath))) {
+                ZipEntry zipEntry;
+                while ((zipEntry = zis.getNextEntry()) != null) {
+                    Path extractedFile = buildPath.resolve(zipEntry.getName());
+                    Files.deleteIfExists(extractedFile);
+                    Files.copy(zis, extractedFile);
+                    zis.closeEntry();
                 }
             }
-            //postprocess the copy
-            System.out.println(" - " + displayName);
-            System.out.println(" - " + br.getJob());
-            System.out.println(" - " + jobId);
+            if (delete) {
+                Files.deleteIfExists(zipPath);
+            }
         }
-
     }
 }
