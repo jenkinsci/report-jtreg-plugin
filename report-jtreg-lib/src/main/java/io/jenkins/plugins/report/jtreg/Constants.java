@@ -143,7 +143,7 @@ final public class Constants {
             "</style>";
 
 
-    public static List<Path> getAllFiles(String prefix, Path buildPath) {
+    public static List<Path> getAllFiles(String prefix, List<String> additionaFiles, Path buildPath) {
         List<Path> filesToBackup = new ArrayList<>();
         for(String file: prefixedFiles) {
             Path path = buildPath.resolve(prefix + "-" + file);
@@ -151,10 +151,12 @@ final public class Constants {
                 filesToBackup.add(path);
             }
         }
-        for(String file: unprefixedFiles) {
-            Path path = buildPath.resolve(file);
-            if (Files.exists(path)) {
-                filesToBackup.add(path);
+        for(List<String> list: Arrays.asList(unprefixedFiles, additionaFiles == null ? new ArrayList<String>():additionaFiles)) {
+            for (String file : list) {
+                Path path = buildPath.resolve(file);
+                if (Files.exists(path)) {
+                    filesToBackup.add(path);
+                }
             }
         }
         return filesToBackup;

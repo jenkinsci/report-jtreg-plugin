@@ -47,7 +47,10 @@ public class RecreateJckReportSummaries extends Recreate {
     private static final String[] suffixes = "xml,xml.gz,xml.xz".split(",");
 
     @Override
-     boolean isResultsArchive(String s) {
+    boolean isResultsArchive(String s) {
+        if (args.getArchivesRegex() != null) {
+            return s.matches(args.getArchivesRegex());
+        }
         for (String suffix : suffixes) {
             if (s.endsWith("." + suffix)) {
                 return true;
@@ -59,11 +62,11 @@ public class RecreateJckReportSummaries extends Recreate {
 
     @Override
     Suite recreateImpl(Path path) {
-         try {
-             return new JckReportParser().parsePath(path);
-         }catch (Exception ex) {
-             ex.printStackTrace();
-             return null;
-         }
+        try {
+            return new JckReportParser().parsePath(path);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 }

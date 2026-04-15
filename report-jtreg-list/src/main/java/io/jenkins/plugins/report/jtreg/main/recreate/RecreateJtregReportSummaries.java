@@ -49,6 +49,9 @@ public class RecreateJtregReportSummaries extends Recreate {
 
     @Override
     boolean isResultsArchive(String s) {
+        if (args.getArchivesRegex() != null) {
+            return s.matches(args.getArchivesRegex());
+        }
         for (String suffix : suffixes) {
             if (s.endsWith("." + suffix)) {
                 return true;
@@ -62,7 +65,7 @@ public class RecreateJtregReportSummaries extends Recreate {
     Suite recreateImpl(Path path) {
         try {
             return new JtregReportParser().parsePath(path);
-        }catch ( Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             return null;
         }

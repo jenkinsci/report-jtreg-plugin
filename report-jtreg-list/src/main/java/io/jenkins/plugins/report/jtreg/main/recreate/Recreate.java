@@ -1,14 +1,9 @@
 package io.jenkins.plugins.report.jtreg.main.recreate;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,11 +19,6 @@ public class Recreate {
         this.args = args;
     }
 
-    //FIXME the isResultsArchive - despite the parser is later searrching for jtr.xml -
-    // the initial pattern may be to vague. The cmdline mus accept parameter to narrow that
-    //TODO allow alternative path for backup  (then do not delete)
-    //TODO allow alternative path for new files (then do not delete)
-    //TODO test the whole job regeneration
     public static void main(String[] aargs) throws Exception {
         RecreateArgs args = new RecreateArgs(aargs);
         new Recreate(args).doWork();
@@ -57,9 +47,9 @@ public class Recreate {
         if (ReportSummaryUtil.isBuildDir(new File("."))) {
             recreate(new File(".").getCanonicalFile().toPath());
         } else {
-            Path cwd=Paths.get(".").toAbsolutePath().normalize();
+            Path cwd = Paths.get(".").toAbsolutePath().normalize();
             if (cwd.resolve("builds").toFile().exists()) {
-                cwd =  cwd.resolve("builds");
+                cwd = cwd.resolve("builds");
             }
             try (Stream<Path> dirsStream = Files.list(cwd)) {
                 dirsStream.sequential().filter(d -> !Files.isSymbolicLink(d)).forEach(this::recreate);
@@ -74,36 +64,8 @@ public class Recreate {
             return;
         }
         System.err.println("Processing: " + buildPath);
-        final List<Path> archives = new ArrayList<>();
-        try {
-            Files.walkFileTree(buildPath.resolve("archive"), new FileVisitor<Path>() {
-                @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                    return FileVisitResult.CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    if (isResultsArchive(file.toString())) {
-                        archives.add(file);
-                    }
-                    return FileVisitResult.CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                    return FileVisitResult.CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-
+        //note, what archives, is defined in subclasses
+        final List<Path> archives = ReportSummaryUtil.findArchives(buildPath, this);
         try (Stream<Path> tckReportsStream = archives.stream()) {
             List<Suite> suitesList = tckReportsStream.sequential().filter(p -> isResultsArchive(p.toString())).map(this::recreateImpl).filter(s -> s != null).collect(Collectors.toList());
             ReportSummaryUtil.backupAndStoreSummaries(getPrefix(), suitesList, buildPath, args);
@@ -113,7 +75,7 @@ public class Recreate {
     }
 
 
-    Suite recreateImpl(Path path)  {
+    Suite recreateImpl(Path path) {
         return null;
     }
 

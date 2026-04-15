@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Properties;
 
 public class ConfigFinder {
-    private static final Map<File, Map<String, String>> configCache = new HashMap<>();
+    private static final Map<File, Map<String, String>> configCache = new HashMap<File, Map<String, String>>();
 
     private final File configFile;
     private final String whatToFind;
@@ -41,24 +41,14 @@ public class ConfigFinder {
 
     public static String findInConfigStatic(File configFile, String whatToFind, String findQuery) {
         // checks if the file/items in the file are already cached
-        Map<String, String> cachedMap = configCache.get(configFile);
+        Map<String, String> cachedMap = configCache.get(configFile.getAbsoluteFile());
         if (cachedMap != null) {
             String cachedValue = cachedMap.get(whatToFind);
             if (cachedValue != null) {
                 return cachedValue;
             }
         }
-
-        // checks for file extension
-        String value;
-        if (configFile.getName().endsWith("xml")) {
-            value = findInXml(configFile, findQuery);
-        } else if (configFile.getName().endsWith("json")) {
-            value = findInJson(configFile, findQuery);
-        } else {
-            value = findInProperties(configFile, findQuery);
-        }
-
+        String value = findInConfigStaticNoCache(configFile, findQuery);
         // puts the value to the cache if not null
         if (value != null) {
             if (cachedMap == null) {
@@ -68,6 +58,19 @@ public class ConfigFinder {
             configCache.put(configFile, cachedMap);
         }
 
+        return value;
+    }
+
+    public static String findInConfigStaticNoCache(File configFile, String findQuery) {
+        // checks for file extension
+        String value;
+        if (configFile.getName().endsWith("xml")) {
+            value = findInXml(configFile, findQuery);
+        } else if (configFile.getName().endsWith("json")) {
+            value = findInJson(configFile, findQuery);
+        } else {
+            value = findInProperties(configFile, findQuery);
+        }
         return value;
     }
 
