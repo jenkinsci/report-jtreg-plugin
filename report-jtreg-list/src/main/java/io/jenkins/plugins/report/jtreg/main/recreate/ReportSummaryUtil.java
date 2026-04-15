@@ -83,14 +83,14 @@ public class ReportSummaryUtil {
         int jobId = Integer.parseInt(buildPath.toFile().getName());
         String displayName = getDisplayName(buildPath, jobId);
         // write static files
-        WritersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile(), displayName, params.getUrl());
+        WritersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile(), displayName, params.getUrl(), params.getKinds());
         RunWrapper found = findPreviousBuild(buildPath, jobId);
         long timeStamp = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "timestamp", "/build/timestamp"));
         //warning, duration will change (to better), that is correct
         long duration = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "duration", "/build/duration"));
         BuildReportExtended br = new BuildSummaryParser(Arrays.asList(prefix), null/*?*/).parseBuildReportExtended(new RunWrapperFromDirWithName(buildPath.toFile(), timeStamp, duration, displayName), found);
         // write diff with all metadata
-        WritersManager.storeAllDiffs(prefix, br, buildPath.toFile(), params.getUrl());
+        WritersManager.storeAllDiffs(prefix, br, buildPath.toFile(), params.getUrl(), params.getKinds());
         export(prefix, buildPath, params, zipPath, displayName, br, jobId);
 
 

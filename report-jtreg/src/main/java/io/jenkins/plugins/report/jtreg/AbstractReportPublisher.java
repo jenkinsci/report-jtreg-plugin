@@ -85,13 +85,13 @@ abstract public class AbstractReportPublisher extends Recorder {
             build.setResult(Result.FAILURE);
         }
         //first we create the jsons for this run
-        WritersManager.storeAllSummaries(prefix(),report, build.getRootDir(), build.getDisplayName(), Jenkins.get().getRootUrl());
+        WritersManager.storeAllSummaries(prefix(),report, build.getRootDir(), build.getDisplayName(), Jenkins.get().getRootUrl(), null);
         //now we can reuse them to compute diff
         BuildSummaryParserPlugin bsp = new BuildSummaryParserPlugin(Arrays.asList(prefix()), ReportAction.getAbstractReportPublisher(build.getProject().getPublishersList()));
         try {
             BuildReportExtended br = bsp.parseBuildReportExtended(build);
             //recreating without full listings
-            WritersManager.storeAllDiffs(prefix(), br, build.getRootDir(), Jenkins.get().getRootUrl());
+            WritersManager.storeAllDiffs(prefix(), br, build.getRootDir(), Jenkins.get().getRootUrl(), null);
         }catch ( Exception e) {
             e.printStackTrace();
         }

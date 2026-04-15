@@ -34,19 +34,36 @@ import io.jenkins.plugins.report.jtreg.model.Suite;
 
 public class WritersManager {
 
-    public static void storeAllSummaries(String prefix, List<Suite> reportFull, File rootDir, String buildName, String url) throws IOException {
-        writeJsons(prefix, reportFull, rootDir);
-        PropertiesWriter.writeReportSummaryProperties(reportFull, rootDir);
-        writePlainTextSummaries(prefix, reportFull, rootDir, buildName, url);
+    private static boolean allOrSet(List<WriterKinds> kinds, WriterKinds writerKinds) {
+        return kinds == null || kinds.isEmpty() || kinds.contains(writerKinds);
     }
 
+    public static void storeAllSummaries(String prefix, List<Suite> reportFull, File rootDir, String buildName, String url, List<WriterKinds> kinds) throws IOException {
+        if (allOrSet(kinds, WriterKinds.JSON)) {
+            writeJsons(prefix, reportFull, rootDir);
+        }
+        if (allOrSet(kinds, WriterKinds.PROPERTIES)) {
+            PropertiesWriter.writeReportSummaryProperties(reportFull, rootDir);
+        }
+        if (allOrSet(kinds, WriterKinds.PLAIN)) {
+            writePlainTextSummaries(prefix, reportFull, rootDir, buildName, url);
+        }
+    }
+
+
     //Note, that this diff is not, and should not be, used in comparison - that should remain dynamic
-    public static void storeAllDiffs(String prefix, BuildReportExtended buildReportExtended, File rootDir, String url) throws IOException {
+    public static void storeAllDiffs(String prefix, BuildReportExtended buildReportExtended, File rootDir, String url, List<WriterKinds> kinds) throws IOException {
         buildReportExtended = purify(buildReportExtended);
-        File diffJson = new File(rootDir, prefix + "-" + Constants.REPORT_DIFF);
-        JsonReportWriter.writeBuildReportExtended(diffJson, buildReportExtended);
-        PropertiesWriter.writeReportPropertiesRegressions(rootDir, buildReportExtended);
-        writePlainTextDiff(prefix, buildReportExtended, rootDir, url);
+        if (allOrSet(kinds, WriterKinds.JSON)) {
+            File diffJson = new File(rootDir, prefix + "-" + Constants.REPORT_DIFF);
+            JsonReportWriter.writeBuildReportExtended(diffJson, buildReportExtended);
+        }
+        if (allOrSet(kinds, WriterKinds.PROPERTIES)) {
+            PropertiesWriter.writeReportPropertiesRegressions(rootDir, buildReportExtended);
+        }
+        if (allOrSet(kinds, WriterKinds.PLAIN)) {
+            writePlainTextDiff(prefix, buildReportExtended, rootDir, url);
+        }
     }
 
     private static void writeJsons(String prefix, List<Suite> reportFull, File rootDir) throws IOException {

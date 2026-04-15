@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import io.jenkins.plugins.report.jtreg.writers.WriterKinds;
 
 public class RecreateArgs {
-
-    public enum Kinds {
-        PLAIN, JSON, PROPERTIES
-    }
 
     private final List<String> aargs;
 
@@ -34,6 +31,7 @@ public class RecreateArgs {
             System.out.println("               PLAIN will regenerate plaintexts, JSON jsons and PROPERTIES properties. Default is JSON,PLAIN,PROPERTIES");
             System.out.println("               You can not regenerate PLAIN or PROPERTIES without jsons already in place");
             System.out.println("               Everything is always backup-ed and exported. This is really about what is regenerated");
+            System.out.println("               Special value is NONE, which willc ause to regenerate nothing, and just export (if set)");
             System.out.println("                                                                               ");
             System.out.println(" !!!!!!!!      if -out <out-path> is not set, tmp is created, used, and dropped for -nvr-db/-job-db");
             System.out.println("                                                                               ");
@@ -92,12 +90,12 @@ public class RecreateArgs {
         return Collections.unmodifiableList(r);
     }
 
-    public List<Kinds> getKinds() {
-        List<Kinds> r = new ArrayList<>();
+    public List<WriterKinds> getKinds() {
+        List<WriterKinds> r = new ArrayList<>();
         String orig = get("-kinds");
         if (orig != null) {
             for (String kind : orig.split(",")) {
-                r.add(Kinds.valueOf(kind.toUpperCase()));
+                r.add(WriterKinds.valueOf(kind.toUpperCase()));
             }
         }
         return Collections.unmodifiableList(r);
