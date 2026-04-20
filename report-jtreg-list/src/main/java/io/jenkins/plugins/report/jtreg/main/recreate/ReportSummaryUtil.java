@@ -108,10 +108,12 @@ public class ReportSummaryUtil {
         RunWrapper found = null;
         for (int i = jobId - 1; i > 0; i--) {
             File oldDir = new File(buildPath.toFile().getParentFile(), "" + i);
-            String resultOld = ConfigFinder.findInConfigStatic(new File(oldDir, "build.xml"), "result", "/build/result");
-            if (SUCCESS_DUPLICATE.equals(resultOld) || UNSTABLE_DUPLICATE.equals(resultOld)) {
-                found = new RunWrapperFromDir(oldDir);
-                break;
+            if (oldDir.exists()) {
+                String resultOld = ConfigFinder.findInConfigStatic(new File(oldDir, "build.xml"), "result", "/build/result");
+                if (SUCCESS_DUPLICATE.equals(resultOld) || UNSTABLE_DUPLICATE.equals(resultOld)) {
+                    found = new RunWrapperFromDir(oldDir);
+                    break;
+                }
             }
         }
         return found;
