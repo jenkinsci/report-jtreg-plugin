@@ -139,6 +139,11 @@ public class ReportSummaryUtil {
         } else {
             outDirImpl = new File(outDirParam).toPath();
         }
+        String result = "UNKNOWN";
+        File buildXml = new File(buildPath.toFile(), "build.xml");
+        if (buildXml.exists()) {
+            result = ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "result", "/build/result");
+        }
         //no export!
         if (outDirImpl != null) {
             List<Path> allFiles = getAllFiles(prefix, params.getAdditionalFiles(), buildPath);
@@ -150,11 +155,11 @@ public class ReportSummaryUtil {
             allFiles = getAllFiles(prefix, params.getAdditionalFiles(), outDirImpl);
             //postprocess the copy
             if (params.getJobDb() != null) {
-                File jobDir = new File(params.getJobDb() + "/" + br.getJob() + "/" + displayName + "/" + jobId);
+                File jobDir = new File(params.getJobDb() + "/" + br.getJob() + "/" + displayName + "/" + result+ "/" + jobId);
                 copyWithOverwrite(allFiles, jobDir.toPath());
             }
             if (params.getNvrDb() != null) {
-                File nvrDir = new File(params.getNvrDb() + "/" + displayName + "/" + br.getJob() + "/" + jobId);
+                File nvrDir = new File(params.getNvrDb() + "/" + displayName + "/" + br.getJob() + "/" + result+ "/" + jobId);
                 copyWithOverwrite(allFiles, nvrDir.toPath());
 
 
