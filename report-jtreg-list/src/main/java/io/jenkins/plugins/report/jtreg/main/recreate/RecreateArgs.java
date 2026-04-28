@@ -40,6 +40,7 @@ public class RecreateArgs {
             System.out.println("      new files are generated");
             System.out.println("      files are moved to out-path and copied as needed");
             System.out.println("      backup is restored and backup-timestamp.zip is removed");
+            System.out.println("      nvr-db, job-db and add-files are substitued by config if called from jenkins via plugin");
             throw new RuntimeException("help requested");
         }
     }
