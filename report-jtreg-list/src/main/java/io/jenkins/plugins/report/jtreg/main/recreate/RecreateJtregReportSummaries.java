@@ -25,6 +25,7 @@ package io.jenkins.plugins.report.jtreg.main.recreate;
 
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.parsers.JtregReportParser;
+import io.jenkins.plugins.report.jtreg.recreate.RecreateArgs;
 
 import java.nio.file.Path;
 
@@ -41,14 +42,14 @@ public class RecreateJtregReportSummaries extends Recreate {
         new RecreateJtregReportSummaries(args).work();
     }
 
-    String getPrefix() {
+    public String getPrefix() {
         return "jtreg";
     }
 
     private static final String[] suffixes = "zip,tar,tar.gz,tar.bz2,tar.xz".split(",");
 
     @Override
-    boolean isResultsArchive(String s) {
+    public boolean isResultsArchive(String s) {
         if (args.getArchivesRegex() != null) {
             return s.matches(args.getArchivesRegex());
         }

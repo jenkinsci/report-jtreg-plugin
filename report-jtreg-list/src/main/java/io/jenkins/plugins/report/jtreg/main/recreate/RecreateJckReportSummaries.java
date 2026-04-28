@@ -25,6 +25,7 @@ package io.jenkins.plugins.report.jtreg.main.recreate;
 
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.parsers.JckReportParser;
+import io.jenkins.plugins.report.jtreg.recreate.RecreateArgs;
 
 import java.nio.file.Path;
 
@@ -40,14 +41,14 @@ public class RecreateJckReportSummaries extends Recreate {
         new RecreateJckReportSummaries(args).work();
     }
 
-    String getPrefix() {
+    public String getPrefix() {
         return "jck";
     }
 
     private static final String[] suffixes = "xml,xml.gz,xml.xz".split(",");
 
     @Override
-    boolean isResultsArchive(String s) {
+    public boolean isResultsArchive(String s) {
         if (args.getArchivesRegex() != null) {
             return s.matches(args.getArchivesRegex());
         }
@@ -61,7 +62,7 @@ public class RecreateJckReportSummaries extends Recreate {
 
 
     @Override
-    Suite recreateImpl(Path path) {
+    public Suite recreateImpl(Path path) {
         try {
             return new JckReportParser().parsePath(path);
         } catch (Exception ex) {
