@@ -187,7 +187,9 @@ public class ReportSummaryUtil {
         Files.createDirectories(outDir);
         for (Path file : allFiles) {
             Path targetPath = outDir.resolve(file.getFileName());
-            Files.copy(file, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            if (Files.exists(file)) {
+                Files.copy(file, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            }
         }
     }
 
