@@ -1,4 +1,4 @@
-package io.jenkins.plugins.report.jtreg.main.recreate;
+package io.jenkins.plugins.report.jtreg.recreate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,15 +6,15 @@ import java.util.Collections;
 import java.util.List;
 import io.jenkins.plugins.report.jtreg.writers.WriterKinds;
 
-public class RecreateArgs {
+public class RecreateArgs implements ExportArgs{
 
     private final List<String> aargs;
 
     public RecreateArgs(String[] args) {
         this.aargs = Collections.unmodifiableList((Arrays.asList(args)));
         if (containsSwitch("-h") || containsSwitch("-help")) {
-            System.out.println("From " + Recreate.class.getName() + " class you must specify `jtreg` or `jck` keyword");
-            System.out.println("From " + RecreateJckReportSummaries.class.getName() + " and " + RecreateJtregReportSummaries.class.getName() + " classes it may be omitted");
+            System.out.println("From  Recreate class you must specify `jtreg` or `jck` keyword");
+            System.out.println("From  RecreateJckReportSummaries and RecreateJtregReportSummaries classes it may be omitted");
             System.out.println("This tool operates from CWD, whcihc should be build dir or job dir. In case of job dir it process all builds");
             System.out.println("-url <url> will allow generation of links in plaintext results pointing to <url>/job/<job>/...");
             System.out.println("-add-files <f1,..> f can be coma separated list of files which should be backuped too. Like build.xml,changelog.xml");

@@ -9,9 +9,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.jenkins.plugins.report.jtreg.recreate.PrefixableResult;
+import io.jenkins.plugins.report.jtreg.recreate.RecreateArgs;
+import io.jenkins.plugins.report.jtreg.recreate.ReportSummaryUtil;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 
-public class Recreate {
+public class Recreate implements PrefixableResult {
 
     protected final RecreateArgs args;
 
@@ -34,11 +37,11 @@ public class Recreate {
         }
     }
 
-    boolean isResultsArchive(String s) {
+    public boolean isResultsArchive(String s) {
         return true;
     }
 
-    String getPrefix() {
+    public String getPrefix() {
         return null;
     }
 
