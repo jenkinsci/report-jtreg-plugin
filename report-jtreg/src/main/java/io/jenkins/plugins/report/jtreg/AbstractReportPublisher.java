@@ -32,9 +32,12 @@ import io.jenkins.plugins.report.jtreg.model.*;
 import io.jenkins.plugins.report.jtreg.parsers.ReportParser;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
+import io.jenkins.plugins.report.jtreg.recreate.RecreateArgs;
+import io.jenkins.plugins.report.jtreg.recreate.ReportSummaryUtil;
 import io.jenkins.plugins.report.jtreg.writers.WritersManager;
 import jenkins.model.Jenkins;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -84,6 +87,7 @@ abstract public class AbstractReportPublisher extends Recorder {
             logger.severe(s);
             build.setResult(Result.FAILURE);
         }
+        //FIXME, verify on remote agent
         //first we create the jsons for this run
         WritersManager.storeAllSummaries(prefix(),report, build.getRootDir(), build.getDisplayName(), Jenkins.get().getRootUrl(), null);
         //now we can reuse them to compute diff
@@ -92,6 +96,11 @@ abstract public class AbstractReportPublisher extends Recorder {
             BuildReportExtended br = bsp.parseBuildReportExtended(build);
             //recreating without full listings
             WritersManager.storeAllDiffs(prefix(), br, build.getRootDir(), Jenkins.get().getRootUrl(), null);
+            ReportSummaryUtil.export(
+                    /*fixme*/"TODO",
+                    build.getRootDir().toPath(),
+                    new RecreateArgs(new String[]{}),
+                    new File(build.getRootDir(),"zip.zip").toPath(), build.getDisplayName(), br, build.getNumber());
         }catch ( Exception e) {
             e.printStackTrace();
         }

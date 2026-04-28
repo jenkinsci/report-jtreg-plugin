@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.jenkins.plugins.report.jtreg.main.recreate;
+package io.jenkins.plugins.report.jtreg.recreate;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
@@ -59,7 +59,7 @@ public class ReportSummaryUtil {
     public static final String SUCCESS_DUPLICATE = "SUCCESS";
     public static final String UNSTABLE_DUPLICATE = "UNSTABLE";
 
-    static boolean isBuildDir(File dir) {
+    public static boolean isBuildDir(File dir) {
         try {
             return new File(dir, "archive").exists() && (dir.getCanonicalFile().getName().matches("[0-9]+"));
         } catch (IOException e) {
@@ -77,7 +77,7 @@ public class ReportSummaryUtil {
      * @param buildPath  the path to the build directory
      * @throws IOException if an I/O error occurs during file operations
      */
-    static void backupAndStoreSummaries(String prefix, List<Suite> suitesList, Path buildPath, RecreateArgs params) throws Exception {
+    public static void backupAndStoreSummaries(String prefix, List<Suite> suitesList, Path buildPath, RecreateArgs params) throws Exception {
         Path zipPath = backup(prefix, buildPath, params, false);
         checkResultOfCurrentBuild(buildPath);
         int jobId = Integer.parseInt(buildPath.toFile().getName());
@@ -127,7 +127,7 @@ public class ReportSummaryUtil {
         return displayName;
     }
 
-    private static void export(String prefix, Path buildPath, RecreateArgs params, Path zipPath, String displayName, BuildReportExtended br, int jobId) throws IOException {
+    public static void export(String prefix, Path buildPath, RecreateArgs params, Path zipPath, String displayName, BuildReportExtended br, int jobId) throws IOException {
         String outDirParam = params.getOut();
         Path outDirImpl = null;
         boolean removeOutDir = false;
@@ -235,7 +235,7 @@ public class ReportSummaryUtil {
         return extractedFiles;
     }
 
-    static List<Path> findArchives(Path buildPath, Recreate typesProvider) {
+    public static List<Path> findArchives(Path buildPath, PrefixableResult typesProvider) {
         final List<Path> archives = new ArrayList<>();
         try {
             Files.walkFileTree(buildPath.resolve("archive"), new FileVisitor<Path>() {
