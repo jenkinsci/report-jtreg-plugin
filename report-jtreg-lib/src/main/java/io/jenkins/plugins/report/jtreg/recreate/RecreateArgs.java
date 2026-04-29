@@ -19,28 +19,23 @@ public class RecreateArgs implements ExportArgs{
             System.out.println("-url <url> will allow generation of links in plaintext results pointing to <url>/job/<job>/...");
             System.out.println("-add-files <f1,..> f can be coma separated list of files which should be backuped too. Like build.xml,changelog.xml");
             System.out.println("-archives <regex> tool uses quite free recognition to find results in archive dir. Set your own regex instead of it to restrict it");
-            System.out.println("-out <path>    save the files to a tmp-like <out> directory instead of original dir");
-            System.out.println("               reason for <out-path> is the mandatory generation in two steps");
-            System.out.println("-no-restore    If -out is specified, by default the original files will be restored.");
+            System.out.println("-out <path>    will copy the results to custom directory");
+            System.out.println("-nvr-db <path> will copy the results to path/displayName/job/buildId");
+            System.out.println("-job-db <path> will copy the results to path/job/buildId");
+            System.out.println("-no-restore    by default the original files will be restored.");
             System.out.println("               Setting this flag will disable it, and will keep freshly generated files");
-            System.out.println("-nvr-db <path> from <out-path> will copy the results to path/displayName/job/buildId");
-            System.out.println("               if -out <out-path> is not set, tmp is created, used, and dropped");
-            System.out.println("-job-db <path> from <out-path> will copy the results to path/job/buildId");
-            System.out.println("               if -out <out-path> is not set, tmp is created, used, and dropped");
             System.out.println("-kinds <k1,..> k can be coma separated list of any of PLAIN, JSON, PROPERTIES");
             System.out.println("               PLAIN will regenerate plaintexts, JSON jsons and PROPERTIES properties. Default is JSON,PLAIN,PROPERTIES");
             System.out.println("               You can not regenerate PLAIN or PROPERTIES without jsons already in place");
             System.out.println("               Everything is always backup-ed and exported. This is really about what is regenerated");
             System.out.println("               Special value is NONE, which willc ause to regenerate nothing, and just export (if set)");
             System.out.println("                                                                               ");
-            System.out.println(" !!!!!!!!      if -out <out-path> is not set, tmp is created, used, and dropped for -nvr-db/-job-db");
-            System.out.println("                                                                               ");
-            System.out.println("Actually the current impl for cases with  <out-path> is, that:");
+            System.out.println("Because regeneration regenerates also the jsons, which are crucial to the operation of plugin, the export works like this:");
             System.out.println("      the backup is done");
             System.out.println("      new files are generated");
-            System.out.println("      files are moved to out-path and copied as needed");
-            System.out.println("      backup is restored and backup-timestamp.zip is removed");
-            System.out.println("      nvr-db, job-db and add-files are substitued by config if called from jenkins via plugin");
+            System.out.println("      copied to the out/nvr/job external locations");
+            System.out.println("      backup is restored and backup-timestamp.zip is removed (unless forbidden by -no-restore)");
+            System.out.println("      nvr-db, job-db and add-files are substituted by config if called from jenkins via plugin");
             throw new RuntimeException("help requested");
         }
     }
