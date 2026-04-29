@@ -108,38 +108,36 @@ public class PropertiesWriter {
      * @throws IOException if an I/O error occurs
      */
     private static void cacheRegressionsImpl(File cachedRegressions, BuildReportExtended br) throws IOException {
-            if (!cachedRegressions.exists()) {
-                try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cachedRegressions), "utf-8"))) {
-                    bw.write("jrp.improvements=" + allImprovements(br.getTestChanges()));
-                    bw.newLine();
-                    bw.write("jrp.regressions=" + allFailures(br.getTestChanges()));
-                    bw.newLine();
-                    bw.write("jrp.nwerrors=" + allErrors(br.getTestChanges()));
-                    bw.newLine();
-                    bw.write("jrp.added=" + allAdded(br.getTestChanges()));
-                    bw.newLine();
-                    bw.write("jrp.removes=" + allRemoved(br.getTestChanges()));
-                    bw.newLine();
-                    bw.write("jrp.addedSuites=" + br.getAddedSuites().size());
-                    bw.newLine();
-                    bw.write("jrp.removedSuites=" + br.getRemovedSuites().size());
-                    bw.newLine();
-                    bw.write("jrp.job=" + br.getJob());
-                    bw.newLine();
-                    bw.write("jrp.buildNumber=" + br.getBuildNumber());
-                    bw.newLine();
-                    bw.write("jrp.displayName=" + br.getBuildName());
-                    bw.newLine();
-                    bw.write("jrp.timestamp=" + br.getTimestamp());
-                    bw.newLine();
-                    bw.write("jrp.duration=" + br.getDuration());
-                    bw.newLine();
-                    bw.write("jrp.timestampNice=" + br.getDateIso());
-                    bw.newLine();
-                    bw.write("jrp.durationNice=" + br.getDurationIso());
-                    bw.newLine();
-                }
-            }
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cachedRegressions), "utf-8"))) {
+            bw.write("jrp.improvements=" + allImprovements(br.getTestChanges()));
+            bw.newLine();
+            bw.write("jrp.regressions=" + allFailures(br.getTestChanges()));
+            bw.newLine();
+            bw.write("jrp.nwerrors=" + allErrors(br.getTestChanges()));
+            bw.newLine();
+            bw.write("jrp.added=" + allAdded(br.getTestChanges()));
+            bw.newLine();
+            bw.write("jrp.removes=" + allRemoved(br.getTestChanges()));
+            bw.newLine();
+            bw.write("jrp.addedSuites=" + br.getAddedSuites().size());
+            bw.newLine();
+            bw.write("jrp.removedSuites=" + br.getRemovedSuites().size());
+            bw.newLine();
+            bw.write("jrp.job=" + br.getJob());
+            bw.newLine();
+            bw.write("jrp.buildNumber=" + br.getBuildNumber());
+            bw.newLine();
+            bw.write("jrp.displayName=" + br.getBuildName());
+            bw.newLine();
+            bw.write("jrp.timestamp=" + br.getTimestamp());
+            bw.newLine();
+            bw.write("jrp.duration=" + br.getDuration());
+            bw.newLine();
+            bw.write("jrp.timestampNice=" + br.getDateIso());
+            bw.newLine();
+            bw.write("jrp.durationNice=" + br.getDurationIso());
+            bw.newLine();
+        }
     }
 
     private static int allImprovements(List<SuiteTestChanges> testChanges) {
@@ -193,21 +191,19 @@ public class PropertiesWriter {
      */
     private static void writeReportSummaryPropertiesImpl(File cachedResults, List<? extends BuildReport> reports) throws IOException {
         for (BuildReport report : reports) {
-            if (!cachedResults.exists()) {
-                try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cachedResults), "utf-8"))) {
-                    bw.write("jrp.errors=" + report.getError());
-                    bw.newLine();
-                    bw.write("jrp.failures=" + report.getFailed());
-                    bw.newLine();
-                    bw.write("jrp.notrun=" + report.getNotRun());
-                    bw.newLine();
-                    bw.write("jrp.passed=" + report.getPassed());
-                    bw.newLine();
-                    bw.write("jrp.total=" + report.getTotal());
-                    bw.newLine();
-                    bw.write("jrp.failedAndErrors=" + (report.getFailed() + report.getError()));
-                    bw.newLine();
-                }
+            try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cachedResults), "utf-8"))) {
+                bw.write("jrp.errors=" + report.getError());
+                bw.newLine();
+                bw.write("jrp.failures=" + report.getFailed());
+                bw.newLine();
+                bw.write("jrp.notrun=" + report.getNotRun());
+                bw.newLine();
+                bw.write("jrp.passed=" + report.getPassed());
+                bw.newLine();
+                bw.write("jrp.total=" + report.getTotal());
+                bw.newLine();
+                bw.write("jrp.failedAndErrors=" + (report.getFailed() + report.getError()));
+                bw.newLine();
             }
         }
     }

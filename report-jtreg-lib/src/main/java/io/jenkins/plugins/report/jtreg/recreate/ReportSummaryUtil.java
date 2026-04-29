@@ -128,59 +128,26 @@ public class ReportSummaryUtil {
     }
 
     public static void export(String prefix, Path buildPath, RecreateArgs params, Path zipPath, String displayName, BuildReportExtended br, int jobId) throws IOException {
-        String outDirParam = params.getOut();
-        Path outDirImpl = null;
-        boolean removeOutDir = false;
-        if (outDirParam == null) {
-            if (params.getJobDb() != null || params.getNvrDb() != null) {
-                outDirImpl = Files.createTempDirectory("jtregReportPluginRecreate");
-                removeOutDir = true;
-            }
-        } else {
-            outDirImpl = new File(outDirParam).toPath();
-        }
         String result = "UNKNOWN";
         File buildXml = new File(buildPath.toFile(), "build.xml");
         if (buildXml.exists()) {
             result = ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "result", "/build/result");
         }
-        //no export!
-        if (outDirImpl != null) {
-            List<Path> allFiles = getAllFiles(prefix, params.getAdditionalFiles(), buildPath);
-            copyWithOverwrite(allFiles, outDirImpl);
-            //restore originals
-            if (!params.isNoRestore()) {
-                restoreBackup(buildPath, zipPath, true);
-            }
-            allFiles = getAllFiles(prefix, params.getAdditionalFiles(), outDirImpl);
-            //postprocess the copy
-            if (params.getJobDb() != null) {
-                File jobDir = new File(params.getJobDb() + "/" + br.getJob() + "/" + displayName + "/" + result+ "/" + jobId);
-                copyWithOverwrite(allFiles, jobDir.toPath());
-            }
-            if (params.getNvrDb() != null) {
-                File nvrDir = new File(params.getNvrDb() + "/" + displayName + "/" + br.getJob() + "/" + result+ "/" + jobId);
-                copyWithOverwrite(allFiles, nvrDir.toPath());
-
-
-            }
+        List<Path> allFiles = getAllFiles(prefix, params.getAdditionalFiles(), buildPath);
+        if (params.getOut() != null) {
+            copyWithOverwrite(allFiles, new File(params.getOut()).toPath());
         }
-        if (removeOutDir && outDirImpl != null) {
-            File[] files = outDirImpl.toFile().listFiles();
-            //it should be plain
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isFile()) {
-                        boolean deleted = file.delete();
-                        if (!deleted) {
-                            System.err.println("Warning: could not delete " + file.getAbsolutePath());
-                        }
-                    }
-                }
-            }
-            Files.delete(outDirImpl);
+        if (params.getJobDb() != null) {
+            File jobDir = new File(params.getJobDb() + "/" + br.getJob() + "/" + displayName + "/" + result + "/" + jobId);
+            copyWithOverwrite(allFiles, jobDir.toPath());
         }
-
+        if (params.getNvrDb() != null) {
+            File nvrDir = new File(params.getNvrDb() + "/" + displayName + "/" + br.getJob() + "/" + result + "/" + jobId);
+            copyWithOverwrite(allFiles, nvrDir.toPath());
+        }
+        if (!params.isNoRestore()) {
+            restoreBackup(buildPath, zipPath, true);
+        }
     }
 
     private static void copyWithOverwrite(List<Path> allFiles, Path outDir) throws IOException {
