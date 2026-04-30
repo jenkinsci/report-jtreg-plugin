@@ -165,7 +165,8 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
     }
 
     /**
-     * Validates the additionalFilesToCopy field to ensure no value contains spaces after trimming.
+     * Validates the additionalFilesToCopy field.
+     * Spaces in file paths are allowed.
      * @param value the comma-separated list of file paths
      * @return FormValidation result
      */
@@ -174,33 +175,15 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
             return FormValidation.ok();
         }
 
-        String[] parts = value.split(",");
-        Set<String> withSpaces = new HashSet<>();
-
-        for (String part : parts) {
-            String trimmed = part.trim();
-            if (trimmed.isEmpty()) {
-                continue;
-            }
-            
-            // Check for spaces after trimming
-            if (trimmed.contains(" ")) {
-                withSpaces.add(trimmed);
-            }
-        }
-
-        if (!withSpaces.isEmpty()) {
-            return FormValidation.error("File paths must not contain spaces: " + String.join(", ", withSpaces));
-        }
-
+        // No validation needed - spaces in file paths are acceptable
         return FormValidation.ok();
     }
 
     /**
      * Validates the targetFolders field to ensure:
-     * - No value contains spaces after trimming
      * - If multiple folders are specified, they must be prefixed with nvr-db:, job-db:, or out-dir:
      * - Warns if any specified folder does not exist
+     * Spaces in folder paths are allowed.
      * @param value the comma-separated list of target folders
      * @return FormValidation result
      */
@@ -210,7 +193,6 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
         }
 
         String[] parts = value.split(",");
-        Set<String> withSpaces = new HashSet<>();
         Set<String> nonExistentFolders = new HashSet<>();
         int folderCount = 0;
         boolean hasPrefixed = false;
@@ -223,12 +205,6 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
             }
             
             folderCount++;
-            
-            // Check for spaces after trimming
-            if (trimmed.contains(" ")) {
-                withSpaces.add(trimmed);
-                continue; // Skip further checks for this entry
-            }
             
             // Check for prefix
             String folderPath = trimmed;
@@ -244,10 +220,6 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
             if (!folder.exists()) {
                 nonExistentFolders.add(folderPath);
             }
-        }
-
-        if (!withSpaces.isEmpty()) {
-            return FormValidation.error("Folder paths must not contain spaces: " + String.join(", ", withSpaces));
         }
 
         if (folderCount > 1 && hasUnprefixed) {

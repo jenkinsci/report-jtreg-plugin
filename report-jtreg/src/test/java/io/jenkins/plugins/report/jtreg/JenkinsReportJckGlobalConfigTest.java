@@ -194,18 +194,13 @@ class JenkinsReportJckGlobalConfigTest {
     @Test
     void testDoCheckAdditionalFilesToCopy_WithSpaces(JenkinsRule r) {
         FormValidation result = new JenkinsReportJckGlobalConfig().doCheckAdditionalFilesToCopy("my file.xml");
-        assertEquals(FormValidation.Kind.ERROR, result.kind);
-        assertEquals(true, result.getMessage().contains("File paths must not contain spaces"));
-        assertEquals(true, result.getMessage().contains("my file.xml"));
+        assertEquals(FormValidation.Kind.OK, result.kind);
     }
 
     @Test
     void testDoCheckAdditionalFilesToCopy_WithSpacesInMultiple(JenkinsRule r) {
         FormValidation result = new JenkinsReportJckGlobalConfig().doCheckAdditionalFilesToCopy("build.xml,my file.xml,/some path");
-        assertEquals(FormValidation.Kind.ERROR, result.kind);
-        assertEquals(true, result.getMessage().contains("File paths must not contain spaces"));
-        assertEquals(true, result.getMessage().contains("my file.xml"));
-        assertEquals(true, result.getMessage().contains("/some path"));
+        assertEquals(FormValidation.Kind.OK, result.kind);
     }
 
     @Test
@@ -237,16 +232,15 @@ class JenkinsReportJckGlobalConfigTest {
     @Test
     void testDoCheckTargetFolders_WithSpaces(JenkinsRule r) {
         FormValidation result = new JenkinsReportJckGlobalConfig().doCheckTargetFolders("/my folder");
-        assertEquals(FormValidation.Kind.ERROR, result.kind);
-        assertEquals(true, result.getMessage().contains("Folder paths must not contain spaces"));
-        assertEquals(true, result.getMessage().contains("/my folder"));
+        // Will be WARNING if folder doesn't exist, OK if it does
+        assertEquals(true, result.kind == FormValidation.Kind.OK || result.kind == FormValidation.Kind.WARNING);
     }
 
     @Test
     void testDoCheckTargetFolders_WithSpacesInMultiple(JenkinsRule r) {
         FormValidation result = new JenkinsReportJckGlobalConfig().doCheckTargetFolders("nvr-db:/my db,job-db:/other db");
-        assertEquals(FormValidation.Kind.ERROR, result.kind);
-        assertEquals(true, result.getMessage().contains("Folder paths must not contain spaces"));
+        // Will be WARNING if folders don't exist, OK if they do
+        assertEquals(true, result.kind == FormValidation.Kind.OK || result.kind == FormValidation.Kind.WARNING);
     }
 
     @Test

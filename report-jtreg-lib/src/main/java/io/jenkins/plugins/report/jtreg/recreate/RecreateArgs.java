@@ -85,7 +85,7 @@ public class RecreateArgs implements ExportArgs{
         List<String> r = new ArrayList<>();
         if (s != null) {
             for (String file : s.split(",")) {
-                r.add(file);
+                r.add(file.trim());
             }
         }
         return Collections.unmodifiableList(r);
