@@ -23,9 +23,14 @@
         <li><code>PLAIN, JSON, PROPERTIES</code> - Export in all three formats</li>
     </ul>
     <p>
-        Values are case-insensitive and whitespace around commas is ignored.
-        Duplicate values will trigger a warning but are allowed.
+        <strong>Validation rules:</strong>
     </p>
+    <ul>
+        <li>Values are case-sensitive and whitespace around commas is ignored</li>
+        <li><strong>Values must not contain spaces after trimming</strong> (e.g., <code>PLAIN TEXT</code> is invalid)</li>
+        <li>Duplicate values will trigger a warning but are allowed</li>
+        <li>Invalid kind names will trigger an error</li>
+    </ul>
     <p>
         Leave empty if no specific format is required (defaults will be used).
     </p>

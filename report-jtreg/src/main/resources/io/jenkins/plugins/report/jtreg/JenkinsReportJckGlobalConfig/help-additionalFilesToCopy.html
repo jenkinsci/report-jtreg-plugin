@@ -9,9 +9,17 @@
         <strong>Examples:</strong>
     </p>
     <ul>
-        <li><code>../../config.xml,build.xml</code> - some relative files from buildrtoot</li>
+        <li><code>../../config.xml,build.xml</code> - some relative files from buildroot</li>
         <li><code>archive/reports</code> - copy some artifacts from buildroot</li>
         <li><code>/backup,/archive</code> - copy two absolute files (dirs are not supported)</li>
+    </ul>
+    <p>
+        <strong>Validation rules:</strong>
+    </p>
+    <ul>
+        <li>Whitespace around commas are forbidden</li>
+        <li><strong>File paths should not contain spaces after trimming</strong> (e.g., <code>my file.xml</code> is invalid)</li>
+        <li>Use paths without spaces or escape them appropriately in your file system</li>
     </ul>
     <p>
         Leave empty if no additional files need to be copied.
