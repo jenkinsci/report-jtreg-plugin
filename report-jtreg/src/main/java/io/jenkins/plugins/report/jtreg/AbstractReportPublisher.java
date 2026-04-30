@@ -103,7 +103,7 @@ abstract public class AbstractReportPublisher extends Recorder {
                         prefix(),
                         build.getRootDir().toPath(),
                         RecreateArgs.fromJenkins(additionalFiles, targetFolders, prefix(), Jenkins.get().getRootUrl(), kinds),
-                        null, build.getDisplayName(), br, build.getNumber());
+                        null, build.getDisplayName(), br, build.getNumber(),build.getResult() == null?"UNKNOWN":build.getResult().toString());
             }
         }catch ( Exception e) {
             e.printStackTrace();
