@@ -91,7 +91,7 @@ public class ReportSummaryUtil {
         BuildReportExtended br = new BuildSummaryParser(Arrays.asList(prefix), null/*?*/).parseBuildReportExtended(new RunWrapperFromDirWithName(buildPath.toFile(), timeStamp, duration, displayName), found);
         // write diff with all metadata
         WritersManager.storeAllDiffs(prefix, br, buildPath.toFile(), params.getUrl(), params.getKinds());
-        export(prefix, buildPath, params, zipPath, displayName, br, jobId);
+        export(prefix, buildPath, params, zipPath, displayName, br, jobId, null);
 
 
     }
@@ -127,11 +127,16 @@ public class ReportSummaryUtil {
         return displayName;
     }
 
-    public static void export(String prefix, Path buildPath, RecreateArgs params, Path zipPath, String displayName, BuildReportExtended br, int jobId) throws IOException {
-        String result = "UNKNOWN";
-        File buildXml = new File(buildPath.toFile(), "build.xml");
-        if (buildXml.exists()) {
-            result = ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "result", "/build/result");
+    public static void export(String prefix, Path buildPath, RecreateArgs params, Path zipPath, String displayName, BuildReportExtended br, int jobId, String result) throws IOException {
+        if (result == null) {
+            result = "UNKNOWN";
+            File buildXml = new File(buildPath.toFile(), "build.xml");
+            if (buildXml.exists()) {
+                String nwResult = ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "result", "/build/result");
+                if (nwResult!=null) {
+                    result = nwResult;
+                }
+            }
         }
         List<Path> allFiles = getAllFiles(prefix, params.getAdditionalFiles(), buildPath);
         if (params.getOut() != null) {
