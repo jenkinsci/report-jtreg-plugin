@@ -1,0 +1,32 @@
+<div>
+    <p>
+        Specify the output formats for exported report files.
+    </p>
+    <p>
+        This field accepts a comma-separated list of writer kinds that determine the format of exported report files.
+        Valid values are: <code>PLAIN</code>, <code>JSON</code>, and <code>PROPERTIES</code>.
+    </p>
+    <p>
+        <strong>Valid values:</strong>
+    </p>
+    <ul>
+        <li><code>PLAIN</code> - Plain text format</li>
+        <li><code>JSON</code> - JSON format</li>
+        <li><code>PROPERTIES</code> - Java properties format</li>
+    </ul>
+    <p>
+        <strong>Examples:</strong>
+    </p>
+    <ul>
+        <li><code>PLAIN</code> - Export only in plain text format</li>
+        <li><code>JSON, PROPERTIES</code> - Export in both JSON and properties formats</li>
+        <li><code>PLAIN, JSON, PROPERTIES</code> - Export in all three formats</li>
+    </ul>
+    <p>
+        Values are case-insensitive and whitespace around commas is ignored.
+        Duplicate values will trigger a warning but are allowed.
+    </p>
+    <p>
+        Leave empty if no specific format is required (defaults will be used).
+    </p>
+</div>

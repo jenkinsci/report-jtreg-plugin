@@ -145,7 +145,7 @@ public class ReportSummaryUtil {
             File nvrDir = new File(params.getNvrDb() + "/" + displayName + "/" + br.getJob() + "/" + result + "/" + jobId);
             copyWithOverwrite(allFiles, nvrDir.toPath());
         }
-        if (!params.isNoRestore()) {
+        if (zipPath !=null && !params.isNoRestore()) {
             restoreBackup(buildPath, zipPath, true);
         }
     }

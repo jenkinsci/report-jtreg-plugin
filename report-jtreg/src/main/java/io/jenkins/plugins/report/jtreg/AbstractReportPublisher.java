@@ -37,7 +37,6 @@ import io.jenkins.plugins.report.jtreg.recreate.ReportSummaryUtil;
 import io.jenkins.plugins.report.jtreg.writers.WritersManager;
 import jenkins.model.Jenkins;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -96,34 +95,23 @@ abstract public class AbstractReportPublisher extends Recorder {
             BuildReportExtended br = bsp.parseBuildReportExtended(build);
             //recreating without full listings
             WritersManager.storeAllDiffs(prefix(), br, build.getRootDir(), Jenkins.get().getRootUrl(), null);
-            ReportSummaryUtil.export(
-                    /*fixme*/"TODO",
-                    build.getRootDir().toPath(),
-                    new RecreateArgs(new String[]{}),
-                    new File(build.getRootDir(),"zip.zip").toPath(), build.getDisplayName(), br, build.getNumber());
+            String targetFolders = JenkinsReportJckGlobalConfig.getGlobalTargetFolders();
+            if (targetFolders != null && !targetFolders.isBlank()) {
+                String additionalFiles = JenkinsReportJckGlobalConfig.getGlobalAdditionalFilesToCopy();
+                String kinds = JenkinsReportJckGlobalConfig.getGlobalKinds();
+                ReportSummaryUtil.export(
+                        prefix(),
+                        build.getRootDir().toPath(),
+                        RecreateArgs.fromJenkins(additionalFiles, targetFolders, prefix(), Jenkins.get().getRootUrl(), kinds),
+                        null, build.getDisplayName(), br, build.getNumber());
+            }
         }catch ( Exception e) {
             e.printStackTrace();
         }
         addReportAction(build);
-        
-        // Print global config field values
-        printGlobalConfigValues(listener);
-        
         return true;
     }
 
-    private void printGlobalConfigValues(BuildListener listener) {
-        String additionalFiles = JenkinsReportJckGlobalConfig.getGlobalAdditionalFilesToCopy();
-        String targetFolders = JenkinsReportJckGlobalConfig.getGlobalTargetFolders();
-        
-        listener.getLogger().println("=== Jenkins Report JTreg Global Configuration ===");
-        listener.getLogger().println("Additional Files To Copy: " + (additionalFiles != null && !additionalFiles.trim().isEmpty() ? additionalFiles : "(not set)"));
-        listener.getLogger().println("Target Folders: " + (targetFolders != null && !targetFolders.trim().isEmpty() ? targetFolders : "(not set)"));
-        listener.getLogger().println("=================================================");
-        
-        logger.info("Global config - Additional Files To Copy: " + additionalFiles);
-        logger.info("Global config - Target Folders: " + targetFolders);
-    }
 
 
     private void addReportAction(AbstractBuild<?, ?> build) {
