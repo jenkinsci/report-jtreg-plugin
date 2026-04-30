@@ -4,16 +4,23 @@ package io.jenkins.plugins.report.jtreg;
 import io.jenkins.plugins.report.jtreg.items.ComparatorLinksGroup;
 import io.jenkins.plugins.report.jtreg.items.ConfigItem;
 import io.jenkins.plugins.report.jtreg.items.TestLink;
+import io.jenkins.plugins.report.jtreg.writers.WriterKinds;
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import hudson.Extension;
+import hudson.util.FormValidation;
 import jenkins.model.GlobalConfiguration;
 
 @Extension
@@ -23,6 +30,7 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
     String toolsUrl;
     String additionalFilesToCopy;
     String targetFolders;
+    String kinds;
     List<ComparatorLinksGroup> comparatorLinksGroups;
     List<ConfigItem> configItems;
     List<TestLink> testLinks;
@@ -82,6 +90,66 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
         return getInstance().getTargetFolders();
     }
 
+    public String getKinds() {
+        return kinds;
+    }
+
+    @DataBoundSetter
+    public void setKinds(String kinds) {
+        this.kinds = kinds;
+    }
+
+    public static String getGlobalKinds() {
+        return getInstance().getKinds();
+    }
+
+    /**
+     * Validates the kinds field to ensure it contains only valid WriterKinds values.
+     * @param value the comma-separated list of kinds
+     * @return FormValidation result
+     */
+    public FormValidation doCheckKinds(@QueryParameter String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return FormValidation.ok();
+        }
+
+        String[] parts = value.split(",");
+        Set<String> validKinds = Arrays.stream(WriterKinds.values())
+                .filter(k -> k != WriterKinds.NONE)
+                .map(Enum::name)
+                .collect(Collectors.toSet());
+        
+        Set<String> invalidKinds = new HashSet<>();
+        Set<String> duplicates = new HashSet<>();
+        Set<String> seen = new HashSet<>();
+
+        for (String part : parts) {
+            String trimmed = part.trim().toUpperCase();
+            if (trimmed.isEmpty()) {
+                continue;
+            }
+            
+            if (!validKinds.contains(trimmed)) {
+                invalidKinds.add(part.trim());
+            }
+            
+            if (!seen.add(trimmed)) {
+                duplicates.add(trimmed);
+            }
+        }
+
+        if (!invalidKinds.isEmpty()) {
+            return FormValidation.error("Invalid kinds: " + String.join(", ", invalidKinds) +
+                    ". Valid values are: " + String.join(", ", validKinds));
+        }
+
+        if (!duplicates.isEmpty()) {
+            return FormValidation.warning("Duplicate kinds found: " + String.join(", ", duplicates));
+        }
+
+        return FormValidation.ok();
+    }
+
     public static List<ComparatorLinksGroup> getGlobalComparatorLinksGroups() {
         return getInstance().getComparatorLinksGroups();
     }
@@ -122,10 +190,11 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
     }
 
     @DataBoundConstructor
-    public JenkinsReportJckGlobalConfig(String toolsUrl, String additionalFilesToCopy, String targetFolders, List<ComparatorLinksGroup> comparatorLinksGroups, List<ConfigItem> configItems, List<TestLink> testLinks) {
+    public JenkinsReportJckGlobalConfig(String toolsUrl, String additionalFilesToCopy, String targetFolders, String kinds, List<ComparatorLinksGroup> comparatorLinksGroups, List<ConfigItem> configItems, List<TestLink> testLinks) {
         this.toolsUrl = toolsUrl;
         this.additionalFilesToCopy = additionalFilesToCopy;
         this.targetFolders = targetFolders;
+        this.kinds = kinds;
         this.comparatorLinksGroups = comparatorLinksGroups;
         this.configItems = configItems;
         this.testLinks = testLinks;

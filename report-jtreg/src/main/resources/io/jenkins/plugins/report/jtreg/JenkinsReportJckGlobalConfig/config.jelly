@@ -10,6 +10,9 @@
         <f:entry title="Target folders" field="targetFolders">
             <f:textbox/>
         </f:entry>
+        <f:entry title="Exported kinds (comma-separated: PLAIN, JSON, PROPERTIES)" field="kinds">
+            <f:textbox/>
+        </f:entry>
     </f:section>
 
     <f:section title="Custom Tool Links (on top of a the report page)">
