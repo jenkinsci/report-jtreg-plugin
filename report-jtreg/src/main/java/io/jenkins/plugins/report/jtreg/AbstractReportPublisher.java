@@ -105,7 +105,24 @@ abstract public class AbstractReportPublisher extends Recorder {
             e.printStackTrace();
         }
         addReportAction(build);
+        
+        // Print global config field values
+        printGlobalConfigValues(listener);
+        
         return true;
+    }
+
+    private void printGlobalConfigValues(BuildListener listener) {
+        String additionalFiles = JenkinsReportJckGlobalConfig.getGlobalAdditionalFilesToCopy();
+        String targetFolders = JenkinsReportJckGlobalConfig.getGlobalTargetFolders();
+        
+        listener.getLogger().println("=== Jenkins Report JTreg Global Configuration ===");
+        listener.getLogger().println("Additional Files To Copy: " + (additionalFiles != null && !additionalFiles.trim().isEmpty() ? additionalFiles : "(not set)"));
+        listener.getLogger().println("Target Folders: " + (targetFolders != null && !targetFolders.trim().isEmpty() ? targetFolders : "(not set)"));
+        listener.getLogger().println("=================================================");
+        
+        logger.info("Global config - Additional Files To Copy: " + additionalFiles);
+        logger.info("Global config - Target Folders: " + targetFolders);
     }
 
 

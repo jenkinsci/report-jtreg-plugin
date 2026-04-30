@@ -4,6 +4,12 @@
         <f:entry title="Comparator/list/diff tools' URL (eg. http://server.my:9090)" field="toolsUrl">
             <f:textbox/>
         </f:entry>
+        <f:entry title="Additional files to copy" field="additionalFilesToCopy">
+            <f:textbox/>
+        </f:entry>
+        <f:entry title="Target folders" field="targetFolders">
+            <f:textbox/>
+        </f:entry>
     </f:section>
 
     <f:section title="Custom Tool Links (on top of a the report page)">

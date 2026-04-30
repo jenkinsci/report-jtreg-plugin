@@ -21,6 +21,8 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
     private static Logger logger = Logger.getLogger(JenkinsReportJckGlobalConfig.class.getName());
 
     String toolsUrl;
+    String additionalFilesToCopy;
+    String targetFolders;
     List<ComparatorLinksGroup> comparatorLinksGroups;
     List<ConfigItem> configItems;
     List<TestLink> testLinks;
@@ -52,6 +54,32 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
     @DataBoundSetter
     public void setToolsUrl(String toolsUrl) {
         this.toolsUrl = toolsUrl;
+    }
+
+    public String getAdditionalFilesToCopy() {
+        return additionalFilesToCopy;
+    }
+
+    @DataBoundSetter
+    public void setAdditionalFilesToCopy(String additionalFilesToCopy) {
+        this.additionalFilesToCopy = additionalFilesToCopy;
+    }
+
+    public static String getGlobalAdditionalFilesToCopy() {
+        return getInstance().getAdditionalFilesToCopy();
+    }
+
+    public String getTargetFolders() {
+        return targetFolders;
+    }
+
+    @DataBoundSetter
+    public void setTargetFolders(String targetFolders) {
+        this.targetFolders = targetFolders;
+    }
+
+    public static String getGlobalTargetFolders() {
+        return getInstance().getTargetFolders();
     }
 
     public static List<ComparatorLinksGroup> getGlobalComparatorLinksGroups() {
@@ -94,8 +122,10 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
     }
 
     @DataBoundConstructor
-    public JenkinsReportJckGlobalConfig(String toolsUrl, List<ComparatorLinksGroup> comparatorLinksGroups, List<ConfigItem> configItems, List<TestLink> testLinks) {
+    public JenkinsReportJckGlobalConfig(String toolsUrl, String additionalFilesToCopy, String targetFolders, List<ComparatorLinksGroup> comparatorLinksGroups, List<ConfigItem> configItems, List<TestLink> testLinks) {
         this.toolsUrl = toolsUrl;
+        this.additionalFilesToCopy = additionalFilesToCopy;
+        this.targetFolders = targetFolders;
         this.comparatorLinksGroups = comparatorLinksGroups;
         this.configItems = configItems;
         this.testLinks = testLinks;
