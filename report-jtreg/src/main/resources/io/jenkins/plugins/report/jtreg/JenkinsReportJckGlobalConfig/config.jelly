@@ -13,6 +13,9 @@
         <f:entry title="Exported kinds (comma-separated: PLAIN, JSON, PROPERTIES)" field="kinds">
             <f:textbox/>
         </f:entry>
+        <f:entry title="Display Name Comparison URL" field="displayNameComparisonURL">
+            <f:textbox/>
+        </f:entry>
     </f:section>
 
     <f:section title="Custom Tool Links (on top of a the report page)">
