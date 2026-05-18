@@ -32,6 +32,7 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
     String additionalFilesToCopy;
     String targetFolders;
     String kinds;
+    String displayNameComparisonURL;
     List<ComparatorLinksGroup> comparatorLinksGroups;
     List<ConfigItem> configItems;
     List<TestLink> testLinks;
@@ -102,6 +103,44 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
 
     public static String getGlobalKinds() {
         return getInstance().getKinds();
+    }
+
+    public String getDisplayNameComparisonURL() {
+        return displayNameComparisonURL;
+    }
+
+    @DataBoundSetter
+    public void setDisplayNameComparisonURL(String displayNameComparisonURL) {
+        this.displayNameComparisonURL = displayNameComparisonURL;
+    }
+
+    public static String getGlobalDisplayNameComparisonURL() {
+        return getInstance().getDisplayNameComparisonURL();
+    }
+
+    /**
+     * Validates the displayNameComparisonURL field to ensure it is a valid URL.
+     * @param value the URL string
+     * @return FormValidation result
+     */
+    public FormValidation doCheckDisplayNameComparisonURL(@QueryParameter String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return FormValidation.ok();
+        }
+
+        String trimmed = value.trim();
+        
+        // Basic URL validation
+        if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
+            return FormValidation.error("URL must start with http:// or https://");
+        }
+
+        try {
+            new java.net.URL(trimmed);
+            return FormValidation.ok();
+        } catch (java.net.MalformedURLException e) {
+            return FormValidation.error("Invalid URL format: " + e.getMessage());
+        }
     }
 
     /**
@@ -273,11 +312,12 @@ public class JenkinsReportJckGlobalConfig extends GlobalConfiguration {
     }
 
     @DataBoundConstructor
-    public JenkinsReportJckGlobalConfig(String toolsUrl, String additionalFilesToCopy, String targetFolders, String kinds, List<ComparatorLinksGroup> comparatorLinksGroups, List<ConfigItem> configItems, List<TestLink> testLinks) {
+    public JenkinsReportJckGlobalConfig(String toolsUrl, String additionalFilesToCopy, String targetFolders, String kinds, String displayNameComparisonURL, List<ComparatorLinksGroup> comparatorLinksGroups, List<ConfigItem> configItems, List<TestLink> testLinks) {
         this.toolsUrl = toolsUrl;
         this.additionalFilesToCopy = additionalFilesToCopy;
         this.targetFolders = targetFolders;
         this.kinds = kinds;
+        this.displayNameComparisonURL = displayNameComparisonURL;
         this.comparatorLinksGroups = comparatorLinksGroups;
         this.configItems = configItems;
         this.testLinks = testLinks;

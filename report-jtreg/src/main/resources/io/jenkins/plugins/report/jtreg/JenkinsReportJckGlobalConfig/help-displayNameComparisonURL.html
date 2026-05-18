@@ -1,0 +1,22 @@
+<div>
+    <p>
+        Specify the URL for the display name comparison. If this url is present, then except comparison agaisnt latest non-dfailed buildl, also gainst non-failed job with given displayName will be generated.
+    </p>
+    <p>
+        The URL must be a valid HTTP/HTTPS/FILE endpoint whcih returns the list of latest displayNames which we want to comapre against.
+    </p>
+    <p>
+        <b>Example:</b>
+    </p>
+    <ul>
+        <li><code>https://comparison-service.example.com/api/compare</code></li>
+        <li><code>file://some/config/latestReleasedDisplayNames</code></li>
+    </ul>
+    <p>
+        Note that first matched dispalyName is used. The maximmum number of jobs searched to past is reusded from jobs config "max points to show"
+    </p>
+    <p>
+        It is also causing second diff chart to be shown
+    </p>
+
+</div>
