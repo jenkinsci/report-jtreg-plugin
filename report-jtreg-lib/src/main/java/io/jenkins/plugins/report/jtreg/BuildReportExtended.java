@@ -43,10 +43,15 @@ public class BuildReportExtended extends BuildReport {
     private final int notRunEx;
     private final SuitesWithResults allTests;
     protected final String job;
+    private final int comparedAgainstBuildNumber;
+    private final String comparedAgainstBuildName;
+    private final long comparedAgainstStart;
+    private final long comparedAgainstDuration;
 
 
     public BuildReportExtended(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites,
-                               List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges, int total, int notRun, SuitesWithResults allTests, String job, long timestamp, long duration) {
+                                List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges, int total, int notRun, SuitesWithResults allTests,
+                                String job, long timestamp, long duration, int comparedAgainstBuildNumber, String comparedAgainstBuildName, long comparedAgainstStart, long comparedAgainstDuration) {
         super(buildNumber, buildName, passed, failed, error, suites, total, notRun, timestamp, duration);
         this.job = job;
         this.addedSuites = addedSuites;
@@ -55,6 +60,10 @@ public class BuildReportExtended extends BuildReport {
         this.totalEx = total;
         this.notRunEx = notRun;
         this.allTests = allTests;
+        this.comparedAgainstBuildNumber = comparedAgainstBuildNumber;
+        this.comparedAgainstBuildName = comparedAgainstBuildName;
+        this.comparedAgainstStart = comparedAgainstStart;
+        this.comparedAgainstDuration = comparedAgainstDuration;
     }
 
     public String getPreviousLink() {
@@ -103,4 +112,19 @@ public class BuildReportExtended extends BuildReport {
         return allTests;
     }
 
+    public String getComparedAgainstBuildName() {
+        return comparedAgainstBuildName;
+    }
+
+    public int getComparedAgainstBuildNumber() {
+        return comparedAgainstBuildNumber;
+    }
+
+    public long getComparedAgainstDuration() {
+        return comparedAgainstDuration;
+    }
+
+    public long getComparedAgainstStart() {
+        return comparedAgainstStart;
+    }
 }

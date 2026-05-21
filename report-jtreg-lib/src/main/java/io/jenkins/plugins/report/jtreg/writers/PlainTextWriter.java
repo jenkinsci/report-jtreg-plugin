@@ -27,7 +27,6 @@ import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.model.ReportFull;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.model.SuiteTestChanges;
-import io.jenkins.plugins.report.jtreg.model.SuiteTests;
 import io.jenkins.plugins.report.jtreg.model.SuitesWithResults;
 import io.jenkins.plugins.report.jtreg.model.Test;
 import io.jenkins.plugins.report.jtreg.model.TestOutput;
@@ -249,7 +248,7 @@ public class PlainTextWriter {
      * @param outputPath the output file path
      * @throws IOException if an I/O error occurs
      */
-    public static void writeDiffReport(BuildReportExtended buildReportExtended, Path outputPath, String url) throws IOException {
+    public static void writeDiffReport(BuildReportExtended buildReportExtended, Path outputPath, String url, String resolution) throws IOException {
 
         // Calculate totals
         int totalImprovements = 0;
@@ -271,7 +270,7 @@ public class PlainTextWriter {
             // Write header
             writeHeader(writer, buildReportExtended.getJob(), buildReportExtended.getBuildName(), buildReportExtended.getBuildNumber(), url, buildReportExtended.getTimestamp(), buildReportExtended.getDuration());
 
-            writer.write("This report shows changes compared to the previous, latest stable or unstable, build.\n\n");
+            writer.write("This report shows changes compared to the previous, " + resolution + ", build "+getPreviousBuild(buildReportExtended)+".\n\n");
             
             // Write summary
             writer.write("Summary of Changes:\n");
@@ -372,10 +371,14 @@ public class PlainTextWriter {
                 totalAdded == 0 && totalRemoved == 0 && 
                 buildReportExtended.getAddedSuites().isEmpty() && 
                 buildReportExtended.getRemovedSuites().isEmpty()) {
-                writer.write("No changes detected compared to the previous, latest stable or unstable, build.\n");
+                writer.write("No changes detected compared to the previous, " + resolution + ", build "+getPreviousBuild(buildReportExtended)+".\n");
             }
             footer(writer, buildReportExtended.getJob(), buildReportExtended.getBuildName(), buildReportExtended.getBuildNumber(), url, "detailed diff report", buildReportExtended.getDateIso());
         }
+    }
+
+    static String getPreviousBuild(BuildReportExtended br) {
+        return PropertiesWriter.getPreviousBuildName(br) + "(" + PropertiesWriter.getPreviousBuildNumber(br) + "), which started at " + toKnown(br.getComparedAgainstStart(), true, false) + " and had duration of " + toKnown(br.getComparedAgainstDuration(), true, true);
     }
 
     /**
@@ -448,7 +451,7 @@ public class PlainTextWriter {
     }
 
 
-    private static String toKnown(long time, boolean port, boolean duration) {
+    static String toKnown(long time, boolean port, boolean duration) {
         if (time <= 0) {
             return "unknown";
         } else {

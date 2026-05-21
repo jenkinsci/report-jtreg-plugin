@@ -111,7 +111,13 @@ public class ReportSummaryUtil {
             if (oldDir.exists()) {
                 String resultOld = ConfigFinder.findInConfigStatic(new File(oldDir, "build.xml"), "result", "/build/result");
                 if (SUCCESS_DUPLICATE.equals(resultOld) || UNSTABLE_DUPLICATE.equals(resultOld)) {
-                    found = new RunWrapperFromDir(oldDir);
+                    String displayName = ConfigFinder.findInConfigStatic(new File(oldDir, "build.xml"), "nvr", "/build/displayName");
+                    if (displayName == null) {
+                        displayName = "#"+i;
+                    }
+                    long timeStamp = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "timestamp", "/build/timestamp"));
+                    long duration = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "duration", "/build/duration"));
+                    found = new RunWrapperFromDirWithName(oldDir, timeStamp, duration, displayName);
                     break;
                 }
             }

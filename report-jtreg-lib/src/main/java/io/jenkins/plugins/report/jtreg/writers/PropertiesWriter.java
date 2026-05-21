@@ -137,8 +137,29 @@ public class PropertiesWriter {
             bw.newLine();
             bw.write("jrp.durationNice=" + br.getDurationIso());
             bw.newLine();
+            bw.write("jrp.comparedAgainstBuildNumber=" + getPreviousBuildNumber(br));
+            bw.newLine();
+            bw.write("jrp.comparedAgainstDisplayName=" + getPreviousBuildName(br));
+            bw.newLine();
+            bw.write("jrp.comparedAgainstTimestamp=" + PlainTextWriter.toKnown(br.getComparedAgainstStart(), false, false));
+            bw.newLine();
+            bw.write("jrp.comparedAgainstDuration=" + PlainTextWriter.toKnown(br.getComparedAgainstDuration(), false, true));
+            bw.newLine();
+            bw.write("jrp.comparedAgainstTimestampNice=" + PlainTextWriter.toKnown(br.getComparedAgainstStart(), true, false));
+            bw.newLine();
+            bw.write("jrp.comparedAgainstDurationNice=" + PlainTextWriter.toKnown(br.getComparedAgainstDuration(), true, true));
+            bw.newLine();
         }
     }
+
+    static String getPreviousBuildName(BuildReportExtended br) {
+        return br.getComparedAgainstBuildName() != null ? br.getComparedAgainstBuildName() : "unknown";
+    }
+
+    static String getPreviousBuildNumber(BuildReportExtended br) {
+        return br.getComparedAgainstBuildNumber() > 0 ? "" + br.getComparedAgainstBuildNumber() : "unknown";
+    }
+
 
     private static int allImprovements(List<SuiteTestChanges> testChanges) {
         int i = 0;

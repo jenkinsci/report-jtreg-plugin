@@ -11,7 +11,8 @@ public class BuildReportExtendedFactory {
                                                          int error, List<Suite> suites, List<String> addedSuites,
                                                          List<String> removedSuites, List<SuiteTestChanges> testChanges,
                                                          int total, int notRun, SuitesWithResults allTests,
-                                                         String job, long timestamp, long duration) {
-        return new BuildReportExtended(buildNumber, buildName, passed, failed, error, suites, addedSuites, removedSuites, testChanges, total, notRun, allTests, job, timestamp, duration);
+                                                         String job, long timestamp, long duration,
+                                                         int comparedAgainstBuildNumber, String comparedAgainstBuildName, long comparedAgainstStart, long comparedAgainstDuration) {
+        return new BuildReportExtended(buildNumber, buildName, passed, failed, error, suites, addedSuites, removedSuites, testChanges, total, notRun, allTests, job, timestamp, duration, comparedAgainstBuildNumber, comparedAgainstBuildName, comparedAgainstStart, comparedAgainstDuration);
     }
 }
