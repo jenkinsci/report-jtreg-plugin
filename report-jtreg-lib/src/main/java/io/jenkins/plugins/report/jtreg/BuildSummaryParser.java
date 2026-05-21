@@ -245,7 +245,11 @@ public class BuildSummaryParser {
                 currentReport.getTotal(),
                 currentReport.getNotRun(),
                 allTests,
-                job, currentReport.getTimestamp(), currentReport.getDuration());
+                job, currentReport.getTimestamp(), currentReport.getDuration(),
+                previousPassedOrUnstable == null ? -1:previousPassedOrUnstable.getNumber(),
+                previousPassedOrUnstable == null ? null:previousPassedOrUnstable.getName(),
+                previousPassedOrUnstable == null ? -1:previousPassedOrUnstable.getTimestamp(),
+                previousPassedOrUnstable == null ? -1:previousPassedOrUnstable.getDuration());
     }
 
     protected List<Suite> parseBuildSummary(File rootDir) throws Exception {

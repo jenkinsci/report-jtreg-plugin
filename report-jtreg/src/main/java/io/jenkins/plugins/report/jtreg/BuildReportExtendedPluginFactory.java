@@ -16,8 +16,10 @@ public class BuildReportExtendedPluginFactory extends BuildReportExtendedFactory
     public BuildReportExtended createBuildReportExtended(int buildNumber, String buildName, int passed, int failed,
                                                                int error, List<Suite> suites, List<String> addedSuites,
                                                                List<String> removedSuites, List<SuiteTestChanges> testChanges,
-                                                               int total, int notRun, SuitesWithResults allTests, String job, long timestamp, long duration) {
+                                                               int total, int notRun, SuitesWithResults allTests, String job,
+                                                               long timestamp, long duration,
+                                                               int comparedAgainstBuildNumber, String comparedAgainstBuildName, long comparedAgainstStart, long comparedAgainstDuration) {
         return new BuildReportExtendedPlugin(buildNumber, buildName, passed, failed, error, suites, addedSuites, removedSuites,
-                testChanges, total, notRun, allTests, job, timestamp, duration, urlsProvider);
+                testChanges, total, notRun, allTests, job, timestamp, duration, comparedAgainstBuildNumber, comparedAgainstBuildName, comparedAgainstStart, comparedAgainstDuration, urlsProvider);
     }
 }

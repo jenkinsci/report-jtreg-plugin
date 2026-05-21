@@ -93,11 +93,11 @@ public class WritersManager {
     private static void writePlainTextDiff(String prefix, BuildReportExtended buildReportExtended, File rootDir, String url) throws IOException {
         // Write diff report
         File diffFile = new File(rootDir, prefix + "-" + Constants.REPORT_DIFF_TXT);
-        PlainTextWriter.writeDiffReport(buildReportExtended, diffFile.toPath(), url);
+        PlainTextWriter.writeDiffReport(buildReportExtended, diffFile.toPath(), url, "latest stable or unstable");
     }
 
     private static BuildReportExtended purify(BuildReportExtended br) {
-        return new BuildReportExtended(br.getBuildNumber(), br.getBuildName(), br.getPassed(), br.getFailed(), br.getError(), null, br.getAddedSuites(), br.getRemovedSuites(), br.getTestChanges(), br.getTotal(), br.getNotRun(), null, br.getJob(), br.getTimestamp(), br.getDuration());
+        return new BuildReportExtended(br.getBuildNumber(), br.getBuildName(), br.getPassed(), br.getFailed(), br.getError(), null, br.getAddedSuites(), br.getRemovedSuites(), br.getTestChanges(), br.getTotal(), br.getNotRun(), null, br.getJob(), br.getTimestamp(), br.getDuration(), br.getComparedAgainstBuildNumber(), br.getComparedAgainstBuildName(), br.getComparedAgainstStart(), br.getComparedAgainstDuration());
     }
 
 }
