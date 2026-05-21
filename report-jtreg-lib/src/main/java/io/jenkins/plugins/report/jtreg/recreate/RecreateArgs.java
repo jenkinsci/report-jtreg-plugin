@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import io.jenkins.plugins.report.jtreg.SecondComparison;
 import io.jenkins.plugins.report.jtreg.writers.WriterKinds;
 
 public class RecreateArgs implements ExportArgs{
@@ -29,7 +30,10 @@ public class RecreateArgs implements ExportArgs{
             System.out.println("               PLAIN will regenerate plaintexts, JSON jsons and PROPERTIES properties. Default is JSON,PLAIN,PROPERTIES");
             System.out.println("               You can not regenerate PLAIN or PROPERTIES without jsons already in place");
             System.out.println("               Everything is always backup-ed and exported. This is really about what is regenerated");
-            System.out.println("               Special value is NONE, which willc ause to regenerate nothing, and just export (if set)");
+            System.out.println("               Special value is NONE, which will cause to regenerate nothing, and just export (if set)");
+            System.out.println("-compare-to <url> including file://");
+            System.out.println("               Url to plaintext file, with one displayName per line. If presented, the each build is compared als against *first found* from this list ");
+            System.out.println("-max-past <int> how deep to history the exact NVRS shoudl eb searched. Default is 100");
             System.out.println("                                                                               ");
             System.out.println("Because regeneration regenerates also the jsons, which are crucial to the operation of plugin, the export works like this:");
             System.out.println("      the backup is done");
@@ -54,6 +58,20 @@ public class RecreateArgs implements ExportArgs{
             return true;
         }
         return false;
+    }
+
+    public void initCommandlineSecondComparison() {
+        final String url =  get("-compare-to");
+        SecondComparison.getOrCreateInstance(() -> url);
+    }
+
+    public int getMaxPastForSecondCOmparison() {
+        final String maxs =  get("-max-past");
+        if (maxs == null) {
+            return 100;
+        } else {
+            return Integer.parseInt(maxs);
+        }
     }
 
     public String getUrl() {

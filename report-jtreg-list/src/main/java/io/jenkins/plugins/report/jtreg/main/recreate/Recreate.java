@@ -20,6 +20,7 @@ public class Recreate implements PrefixableResult {
 
     public Recreate(RecreateArgs args) {
         this.args = args;
+        args.initCommandlineSecondComparison();
     }
 
     public static void main(String[] aargs) throws Exception {

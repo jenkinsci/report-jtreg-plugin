@@ -27,6 +27,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
 import io.jenkins.plugins.report.jtreg.ConfigFinder;
+import io.jenkins.plugins.report.jtreg.SecondComparison;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapper;
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromDir;
@@ -44,6 +45,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -84,16 +86,36 @@ public class ReportSummaryUtil {
         String displayName = getDisplayName(buildPath, jobId);
         // write static files
         WritersManager.storeAllSummaries(prefix, suitesList, buildPath.toFile(), displayName, params.getUrl(), params.getKinds());
-        RunWrapper found = findPreviousBuild(buildPath, jobId);
+        BuildReportExtended br1 = getReportAgainstPreviousBuild(prefix, buildPath, jobId, displayName);
+        BuildReportExtended br2 = getReportAgainstExactBuild(prefix, buildPath, jobId, displayName, params.getMaxPastForSecondCOmparison());
+        // write diff with all metadata
+        WritersManager.storeAllDiffs(prefix, br1, buildPath.toFile(), params.getUrl(), params.getKinds());
+        export(prefix, buildPath, params, zipPath, displayName, br1, jobId, null);
+
+
+    }
+
+    private static BuildReportExtended getReportAgainstPreviousBuild(String prefix, Path buildPath, int jobId, String displayName) throws Exception {
+        RunWrapper found = findPreviousBuild(buildPath, jobId, s -> true, Integer.MAX_VALUE);
+        return getReportAgaisntFoundBuild(prefix, buildPath, displayName, found);
+    }
+
+    private static BuildReportExtended getReportAgainstExactBuild(String prefix, Path buildPath, int jobId, String displayName, int pastToSeakTo) throws Exception {
+        List<String> displayNamesToFind = SecondComparison.getInstance().getList();
+        if (displayNamesToFind != null) {
+            RunWrapper found = findPreviousBuild(buildPath, jobId, SecondComparison.createPredicate(displayNamesToFind), pastToSeakTo);
+            return getReportAgaisntFoundBuild(prefix, buildPath, displayName, found);
+        } else {
+            return null;
+        }
+    }
+
+    private static BuildReportExtended getReportAgaisntFoundBuild(String prefix, Path buildPath, String displayName, RunWrapper found) throws Exception {
         long timeStamp = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "timestamp", "/build/timestamp"));
         //warning, duration will change (to better), that is correct
         long duration = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "duration", "/build/duration"));
         BuildReportExtended br = new BuildSummaryParser(Arrays.asList(prefix), null/*?*/).parseBuildReportExtended(new RunWrapperFromDirWithName(buildPath.toFile(), timeStamp, duration, displayName), found);
-        // write diff with all metadata
-        WritersManager.storeAllDiffs(prefix, br, buildPath.toFile(), params.getUrl(), params.getKinds());
-        export(prefix, buildPath, params, zipPath, displayName, br, jobId, null);
-
-
+        return br;
     }
 
     private static void checkResultOfCurrentBuild(Path buildPath) {
@@ -103,26 +125,39 @@ public class ReportSummaryUtil {
         }
     }
 
-    private static RunWrapper findPreviousBuild(Path buildPath, int jobId) {
-        //find previous build (if any)
-        RunWrapper found = null;
+    private static RunWrapper findPreviousBuild(Path buildPath, int jobId, Predicate<String> displayNamePredicate, int secondaryCounter) {
         for (int i = jobId - 1; i > 0; i--) {
+            secondaryCounter--;
+            if (secondaryCounter < 0) {
+                return null;
+            }
             File oldDir = new File(buildPath.toFile().getParentFile(), "" + i);
             if (oldDir.exists()) {
                 String resultOld = ConfigFinder.findInConfigStatic(new File(oldDir, "build.xml"), "result", "/build/result");
                 if (SUCCESS_DUPLICATE.equals(resultOld) || UNSTABLE_DUPLICATE.equals(resultOld)) {
-                    String displayName = ConfigFinder.findInConfigStatic(new File(oldDir, "build.xml"), "nvr", "/build/displayName");
-                    if (displayName == null) {
-                        displayName = "#"+i;
+                    RunWrapper found = createRunWrapper(buildPath, oldDir, i, displayNamePredicate);
+                    if (found != null) {
+                        return found;
                     }
-                    long timeStamp = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "timestamp", "/build/timestamp"));
-                    long duration = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "duration", "/build/duration"));
-                    found = new RunWrapperFromDirWithName(oldDir, timeStamp, duration, displayName);
-                    break;
                 }
             }
         }
-        return found;
+        return null;
+    }
+
+    private static RunWrapper createRunWrapper(Path buildPath, File oldDir, int i, Predicate<String> displayNamePredicate) {
+        String displayName = ConfigFinder.findInConfigStatic(new File(oldDir, "build.xml"), "nvr", "/build/displayName");
+        if (displayName == null) {
+            displayName = "#"+ i;
+        }
+        if (displayNamePredicate.test(displayName)) {
+            long timeStamp = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "timestamp", "/build/timestamp"));
+            long duration = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "duration", "/build/duration"));
+            RunWrapper found = new RunWrapperFromDirWithName(oldDir, timeStamp, duration, displayName);
+            return found;
+        } else {
+            return null;
+        }
     }
 
     private static String getDisplayName(Path buildPath, int jobId) {

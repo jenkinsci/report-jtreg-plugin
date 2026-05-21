@@ -93,6 +93,7 @@ abstract public class AbstractReportPublisher extends Recorder {
         BuildSummaryParserPlugin bsp = new BuildSummaryParserPlugin(Arrays.asList(prefix()), ReportAction.getAbstractReportPublisher(build.getProject().getPublishersList()));
         try {
             BuildReportExtended br = bsp.parseBuildReportExtended(build);
+            SecondComparison.getOrCreateInstance(() -> JenkinsReportJckGlobalConfig.getGlobalDisplayNameComparisonURL());
             //recreating without full listings
             WritersManager.storeAllDiffs(prefix(), br, build.getRootDir(), Jenkins.get().getRootUrl(), null);
             String targetFolders = JenkinsReportJckGlobalConfig.getGlobalTargetFolders();
