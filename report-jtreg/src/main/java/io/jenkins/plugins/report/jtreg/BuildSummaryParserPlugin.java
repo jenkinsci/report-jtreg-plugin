@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
+
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapperFromRun;
 import hudson.util.RunList;
 
@@ -239,10 +241,9 @@ public class BuildSummaryParserPlugin extends BuildSummaryParser {
     }
 
     @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
-    public BuildReportExtended parseBuildReportExtended(Run<?, ?> build) throws Exception {
+    public PreviousBuilds parseBuildReportExtended(Run<?, ?> build) throws Exception {
         AbstractProject project = ((AbstractBuild) build).getProject();
         Run[] builds = (Run[]) project.getBuilds().toArray(new Run[0]);
-        RunWrapperFromRun previousPassedOrUnstable = null;
         //0 is latest one eg #115, where [lenght-1] is first  one = #0
         int thisInArray = -1;
         for (int i = 0; i < builds.length; i++) {
@@ -255,14 +256,46 @@ public class BuildSummaryParserPlugin extends BuildSummaryParser {
         if (thisInArray == -1) {
             System.err.println("Warning " + build.toString() + " not found in builds of #" + builds.length);
         }
+        RunWrapperFromRun previousPassedOrUnstable = getPreviousStableOrUnstableBuild(thisInArray, builds);
+        BuildReportExtended previousPassedOrUnstableReport = parseBuildReportExtended(new RunWrapperFromRun(build), previousPassedOrUnstable);
+        RunWrapperFromRun previousExactBuild = getPreviousExactBuild(thisInArray, builds);
+        BuildReportExtended previousExactBuildReport = null;
+        if (previousExactBuild != null) {
+            previousExactBuildReport = parseBuildReportExtended(new RunWrapperFromRun(build), previousExactBuild);
+        }
+        return new PreviousBuilds(previousPassedOrUnstableReport, previousExactBuildReport);
+    }
+
+
+    private RunWrapperFromRun getPreviousStableOrUnstableBuild(int thisInArray, Run[] builds) {
+        return getPreviousBuild(thisInArray, builds, PreviousBuilds.getAllPredicate(), Integer.MAX_VALUE);
+    }
+
+    private RunWrapperFromRun getPreviousExactBuild(int thisInArray, Run[] builds) {
+        List<String> displayNamesToFind = SecondComparison.getInstance().getList();
+        if (displayNamesToFind != null) {
+            return getPreviousBuild(thisInArray, builds, PreviousBuilds.createPredicate(displayNamesToFind), getMaxItems());
+        }
+        return null;
+    }
+
+    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"}, justification = " npe of spotbugs sucks")
+    private static RunWrapperFromRun getPreviousBuild(int thisInArray, Run[] builds, Predicate<String> predicate, int secondaryCounter) {
+        RunWrapperFromRun previousPassedOrUnstable = null;
         for (int i = thisInArray + 1; i < builds.length; i++) {
+            secondaryCounter--;
+            if (secondaryCounter < 0) {
+                return null;
+            }
             Run run = builds[i];
             if (run != null && run.getResult() != null && !run.getResult().isWorseThan(Result.UNSTABLE)) {
-                previousPassedOrUnstable = new RunWrapperFromRun(run);
-                break;
+                if (predicate.test(run.getDisplayName())) {
+                    previousPassedOrUnstable = new RunWrapperFromRun(run);
+                    break;
+                }
             }
         }
-        return parseBuildReportExtended(new RunWrapperFromRun(build), previousPassedOrUnstable);
+        return previousPassedOrUnstable;
     }
 
     @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD", justification = "Alhoug never called, this method is here to demonstrate (and ocassionally being used) how to access the root dir from run/build")

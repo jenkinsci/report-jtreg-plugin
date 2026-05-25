@@ -27,6 +27,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.BuildSummaryParser;
 import io.jenkins.plugins.report.jtreg.ConfigFinder;
+import io.jenkins.plugins.report.jtreg.PreviousBuilds;
 import io.jenkins.plugins.report.jtreg.SecondComparison;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.wrappers.RunWrapper;
@@ -89,22 +90,26 @@ public class ReportSummaryUtil {
         BuildReportExtended br1 = getReportAgainstPreviousBuild(prefix, buildPath, jobId, displayName);
         BuildReportExtended br2 = getReportAgainstExactBuild(prefix, buildPath, jobId, displayName, params.getMaxPastForSecondCOmparison());
         // write diff with all metadata
-        WritersManager.storeAllDiffs(prefix, br1, buildPath.toFile(), params.getUrl(), params.getKinds());
+        WritersManager.storeAllDiffs(prefix, new PreviousBuilds(br1, br2), buildPath.toFile(), params.getUrl(), params.getKinds());
         export(prefix, buildPath, params, zipPath, displayName, br1, jobId, null);
 
 
     }
 
     private static BuildReportExtended getReportAgainstPreviousBuild(String prefix, Path buildPath, int jobId, String displayName) throws Exception {
-        RunWrapper found = findPreviousBuild(buildPath, jobId, s -> true, Integer.MAX_VALUE);
+        RunWrapper found = findPreviousBuild(buildPath, jobId, PreviousBuilds.getAllPredicate(), Integer.MAX_VALUE);
         return getReportAgaisntFoundBuild(prefix, buildPath, displayName, found);
     }
 
     private static BuildReportExtended getReportAgainstExactBuild(String prefix, Path buildPath, int jobId, String displayName, int pastToSeakTo) throws Exception {
         List<String> displayNamesToFind = SecondComparison.getInstance().getList();
         if (displayNamesToFind != null) {
-            RunWrapper found = findPreviousBuild(buildPath, jobId, SecondComparison.createPredicate(displayNamesToFind), pastToSeakTo);
-            return getReportAgaisntFoundBuild(prefix, buildPath, displayName, found);
+            RunWrapper found = findPreviousBuild(buildPath, jobId, PreviousBuilds.createPredicate(displayNamesToFind), pastToSeakTo);
+            if (found != null) {
+                return getReportAgaisntFoundBuild(prefix, buildPath, displayName, found);
+            } else {
+                return null;
+            }
         } else {
             return null;
         }

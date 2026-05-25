@@ -35,26 +35,36 @@ final public class Constants {
     public static final List<String> prefixedFiles = Collections.unmodifiableList(Arrays.asList(
             "report.json",
             "tests-list.json",
-            "jr-diff.json",
+            getReportDiff(""),
             "report-summary.txt",
             "report-problems.txt",
-            "report-diff.txt",
-            "report-all-tests.txt"
+            getReportDiffTxt(""),
+            "report-all-tests.txt",
+            getReportDiff(PreviousBuilds.EXACT),
+            getReportDiffTxt(PreviousBuilds.EXACT)
     ));
     public static final String REPORT_JSON = prefixedFiles.get(0);
     public static final String REPORT_TESTS_LIST_JSON = prefixedFiles.get(1);
-    public static final String REPORT_DIFF = prefixedFiles.get(2);
+
+    public static String getReportDiff(String suffix) {
+        return "jr-diff" + suffix + ".json";
+    }
+
     public static final String REPORT_SUMMARY_TXT = prefixedFiles.get(3);
     public static final String REPORT_PROBLEMS_TXT = prefixedFiles.get(4);
-    public static final String REPORT_DIFF_TXT = prefixedFiles.get(5);
+
+    public static String getReportDiffTxt(String suffix) {
+        return "report-diff" + suffix + ".txt";
+    }
+
     public static final String REPORT_ALL_TESTS_TXT = prefixedFiles.get(6);
 
-    public static final List<String> unprefixedFiles = Collections.unmodifiableList(Arrays.asList(
-            "cached-summ-results.properties",
-            "cached-summ-regressions.properties"
-    ));
-    public static final String CACHED_SUMM_RESULTS_PROPERTIES =  unprefixedFiles.get(0);
-    public static final String CACHED_SUMM_REGRESSIONS_PROPERTIES = unprefixedFiles.get(1);
+    public static final List<String> unprefixedFiles = Collections.unmodifiableList(Arrays.asList("cached-summ-results.properties", getCachedSummRegressionsProperties(""), getCachedSummRegressionsProperties(PreviousBuilds.EXACT)));
+    public static final String CACHED_SUMM_RESULTS_PROPERTIES = unprefixedFiles.get(0);
+
+    public static String getCachedSummRegressionsProperties(String suffix) {
+        return "cached-summ-regressions" + suffix + ".properties";
+    }
 
 
     public static final String IRRELEVANT_GLOB_STRING = "report-{runtime,devtools,compiler}.xml.gz";

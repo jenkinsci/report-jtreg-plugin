@@ -86,16 +86,15 @@ abstract public class AbstractReportPublisher extends Recorder {
             logger.severe(s);
             build.setResult(Result.FAILURE);
         }
-        //FIXME, verify on remote agent
         //first we create the jsons for this run
         WritersManager.storeAllSummaries(prefix(),report, build.getRootDir(), build.getDisplayName(), Jenkins.get().getRootUrl(), null);
         //now we can reuse them to compute diff
         BuildSummaryParserPlugin bsp = new BuildSummaryParserPlugin(Arrays.asList(prefix()), ReportAction.getAbstractReportPublisher(build.getProject().getPublishersList()));
         try {
-            BuildReportExtended br = bsp.parseBuildReportExtended(build);
             SecondComparison.getOrCreateInstance(() -> JenkinsReportJckGlobalConfig.getGlobalDisplayNameComparisonURL());
+            PreviousBuilds previousBuilds = bsp.parseBuildReportExtended(build);
             //recreating without full listings
-            WritersManager.storeAllDiffs(prefix(), br, build.getRootDir(), Jenkins.get().getRootUrl(), null);
+            WritersManager.storeAllDiffs(prefix(), previousBuilds, build.getRootDir(), Jenkins.get().getRootUrl(), null);
             String targetFolders = JenkinsReportJckGlobalConfig.getGlobalTargetFolders();
             if (targetFolders != null && !targetFolders.isBlank()) {
                 String additionalFiles = JenkinsReportJckGlobalConfig.getGlobalAdditionalFilesToCopy();
@@ -104,7 +103,7 @@ abstract public class AbstractReportPublisher extends Recorder {
                         prefix(),
                         build.getRootDir().toPath(),
                         RecreateArgs.fromJenkins(additionalFiles, targetFolders, prefix(), Jenkins.get().getRootUrl(), kinds),
-                        null, build.getDisplayName(), br, build.getNumber(),build.getResult() == null?"UNKNOWN":build.getResult().toString());
+                        null, build.getDisplayName(), previousBuilds.getLastStableUnstableBuild(), build.getNumber(),build.getResult() == null?"UNKNOWN":build.getResult().toString());
             }
         }catch ( Exception e) {
             e.printStackTrace();

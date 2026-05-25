@@ -62,13 +62,13 @@ public class PropertiesWriter {
     /**
      * Caches project report totals (results and regressions) to properties files.
      *
-     * @param rootBuild the root build directory
+     * @param rootBuild           the root build directory
      * @param buildReportExtended the project report to cache
      */
-    public static void writeReportPropertiesRegressions(File rootBuild, BuildReportExtended buildReportExtended) {
+    public static void writeReportPropertiesRegressions(File rootBuild, BuildReportExtended buildReportExtended, String suffix) {
         try {
             File buildParent = rootBuild.getParentFile().getParentFile();
-            File cachedRegressions = getCachedRegressionsFile(buildParent, buildReportExtended.getBuildNumber());
+            File cachedRegressions = getCachedRegressionsFile(buildParent, buildReportExtended.getBuildNumber(), suffix);
             cacheRegressionsImpl(cachedRegressions, buildReportExtended);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -229,8 +229,8 @@ public class PropertiesWriter {
         }
     }
 
-    private static File getCachedRegressionsFile(File rootBuild, int buildNumber) {
-        return getCachedFile(rootBuild, buildNumber, Constants.CACHED_SUMM_REGRESSIONS_PROPERTIES);
+    private static File getCachedRegressionsFile(File rootBuild, int buildNumber, String suffix) {
+        return getCachedFile(rootBuild, buildNumber, Constants.getCachedSummRegressionsProperties(suffix));
     }
 
     private static File getCachedResultsFile(File rootBuild, int buildNumber) {

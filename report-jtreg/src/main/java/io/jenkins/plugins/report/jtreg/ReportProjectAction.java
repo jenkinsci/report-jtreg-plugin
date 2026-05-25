@@ -27,7 +27,6 @@ import hudson.model.Action;
 import hudson.model.Job;
 import hudson.model.Project;
 import io.jenkins.plugins.report.jtreg.model.ProjectReport;
-import io.jenkins.plugins.report.jtreg.writers.PropertiesWriter;
 
 import java.util.HashSet;
 import java.util.List;

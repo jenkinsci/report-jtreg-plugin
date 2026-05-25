@@ -30,6 +30,7 @@ import java.util.List;
 
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
 import io.jenkins.plugins.report.jtreg.Constants;
+import io.jenkins.plugins.report.jtreg.PreviousBuilds;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 
 public class WritersManager {
@@ -52,17 +53,22 @@ public class WritersManager {
 
 
     //Note, that this diff is not, and should not be, used in comparison - that should remain dynamic
-    public static void storeAllDiffs(String prefix, BuildReportExtended buildReportExtended, File rootDir, String url, List<WriterKinds> kinds) throws IOException {
-        buildReportExtended = purify(buildReportExtended);
-        if (allOrSet(kinds, WriterKinds.JSON)) {
-            File diffJson = new File(rootDir, prefix + "-" + Constants.REPORT_DIFF);
-            JsonReportWriter.writeBuildReportExtended(diffJson, buildReportExtended);
-        }
-        if (allOrSet(kinds, WriterKinds.PROPERTIES)) {
-            PropertiesWriter.writeReportPropertiesRegressions(rootDir, buildReportExtended);
-        }
-        if (allOrSet(kinds, WriterKinds.PLAIN)) {
-            writePlainTextDiff(prefix, buildReportExtended, rootDir, url);
+    public static void storeAllDiffs(String prefix, PreviousBuilds previousBuilds, File rootDir, String url, List<WriterKinds> kinds) throws IOException {
+        for(int i = 0; i < previousBuilds.getBuilds().length; i++) {
+            if (previousBuilds.getBuilds()[i] == null) {
+                continue;
+            }
+            BuildReportExtended buildReportExtended = purify(previousBuilds.getBuilds()[i]);
+            if (allOrSet(kinds, WriterKinds.JSON)) {
+                File diffJson = new File(rootDir, prefix + "-" + Constants.getReportDiff(previousBuilds.getSuffixes()[i]));
+                JsonReportWriter.writeBuildReportExtended(diffJson, buildReportExtended);
+            }
+            if (allOrSet(kinds, WriterKinds.PROPERTIES)) {
+                PropertiesWriter.writeReportPropertiesRegressions(rootDir, buildReportExtended, previousBuilds.getSuffixes()[i]);
+            }
+            if (allOrSet(kinds, WriterKinds.PLAIN)) {
+                writePlainTextDiff(prefix, buildReportExtended, rootDir, url, previousBuilds.getResolutions()[i], previousBuilds.getSuffixes()[i]);
+            }
         }
     }
 
@@ -90,10 +96,10 @@ public class WritersManager {
         PlainTextWriter.writeAllTestsReport(reportFull, jobName, buildName, buildNumber,allTestsFile.toPath(), url);
     }
 
-    private static void writePlainTextDiff(String prefix, BuildReportExtended buildReportExtended, File rootDir, String url) throws IOException {
+    private static void writePlainTextDiff(String prefix, BuildReportExtended buildReportExtended, File rootDir, String url, String resolution, String suffix) throws IOException {
         // Write diff report
-        File diffFile = new File(rootDir, prefix + "-" + Constants.REPORT_DIFF_TXT);
-        PlainTextWriter.writeDiffReport(buildReportExtended, diffFile.toPath(), url, "latest stable or unstable");
+        File diffFile = new File(rootDir, prefix + "-" + Constants.getReportDiffTxt(suffix));
+        PlainTextWriter.writeDiffReport(buildReportExtended, diffFile.toPath(), url, resolution);
     }
 
     private static BuildReportExtended purify(BuildReportExtended br) {
