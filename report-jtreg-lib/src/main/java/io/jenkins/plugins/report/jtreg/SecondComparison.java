@@ -87,14 +87,7 @@ public class SecondComparison {
         }
     }
 
-    public static Predicate<String> createPredicate(List<String> displayNamesToFind) {
-        return new  Predicate<String>() {
-            @Override
-            public boolean test(String s) {
-                return displayNamesToFind.contains(s);
-            }
-        };
-    }
+
 
 
 }
