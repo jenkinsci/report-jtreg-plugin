@@ -272,7 +272,7 @@ public class BuildSummaryParserPlugin extends BuildSummaryParser {
     }
 
     private RunWrapperFromRun getPreviousExactBuild(int thisInArray, Run[] builds) {
-        List<String> displayNamesToFind = SecondComparison.getInstance().getList();
+        List<String> displayNamesToFind =  SecondComparison.getOrCreateInstance(() -> JenkinsReportJckGlobalConfig.getGlobalDisplayNameComparisonURL()).getList();
         if (displayNamesToFind != null) {
             return getPreviousBuild(thisInArray, builds, PreviousBuilds.createPredicate(displayNamesToFind), getMaxItems());
         }
