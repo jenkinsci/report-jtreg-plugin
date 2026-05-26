@@ -48,7 +48,9 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
                                 UrlsProvider urlProvider) {
         super(buildNumber, buildName, passed, failed, error, suites, addedSuites, removedSuites, testChanges, total, notRun, allTests, job, timestamp, duration, comparedAgainstBuildNumber, comparedAgainstBuildName, comparedAgainstStart, comparedAgainstDuration);
         this.urlsProvider = urlProvider;
-        allTests.setUrlProviser(urlsProvider);
+        if (allTests!=null) {
+            allTests.setUrlProviser(urlsProvider);
+        }
     }
 
     public List<ComparatorLinksGroup> getMatchedComparatorLinksGroups() {

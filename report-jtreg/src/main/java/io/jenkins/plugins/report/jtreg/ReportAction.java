@@ -29,44 +29,12 @@ import hudson.model.Descriptor;
 import hudson.model.Job;
 import hudson.tasks.Publisher;
 import hudson.util.DescribableList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
-import jenkins.tasks.SimpleBuildStep;
-import org.kohsuke.stapler.StaplerProxy;
 
-public class ReportAction implements Action, StaplerProxy, SimpleBuildStep.LastBuildAction {
-
-    private final AbstractBuild<?, ?> build;
-    private final Set<String> prefixes = new HashSet<>();
+public class ReportAction extends AbstractReportAction {
 
     public ReportAction(AbstractBuild<?, ?> build) {
-        if (build == null) {
-            throw new IllegalArgumentException("Build cannot be null");
-        }
-        this.build = build;
-    }
-
-    public void addPrefix(String prefix) {
-        if (prefix == null || prefix.trim().isEmpty()) {
-            throw new IllegalArgumentException("Prefix cannot be empty");
-        }
-        prefixes.add(prefix);
-    }
-
-    @Override
-    public String getIconFileName() {
-        return "graph.png";
-    }
-
-    @Override
-    public String getDisplayName() {
-        return prefixes.stream()
-                .sequential()
-                .map(s -> s.toUpperCase())
-                .collect(Collectors.joining(", ", "", " Reports"));
+        super(build);
     }
 
     @Override
@@ -75,21 +43,18 @@ public class ReportAction implements Action, StaplerProxy, SimpleBuildStep.LastB
     }
 
     @Override
-    public BuildReportExtended getTarget() {
-        try {
-            AbstractReportPublisher settings = getAbstractReportPublisher(build.getProject().getPublishersList());
-            PreviousBuilds reports = new BuildSummaryParserPlugin(prefixes, settings).parseBuildReportExtended(build);
-            return reports.getLastStableUnstableBuild();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
+    protected String getReportSuffix() {
+        return "Reports";
     }
 
     @Override
-    public Collection<? extends Action> getProjectActions() {
-        Job<?, ?> job = build.getParent();
-        return Collections.singleton(new ReportProjectAction(job, prefixes));
+    protected Action createProjectAction(Job<?, ?> job, Set<String> prefixes) {
+        return new ReportProjectAction(job, prefixes);
+    }
+
+    @Override
+    protected BuildReportExtended getRealTarget(PreviousBuilds reports) {
+        return reports.getLastStableUnstableBuild();
     }
 
     public static  AbstractReportPublisher getAbstractReportPublisher(DescribableList<Publisher, Descriptor<Publisher>> publishersList) {

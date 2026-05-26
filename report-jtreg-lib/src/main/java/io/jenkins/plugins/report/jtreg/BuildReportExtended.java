@@ -23,13 +23,12 @@
  */
 package io.jenkins.plugins.report.jtreg;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.model.SuiteTestChanges;
 import io.jenkins.plugins.report.jtreg.model.SuitesWithResults;
 
-import java.time.Duration;
-import java.util.Date;
 import java.util.List;
 
 
@@ -67,7 +66,12 @@ public class BuildReportExtended extends BuildReport {
     }
 
     public String getPreviousLink() {
-        return "../../" + (getBuildNumber() - 1) + "/java-reports";
+        return "../../" + (getBuildNumber() - 1) + "/" + getEndpoint();
+    }
+
+    @NonNull
+    private static String getEndpoint() {
+        return "java-reports";
     }
 
     public String getPreviousLinkName() {
@@ -75,11 +79,19 @@ public class BuildReportExtended extends BuildReport {
     }
 
     public String getNextLink() {
-        return "../../" + (getBuildNumber() + 1) + "/java-reports";
+        return "../../" + (getBuildNumber() + 1) +"/" + getEndpoint();
     }
 
     public String getNextLinkName() {
         return " >> " + (getBuildNumber() + 1) + " >> ";
+    }
+
+    public String getComparedAgainstCaption() {
+        return comparedAgainstBuildNumber + "(" + comparedAgainstBuildName + ")";
+    }
+
+    public String getCustomTitle() {
+        return this.job + ": " +  getBuildNumber() + "/" + getBuildNumber() + " compared to: " + getComparedAgainstCaption();
     }
 
     public List<String> getAddedSuites() {
