@@ -40,14 +40,15 @@ import java.util.regex.Pattern;
 public class BuildReportExtendedPlugin extends BuildReportExtended {
 
     private final UrlsProvider urlsProvider;
+    private final String endpoint;
 
     public BuildReportExtendedPlugin(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites,
                                List<String> addedSuites, List<String> removedSuites, List<SuiteTestChanges> testChanges, int total,
                                 int notRun, SuitesWithResults allTests, String job, long timestamp, long duration,
-                                int comparedAgainstBuildNumber, String comparedAgainstBuildName, long comparedAgainstStart, long comparedAgainstDuration,
-                                UrlsProvider urlProvider) {
+                                int comparedAgainstBuildNumber, String comparedAgainstBuildName, long comparedAgainstStart, long comparedAgainstDuration, UrlsProvider urlProvider, String endpoint) {
         super(buildNumber, buildName, passed, failed, error, suites, addedSuites, removedSuites, testChanges, total, notRun, allTests, job, timestamp, duration, comparedAgainstBuildNumber, comparedAgainstBuildName, comparedAgainstStart, comparedAgainstDuration);
         this.urlsProvider = urlProvider;
+        this.endpoint = endpoint;
         if (allTests!=null) {
             allTests.setUrlProviser(urlsProvider);
         }
@@ -220,5 +221,56 @@ public class BuildReportExtendedPlugin extends BuildReportExtended {
             return url + "?generated-part=&custom-part=";
         }
     }
+
+    private String getEndpoint() {
+        return endpoint;
+    }
+
+    public String getPreviousLink() {
+        return "../../" + (getBuildNumber() - 1) + "/" + getEndpoint();
+    }
+
+    public String getPreviousLinkName() {
+        return " << " + (getBuildNumber() - 1) + " << ";
+    }
+
+    public String getNextLink() {
+        return "../../" + (getBuildNumber() + 1) + "/" + getEndpoint();
+    }
+
+    public String getNextLinkName() {
+        return " >> " + (getBuildNumber() + 1) + " >> ";
+    }
+
+
+    public String getCustomTitle() {
+        return this.job + ": " + getBuildNumber() + "/" + getBuildNumber() + " compared to: " + getComparedAgainstCaption();
+    }
+
+    public String getComparedAgainstCaption() {
+        return comparedAgainstBuildNumber + "(" + comparedAgainstBuildName + ")";
+    }
+
+    public String getComparedAgainstLink() {
+        return "../../" + (comparedAgainstBuildNumber) + "/" + getEndpoint();
+    }
+
+    public boolean getSecondaryReport() {
+        return PreviousBuilds.SECOND_ENDPOINT.equals(getEndpoint());
+    }
+
+    public String getSecondaryReportLink() {
+        return "../"+PreviousBuilds.SECOND_ENDPOINT;
+    }
+    public String getSecondaryReportText() {
+        return "exact build comparison";
+    }
+    public String getMainReportLink() {
+        return "../"+PreviousBuilds.DEFAULT_ENDPOINT;
+    }
+    public String getMainReportText() {
+        return "previous build comparison";
+    }
+
 
 }

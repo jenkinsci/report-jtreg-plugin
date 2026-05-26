@@ -5,7 +5,11 @@ import java.util.function.Predicate;
 
 public class PreviousBuilds {
 
-    public static final String EXACT = "-exact";
+    public static final String DEFAULT_ENDPOINT = "java-reports";
+    public static final String EXACT = "exact";
+    public static final String EXACT_SUFFIX = "-" + EXACT;
+    public static final String EXACT_PREFIX = EXACT + "-";
+    public static final String SECOND_ENDPOINT = EXACT_PREFIX + DEFAULT_ENDPOINT;
 
     public static Predicate<String> getAllPredicate() {
         return s -> true;
@@ -49,8 +53,11 @@ public class PreviousBuilds {
     }
 
     public String[] getSuffixes() {
-        return new String[]{"", EXACT};
+        return new String[]{"", EXACT_SUFFIX};
     }
 
 
+    public String[] getEndpoints() {
+        return new String[]{DEFAULT_ENDPOINT, SECOND_ENDPOINT};
+    }
 }

@@ -67,7 +67,7 @@ public class WritersManager {
                 PropertiesWriter.writeReportPropertiesRegressions(rootDir, buildReportExtended, previousBuilds.getSuffixes()[i]);
             }
             if (allOrSet(kinds, WriterKinds.PLAIN)) {
-                writePlainTextDiff(prefix, buildReportExtended, rootDir, url, previousBuilds.getResolutions()[i], previousBuilds.getSuffixes()[i]);
+                writePlainTextDiff(prefix, buildReportExtended, rootDir, url, previousBuilds.getEndpoints()[i], previousBuilds.getResolutions()[i], previousBuilds.getSuffixes()[i]);
             }
         }
     }
@@ -96,10 +96,10 @@ public class WritersManager {
         PlainTextWriter.writeAllTestsReport(reportFull, jobName, buildName, buildNumber,allTestsFile.toPath(), url);
     }
 
-    private static void writePlainTextDiff(String prefix, BuildReportExtended buildReportExtended, File rootDir, String url, String resolution, String suffix) throws IOException {
+    private static void writePlainTextDiff(String prefix, BuildReportExtended buildReportExtended, File rootDir, String url, String endpoint, String resolution, String suffix) throws IOException {
         // Write diff report
         File diffFile = new File(rootDir, prefix + "-" + Constants.getReportDiffTxt(suffix));
-        PlainTextWriter.writeDiffReport(buildReportExtended, diffFile.toPath(), url, resolution);
+        PlainTextWriter.writeDiffReport(buildReportExtended, diffFile.toPath(), url, endpoint,  resolution);
     }
 
     private static BuildReportExtended purify(BuildReportExtended br) {

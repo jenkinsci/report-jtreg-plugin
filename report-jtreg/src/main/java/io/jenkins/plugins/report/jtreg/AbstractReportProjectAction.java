@@ -61,9 +61,9 @@ public abstract class AbstractReportProjectAction implements Action {
     @Override
     public String getDisplayName() {
         AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(((Project)job).getPublishersList());
-        List<String> blisted = new BuildSummaryParserPlugin(prefixes, settings).getDenylisted(job);
-        List<String> wlisted = new BuildSummaryParserPlugin(prefixes, settings).getAllowlisted(job);
-        int allowListSizeWithoutSurroundings = new BuildSummaryParserPlugin(prefixes, settings).getAllowListSizeWithoutSurroundings(job);
+        List<String> blisted = new BuildSummaryParserPlugin(prefixes, settings, getUrlName()).getDenylisted(job);
+        List<String> wlisted = new BuildSummaryParserPlugin(prefixes, settings, getUrlName()).getAllowlisted(job);
+        int allowListSizeWithoutSurroundings = new BuildSummaryParserPlugin(prefixes, settings, getUrlName()).getAllowListSizeWithoutSurroundings(job);
         String appendix = "";
         if (blisted.size() > 0 && wlisted.size() > 0) {
             appendix = " (denylisted " + blisted.size() + ")" + " (allowlisted " + allowListSizeWithoutSurroundings + "/" + Integer.toString(wlisted.size()-allowListSizeWithoutSurroundings) + ")";
@@ -85,6 +85,8 @@ public abstract class AbstractReportProjectAction implements Action {
     }
 
     protected abstract String getReportSuffix();
+    
+    public abstract String getUrlName();
 }
 
 // Made with Bob
