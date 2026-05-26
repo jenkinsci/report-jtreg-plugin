@@ -25,6 +25,8 @@ package io.jenkins.plugins.report.jtreg.model;
 
 import java.util.List;
 
+import io.jenkins.plugins.report.jtreg.wrappers.RunWrapper;
+
 public class ProjectReport implements java.io.Serializable {
 
     private final List<? extends  BuildReport> reports;
@@ -32,13 +34,19 @@ public class ProjectReport implements java.io.Serializable {
     private final List<Integer> regressions;
     private final List<Integer> secondaryImprovements;
     private final List<Integer> secondaryRegressions;
+    private final String found;
 
-    public ProjectReport(List<? extends BuildReport> reports, List<Integer> improvements, List<Integer> regressions, List<Integer> secondaryImprovements, List<Integer> secondaryRegressions) {
+    public ProjectReport(List<? extends BuildReport> reports, List<Integer> improvements, List<Integer> regressions, List<Integer> secondaryImprovements, List<Integer> secondaryRegressions, RunWrapper found) {
         this.reports = reports;
         this.improvements = improvements;
         this.regressions = regressions;
         this.secondaryImprovements = secondaryImprovements;
         this.secondaryRegressions = secondaryRegressions;
+        if (found == null) {
+            this.found =  "not set/not found";
+        } else {
+            this.found =  found.getName() + "/" + found.getNumber();
+        }
     }
 
     public List<? extends BuildReport> getReports() {
@@ -53,4 +61,15 @@ public class ProjectReport implements java.io.Serializable {
         return regressions;
     }
 
+    public List<Integer> getSecondaryImprovements() {
+        return secondaryImprovements;
+    }
+
+    public List<Integer> getSecondaryRegressions() {
+        return secondaryRegressions;
+    }
+
+    public String getFound() {
+        return found;
+    }
 }

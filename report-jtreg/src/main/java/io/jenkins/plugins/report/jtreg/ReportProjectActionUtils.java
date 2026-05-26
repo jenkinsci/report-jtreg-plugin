@@ -45,10 +45,11 @@ public class ReportProjectActionUtils  {
         AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(job.getPublishersList());
         BuildSummaryParserPlugin bsp = new BuildSummaryParserPlugin(prefixes, settings, "endpointShouldNotMetter");
         List<? extends BuildReport> reports = bsp.parseJobReports(job, limitOverwrite);
-        List<String> displayNamesToFind = SecondComparison.getInstance().getList();SecondComparison.getOrCreateInstance(() -> JenkinsReportJckGlobalConfig.getGlobalDisplayNameComparisonURL());
+        List<String> displayNamesToFind = SecondComparison.getOrCreateInstance(() -> JenkinsReportJckGlobalConfig.getGlobalDisplayNameComparisonURL()).getList();
         BuildReport foundBuildReport = null;
+        RunWrapper found = null;
         if (displayNamesToFind != null) {
-            RunWrapper found = ReportSummaryUtil.findPreviousBuild(new File(job.asProject().getRootDir(), "weNeedPArent").toPath(), job.getLastBuild().getNumber(), PreviousBuilds.createPredicate(displayNamesToFind), settings.getIntMaxBuilds());
+            found = ReportSummaryUtil.findPreviousBuild(new File(job.asProject().getRootDir(), "builds/weNeedPArent").toPath(), job.getLastBuild().getNumber(), PreviousBuilds.createPredicate(displayNamesToFind), settings.getIntMaxBuilds());
             if (found != null) {
                 try {
                     foundBuildReport = bsp.parseBuildReport(found);
@@ -62,7 +63,8 @@ public class ReportProjectActionUtils  {
                 collectImprovements(reports),
                 collectRegressions(reports),
                 collectImprovementsAgainst(foundBuildReport, reports),
-                collectRegressionsAgainst(foundBuildReport, reports));
+                collectRegressionsAgainst(foundBuildReport, reports),
+                found);
         return report;
     }
 

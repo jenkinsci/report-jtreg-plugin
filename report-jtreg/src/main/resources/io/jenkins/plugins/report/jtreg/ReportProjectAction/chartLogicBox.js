@@ -49,6 +49,20 @@
                 var jckdata_regs = jckdata_regs_element.textContent.split(/\s*,\s*/).flatMap((s) => (s.trim()));
         }
 
+        var jckdata_secondary_imps_element = document.getElementById('jckdata_secondary_imps');
+        if (jckdata_secondary_imps_element == null) {
+                var jckdata_secondary_imps = ["0"]
+        } else {
+                var jckdata_secondary_imps = jckdata_secondary_imps_element.textContent.split(/\s*,\s*/).flatMap((s) => (s.trim()));
+        }
+
+        var jckdata_secondary_regs_element = document.getElementById('jckdata_secondary_regs');
+        if (jckdata_secondary_regs_element == null) {
+                var jckdata_secondary_regs = ["0"]
+        } else {
+                var jckdata_secondary_regs = jckdata_secondary_regs_element.textContent.split(/\s*,\s*/).flatMap((s) => (s.trim()));
+        }
+
 
         var allJckFails = {
           type: 'line',
@@ -207,6 +221,56 @@
         };
         var ctx = document.getElementById("jckRegressionsChart").getContext("2d");
         var jckRegressions = new Chart(ctx, allJckRegressions);
+
+        var allJckSecondaryRegressions = {
+          type: 'bar',
+          data: {
+            labels: jckdata_builds,
+                datasets: [
+                {
+                label: "Secondary Improvements",
+                backgroundColor: "rgba(0,180,0,0.5)",
+                borderColor: "rgba(0,180,0,0.8)",
+                borderWidth: 2,
+                barThickness: 20,
+                hoverBackgroundColor: "rgba(0,180,0,0.75)",
+                hoverBorderColor: "rgba(0,180,0,1)",
+                        data: jckdata_secondary_imps
+                },
+                {
+                label: "Secondary Regressions",
+                backgroundColor: "rgba(180,0,0,0.5)",
+                borderColor: "rgba(180,0,0,0.8)",
+                borderWidth: 2,
+                barThickness: 20,
+                hoverBackgroundColor: "rgba(180,0,0,0.75)",
+                hoverBorderColor: "rgba(180,0,0,1)",
+                        data: jckdata_secondary_regs
+                }
+                ]
+        },
+        options: {
+          responsive: false,
+          plugins: {
+            legend: { display: false }
+          },
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+           onClick: (e) => {
+                var activePoints = jckSecondaryRegressions.getElementsAtEventForMode(e, 'index', { intersect: false }, true);
+                var point = activePoints[0]
+                var datasetIndex = point.datasetIndex //labels are for all data together,  no need to look into exact dataset
+                var index = point.index
+                var result = jckSecondaryRegressions.config.data.labels[index]
+                var buildId = result.substring(result.lastIndexOf(":") + 1)
+                window.open("" + buildId + "/exact-java-reports", "_blank");
+           }
+         }
+        };
+        var ctx = document.getElementById("jckSecondaryRegressionsChart").getContext("2d");
+        var jckSecondaryRegressions = new Chart(ctx, allJckSecondaryRegressions);
 
         // ]]>
 
