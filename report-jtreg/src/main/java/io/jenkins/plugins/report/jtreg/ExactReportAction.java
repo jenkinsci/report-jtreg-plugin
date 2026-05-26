@@ -36,7 +36,7 @@ public class ExactReportAction extends AbstractReportAction {
 
     @Override
     public String getUrlName() {
-        return "exact-java-reports";
+        return PreviousBuilds.SECOND_ENDPOINT;
     }
 
     @Override

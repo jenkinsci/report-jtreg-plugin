@@ -47,7 +47,7 @@ public class ReportChartColumn extends ListViewColumn {
 
     public List<BuildReportPlugin> getJckReport(Job<?, ?> job) {
         AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(((Project) job).getPublishersList());
-        List<BuildReportPlugin> r = new BuildSummaryParserPlugin(Arrays.asList("jck", "jtreg"), settings).parseJobReports(job, 0);
+        List<BuildReportPlugin> r = new BuildSummaryParserPlugin(Arrays.asList("jck", "jtreg"), settings, PreviousBuilds.DEFAULT_ENDPOINT).parseJobReports(job, 0);
         return r;
     }
 

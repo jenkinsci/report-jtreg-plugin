@@ -1,6 +1,7 @@
 package io.jenkins.plugins.report.jtreg.main.comparator;
 
 import io.jenkins.plugins.report.jtreg.ConfigFinder;
+import io.jenkins.plugins.report.jtreg.PreviousBuilds;
 import io.jenkins.plugins.report.jtreg.formatters.Formatter;
 import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesCell;
 import io.jenkins.plugins.report.jtreg.formatters.JtregPluginServicesLinkWithTooltip;
@@ -67,7 +68,7 @@ public class VirtualJobsResults {
 
     public static List<JtregPluginServicesLinkWithTooltip> createTooltip(String result, String buildName, String buildId, int column, String id, String url) {
         List<JtregPluginServicesLinkWithTooltip> tooltips = new ArrayList<>();
-        tooltips.add(new JtregPluginServicesLinkWithTooltip(result, url + "/job/" + buildName + "/" + buildId + "/java-reports#" + result));
+        tooltips.add(new JtregPluginServicesLinkWithTooltip(result, url + "/job/" + buildName + "/" + buildId + "/"+ PreviousBuilds.DEFAULT_ENDPOINT+"#" + result));
         tooltips.add(new JtregPluginServicesLinkWithTooltip(" * self: " + column, "#" + id));
         tooltips.add(new JtregPluginServicesLinkWithTooltip(" * header: " + column, "#legend-" + column));
         tooltips.add(new JtregPluginServicesLinkWithTooltip(" * column: " + column, "#table-" + column));

@@ -40,8 +40,8 @@ final public class Constants {
             "report-problems.txt",
             getReportDiffTxt(""),
             "report-all-tests.txt",
-            getReportDiff(PreviousBuilds.EXACT),
-            getReportDiffTxt(PreviousBuilds.EXACT)
+            getReportDiff(PreviousBuilds.EXACT_SUFFIX),
+            getReportDiffTxt(PreviousBuilds.EXACT_SUFFIX)
     ));
     public static final String REPORT_JSON = prefixedFiles.get(0);
     public static final String REPORT_TESTS_LIST_JSON = prefixedFiles.get(1);
@@ -59,7 +59,7 @@ final public class Constants {
 
     public static final String REPORT_ALL_TESTS_TXT = prefixedFiles.get(6);
 
-    public static final List<String> unprefixedFiles = Collections.unmodifiableList(Arrays.asList("cached-summ-results.properties", getCachedSummRegressionsProperties(""), getCachedSummRegressionsProperties(PreviousBuilds.EXACT)));
+    public static final List<String> unprefixedFiles = Collections.unmodifiableList(Arrays.asList("cached-summ-results.properties", getCachedSummRegressionsProperties(""), getCachedSummRegressionsProperties(PreviousBuilds.EXACT_SUFFIX)));
     public static final String CACHED_SUMM_RESULTS_PROPERTIES = unprefixedFiles.get(0);
 
     public static String getCachedSummRegressionsProperties(String suffix) {

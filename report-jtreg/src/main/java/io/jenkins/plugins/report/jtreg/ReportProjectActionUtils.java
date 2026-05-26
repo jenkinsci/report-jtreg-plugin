@@ -37,7 +37,7 @@ public class ReportProjectActionUtils  {
 
     public static ProjectReport getReport(Set<String> prefixes, Project job,  int limitOverwrite) {
         AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(job.getPublishersList());
-        List<? extends BuildReport> reports = new BuildSummaryParserPlugin(prefixes, settings).parseJobReports(job, limitOverwrite);
+        List<? extends BuildReport> reports = new BuildSummaryParserPlugin(prefixes, settings, PreviousBuilds.DEFAULT_ENDPOINT).parseJobReports(job, limitOverwrite);
         ProjectReport report = new ProjectReport(
                 reports,
                 collectImprovements(reports),

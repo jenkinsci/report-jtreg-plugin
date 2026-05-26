@@ -34,7 +34,7 @@ public class ReportProjectAction extends AbstractReportProjectAction {
 
     @Override
     public String getUrlName() {
-        return "java-reports";
+        return PreviousBuilds.DEFAULT_ENDPOINT;
     }
 
     @Override

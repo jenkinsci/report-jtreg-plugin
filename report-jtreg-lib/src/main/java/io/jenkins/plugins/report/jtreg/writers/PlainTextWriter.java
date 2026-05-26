@@ -24,6 +24,7 @@
 package io.jenkins.plugins.report.jtreg.writers;
 
 import io.jenkins.plugins.report.jtreg.BuildReportExtended;
+import io.jenkins.plugins.report.jtreg.PreviousBuilds;
 import io.jenkins.plugins.report.jtreg.model.ReportFull;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.model.SuiteTestChanges;
@@ -159,7 +160,7 @@ public class PlainTextWriter {
                                           suite.getReport().getTestsError(),
                                           suite.getReport().getTestsNotRun()));
             }
-            footer(writer, jobName, buildName, buildNumber, url, "summary report", "unknown");
+            footer(writer, jobName, buildName, buildNumber, url, PreviousBuilds.DEFAULT_ENDPOINT, "summary report", "unknown");
         }
     }
 
@@ -236,7 +237,7 @@ public class PlainTextWriter {
             if (failedTests == 0 && errorTests == 0) {
                 writer.write("No failed or errored tests to report. All tests passed successfully!\n");
             }
-            footer(writer, jobName, buildName, buildNumber, url, "failures report", "unknown");
+            footer(writer, jobName, buildName, buildNumber, url, PreviousBuilds.DEFAULT_ENDPOINT, "failures report", "unknown");
         }
     }
 
@@ -248,7 +249,7 @@ public class PlainTextWriter {
      * @param outputPath the output file path
      * @throws IOException if an I/O error occurs
      */
-    public static void writeDiffReport(BuildReportExtended buildReportExtended, Path outputPath, String url, String resolution) throws IOException {
+    public static void writeDiffReport(BuildReportExtended buildReportExtended, Path outputPath, String url, String endpoint, String resolution) throws IOException {
 
         // Calculate totals
         int totalImprovements = 0;
@@ -373,7 +374,7 @@ public class PlainTextWriter {
                 buildReportExtended.getRemovedSuites().isEmpty()) {
                 writer.write("No changes detected compared to the previous, " + resolution + ", build "+getPreviousBuild(buildReportExtended)+".\n");
             }
-            footer(writer, buildReportExtended.getJob(), buildReportExtended.getBuildName(), buildReportExtended.getBuildNumber(), url, "detailed diff report", buildReportExtended.getDateIso());
+            footer(writer, buildReportExtended.getJob(), buildReportExtended.getBuildName(), buildReportExtended.getBuildNumber(), url, endpoint, "detailed diff report", buildReportExtended.getDateIso());
         }
     }
 
@@ -418,7 +419,7 @@ public class PlainTextWriter {
 
                     writer.write("\n");
                 }
-            footer(writer, jobName, buildName, buildNumber, url, "complete test listing", "unknown");
+            footer(writer, jobName, buildName, buildNumber, url, PreviousBuilds.DEFAULT_ENDPOINT, "complete test listing", "unknown");
         }
     }
 
@@ -467,7 +468,7 @@ public class PlainTextWriter {
         }
     }
 
-    private static void footer(BufferedWriter writer, String jobName, String buildName, int buildNumber, String url, String testType, String date) throws IOException {
+    private static void footer(BufferedWriter writer, String jobName, String buildName, int buildNumber, String url, String endpoint, String testType, String date) throws IOException {
         if (url != null) {
             writer.write("=".repeat(80) + "\n\n");
             String page = url + "/job/" + jobName;
@@ -477,7 +478,7 @@ public class PlainTextWriter {
             writer.write("You can see the build artifacts at: " + build + "/artifact" + "\n");
             writer.write("You can see the build log at: " + build + "/console" + "\n");
             writer.write("You can see the build full log at: " + build + "/consoleFull" + "\n");
-            String java = build + "/java-reports";
+            String java = build + "/" + endpoint;
             writer.write("You can see the report: " + java + "\n");
             writer.write("You can see the report's problems: " + java + "#problems\n");
             writer.write("You can see the report's diff: " + java + "#diff\n");

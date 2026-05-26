@@ -33,7 +33,7 @@ class BuildReportExtendedPluginTest {
                     public String getDiffServer() {
                         return "http://mylocal" + Constants.DIFF_BACKEND;
                     }
-                });
+                }, "notyInterestedNow");
 
         // arguments without any wildcard
         LinkToComparator ltc = new LinkToComparator("", "comparator", "", "[.-]", "--arguments\n--without\n--any\n--wildcard");

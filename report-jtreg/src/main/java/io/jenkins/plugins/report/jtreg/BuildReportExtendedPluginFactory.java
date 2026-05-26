@@ -10,7 +10,12 @@ import java.util.List;
 
 public class BuildReportExtendedPluginFactory extends BuildReportExtendedFactory {
 
-    private static final UrlsProvider urlsProvider= new UrlsProviderPlugin();
+    private static final UrlsProvider urlsProvider = new UrlsProviderPlugin();
+    private final String endpoint;
+
+    public BuildReportExtendedPluginFactory(String endpoint) {
+        this.endpoint = endpoint;
+    }
 
     @Override
     public BuildReportExtended createBuildReportExtended(int buildNumber, String buildName, int passed, int failed,
@@ -20,6 +25,6 @@ public class BuildReportExtendedPluginFactory extends BuildReportExtendedFactory
                                                                long timestamp, long duration,
                                                                int comparedAgainstBuildNumber, String comparedAgainstBuildName, long comparedAgainstStart, long comparedAgainstDuration) {
         return new BuildReportExtendedPlugin(buildNumber, buildName, passed, failed, error, suites, addedSuites, removedSuites,
-                testChanges, total, notRun, allTests, job, timestamp, duration, comparedAgainstBuildNumber, comparedAgainstBuildName, comparedAgainstStart, comparedAgainstDuration, urlsProvider);
+                testChanges, total, notRun, allTests, job, timestamp, duration, comparedAgainstBuildNumber, comparedAgainstBuildName, comparedAgainstStart, comparedAgainstDuration, urlsProvider, endpoint);
     }
 }

@@ -70,7 +70,7 @@ public abstract class AbstractReportAction implements Action, StaplerProxy, Simp
     public BuildReportExtended getTarget() {
         try {
             AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(build.getProject().getPublishersList());
-            PreviousBuilds reports = new BuildSummaryParserPlugin(prefixes, settings).parseBuildReportExtended(build);
+            PreviousBuilds reports = new BuildSummaryParserPlugin(prefixes, settings, getUrlName()).parseBuildReportExtended(build);
             return getRealTarget(reports);
         } catch (Exception ex) {
             ex.printStackTrace();

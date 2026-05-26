@@ -29,6 +29,7 @@ import com.github.difflib.patch.Patch;
 import com.github.difflib.text.DiffRow;
 import com.github.difflib.text.DiffRowGenerator;
 import io.jenkins.plugins.report.jtreg.Constants;
+import io.jenkins.plugins.report.jtreg.PreviousBuilds;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -213,7 +214,7 @@ public class HtmlFormatter extends StringMappedFormatter {
         String mainLine =
                 "<a class='NameBuildLine' href='" + urlStub + "/job/" + jobName + "'>"
                         + jobName + "</a>" + " - " + "<a class='NameBuildLine' href='" + urlStub + "/job/" + jobName + "/" + buildId + "'>build</a>"
-                        + ":" + "<a class='NameBuildLine' href='" + urlStub + "/job/" + jobName + "/" + buildId + "/java-reports'>" + buildId +
+                        + ":" + "<a class='NameBuildLine' href='" + urlStub + "/job/" + jobName + "/" + buildId + "/" + PreviousBuilds.DEFAULT_ENDPOINT + "'>" + buildId +
                         "</a>";
         headerItem.append("<span class='NameBuildLineWrap'>").append(mainLine).append("</span><br>");
         // other lines, hidden by default

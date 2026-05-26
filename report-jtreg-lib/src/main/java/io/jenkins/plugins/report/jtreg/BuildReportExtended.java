@@ -23,7 +23,6 @@
  */
 package io.jenkins.plugins.report.jtreg;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import io.jenkins.plugins.report.jtreg.model.Suite;
 import io.jenkins.plugins.report.jtreg.model.SuiteTestChanges;
@@ -42,10 +41,10 @@ public class BuildReportExtended extends BuildReport {
     private final int notRunEx;
     private final SuitesWithResults allTests;
     protected final String job;
-    private final int comparedAgainstBuildNumber;
-    private final String comparedAgainstBuildName;
-    private final long comparedAgainstStart;
-    private final long comparedAgainstDuration;
+    protected final int comparedAgainstBuildNumber;
+    protected final String comparedAgainstBuildName;
+    protected final long comparedAgainstStart;
+    protected final long comparedAgainstDuration;
 
 
     public BuildReportExtended(int buildNumber, String buildName, int passed, int failed, int error, List<Suite> suites,
@@ -63,35 +62,6 @@ public class BuildReportExtended extends BuildReport {
         this.comparedAgainstBuildName = comparedAgainstBuildName;
         this.comparedAgainstStart = comparedAgainstStart;
         this.comparedAgainstDuration = comparedAgainstDuration;
-    }
-
-    public String getPreviousLink() {
-        return "../../" + (getBuildNumber() - 1) + "/" + getEndpoint();
-    }
-
-    @NonNull
-    private static String getEndpoint() {
-        return "java-reports";
-    }
-
-    public String getPreviousLinkName() {
-        return " << " + (getBuildNumber() - 1) + " << ";
-    }
-
-    public String getNextLink() {
-        return "../../" + (getBuildNumber() + 1) +"/" + getEndpoint();
-    }
-
-    public String getNextLinkName() {
-        return " >> " + (getBuildNumber() + 1) + " >> ";
-    }
-
-    public String getComparedAgainstCaption() {
-        return comparedAgainstBuildNumber + "(" + comparedAgainstBuildName + ")";
-    }
-
-    public String getCustomTitle() {
-        return this.job + ": " +  getBuildNumber() + "/" + getBuildNumber() + " compared to: " + getComparedAgainstCaption();
     }
 
     public List<String> getAddedSuites() {

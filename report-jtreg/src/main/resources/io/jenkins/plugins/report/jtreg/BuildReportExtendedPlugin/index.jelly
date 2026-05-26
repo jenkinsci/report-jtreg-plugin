@@ -2,10 +2,19 @@
 <j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout">
     <l:layout title="${it.customTitle}">
         <l:main-panel>
+            <j:choose>
+                <j:when test="${it.secondaryReport}">
+                    ${it.secondaryReportText} | <a href="${it.mainReportLink}">${it.mainReportText}</a>
+                </j:when>
+                <j:otherwise>
+                    <a href="${it.secondaryReportLink}">${it.secondaryReportText}</a> | ${it.mainReportText}
+                </j:otherwise>
+            </j:choose>
+            <br/>
             <a href="${it.previousLink}/">${it.previousLinkName}</a>
             ${it.buildNumber}
             <a href="${it.nextLink}/">${it.nextLinkName}</a> <br/>
-            Comparison against: ${it.comparedAgainstCaption}> <br/>
+            <a href="${it.comparedAgainstLink}/">Comparison against: ${it.comparedAgainstCaption}</a>
             <j:if test="${it.suites != null}">
                 <div class="jck">
                     <table>

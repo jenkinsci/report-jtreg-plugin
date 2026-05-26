@@ -89,7 +89,7 @@ abstract public class AbstractReportPublisher extends Recorder {
         //first we create the jsons for this run
         WritersManager.storeAllSummaries(prefix(),report, build.getRootDir(), build.getDisplayName(), Jenkins.get().getRootUrl(), null);
         //now we can reuse them to compute diff
-        BuildSummaryParserPlugin bsp = new BuildSummaryParserPlugin(Arrays.asList(prefix()), ReportAction.getAbstractReportPublisher(build.getProject().getPublishersList()));
+        BuildSummaryParserPlugin bsp = new BuildSummaryParserPlugin(Arrays.asList(prefix()), ReportAction.getAbstractReportPublisher(build.getProject().getPublishersList()), "noLinksSholdBeUsed");
         try {
             SecondComparison.getOrCreateInstance(() -> JenkinsReportJckGlobalConfig.getGlobalDisplayNameComparisonURL());
             PreviousBuilds previousBuilds = bsp.parseBuildReportExtended(build);

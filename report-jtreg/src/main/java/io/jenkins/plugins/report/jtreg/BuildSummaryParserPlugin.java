@@ -51,11 +51,11 @@ public class BuildSummaryParserPlugin extends BuildSummaryParser {
     }
     private final AbstractReportPublisher settings;
 
-    public BuildSummaryParserPlugin(Collection<String> prefixes, AbstractReportPublisher settings) {
+    public BuildSummaryParserPlugin(Collection<String> prefixes, AbstractReportPublisher settings, String endpoint) {
         super(prefixes, urlsProvider);
         this.prefixes.addAll(prefixes);
         this.settings = settings;
-        this.buildReportExtendedFactory = new BuildReportExtendedPluginFactory();
+        this.buildReportExtendedFactory = new BuildReportExtendedPluginFactory(endpoint);
     }
 
     List<String> getDenylisted(Job<?, ?> job) {
