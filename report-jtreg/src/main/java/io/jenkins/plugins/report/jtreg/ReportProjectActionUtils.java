@@ -46,7 +46,7 @@ public class ReportProjectActionUtils  {
     }
 
 
-    private static List<Integer> collectImprovements(List<? extends BuildReport> reports) {
+    static List<Integer> collectImprovements(List<? extends BuildReport> reports) {
         List<Integer> result = new ArrayList<>();
 
         Set<String> prev = null;
@@ -70,7 +70,7 @@ public class ReportProjectActionUtils  {
         return result;
     }
 
-    private static List<Integer> collectRegressions(List<? extends BuildReport> reports) {
+    static List<Integer> collectRegressions(List<? extends BuildReport> reports) {
         List<Integer> result = new ArrayList<>();
         Set<String> prev = null;
         for (BuildReport report : reports) {
