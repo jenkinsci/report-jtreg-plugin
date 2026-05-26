@@ -6,7 +6,9 @@
     <div id="jckPassedChartContainer" style="margin-right: 10pt"><canvas id='jckPassedChart' width='600' height='600'></canvas></div>
     <h3 style="font-family: monospace">Regressions: ${action.displayName}</h3>
     <div id="jckRegressionsChartContainer" style="margin-right: 10pt"><canvas id='jckRegressionsChart' width='600' height='600'></canvas></div>
-            <j:set var="jckReports" value="${action.chartData}" />
+    <j:set var="jckReports" value="${action.chartData}" />
+    <h3 style="font-family: monospace">Secondary Regressions (against ${jckReports.found}): ${action.displayName}</h3>
+    <div id="jckSecondaryRegressionsChartContainer" style="margin-right: 10pt"><canvas id='jckSecondaryRegressionsChart' width='600' height='600'></canvas></div>
 
     <span id="jckdata_builds" style="visibility:hidden">
         <j:forEach var="build" items="${jckReports.reports}" varStatus="status">
@@ -40,6 +42,16 @@
     </span>
     <span id="jckdata_regs" style="visibility:hidden">
         <j:forEach var="build" items="${jckReports.regressions}" varStatus="status">
+            ${build}<j:if test="${!status.last}">,</j:if>
+        </j:forEach>
+    </span>
+    <span id="jckdata_secondary_imps" style="visibility:hidden">
+        <j:forEach var="build" items="${jckReports.secondaryImprovements}" varStatus="status">
+            ${build}<j:if test="${!status.last}">,</j:if>
+        </j:forEach>
+    </span>
+    <span id="jckdata_secondary_regs" style="visibility:hidden">
+        <j:forEach var="build" items="${jckReports.secondaryRegressions}" varStatus="status">
             ${build}<j:if test="${!status.last}">,</j:if>
         </j:forEach>
     </span>

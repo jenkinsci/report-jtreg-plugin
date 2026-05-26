@@ -132,12 +132,12 @@ public class ReportSummaryUtil {
 
     public static RunWrapper findPreviousBuild(Path buildPath, int jobId, Predicate<String> displayNamePredicate, int secondaryCounter) {
         for (int i = jobId - 1; i > 0; i--) {
-            secondaryCounter--;
-            if (secondaryCounter < 0) {
-                return null;
-            }
             File oldDir = new File(buildPath.toFile().getParentFile(), "" + i);
             if (oldDir.exists()) {
+                secondaryCounter--;
+                if (secondaryCounter < 0) {
+                    return null;
+                }
                 String resultOld = ConfigFinder.findInConfigStatic(new File(oldDir, "build.xml"), "result", "/build/result");
                 if (SUCCESS_DUPLICATE.equals(resultOld) || UNSTABLE_DUPLICATE.equals(resultOld)) {
                     RunWrapper found = createRunWrapper(buildPath, oldDir, i, displayNamePredicate);
@@ -156,8 +156,16 @@ public class ReportSummaryUtil {
             displayName = "#"+ i;
         }
         if (displayNamePredicate.test(displayName)) {
-            long timeStamp = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "timestamp", "/build/timestamp"));
-            long duration = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "duration", "/build/duration"));
+            long timeStamp = -1;
+            try {
+                timeStamp = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "timestamp", "/build/timestamp"));
+            }catch (Exception ex) {
+            }
+            long duration = -1 ;
+            try {
+                duration = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "duration", "/build/duration"));
+            } catch ( Exception ex) {
+            }
             RunWrapper found = new RunWrapperFromDirWithName(oldDir, timeStamp, duration, displayName);
             return found;
         } else {
