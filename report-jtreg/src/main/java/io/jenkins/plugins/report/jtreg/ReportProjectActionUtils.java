@@ -70,6 +70,32 @@ public class ReportProjectActionUtils  {
         return result;
     }
 
+    /**
+     * Compares a single build against a list of builds to count improvements.
+     * For each report in reports, counts how many tests that failed in that report
+     * are no longer failing in the build parameter.
+     *
+     * @param build The build to compare against (typically an older build)
+     * @param reports List of builds to compare
+     * @return List of improvement counts, one for each report in reports
+     */
+    static List<Integer> collectImprovementsAgainst(BuildReport build, List<? extends BuildReport> reports) {
+        List<Integer> result = new ArrayList<>();
+        Set<String> buildTests = collectTestNames(build);
+
+        for (BuildReport report : reports) {
+            Set<String> reportTests = collectTestNames(report);
+            
+            long count = reportTests.stream()
+                    .sequential()
+                    .filter(s -> !buildTests.contains(s))
+                    .count();
+            result.add((int) count);
+        }
+
+        return result;
+    }
+
     static List<Integer> collectRegressions(List<? extends BuildReport> reports) {
         List<Integer> result = new ArrayList<>();
         Set<String> prev = null;
@@ -89,6 +115,32 @@ public class ReportProjectActionUtils  {
             result.add((int) count);
 
             prev = current;
+        }
+
+        return result;
+    }
+
+    /**
+     * Compares a single build against a list of builds to count regressions.
+     * For each report in reports, counts how many tests that are failing in the build parameter
+     * were not failing in that report.
+     *
+     * @param build The build to compare against (typically an older build)
+     * @param reports List of builds to compare
+     * @return List of regression counts, one for each report in reports
+     */
+    static List<Integer> collectRegressionsAgainst(BuildReport build, List<? extends BuildReport> reports) {
+        List<Integer> result = new ArrayList<>();
+        Set<String> buildTests = collectTestNames(build);
+
+        for (BuildReport report : reports) {
+            Set<String> reportTests = collectTestNames(report);
+            
+            long count = buildTests.stream()
+                    .sequential()
+                    .filter(s -> !reportTests.contains(s))
+                    .count();
+            result.add((int) count);
         }
 
         return result;
