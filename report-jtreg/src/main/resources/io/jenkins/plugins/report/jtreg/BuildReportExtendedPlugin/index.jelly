@@ -1,10 +1,11 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout">
-    <l:layout title="${it.run} ${it.displayName}">
+    <l:layout title="${it.customTitle}">
         <l:main-panel>
             <a href="${it.previousLink}/">${it.previousLinkName}</a>
             ${it.buildNumber}
             <a href="${it.nextLink}/">${it.nextLinkName}</a> <br/>
+            Comparison against: ${it.comparedAgainstCaption}> <br/>
             <j:if test="${it.suites != null}">
                 <div class="jck">
                     <table>

@@ -26,19 +26,21 @@ package io.jenkins.plugins.report.jtreg;
 import hudson.model.Job;
 import java.util.Set;
 
-public class ReportProjectAction extends AbstractReportProjectAction {
+public class ExactReportProjectAction extends AbstractReportProjectAction {
 
-    public ReportProjectAction(Job<?, ?> job, Set<String> prefixes) {
+    public ExactReportProjectAction(Job<?, ?> job, Set<String> prefixes) {
         super(job, prefixes);
     }
 
     @Override
     public String getUrlName() {
-        return "java-reports";
+        return "exact-java-reports";
     }
 
     @Override
     protected String getReportSuffix() {
-        return "Reports";
+        return "Exact Reports";
     }
 }
+
+// Made with Bob

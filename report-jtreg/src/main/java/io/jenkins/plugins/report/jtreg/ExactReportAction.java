@@ -23,22 +23,35 @@
  */
 package io.jenkins.plugins.report.jtreg;
 
+import hudson.model.AbstractBuild;
+import hudson.model.Action;
 import hudson.model.Job;
 import java.util.Set;
 
-public class ReportProjectAction extends AbstractReportProjectAction {
+public class ExactReportAction extends AbstractReportAction {
 
-    public ReportProjectAction(Job<?, ?> job, Set<String> prefixes) {
-        super(job, prefixes);
+    public ExactReportAction(AbstractBuild<?, ?> build) {
+        super(build);
     }
 
     @Override
     public String getUrlName() {
-        return "java-reports";
+        return "exact-java-reports";
     }
 
     @Override
     protected String getReportSuffix() {
-        return "Reports";
+        return "Exact Reports";
     }
+
+    @Override
+    protected Action createProjectAction(Job<?, ?> job, Set<String> prefixes) {
+        return new ExactReportProjectAction(job, prefixes);
+    }
+
+    @Override
+    protected BuildReportExtended getRealTarget(PreviousBuilds reports) {
+        return reports.getLastNamedStableUnstableBuild();
+    }
+
 }

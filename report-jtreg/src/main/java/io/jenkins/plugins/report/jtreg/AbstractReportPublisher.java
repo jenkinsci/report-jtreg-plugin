@@ -123,6 +123,15 @@ abstract public class AbstractReportPublisher extends Recorder {
         } else {
             action.addPrefix(prefix());
         }
+        
+        ExactReportAction exactAction = build.getAction(ExactReportAction.class);
+        if (exactAction == null) {
+            exactAction = new ExactReportAction(build);
+            exactAction.addPrefix(prefix());
+            build.addAction(exactAction);
+        } else {
+            exactAction.addPrefix(prefix());
+        }
     }
 
     @Override
