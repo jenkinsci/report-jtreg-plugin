@@ -30,11 +30,15 @@ public class ProjectReport implements java.io.Serializable {
     private final List<? extends  BuildReport> reports;
     private final List<Integer> improvements;
     private final List<Integer> regressions;
+    private final List<Integer> secondaryImprovements;
+    private final List<Integer> secondaryRegressions;
 
-    public ProjectReport(List<? extends BuildReport> reports, List<Integer> improvements, List<Integer> regressions) {
+    public ProjectReport(List<? extends BuildReport> reports, List<Integer> improvements, List<Integer> regressions, List<Integer> secondaryImprovements, List<Integer> secondaryRegressions) {
         this.reports = reports;
         this.improvements = improvements;
         this.regressions = regressions;
+        this.secondaryImprovements = secondaryImprovements;
+        this.secondaryRegressions = secondaryRegressions;
     }
 
     public List<? extends BuildReport> getReports() {

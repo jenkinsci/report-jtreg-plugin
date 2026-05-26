@@ -23,25 +23,46 @@
  */
 package io.jenkins.plugins.report.jtreg;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.model.Project;
 import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import io.jenkins.plugins.report.jtreg.model.ProjectReport;
+import io.jenkins.plugins.report.jtreg.recreate.ReportSummaryUtil;
+import io.jenkins.plugins.report.jtreg.wrappers.RunWrapper;
 
 public class ReportProjectActionUtils  {
 
+    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"}, justification = " npe of spotbugs sucks")
     public static ProjectReport getReport(Set<String> prefixes, Project job,  int limitOverwrite) {
         AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(job.getPublishersList());
-        List<? extends BuildReport> reports = new BuildSummaryParserPlugin(prefixes, settings, PreviousBuilds.DEFAULT_ENDPOINT).parseJobReports(job, limitOverwrite);
+        BuildSummaryParserPlugin bsp = new BuildSummaryParserPlugin(prefixes, settings, "endpointShouldNotMetter");
+        List<? extends BuildReport> reports = bsp.parseJobReports(job, limitOverwrite);
+        List<String> displayNamesToFind = SecondComparison.getInstance().getList();SecondComparison.getOrCreateInstance(() -> JenkinsReportJckGlobalConfig.getGlobalDisplayNameComparisonURL());
+        BuildReport foundBuildReport = null;
+        if (displayNamesToFind != null) {
+            RunWrapper found = ReportSummaryUtil.findPreviousBuild(new File(job.asProject().getRootDir(), "weNeedPArent").toPath(), job.getLastBuild().getNumber(), PreviousBuilds.createPredicate(displayNamesToFind), settings.getIntMaxBuilds());
+            if (found != null) {
+                try {
+                    foundBuildReport = bsp.parseBuildReport(found);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
         ProjectReport report = new ProjectReport(
                 reports,
                 collectImprovements(reports),
-                collectRegressions(reports));
+                collectRegressions(reports),
+                collectImprovementsAgainst(foundBuildReport, reports),
+                collectRegressionsAgainst(foundBuildReport, reports));
         return report;
     }
 
@@ -80,6 +101,9 @@ public class ReportProjectActionUtils  {
      * @return List of improvement counts, one for each report in reports
      */
     static List<Integer> collectImprovementsAgainst(BuildReport build, List<? extends BuildReport> reports) {
+        if (build == null) {
+            return Collections.emptyList();
+        }
         List<Integer> result = new ArrayList<>();
         Set<String> buildTests = collectTestNames(build);
 
@@ -130,6 +154,9 @@ public class ReportProjectActionUtils  {
      * @return List of regression counts, one for each report in reports
      */
     static List<Integer> collectRegressionsAgainst(BuildReport build, List<? extends BuildReport> reports) {
+        if (build == null) {
+            return Collections.emptyList();
+        }
         List<Integer> result = new ArrayList<>();
         Set<String> buildTests = collectTestNames(build);
 

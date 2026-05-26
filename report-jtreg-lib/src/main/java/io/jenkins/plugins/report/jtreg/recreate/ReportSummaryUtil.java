@@ -130,7 +130,7 @@ public class ReportSummaryUtil {
         }
     }
 
-    private static RunWrapper findPreviousBuild(Path buildPath, int jobId, Predicate<String> displayNamePredicate, int secondaryCounter) {
+    public static RunWrapper findPreviousBuild(Path buildPath, int jobId, Predicate<String> displayNamePredicate, int secondaryCounter) {
         for (int i = jobId - 1; i > 0; i--) {
             secondaryCounter--;
             if (secondaryCounter < 0) {
