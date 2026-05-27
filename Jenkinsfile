@@ -7,27 +7,19 @@
 pipeline {
   agent any
   
+  tools {
+    jdk 'jdk21'
+    maven 'mvn'
+  }
+  
   stages {
     stage('Pre-Build: Maven Clean Install') {
       steps {
-        sh 'mvn clean install -DskipTests'
-      }
-    }
-    
-    stage('Build Plugin') {
-      steps {
-        script {
-          buildPlugin(
-            forkCount: '1C',
-            useContainerAgent: true,
-            configurations: [
-              [platform: 'linux', jdk: 21],
-              [platform: 'windows', jdk: 17],
-            ]
-          )
-        }
+        checkout scm
+        sh 'mvn clean install'
       }
     }
   }
 }
+
 
