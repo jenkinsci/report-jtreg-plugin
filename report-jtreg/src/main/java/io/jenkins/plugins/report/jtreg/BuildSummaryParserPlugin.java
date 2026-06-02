@@ -24,8 +24,6 @@
 package io.jenkins.plugins.report.jtreg;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
 import hudson.model.Job;
 import hudson.model.Result;
 import hudson.model.Run;
@@ -242,9 +240,7 @@ public class BuildSummaryParserPlugin extends BuildSummaryParser {
 
     @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
     public PreviousBuilds parseBuildReportExtended(Run<?, ?> build) throws Exception {
-        AbstractProject project = ((AbstractBuild) build).getProject();
-        Run[] builds = (Run[]) project.getBuilds().toArray(new Run[0]);
-        //0 is latest one eg #115, where [lenght-1] is first  one = #0
+        Run[] builds = build.getParent().getBuilds().toArray(new Run[0]);
         int thisInArray = -1;
         for (int i = 0; i < builds.length; i++) {
             if (builds[i].equals(build)) {
@@ -252,7 +248,6 @@ public class BuildSummaryParserPlugin extends BuildSummaryParser {
                 break;
             }
         }
-        //the comparsion would be of latest (see +1 lower) against last stable. Not sure what is worse or better
         if (thisInArray == -1) {
             System.err.println("Warning " + build.toString() + " not found in builds of #" + builds.length);
         }

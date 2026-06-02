@@ -24,10 +24,15 @@
 package io.jenkins.plugins.report.jtreg;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import hudson.EnvVars;
+import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
+import hudson.model.Job;
 import hudson.model.Result;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import io.jenkins.plugins.report.jtreg.model.*;
 import io.jenkins.plugins.report.jtreg.parsers.ReportParser;
 import hudson.tasks.BuildStepMonitor;
@@ -36,6 +41,7 @@ import io.jenkins.plugins.report.jtreg.recreate.RecreateArgs;
 import io.jenkins.plugins.report.jtreg.recreate.ReportSummaryUtil;
 import io.jenkins.plugins.report.jtreg.writers.WritersManager;
 import jenkins.model.Jenkins;
+import jenkins.tasks.SimpleBuildStep;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -44,7 +50,7 @@ import java.util.logging.Logger;
 
 import org.kohsuke.stapler.DataBoundSetter;
 
-abstract public class AbstractReportPublisher extends Recorder {
+abstract public class AbstractReportPublisher extends Recorder implements SimpleBuildStep {
 
     private String reportFileGlob;
     private String resultsDenyList;
@@ -66,6 +72,13 @@ abstract public class AbstractReportPublisher extends Recorder {
     @Override
     @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
     final public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+        perform((Run<?, ?>) build, build.getWorkspace(), build.getEnvironment(listener), launcher, listener);
+        return true;
+    }
+
+    @Override
+    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
+    final public void perform(Run<?, ?> build, FilePath workspace, EnvVars env, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
         String reportFileGlob = getReportFileGlob();
         if (reportFileGlob == null || reportFileGlob.trim().isEmpty()) {
             reportFileGlob = defaultReportFileGlob();
@@ -73,7 +86,7 @@ abstract public class AbstractReportPublisher extends Recorder {
         if (!reportFileGlob.startsWith("glob:")) {
             reportFileGlob = "glob:" + reportFileGlob;
         }
-        List<Suite> report = build.getWorkspace().act(
+        List<Suite> report = workspace.act(
                 new ReportParserCallable(reportFileGlob, createReportParser()));
         if (report.stream().anyMatch(
                 s -> s.getReport() != null && (s.getReport().getTestsError() != 0 || s.getReport().getTestsFailed() != 0))) {
@@ -86,14 +99,12 @@ abstract public class AbstractReportPublisher extends Recorder {
             logger.severe(s);
             build.setResult(Result.FAILURE);
         }
-        //first we create the jsons for this run
         WritersManager.storeAllSummaries(prefix(),report, build.getRootDir(), build.getDisplayName(), Jenkins.get().getRootUrl(), null);
-        //now we can reuse them to compute diff
-        BuildSummaryParserPlugin bsp = new BuildSummaryParserPlugin(Arrays.asList(prefix()), ReportAction.getAbstractReportPublisher(build.getProject().getPublishersList()), "noLinksSholdBeUsed");
+        Job<?, ?> job = build.getParent();
+        BuildSummaryParserPlugin bsp = new BuildSummaryParserPlugin(Arrays.asList(prefix()), ReportAction.getAbstractReportPublisher(job), "noLinksSholdBeUsed");
         try {
             SecondComparison.getOrCreateInstance(() -> JenkinsReportJckGlobalConfig.getGlobalDisplayNameComparisonURL());
             PreviousBuilds previousBuilds = bsp.parseBuildReportExtended(build);
-            //recreating without full listings
             WritersManager.storeAllDiffs(prefix(), previousBuilds, build.getRootDir(), Jenkins.get().getRootUrl(), null);
             String targetFolders = JenkinsReportJckGlobalConfig.getGlobalTargetFolders();
             if (targetFolders != null && !targetFolders.isBlank()) {
@@ -109,26 +120,29 @@ abstract public class AbstractReportPublisher extends Recorder {
             e.printStackTrace();
         }
         addReportAction(build);
-        return true;
     }
 
 
 
-    private void addReportAction(AbstractBuild<?, ?> build) {
-        ReportAction action = build.getAction(ReportAction.class);
+    private void addReportAction(Run<?, ?> build) {
+        if (!(build instanceof AbstractBuild)) {
+            return;
+        }
+        AbstractBuild<?, ?> abstractBuild = (AbstractBuild<?, ?>) build;
+        ReportAction action = abstractBuild.getAction(ReportAction.class);
         if (action == null) {
-            action = new ReportAction(build);
+            action = new ReportAction(abstractBuild);
             action.addPrefix(prefix());
-            build.addAction(action);
+            abstractBuild.addAction(action);
         } else {
             action.addPrefix(prefix());
         }
-        
-        ExactReportAction exactAction = build.getAction(ExactReportAction.class);
+
+        ExactReportAction exactAction = abstractBuild.getAction(ExactReportAction.class);
         if (exactAction == null) {
-            exactAction = new ExactReportAction(build);
+            exactAction = new ExactReportAction(abstractBuild);
             exactAction.addPrefix(prefix());
-            build.addAction(exactAction);
+            abstractBuild.addAction(exactAction);
         } else {
             exactAction.addPrefix(prefix());
         }

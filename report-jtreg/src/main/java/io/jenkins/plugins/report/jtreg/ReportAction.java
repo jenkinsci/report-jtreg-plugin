@@ -57,11 +57,18 @@ public class ReportAction extends AbstractReportAction {
         return reports.getLastStableUnstableBuild();
     }
 
-    public static  AbstractReportPublisher getAbstractReportPublisher(DescribableList<Publisher, Descriptor<Publisher>> publishersList) {
+    public static AbstractReportPublisher getAbstractReportPublisher(DescribableList<Publisher, Descriptor<Publisher>> publishersList) {
         for (Publisher publisher : publishersList) {
-            if (publisher instanceof  AbstractReportPublisher){
-                return (AbstractReportPublisher)publisher;
+            if (publisher instanceof AbstractReportPublisher) {
+                return (AbstractReportPublisher) publisher;
             }
+        }
+        return null;
+    }
+
+    public static AbstractReportPublisher getAbstractReportPublisher(Job<?, ?> job) {
+        if (job instanceof hudson.model.Project) {
+            return getAbstractReportPublisher(((hudson.model.Project<?, ?>) job).getPublishersList());
         }
         return null;
     }
