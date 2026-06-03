@@ -60,7 +60,10 @@ public abstract class AbstractReportProjectAction implements Action {
 
     @Override
     public String getDisplayName() {
-        AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(((Project)job).getPublishersList());
+        AbstractReportPublisher settings = null;
+        if (job instanceof Project) {
+            settings = ReportAction.getAbstractReportPublisher(((Project)job).getPublishersList());
+        }
         List<String> blisted = new BuildSummaryParserPlugin(prefixes, settings, getUrlName()).getDenylisted(job);
         List<String> wlisted = new BuildSummaryParserPlugin(prefixes, settings, getUrlName()).getAllowlisted(job);
         int allowListSizeWithoutSurroundings = new BuildSummaryParserPlugin(prefixes, settings, getUrlName()).getAllowListSizeWithoutSurroundings(job);
@@ -80,8 +83,12 @@ public abstract class AbstractReportProjectAction implements Action {
 
     // This is called when chart is shown on main page
     public ProjectReport getChartData() {
-        ProjectReport report = ReportProjectActionUtils.getReport(prefixes, (Project) job, 0);
-        return report;
+        if (job instanceof Project) {
+            ProjectReport report = ReportProjectActionUtils.getReport(prefixes, (Project) job, 0);
+            return report;
+        }
+        // For pipeline jobs, return null or handle differently
+        return null;
     }
 
     protected abstract String getReportSuffix();

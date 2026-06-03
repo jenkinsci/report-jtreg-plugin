@@ -27,13 +27,14 @@ import hudson.model.AbstractBuild;
 import hudson.model.Action;
 import hudson.model.Descriptor;
 import hudson.model.Job;
+import hudson.model.Run;
 import hudson.tasks.Publisher;
 import hudson.util.DescribableList;
 import java.util.Set;
 
 public class ReportAction extends AbstractReportAction {
 
-    public ReportAction(AbstractBuild<?, ?> build) {
+    public ReportAction(Run<?, ?> build) {
         super(build);
     }
 

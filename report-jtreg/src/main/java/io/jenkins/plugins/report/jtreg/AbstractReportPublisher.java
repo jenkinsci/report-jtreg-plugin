@@ -125,24 +125,20 @@ abstract public class AbstractReportPublisher extends Recorder implements Simple
 
 
     private void addReportAction(Run<?, ?> build) {
-        if (!(build instanceof AbstractBuild)) {
-            return;
-        }
-        AbstractBuild<?, ?> abstractBuild = (AbstractBuild<?, ?>) build;
-        ReportAction action = abstractBuild.getAction(ReportAction.class);
+        ReportAction action = build.getAction(ReportAction.class);
         if (action == null) {
-            action = new ReportAction(abstractBuild);
+            action = new ReportAction(build);
             action.addPrefix(prefix());
-            abstractBuild.addAction(action);
+            build.addAction(action);
         } else {
             action.addPrefix(prefix());
         }
 
-        ExactReportAction exactAction = abstractBuild.getAction(ExactReportAction.class);
+        ExactReportAction exactAction = build.getAction(ExactReportAction.class);
         if (exactAction == null) {
-            exactAction = new ExactReportAction(abstractBuild);
+            exactAction = new ExactReportAction(build);
             exactAction.addPrefix(prefix());
-            abstractBuild.addAction(exactAction);
+            build.addAction(exactAction);
         } else {
             exactAction.addPrefix(prefix());
         }

@@ -26,6 +26,7 @@ package io.jenkins.plugins.report.jtreg;
 import hudson.model.AbstractBuild;
 import hudson.model.Action;
 import hudson.model.Job;
+import hudson.model.Run;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -36,10 +37,10 @@ import org.kohsuke.stapler.StaplerProxy;
 
 public abstract class AbstractReportAction implements Action, StaplerProxy, SimpleBuildStep.LastBuildAction {
 
-    protected final AbstractBuild<?, ?> build;
+    protected final Run<?, ?> build;
     protected final Set<String> prefixes = new HashSet<>();
 
-    public AbstractReportAction(AbstractBuild<?, ?> build) {
+    public AbstractReportAction(Run<?, ?> build) {
         if (build == null) {
             throw new IllegalArgumentException("Build cannot be null");
         }
@@ -69,7 +70,10 @@ public abstract class AbstractReportAction implements Action, StaplerProxy, Simp
     @Override
     public BuildReportExtended getTarget() {
         try {
-            AbstractReportPublisher settings = ReportAction.getAbstractReportPublisher(build.getProject().getPublishersList());
+            AbstractReportPublisher settings = null;
+            if (build instanceof AbstractBuild) {
+                settings = ReportAction.getAbstractReportPublisher(((AbstractBuild<?, ?>) build).getProject().getPublishersList());
+            }
             PreviousBuilds reports = new BuildSummaryParserPlugin(prefixes, settings, getUrlName()).parseBuildReportExtended(build);
             return getRealTarget(reports);
         } catch (Exception ex) {

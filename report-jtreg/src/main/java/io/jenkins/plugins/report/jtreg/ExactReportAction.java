@@ -26,11 +26,12 @@ package io.jenkins.plugins.report.jtreg;
 import hudson.model.AbstractBuild;
 import hudson.model.Action;
 import hudson.model.Job;
+import hudson.model.Run;
 import java.util.Set;
 
 public class ExactReportAction extends AbstractReportAction {
 
-    public ExactReportAction(AbstractBuild<?, ?> build) {
+    public ExactReportAction(Run<?, ?> build) {
         super(build);
     }
 
