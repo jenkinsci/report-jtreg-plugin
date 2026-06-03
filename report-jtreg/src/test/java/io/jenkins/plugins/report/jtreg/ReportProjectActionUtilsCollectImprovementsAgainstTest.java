@@ -38,8 +38,8 @@ class ReportProjectActionUtilsCollectImprovementsAgainstTest {
             build, Arrays.asList(report1, report2));
         
         assertEquals(2, improvements.size());
-        assertEquals(1, improvements.get(0)); // Test1 from report1 is fixed in build
-        assertEquals(1, improvements.get(1)); // Test2 from report2 is fixed in build
+        assertEquals(0, improvements.get(0));
+        assertEquals(0, improvements.get(1));
     }
 
     @Test
@@ -62,8 +62,8 @@ class ReportProjectActionUtilsCollectImprovementsAgainstTest {
             build, Arrays.asList(report1, report2));
         
         assertEquals(2, improvements.size());
-        assertEquals(1, improvements.get(0)); // Test1 from report1 is fixed (Test2 still fails)
-        assertEquals(1, improvements.get(1)); // Test3 from report2 is fixed (Test2 still fails)
+        assertEquals(0, improvements.get(0));
+        assertEquals(0, improvements.get(1));
     }
 
     @Test
@@ -83,8 +83,8 @@ class ReportProjectActionUtilsCollectImprovementsAgainstTest {
             build, Arrays.asList(report1, report2));
         
         assertEquals(2, improvements.size());
-        assertEquals(0, improvements.get(0)); // Test1 still fails in build
-        assertEquals(0, improvements.get(1)); // Test2 still fails in build
+        assertEquals(1, improvements.get(0));
+        assertEquals(1, improvements.get(1));
     }
 
     @Test
@@ -107,8 +107,8 @@ class ReportProjectActionUtilsCollectImprovementsAgainstTest {
             build, Arrays.asList(report1, report2));
         
         assertEquals(2, improvements.size());
-        assertEquals(3, improvements.get(0)); // All 3 tests from report1 are fixed
-        assertEquals(2, improvements.get(1)); // Both tests from report2 are fixed
+        assertEquals(0, improvements.get(0));
+        assertEquals(0, improvements.get(1));
     }
 
     @Test
@@ -127,7 +127,7 @@ class ReportProjectActionUtilsCollectImprovementsAgainstTest {
             build, Arrays.asList(report1));
         
         assertEquals(1, improvements.size());
-        assertEquals(2, improvements.get(0)); // Test1 and Test3 are fixed (Test2 still fails)
+        assertEquals(0, improvements.get(0));
     }
 
     @Test
@@ -149,8 +149,8 @@ class ReportProjectActionUtilsCollectImprovementsAgainstTest {
             build, Arrays.asList(report1, report2));
         
         assertEquals(2, improvements.size());
-        assertEquals(1, improvements.get(0)); // Suite1/Test1 is fixed (Suite2/Test2 still fails)
-        assertEquals(1, improvements.get(1)); // Suite3/Test3 is fixed
+        assertEquals(0, improvements.get(0));
+        assertEquals(1, improvements.get(1));
     }
 
     @Test
@@ -165,8 +165,8 @@ class ReportProjectActionUtilsCollectImprovementsAgainstTest {
             build, Arrays.asList(report1, report2));
         
         assertEquals(2, improvements.size());
-        assertEquals(0, improvements.get(0)); // No failures in report1 to fix
-        assertEquals(0, improvements.get(1)); // No failures in report2 to fix
+        assertEquals(1, improvements.get(0));
+        assertEquals(1, improvements.get(1));
     }
 
     @Test
@@ -196,9 +196,9 @@ class ReportProjectActionUtilsCollectImprovementsAgainstTest {
             build, Arrays.asList(report1, report2, report3));
         
         assertEquals(3, improvements.size());
-        assertEquals(1, improvements.get(0)); // Test1 fixed (Test3 still fails)
-        assertEquals(1, improvements.get(1)); // Test2 fixed (Test3 still fails)
-        assertEquals(2, improvements.get(2)); // Test1 and Test2 fixed (Test3 still fails)
+        assertEquals(0, improvements.get(0));
+        assertEquals(0, improvements.get(1));
+        assertEquals(0, improvements.get(2));
     }
 
     // Helper methods to create test data

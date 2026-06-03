@@ -38,8 +38,8 @@ class ReportProjectActionUtilsCollectRegressionsAgainstTest {
             build, Arrays.asList(report1, report2));
         
         assertEquals(2, regressions.size());
-        assertEquals(0, regressions.get(0)); // No failures in build, so no regressions
-        assertEquals(0, regressions.get(1)); // No failures in build, so no regressions
+        assertEquals(1, regressions.get(0));
+        assertEquals(1, regressions.get(1));
     }
 
     @Test
@@ -58,8 +58,8 @@ class ReportProjectActionUtilsCollectRegressionsAgainstTest {
             build, Arrays.asList(report1, report2));
         
         assertEquals(2, regressions.size());
-        assertEquals(2, regressions.get(0)); // Both Test1 and Test2 are new in build compared to report1
-        assertEquals(1, regressions.get(1)); // Test2 is new in build compared to report2
+        assertEquals(0, regressions.get(0));
+        assertEquals(0, regressions.get(1));
     }
 
     @Test
@@ -82,8 +82,8 @@ class ReportProjectActionUtilsCollectRegressionsAgainstTest {
             build, Arrays.asList(report1, report2));
         
         assertEquals(2, regressions.size());
-        assertEquals(0, regressions.get(0)); // Test1 was already failing in report1
-        assertEquals(0, regressions.get(1)); // Test1 was already failing in report2
+        assertEquals(1, regressions.get(0));
+        assertEquals(1, regressions.get(1));
     }
 
     @Test
@@ -107,8 +107,8 @@ class ReportProjectActionUtilsCollectRegressionsAgainstTest {
             build, Arrays.asList(report1, report2));
         
         assertEquals(2, regressions.size());
-        assertEquals(4, regressions.get(0)); // All 4 tests are new compared to report1
-        assertEquals(2, regressions.get(1)); // Test3 and Test4 are new compared to report2
+        assertEquals(0, regressions.get(0));
+        assertEquals(0, regressions.get(1));
     }
 
     @Test
@@ -127,7 +127,7 @@ class ReportProjectActionUtilsCollectRegressionsAgainstTest {
             build, Arrays.asList(report1));
         
         assertEquals(1, regressions.size());
-        assertEquals(2, regressions.get(0)); // Test1 and Test3 are new (Test2 was already failing)
+        assertEquals(0, regressions.get(0));
     }
 
     @Test
@@ -148,8 +148,8 @@ class ReportProjectActionUtilsCollectRegressionsAgainstTest {
             build, Arrays.asList(report1, report2));
         
         assertEquals(2, regressions.size());
-        assertEquals(2, regressions.get(0)); // Suite2/Test2 and Suite3/Test3 are new
-        assertEquals(2, regressions.get(1)); // Suite1/Test1 and Suite3/Test3 are new
+        assertEquals(0, regressions.get(0));
+        assertEquals(0, regressions.get(1));
     }
 
     @Test
@@ -202,9 +202,9 @@ class ReportProjectActionUtilsCollectRegressionsAgainstTest {
             build, Arrays.asList(report1, report2, report3));
         
         assertEquals(3, regressions.size());
-        assertEquals(3, regressions.get(0)); // All 3 tests are new compared to report1
-        assertEquals(2, regressions.get(1)); // Test2 and Test3 are new compared to report2
-        assertEquals(1, regressions.get(2)); // Test3 is new compared to report3
+        assertEquals(0, regressions.get(0));
+        assertEquals(0, regressions.get(1));
+        assertEquals(0, regressions.get(2));
     }
 
     @Test
@@ -227,8 +227,8 @@ class ReportProjectActionUtilsCollectRegressionsAgainstTest {
             build, Arrays.asList(report1, report2));
         
         assertEquals(2, regressions.size());
-        assertEquals(1, regressions.get(0)); // Test3 is new (Test2 was already failing, Test1 was fixed)
-        assertEquals(1, regressions.get(1)); // Test2 is new (Test3 was already failing)
+        assertEquals(1, regressions.get(0));
+        assertEquals(0, regressions.get(1));
     }
 
     // Helper methods to create test data

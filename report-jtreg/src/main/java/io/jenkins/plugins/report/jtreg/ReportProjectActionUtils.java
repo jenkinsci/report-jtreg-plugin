@@ -145,9 +145,9 @@ public class ReportProjectActionUtils  {
         for (BuildReport report : reports) {
             Set<String> reportTests = collectTestNames(report);
             
-            long count = reportTests.stream()
+            long count = buildTests.stream()
                     .sequential()
-                    .filter(s -> !buildTests.contains(s))
+                    .filter(s -> !reportTests.contains(s))
                     .count();
             result.add((int) count);
         }
@@ -198,9 +198,9 @@ public class ReportProjectActionUtils  {
         for (BuildReport report : reports) {
             Set<String> reportTests = collectTestNames(report);
             
-            long count = buildTests.stream()
+            long count = reportTests.stream()
                     .sequential()
-                    .filter(s -> !reportTests.contains(s))
+                    .filter(s -> !buildTests.contains(s))
                     .count();
             result.add((int) count);
         }
