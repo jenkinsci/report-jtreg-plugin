@@ -20,7 +20,7 @@ class BuildsTest {
 
     @Test
     void checkForNvrTest() {
-        Options.Configuration nvrConfig = new Options.Configuration("changelog.xml", "/build/nvr", Options.Locations.Build);
+        Options.Configuration nvrConfig = new Options.Configuration("changelog.xml", io.jenkins.plugins.report.jtreg.ConfigFinder.NVR_XPATH, Options.Locations.Build);
 
         Options options = new Options();
         options.getConfiguration("result").setValue(".*"); // --skip-failed false

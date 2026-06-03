@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import hudson.model.Job;
 import hudson.model.Project;
 import io.jenkins.plugins.report.jtreg.model.BuildReport;
 import io.jenkins.plugins.report.jtreg.model.ProjectReport;
@@ -50,6 +51,38 @@ public class ReportProjectActionUtils  {
         RunWrapper found = null;
         if (displayNamesToFind != null) {
             found = ReportSummaryUtil.findPreviousBuild(new File(job.asProject().getRootDir(), "builds/weNeedPArent").toPath(), job.getLastBuild().getNumber(), PreviousBuilds.createPredicate(displayNamesToFind), settings.getIntMaxBuilds());
+            if (found != null) {
+                try {
+                    foundBuildReport = bsp.parseBuildReport(found);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        ProjectReport report = new ProjectReport(
+                reports,
+                collectImprovements(reports),
+                collectRegressions(reports),
+                collectImprovementsAgainst(foundBuildReport, reports),
+                collectRegressionsAgainst(foundBuildReport, reports),
+                found);
+        return report;
+    }
+
+    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"}, justification = " npe of spotbugs sucks")
+    public static ProjectReport getReport(Set<String> prefixes, Job<?, ?> job, int limitOverwrite) {
+        // For pipeline jobs, settings will be null since they don't have publishers list
+        AbstractReportPublisher settings = null;
+        if (job instanceof Project) {
+            settings = ReportAction.getAbstractReportPublisher(((Project) job).getPublishersList());
+        }
+        BuildSummaryParserPlugin bsp = new BuildSummaryParserPlugin(prefixes, settings, "endpointShouldNotMetter");
+        List<? extends BuildReport> reports = bsp.parseJobReports(job, limitOverwrite);
+        List<String> displayNamesToFind = SecondComparison.getOrCreateInstance(() -> JenkinsReportJckGlobalConfig.getGlobalDisplayNameComparisonURL()).getList();
+        BuildReport foundBuildReport = null;
+        RunWrapper found = null;
+        if (displayNamesToFind != null && job.getLastBuild() != null) {
+            found = ReportSummaryUtil.findPreviousBuild(new File(job.getRootDir(), "builds/weNeedPArent").toPath(), job.getLastBuild().getNumber(), PreviousBuilds.createPredicate(displayNamesToFind), settings != null ? settings.getIntMaxBuilds() : 10);
             if (found != null) {
                 try {
                     foundBuildReport = bsp.parseBuildReport(found);

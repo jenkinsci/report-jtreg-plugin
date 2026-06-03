@@ -23,6 +23,15 @@ import java.util.Map;
 import java.util.Properties;
 
 public class ConfigFinder {
+
+    //originally all those were /build/result
+    //but with pipelines, it can be /anything/result, so asterixes come to play
+    public static final String RESULT_XPATH="/*/result";
+    public static final String NVR_XPATH="/*/nvr";
+    public static final String DISPLAYNAME_XPATH="/*/displayName";
+    public static final String TIMESTAMP_XPATH="/*/timestamp";
+    public static final String DURATION_XPATH="/*/duration";
+
     private static final Map<File, Map<String, String>> configCache = new HashMap<File, Map<String, String>>();
 
     private final File configFile;

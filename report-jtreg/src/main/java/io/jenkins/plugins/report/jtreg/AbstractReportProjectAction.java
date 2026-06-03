@@ -83,12 +83,8 @@ public abstract class AbstractReportProjectAction implements Action {
 
     // This is called when chart is shown on main page
     public ProjectReport getChartData() {
-        if (job instanceof Project) {
-            ProjectReport report = ReportProjectActionUtils.getReport(prefixes, (Project) job, 0);
-            return report;
-        }
-        // For pipeline jobs, return null or handle differently
-        return null;
+        ProjectReport report = ReportProjectActionUtils.getReport(prefixes, job, 0);
+        return report;
     }
 
     protected abstract String getReportSuffix();

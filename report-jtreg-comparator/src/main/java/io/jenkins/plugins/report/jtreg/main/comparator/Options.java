@@ -34,7 +34,7 @@ public class Options extends CommonOptions {
         this.referentialJobName = null;
         this.referentialBuildNumber = -1;
         // default configuration for getting job results
-        Configuration resultConfig = new Configuration("build.xml", "/build/result", Locations.Build);
+        Configuration resultConfig = new Configuration("build.xml", io.jenkins.plugins.report.jtreg.ConfigFinder.RESULT_XPATH, Locations.Build);
         resultConfig.setValue("{SUCCESS,UNSTABLE}");
         addConfiguration("result", resultConfig);
     }

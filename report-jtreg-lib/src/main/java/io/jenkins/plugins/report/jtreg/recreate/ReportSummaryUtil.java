@@ -116,15 +116,15 @@ public class ReportSummaryUtil {
     }
 
     private static BuildReportExtended getReportAgaisntFoundBuild(String prefix, Path buildPath, String displayName, RunWrapper found) throws Exception {
-        long timeStamp = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "timestamp", "/build/timestamp"));
+        long timeStamp = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "timestamp", io.jenkins.plugins.report.jtreg.ConfigFinder.TIMESTAMP_XPATH));
         //warning, duration will change (to better), that is correct
-        long duration = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "duration", "/build/duration"));
+        long duration = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "duration", io.jenkins.plugins.report.jtreg.ConfigFinder.DURATION_XPATH));
         BuildReportExtended br = new BuildSummaryParser(Arrays.asList(prefix), null/*?*/).parseBuildReportExtended(new RunWrapperFromDirWithName(buildPath.toFile(), timeStamp, duration, displayName), found);
         return br;
     }
 
     private static void checkResultOfCurrentBuild(Path buildPath) {
-        String result = ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "result", "/build/result");
+        String result = ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "result", io.jenkins.plugins.report.jtreg.ConfigFinder.RESULT_XPATH);
         if (!SUCCESS_DUPLICATE.equals(result) && !UNSTABLE_DUPLICATE.equals(result)) {
             System.err.println("Warning, processing invalid job. Result is " + result);
         }
@@ -138,7 +138,7 @@ public class ReportSummaryUtil {
                 if (secondaryCounter < 0) {
                     return null;
                 }
-                String resultOld = ConfigFinder.findInConfigStatic(new File(oldDir, "build.xml"), "result", "/build/result");
+                String resultOld = ConfigFinder.findInConfigStatic(new File(oldDir, "build.xml"), "result", io.jenkins.plugins.report.jtreg.ConfigFinder.RESULT_XPATH);
                 if (SUCCESS_DUPLICATE.equals(resultOld) || UNSTABLE_DUPLICATE.equals(resultOld)) {
                     RunWrapper found = createRunWrapper(buildPath, oldDir, i, displayNamePredicate);
                     if (found != null) {
@@ -151,19 +151,19 @@ public class ReportSummaryUtil {
     }
 
     private static RunWrapper createRunWrapper(Path buildPath, File oldDir, int i, Predicate<String> displayNamePredicate) {
-        String displayName = ConfigFinder.findInConfigStatic(new File(oldDir, "build.xml"), "nvr", "/build/displayName");
+        String displayName = ConfigFinder.findInConfigStatic(new File(oldDir, "build.xml"), "nvr", io.jenkins.plugins.report.jtreg.ConfigFinder.DISPLAYNAME_XPATH);
         if (displayName == null) {
             displayName = "#"+ i;
         }
         if (displayNamePredicate.test(displayName)) {
             long timeStamp = -1;
             try {
-                timeStamp = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "timestamp", "/build/timestamp"));
+                timeStamp = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "timestamp", io.jenkins.plugins.report.jtreg.ConfigFinder.TIMESTAMP_XPATH));
             }catch (Exception ex) {
             }
             long duration = -1 ;
             try {
-                duration = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "duration", "/build/duration"));
+                duration = Long.parseLong(ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "duration", io.jenkins.plugins.report.jtreg.ConfigFinder.DURATION_XPATH));
             } catch ( Exception ex) {
             }
             RunWrapper found = new RunWrapperFromDirWithName(oldDir, timeStamp, duration, displayName);
@@ -174,7 +174,7 @@ public class ReportSummaryUtil {
     }
 
     private static String getDisplayName(Path buildPath, int jobId) {
-        String displayName = ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "nvr", "/build/displayName");
+        String displayName = ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "nvr", io.jenkins.plugins.report.jtreg.ConfigFinder.DISPLAYNAME_XPATH);
         if (displayName == null) {
             displayName = "#" + jobId;
         }
@@ -186,7 +186,7 @@ public class ReportSummaryUtil {
             result = "UNKNOWN";
             File buildXml = new File(buildPath.toFile(), "build.xml");
             if (buildXml.exists()) {
-                String nwResult = ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "result", "/build/result");
+                String nwResult = ConfigFinder.findInConfigStatic(new File(buildPath.toFile(), "build.xml"), "result", io.jenkins.plugins.report.jtreg.ConfigFinder.RESULT_XPATH);
                 if (nwResult!=null) {
                     result = nwResult;
                 }

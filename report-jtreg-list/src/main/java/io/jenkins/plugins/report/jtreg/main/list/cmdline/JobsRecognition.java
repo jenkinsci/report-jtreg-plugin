@@ -210,11 +210,11 @@ public class JobsRecognition {
     }
 
     public static String getChangelogsNvr(File buildPath) {
-        return new ConfigFinder(creteChangelogFile(buildPath), "nvr", "/build/nvr").findInConfig();
+        return new ConfigFinder(creteChangelogFile(buildPath), "nvr", io.jenkins.plugins.report.jtreg.ConfigFinder.NVR_XPATH).findInConfig();
     }
 
     public static String getBuildXmlDisplayName(File buildPath) {
-        return new ConfigFinder(new File(buildPath, "build.xml"), "display-name", "/build/displayName").findInConfig();
+        return new ConfigFinder(new File(buildPath, "build.xml"), "display-name", io.jenkins.plugins.report.jtreg.ConfigFinder.DISPLAYNAME_XPATH).findInConfig();
     }
 
     //maybe linux only, not utf8 valid solution... nto much tested, just copypasted and worked
