@@ -100,7 +100,11 @@ public class BuildSummaryParserPlugin extends BuildSummaryParser {
 
             @Override
             public int getSurrounding() {
-                return settings.getRangeAroundAlist();
+                if (settings == null) {
+                    return 0;
+                } else {
+                    return settings.getRangeAroundAlist();
+                }
             }
         });
     }
@@ -109,6 +113,9 @@ public class BuildSummaryParserPlugin extends BuildSummaryParser {
         return getList(runs, new ListProvider() {
             @Override
             public String getList() {
+                if(settings == null) {
+                    return "";
+                }
                 return settings.getResultsAllowList();
             }
 
