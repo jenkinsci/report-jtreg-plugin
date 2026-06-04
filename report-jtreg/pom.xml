@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>report-jtreg</artifactId>
-    <version>5.1.2</version>
+    <version>${revision}${changelist}</version>
 
     <packaging>hpi</packaging>
     <url>https://github.com/jenkinsci/report-jtreg-plugin</url>
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
             <artifactId>report-jtreg-lib</artifactId>
-            <version>5.1.2</version>
+            <version>5.1.3-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -118,8 +118,4 @@
             </plugin>
         </plugins>
     </build>
-
-  <scm>
-    <tag>report-jtreg-5.1.2</tag>
-  </scm>
 </project>
