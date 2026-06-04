@@ -6,6 +6,7 @@ Plugin is in `report-jtreg` module. `report-jtreg-lib` is code share by plugin a
 The plugin reads archived gzipped xml files prdoduced by junit/testng/jtreg/jck suites  ([or anyhow else generated](https://github.com/rh-openjdk/run-folder-as-tests/blob/main/jtreg-shell-xml.sh)) runs.
 
 * [Implementation details](#implementation-details)
+* [Pipelines](#pipelines)
 * [Job run details](#job-run-details)
     * [run page](#run-page)
     * [details page](#details-page)
@@ -31,6 +32,23 @@ The level of granularity is up to you. The tar.gz archvies are later cached as t
 
 **Note, that jtreg parser is reading for jtr.xml files, not just .xml, because we hit issue that ntot all xml files in results archives are desired. Thus, if you are using this to parse junit.xml compatible files, renam,e them to jtr.xml. TODO, we really should make this configurable.
 **
+## Pipelines
+Since 5.1.1, the plugin can be used in pipelines. Eg.:
+```
+stage('archive') {
+            steps {
+    archiveArtifacts artifacts: '*.tar.gz', followSymlinks: false
+            }
+        }
+stage('jtreg plugin') {
+            steps {
+    step([$class: 'JtregReportPublisher', reportFileGlob: '*.tar.gz', resultsAllowList: '', resultsDenyList: ''])
+            }
+        }
+    }
+}
+```
+
 ## Job run details
 
 ### run page
