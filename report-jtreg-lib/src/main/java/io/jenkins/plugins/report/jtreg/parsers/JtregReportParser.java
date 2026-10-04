@@ -81,6 +81,14 @@ public class  JtregReportParser implements ReportParser {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
+            try {
+                XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+                InputStream stream = new BufferedInputStream(Files.newInputStream(path));
+                XMLStreamReader reader = inputFactory.createXMLStreamReader(new CloseShieldInputStream(stream), "UTF-8");
+                testsList.addAll(parseTestsuites(reader));
+            } catch (Exception eex) {
+                eex.printStackTrace();
+            }
         }
         if (testsList.isEmpty()) {
             return null;
