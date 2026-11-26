@@ -31,7 +31,31 @@
         <gitHubRepo>jenkinsci/report-jtreg</gitHubRepo>
         <chartjs.version>4.2.1.5</chartjs.version>
         <jenkins.version>2.479.3</jenkins.version>
+        <commons-compress.version>1.28.0</commons-compress.version>
+        <commons-io.version>2.22.0</commons-io.version>
+        <commons-codec.version>1.19.0</commons-codec.version>
     </properties>
+
+    <!-- jenkins core manages older (vulnerable) versions of these; override them for all modules -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>${commons-compress.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons-codec.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <developers>
         <developer>
