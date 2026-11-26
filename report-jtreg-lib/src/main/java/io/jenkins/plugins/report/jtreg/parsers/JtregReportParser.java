@@ -59,35 +59,37 @@ import javax.xml.stream.XMLStreamException;
 
 public class  JtregReportParser implements ReportParser {
     private static final Map<String, ArchiveFactory> SUPPORTED_ARCHIVE_TYPES_MAP = createSupportedArchiveTypesMap();
+    private static final String XML_SUFFIX = ".xml";
+    private static final String JTR_XML_SUFFIX = ".jtr.xml";
 
     @Override
     @SuppressFBWarnings(value = {"REC_CATCH_EXCEPTION", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"}, justification = " npe of spotbugs sucks")
     public Suite parsePath(Path path) {
         List<Test> testsList = new ArrayList<>();
-        try (ArchiveInputStream in = streamPath(path)) {
-            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-            ArchiveEntry entry;
-            while ((entry = in.getNextEntry()) != null) {
-                String entryName = entry.getName();
-                if (entryName == null || !entryName.endsWith(".jtr.xml")) {
-                    continue;
-                }
-                try {
-                    XMLStreamReader reader = inputFactory.createXMLStreamReader(new CloseShieldInputStream(in), "UTF-8");
-                    testsList.addAll(parseTestsuites(reader));
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+        if (isPlainXml(path)) {
+            try (InputStream stream = new BufferedInputStream(Files.newInputStream(path))) {
+                testsList.addAll(parseTestsuites(SecureXmlInputFactory.create(), stream));
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            try {
-                XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-                InputStream stream = new BufferedInputStream(Files.newInputStream(path));
-                XMLStreamReader reader = inputFactory.createXMLStreamReader(new CloseShieldInputStream(stream), "UTF-8");
-                testsList.addAll(parseTestsuites(reader));
-            } catch (Exception eex) {
-                eex.printStackTrace();
+        } else {
+            try (ArchiveInputStream in = streamPath(path)) {
+                XMLInputFactory inputFactory = SecureXmlInputFactory.create();
+                ArchiveEntry entry;
+                while ((entry = in.getNextEntry()) != null) {
+                    String entryName = entry.getName();
+                    if (entryName == null || !entryName.endsWith(JTR_XML_SUFFIX)) {
+                        continue;
+                    }
+                    try {
+                        // the archive stream is shared by all entries, so the reader must not close it
+                        testsList.addAll(parseTestsuites(inputFactory, new CloseShieldInputStream(in)));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
         if (testsList.isEmpty()) {
@@ -112,15 +114,50 @@ public class  JtregReportParser implements ReportParser {
         return new Suite(suiteName(path), fullReport);
     }
 
-    @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "We desrve to die")
-    private String suiteName(Path path) {
-        for (Entry<String, ArchiveFactory> factory : SUPPORTED_ARCHIVE_TYPES_MAP.entrySet()) {
-            String pathName = path.getFileName().toString();
-            if (pathName.toLowerCase().endsWith(factory.getKey())) {
-                return pathName.substring(0, pathName.length() - factory.getKey().length());
+    private static boolean isPlainXml(Path path) {
+        Path fileName = path.getFileName();
+        return fileName != null && fileName.toString().toLowerCase().endsWith(XML_SUFFIX);
+    }
+
+    private List<Test> parseTestsuites(XMLInputFactory inputFactory, InputStream stream) throws Exception {
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(stream, "UTF-8");
+        try {
+            return parseTestsuites(reader);
+        } finally {
+            reader.close();
+        }
+    }
+
+    /**
+     * Suite name is the file name without the supported archive/xml suffix, so the same report gives the same
+     * suite whatever format it was stored in (jdk.tar.xz, jdk.zip, jdk.xml and jdk.jtr.xml are all "jdk").
+     * Builds are compared by suite names, so changing this breaks comparison with already recorded builds.
+     */
+    static String suiteName(Path path) {
+        Path fileNamePath = path.getFileName();
+        if (fileNamePath == null) {
+            return path.toString();
+        }
+        String fileName = fileNamePath.toString();
+        String lower = fileName.toLowerCase();
+        String suffix = null;
+        if (lower.endsWith(JTR_XML_SUFFIX)) {
+            suffix = JTR_XML_SUFFIX;
+        } else if (lower.endsWith(XML_SUFFIX)) {
+            suffix = XML_SUFFIX;
+        } else {
+            for (String archiveSuffix : SUPPORTED_ARCHIVE_TYPES_MAP.keySet()) {
+                // longest match wins, should there ever be overlapping suffixes (.tar vs .tar.gz style)
+                if (lower.endsWith(archiveSuffix) && (suffix == null || archiveSuffix.length() > suffix.length())) {
+                    suffix = archiveSuffix;
+                }
             }
         }
-        return path.getFileName().toString();
+        if (suffix == null || suffix.length() == fileName.length()) {
+            // unknown format, or nothing would remain (e.g. ".xml")
+            return fileName;
+        }
+        return fileName.substring(0, fileName.length() - suffix.length());
     }
 
     private List<Test> parseTestsuites(XMLStreamReader in) throws Exception {
