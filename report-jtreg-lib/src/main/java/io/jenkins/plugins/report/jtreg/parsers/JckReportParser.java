@@ -153,7 +153,7 @@ public class JckReportParser implements ReportParser {
     }
 
     private ReportFull parseReport(Reader reader) throws Exception {
-        XMLInputFactory factory = XMLInputFactory.newInstance();
+        XMLInputFactory factory = SecureXmlInputFactory.create();
         factory.setProperty("http://java.sun.com/xml/stream/properties/report-cdata-event", Boolean.TRUE);
         factory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
         XMLStreamReader in = factory.createXMLStreamReader(reader);
