@@ -31,11 +31,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.StaplerProxy;
 
 public abstract class AbstractReportAction implements Action, StaplerProxy, SimpleBuildStep.LastBuildAction {
+
+    private static final Logger LOG = Logger.getLogger(AbstractReportAction.class.getName());
 
     protected final Run<?, ?> build;
     protected final Set<String> prefixes = new HashSet<>();
@@ -84,8 +88,16 @@ public abstract class AbstractReportAction implements Action, StaplerProxy, Simp
 
     @Override
     public Collection<? extends Action> getProjectActions() {
-        Job<?, ?> job = build.getParent();
-        return Collections.singleton(createProjectAction(job, prefixes));
+        // Jenkins core collects project actions of all LastBuildActions of the last successful build
+        // in one loop (SimpleBuildStep.LastBuildActionFactory). Any exception thrown here would drop
+        // project actions (and thus charts) of all other plugins too, so never let it escape.
+        try {
+            Job<?, ?> job = build.getParent();
+            return Collections.singleton(createProjectAction(job, prefixes));
+        } catch (RuntimeException | LinkageError ex) {
+            LOG.log(Level.WARNING, "Failed to create " + getUrlName() + " project action for " + build, ex);
+            return Collections.emptyList();
+        }
     }
 
     protected abstract String getReportSuffix();
