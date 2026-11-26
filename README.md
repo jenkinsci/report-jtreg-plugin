@@ -3,7 +3,7 @@ Jenkins plugin to show unit-test, tesng, jtreg and JCK reports summaries, diffs 
 
 Plugin is in `report-jtreg` module. `report-jtreg-lib` is code share by plugin and other modules. `report-jtreg-comparator`, `report-jtreg-list`, `report-jtreg-diff` are standalone CLI programs, which can operate overresults. See lower for individual descriptions. See -h/--hel "in themselves".  The `report-jtreg-service` is CGI (yes, cgi) html wrapper around all three cli tools.  Although you can setup `plugin` to link to them (and it is awesome) it is not exactly safe, so we reocmmend to not run those services on public network. IN addition, the `services` are really clumsy to set up, refer to the source code of `io.jenkins.plugins.report.jtreg.main.Service` for details
 
-The plugin reads archived gzipped xml files prdoduced by junit/testng/jtreg/jck suites  ([or anyhow else generated](https://github.com/rh-openjdk/run-folder-as-tests/blob/main/jtreg-shell-xml.sh)) runs.
+The plugin reads archived gzipped (or plain) xml files prdoduced by junit/testng/jtreg/jck suites  ([or anyhow else generated](https://github.com/rh-openjdk/run-folder-as-tests/blob/main/jtreg-shell-xml.sh)) runs.
 
 * [Implementation details](#implementation-details)
 * [Pipelines](#pipelines)
@@ -26,12 +26,16 @@ The plugin reads archived gzipped xml files prdoduced by junit/testng/jtreg/jck 
     * [releaseing](#releaseing)
 
 ## Implementation details
-The xml reports you recieve, should be post processed a bit, and compressed. Zip, tar.gz and tar.xz (including xml.gz and xml.xz) are supported. Compressed, as plugin is used with reports hundrets of megabytes large. And postprocessed as various engines generates various reports. Thus the xml files should be gathered into archives, which are later considered as suites:
+The xml reports you recieve, should be post processed a bit, and compressed. Zip, tar, tar.gz, tar.bz2 and tar.xz are supported (jck reports also as xml.gz and xml.xz). Compressed, as plugin is used with reports hundrets of megabytes large. Plain, noncompressed junit(jtreg) xml files (`*.xml`, `*.jtr.xml`) are supported too, each file is then one suite (see below). And postprocessed as various engines generates various reports. Thus the xml files should be gathered into archives, which are later considered as suites:
 ![suites](https://user-images.githubusercontent.com/2904395/43016538-6c5141aa-8c53-11e8-8b6f-2eb45ebcaf01.png)
 The level of granularity is up to you. The tar.gz archvies are later cached as two relatively small json files - one with listing for diff, one with stack traces of failures.  Latest cache is the properties file with total/run/passed/failed/error/skipp keys to be reused via https://github.com/judovana/jenkins-report-generic-chart-column (and used for quicker renderig of graphs of this plugin itself)
 
-**Note, that jtreg parser is reading for jtr.xml files, not just .xml, because we hit issue that ntot all xml files in results archives are desired. Thus, if you are using this to parse junit.xml compatible files, renam,e them to jtr.xml. TODO, we really should make this configurable.
-**
+**Note, that inside archives, jtreg parser is reading for jtr.xml files, not just .xml, because we hit issue that ntot all xml files in results archives are desired. Thus, if you are using this to parse junit.xml compatible files packed in archive, renam,e them to jtr.xml. TODO, we really should make this configurable.**
+Plain (noncompressed) xml files matched by `reportFileGlob` are parsed whole, whatever their name is, as long as it ends with `.xml` (case insensitive). So do not let the glob match xml files which are not junit(jtreg) reports.
+
+The suite name is the file name without the supported suffix (`.zip`, `.tar`, `.tar.gz`, `.tar.bz2`, `.tar.xz`, `.jtr.xml`, `.xml`, case insensitive). So `jdk.tar.xz`, `jdk.zip`, `jdk.xml` and `jdk.jtr.xml` are all suite `jdk`. Builds are compared by suite names, so a job can switch between archived and plain xml reports and still keep comparable results. Do not publish two files differing only in suffix in one build, they would clash in one suite name.
+
+DTDs and external entities are disabled in the parsed xml files (both jtreg and jck), as the files come from workspaces.
 ## Pipelines
 Since 5.1.1, the plugin can be used in pipelines. Eg.:
 ```
